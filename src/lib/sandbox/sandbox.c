@@ -125,6 +125,15 @@
 #define SYSCALL_NAME_DEBUGGING
 #endif
 
+/**
+ * On newer architectures Linux provides a standardized, generic set of system
+ * calls (defined in Linux's include/uapi/asm-generic/unistd.h), which omits a
+ * number of legacy calls used by glibc on other platforms.
+ */
+#if defined(__aarch64__) || defined(__riscv)
+#define ARCH_USES_GENERIC_SYSCALLS
+#endif
+
 /**Determines if at least one sandbox is active.*/
 static int sandbox_active = 0;
 /** Holds the parameter list configuration for the sandbox.*/
@@ -259,8 +268,9 @@ static int filter_nopar_gen[] = {
 #ifdef __NR_sigreturn
     SCMP_SYS(sigreturn),
 #endif
+#if defined(__NR_stat)
     SCMP_SYS(stat),
-#if defined(__i386__) && defined(__NR_statx)
+#elif defined(__i386__) && defined(__NR_statx)
     SCMP_SYS(statx),
 #endif
     SCMP_SYS(uname),
@@ -1377,6 +1387,40 @@ sb_mremap(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
   return 0;
 }
 
+#ifdef ARCH_USES_GENERIC_SYSCALLS
+/**
+ * Function responsible for setting up the newfstatat syscall for
+ * the seccomp filter sandbox.
+ */
+static int
+sb_newfstatat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
+{
+  int rc = 0;
+
+  sandbox_cfg_t *elem = NULL;
+
+  // for each dynamic parameter filters
+  for (elem = filter; elem != NULL; elem = elem->next) {
+    smp_param_t *param = elem->param;
+
+    if (param != NULL && param->prot == 1 && (param->syscall == SCMP_SYS(open)
+        || param->syscall == PHONY_OPENDIR_SYSCALL
+        || param->syscall == SCMP_SYS(newfstatat))) {
+      rc = seccomp_rule_add_2(ctx, SCMP_ACT_ALLOW, SCMP_SYS(newfstatat),
+          SCMP_CMP_LOWER32_EQ(0, AT_FDCWD),
+          SCMP_CMP_STR(1, SCMP_CMP_EQ, param->value));
+      if (rc != 0) {
+        log_err(LD_BUG,"(Sandbox) failed to add newfstatat syscall, received "
+            "libseccomp error %d", rc);
+        return rc;
+      }
+    }
+  }
+
+  return 0;
+}
+#endif /* defined(ARCH_USES_GENERIC_SYSCALLS) */
+
 #ifdef __NR_stat64
 /**
  * Function responsible for setting up the stat64 syscall for
@@ -1465,7 +1509,9 @@ static sandbox_filter_func_t filter_func[] = {
     sb_flock,
     sb_futex,
     sb_mremap,
-#ifdef __NR_stat64
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
+    sb_newfstatat,
+#elif defined(__NR_stat64)
     sb_stat64,
 #endif
 
@@ -1743,7 +1789,9 @@ new_element(int syscall, char *value)
 #define SCMP_rename SCMP_SYS(renameat2)
 #endif
 
-#ifdef __NR_stat64
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
+#define SCMP_stat SCMP_SYS(newfstatat)
+#elif defined(__NR_stat64)
 #define SCMP_stat SCMP_SYS(stat64)
 #else
 #define SCMP_stat SCMP_SYS(stat)
