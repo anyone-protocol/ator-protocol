@@ -331,6 +331,8 @@ static int filter_nopar_gen[] = {
   seccomp_rule_add((ctx),(act),(call),3,(f1),(f2),(f3))
 #define seccomp_rule_add_4(ctx,act,call,f1,f2,f3,f4)      \
   seccomp_rule_add((ctx),(act),(call),4,(f1),(f2),(f3),(f4))
+#define seccomp_rule_add_5(ctx,act,call,f1,f2,f3,f4,f5)       \
+  seccomp_rule_add((ctx),(act),(call),4,(f1),(f2),(f3),(f4),(f5))
 
 static const char *sandbox_get_interned_string(const char *str);
 
@@ -718,6 +720,7 @@ sb_fchownat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
   return 0;
 }
 
+#if defined(__NR_rename)
 /**
  * Function responsible for setting up the rename syscall for
  * the seccomp filter sandbox.
@@ -748,7 +751,7 @@ sb_rename(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 
   return 0;
 }
-
+#elif defined(__NR_renameat)
 /**
  * Function responsible for setting up the renameat syscall for
  * the seccomp filter sandbox.
@@ -781,6 +784,41 @@ sb_renameat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 
   return 0;
 }
+#else
+/**
+ * Function responsible for setting up the renameat2 syscall for
+ * the seccomp filter sandbox.
+ */
+static int
+sb_renameat2(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
+{
+  int rc;
+  sandbox_cfg_t *elem = NULL;
+
+  // for each dynamic parameter filters
+  for (elem = filter; elem != NULL; elem = elem->next) {
+    smp_param_t *param = elem->param;
+
+    if (param != NULL && param->prot == 1 &&
+        param->syscall == SCMP_SYS(renameat2)) {
+
+      rc = seccomp_rule_add_5(ctx, SCMP_ACT_ALLOW, SCMP_SYS(renameat2),
+            SCMP_CMP_LOWER32_EQ(0, AT_FDCWD),
+            SCMP_CMP_STR(1, SCMP_CMP_EQ, param->value),
+            SCMP_CMP_LOWER32_EQ(2, AT_FDCWD),
+            SCMP_CMP_STR(3, SCMP_CMP_EQ, param->value2),
+            SCMP_CMP(4, SCMP_CMP_EQ, 0));
+      if (rc != 0) {
+        log_err(LD_BUG,"(Sandbox) failed to add renameat2 syscall, received "
+            "libseccomp error %d", rc);
+        return rc;
+      }
+    }
+  }
+
+  return 0;
+}
+#endif /* defined(__NR_rename) || defined(__NR_renameat) */
 
 /**
  * Function responsible for setting up the openat syscall for
@@ -1411,8 +1449,13 @@ static sandbox_filter_func_t filter_func[] = {
 #ifdef ENABLE_FRAGILE_HARDENING
     sb_ptrace,
 #endif
+#if defined(__NR_rename)
     sb_rename,
+#elif defined(__NR_renameat)
     sb_renameat,
+#else
+    sb_renameat2,
+#endif
 #ifdef __NR_fcntl64
     sb_fcntl64,
 #endif
@@ -1692,10 +1735,12 @@ new_element(int syscall, char *value)
 #define SCMP_chmod SCMP_SYS(chmod)
 #endif
 
-#if defined(__aarch64__) && defined(__LP64__)
+#if defined(__NR_rename)
+#define SCMP_rename SCMP_SYS(rename)
+#elif defined(__NR_renameat)
 #define SCMP_rename SCMP_SYS(renameat)
 #else
-#define SCMP_rename SCMP_SYS(rename)
+#define SCMP_rename SCMP_SYS(renameat2)
 #endif
 
 #ifdef __NR_stat64
