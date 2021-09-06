@@ -505,7 +505,11 @@ is_libc_at_least(int major, int minor)
 static int
 libc_uses_openat_for_open(void)
 {
+#ifdef __NR_open
   return is_libc_at_least(2, 26);
+#else
+  return 1;
+#endif /* defined(__NR_open) */
 }
 
 /* Return true if we think we're running with a libc that uses openat for the
@@ -513,9 +517,13 @@ libc_uses_openat_for_open(void)
 static int
 libc_uses_openat_for_opendir(void)
 {
+#ifdef __NR_open
   // libc 2.27 and above or between 2.15 (inclusive) and 2.22 (exclusive)
   return is_libc_at_least(2, 27) ||
          (is_libc_at_least(2, 15) && !is_libc_at_least(2, 22));
+#else
+  return 1;
+#endif /* defined(__NR_open) */
 }
 
 /** Allow a single file to be opened.  If <b>use_openat</b> is true,
