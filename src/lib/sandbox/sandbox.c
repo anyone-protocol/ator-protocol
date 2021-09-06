@@ -654,7 +654,33 @@ sb_chmod(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 }
 #endif /* defined(ARCH_USES_GENERIC_SYSCALLS) */
 
-#ifdef __i386__
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
+static int
+sb_fchownat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
+{
+  int rc;
+  sandbox_cfg_t *elem = NULL;
+
+  // for each dynamic parameter filters
+  for (elem = filter; elem != NULL; elem = elem->next) {
+    smp_param_t *param = elem->param;
+
+    if (param != NULL && param->prot == 1 && param->syscall
+        == SCMP_SYS(fchownat)) {
+      rc = seccomp_rule_add_2(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fchownat),
+          SCMP_CMP_LOWER32_EQ(0, AT_FDCWD),
+          SCMP_CMP_STR(1, SCMP_CMP_EQ, param->value));
+      if (rc != 0) {
+        log_err(LD_BUG,"(Sandbox) failed to add fchownat syscall, received "
+            "libseccomp error %d", rc);
+        return rc;
+      }
+    }
+  }
+
+  return 0;
+}
+#elif defined(__i386__)
 static int
 sb_chown32(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 {
@@ -704,33 +730,7 @@ sb_chown(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 
   return 0;
 }
-#endif /* defined(__i386__) */
-
-static int
-sb_fchownat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
-{
-  int rc;
-  sandbox_cfg_t *elem = NULL;
-
-  // for each dynamic parameter filters
-  for (elem = filter; elem != NULL; elem = elem->next) {
-    smp_param_t *param = elem->param;
-
-    if (param != NULL && param->prot == 1 && param->syscall
-        == SCMP_SYS(fchownat)) {
-      rc = seccomp_rule_add_2(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fchownat),
-          SCMP_CMP_LOWER32_EQ(0, AT_FDCWD),
-          SCMP_CMP_STR(1, SCMP_CMP_EQ, param->value));
-      if (rc != 0) {
-        log_err(LD_BUG,"(Sandbox) failed to add fchownat syscall, received "
-            "libseccomp error %d", rc);
-        return rc;
-      }
-    }
-  }
-
-  return 0;
-}
+#endif /* defined(ARCH_USES_GENERIC_SYSCALLS) || defined(__i386__) */
 
 #if defined(__NR_rename)
 /**
@@ -1481,12 +1481,13 @@ static sandbox_filter_func_t filter_func[] = {
 #ifdef __NR_mmap2
     sb_mmap2,
 #endif
-#ifdef __i386__
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
+    sb_fchownat,
+#elif defined(__i386__)
     sb_chown32,
 #else
     sb_chown,
 #endif
-    sb_fchownat,
 #if defined(ARCH_USES_GENERIC_SYSCALLS)
     sb_fchmodat,
 #else
@@ -1772,10 +1773,10 @@ new_element(int syscall, char *value)
   return new_element2(syscall, value, NULL);
 }
 
-#ifdef __i386__
-#define SCMP_chown SCMP_SYS(chown32)
-#elif defined(__aarch64__) && defined(__LP64__)
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
 #define SCMP_chown SCMP_SYS(fchownat)
+#elif defined(__i386__)
+#define SCMP_chown SCMP_SYS(chown32)
 #else
 #define SCMP_chown SCMP_SYS(chown)
 #endif
