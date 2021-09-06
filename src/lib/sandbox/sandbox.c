@@ -601,31 +601,7 @@ sb_open(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
   return 0;
 }
 
-static int
-sb_chmod(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
-{
-  int rc;
-  sandbox_cfg_t *elem = NULL;
-
-  // for each dynamic parameter filters
-  for (elem = filter; elem != NULL; elem = elem->next) {
-    smp_param_t *param = elem->param;
-
-    if (param != NULL && param->prot == 1 && param->syscall
-        == SCMP_SYS(chmod)) {
-      rc = seccomp_rule_add_1(ctx, SCMP_ACT_ALLOW, SCMP_SYS(chmod),
-            SCMP_CMP_STR(0, SCMP_CMP_EQ, param->value));
-      if (rc != 0) {
-        log_err(LD_BUG,"(Sandbox) failed to add chmod syscall, received "
-            "libseccomp error %d", rc);
-        return rc;
-      }
-    }
-  }
-
-  return 0;
-}
-
+#ifdef ARCH_USES_GENERIC_SYSCALLS
 static int
 sb_fchmodat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 {
@@ -651,6 +627,32 @@ sb_fchmodat(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 
   return 0;
 }
+#else
+static int
+sb_chmod(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
+{
+  int rc;
+  sandbox_cfg_t *elem = NULL;
+
+  // for each dynamic parameter filters
+  for (elem = filter; elem != NULL; elem = elem->next) {
+    smp_param_t *param = elem->param;
+
+    if (param != NULL && param->prot == 1 && param->syscall
+        == SCMP_SYS(chmod)) {
+      rc = seccomp_rule_add_1(ctx, SCMP_ACT_ALLOW, SCMP_SYS(chmod),
+            SCMP_CMP_STR(0, SCMP_CMP_EQ, param->value));
+      if (rc != 0) {
+        log_err(LD_BUG,"(Sandbox) failed to add chmod syscall, received "
+            "libseccomp error %d", rc);
+        return rc;
+      }
+    }
+  }
+
+  return 0;
+}
+#endif /* defined(ARCH_USES_GENERIC_SYSCALLS) */
 
 #ifdef __i386__
 static int
@@ -1485,8 +1487,11 @@ static sandbox_filter_func_t filter_func[] = {
     sb_chown,
 #endif
     sb_fchownat,
-    sb_chmod,
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
     sb_fchmodat,
+#else
+    sb_chmod,
+#endif
     sb_open,
     sb_openat,
     sb_opendir,
@@ -1775,7 +1780,7 @@ new_element(int syscall, char *value)
 #define SCMP_chown SCMP_SYS(chown)
 #endif
 
-#if defined(__aarch64__) && defined(__LP64__)
+#if defined(ARCH_USES_GENERIC_SYSCALLS)
 #define SCMP_chmod SCMP_SYS(fchmodat)
 #else
 #define SCMP_chmod SCMP_SYS(chmod)
