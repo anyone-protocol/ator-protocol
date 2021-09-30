@@ -524,6 +524,11 @@ libc_uses_openat_for_open(void)
 #endif /* defined(__NR_open) */
 }
 
+/* Calls to opendir() cannot be filtered by the sandbox when built with fragile
+ * hardening for an architecture that uses Linux's generic syscall interface,
+ * so prevent a compiler warning by omitting this function along with
+ * sb_opendir(). */
+#if !(defined(ENABLE_FRAGILE_HARDENING) && defined(ARCH_USES_GENERIC_SYSCALLS))
 /* Return true if we think we're running with a libc that uses openat for the
  * opendir function on linux. */
 static int
@@ -537,6 +542,8 @@ libc_uses_openat_for_opendir(void)
   return 1;
 #endif /* defined(__NR_open) */
 }
+#endif /* !(defined(ENABLE_FRAGILE_HARDENING) &&
+            defined(ARCH_USES_GENERIC_SYSCALLS)) */
 
 /** Allow a single file to be opened.  If <b>use_openat</b> is true,
  * we're using a libc that remaps all the opens into openats. */
@@ -566,10 +573,25 @@ sb_open(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
   int use_openat = libc_uses_openat_for_open();
 
 #ifdef ENABLE_FRAGILE_HARDENING
-  /* AddressSanitizer uses the "open" syscall to access information about the
-   * running process via the filesystem, so that call must be allowed without
+  /* AddressSanitizer uses either the "open" or the "openat" syscall (depending
+   * on the architecture) to access information about the running process via
+   * the filesystem, so the appropriate call must be allowed without
    * restriction or the sanitizer will be unable to execute normally when the
    * process terminates. */
+#ifdef ARCH_USES_GENERIC_SYSCALLS
+  rc = seccomp_rule_add_1(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat),
+      SCMP_CMP_LOWER32_EQ(0, AT_FDCWD));
+  if (rc != 0) {
+    log_err(LD_BUG,"(Sandbox) failed to add openat syscall, received "
+        "libseccomp error %d", rc);
+    return rc;
+  }
+
+  /* The "open" syscall is not defined on this architecture, so any other
+   * requests to open files will necessarily use "openat" as well and there is
+   * no need to consider any additional rules. */
+  return 0;
+#else
   rc = seccomp_rule_add_0(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open));
   if (rc != 0) {
     log_err(LD_BUG,"(Sandbox) failed to add open syscall, received "
@@ -581,7 +603,8 @@ sb_open(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
    * there is no need to consider any additional rules. */
   if (!use_openat)
     return 0;
-#endif
+#endif /* defined(ARCH_USES_GENERIC_SYSCALLS) */
+#endif /* defined(ENABLE_FRAGILE_HARDENING) */
 
   // for each dynamic parameter filters
   for (elem = filter; elem != NULL; elem = elem->next) {
@@ -832,6 +855,17 @@ sb_renameat2(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 }
 #endif /* defined(__NR_rename) || defined(__NR_renameat) */
 
+/* If Tor is built with fragile hardening for an architecture that uses Linux's
+ * generic syscall interface a rule allowing the "openat" syscall without
+ * restriction will have already been added by sb_open(), so there is no need
+ * to consider adding additional, more restrictive rules here as they will
+ * simply be ignored.
+ *
+ * Also, since the "open" syscall is not defined on these architectures, glibc
+ * will necessarily use "openat" for its implementation of opendir() as well.
+ * This means neither of the following two functions will have any effect and
+ * both can be omitted. */
+#if !(defined(ENABLE_FRAGILE_HARDENING) && defined(ARCH_USES_GENERIC_SYSCALLS))
 /**
  * Function responsible for setting up the openat syscall for
  * the seccomp filter sandbox.
@@ -887,6 +921,8 @@ sb_opendir(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
 
   return 0;
 }
+#endif /* !(defined(ENABLE_FRAGILE_HARDENING) &&
+            defined(ARCH_USES_GENERIC_SYSCALLS)) */
 
 #ifdef ENABLE_FRAGILE_HARDENING
 /**
@@ -906,9 +942,17 @@ sb_ptrace(scmp_filter_ctx ctx, sandbox_cfg_t *filter)
   if (rc)
     return rc;
 
+  /* AddressSanitizer uses "PTRACE_GETREGSET" on AArch64 (ARM64) and
+   * System/390, "PTRACE_GETREGS" everywhere else. */
+#if defined(__aarch64__) || defined(__s390__)
+  rc = seccomp_rule_add_2(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ptrace),
+      SCMP_CMP(0, SCMP_CMP_EQ, PTRACE_GETREGSET),
+      SCMP_CMP(1, SCMP_CMP_EQ, pid));
+#else
   rc = seccomp_rule_add_2(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ptrace),
       SCMP_CMP(0, SCMP_CMP_EQ, PTRACE_GETREGS),
       SCMP_CMP(1, SCMP_CMP_EQ, pid));
+#endif /* defined(__aarch64__) || defined(__s390__) */
   if (rc)
     return rc;
 
@@ -1494,8 +1538,10 @@ static sandbox_filter_func_t filter_func[] = {
     sb_chmod,
 #endif
     sb_open,
+#if !(defined(ENABLE_FRAGILE_HARDENING) && defined(ARCH_USES_GENERIC_SYSCALLS))
     sb_openat,
     sb_opendir,
+#endif
 #ifdef ENABLE_FRAGILE_HARDENING
     sb_ptrace,
 #endif
