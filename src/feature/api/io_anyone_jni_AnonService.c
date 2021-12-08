@@ -240,6 +240,7 @@ Java_io_anyone_jni_AnonService_mainConfigurationFree
     fprintf(stderr, "ConfigurationFree: The Anon configuration is NULL!\n");
     return;
   }
+  unset_owning_controller_socket(cfg);
   tor_main_configuration_free(cfg);
 }
 
