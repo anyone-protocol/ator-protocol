@@ -143,6 +143,40 @@ test_pt_parsing(void *arg)
 }
 
 static void
+test_pt_status_parsing(void *arg)
+{
+  char line[200];
+  char *test_binary = tor_strdup("test-pt");
+  char *argv[] = {
+    test_binary,
+    NULL,
+  };
+
+  managed_proxy_t *mp = tor_malloc_zero(sizeof(managed_proxy_t));
+  (void)arg;
+  mp->conf_state = PT_PROTO_INFANT;
+  mp->transports = smartlist_new();
+  mp->argv = argv;
+
+  /* STATUS TYPE=version messages. */
+  tt_ptr_op(mp->version, OP_EQ, NULL);
+  strlcpy(line, "STATUS TRANSPORT=x "
+                "TYPE=version "
+                "VERSION=\"1.33.7-hax beta\"",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+  tt_str_op(mp->version, OP_EQ, "1.33.7-hax beta");
+
+  reset_mp(mp);
+
+ done:
+  reset_mp(mp);
+  smartlist_free(mp->transports);
+  tor_free(mp);
+  tor_free(test_binary);
+}
+
+static void
 test_pt_get_transport_options(void *arg)
 {
   char **execve_args;
@@ -590,6 +624,7 @@ test_get_pt_proxy_uri(void *arg)
 
 struct testcase_t pt_tests[] = {
   PT_LEGACY(parsing),
+  PT_LEGACY(status_parsing),
   PT_LEGACY(protocol),
   { "get_transport_options", test_pt_get_transport_options, TT_FORK,
     NULL, NULL },

@@ -741,6 +741,9 @@ managed_proxy_destroy(managed_proxy_t *mp,
   /* free the outgoing proxy URI */
   tor_free(mp->proxy_uri);
 
+  /* free our version, if any is set. */
+  tor_free(mp->version);
+
   /* do we want to terminate our process if it's still running? */
   if (also_terminate_process && mp->process) {
     /* Note that we do not call process_free(mp->process) here because we let
@@ -1293,6 +1296,9 @@ parse_status_line(const char *line, managed_proxy_t *mp)
     goto done;
   }
 
+  /* Handle the different messages. */
+  handle_status_message(values, mp);
+
   /* Prepend the PT name. */
   config_line_prepend(&values, "PT", mp->argv[0]);
   status_message = kvline_encode(values, KV_QUOTED);
@@ -1304,6 +1310,36 @@ parse_status_line(const char *line, managed_proxy_t *mp)
  done:
   config_free_lines(values);
   tor_free(status_message);
+}
+
+STATIC void
+handle_status_message(const config_line_t *values,
+                      managed_proxy_t *mp)
+{
+  const config_line_t *message_type = config_line_find(values, "TYPE");
+
+  /* Check if we have a TYPE field? */
+  if (message_type == NULL) {
+    log_debug(LD_PT, "Managed proxy \"%s\" wrote a STATUS line without "
+                     "a defined message TYPE", mp->argv[0]);
+    return;
+  }
+
+  /* Handle VERSION messages. */
+  if (! strcasecmp(message_type->value, "version")) {
+    const config_line_t *version = config_line_find(values, "VERSION");
+
+    if (version == NULL) {
+      log_warn(LD_PT, "Managed proxy \"%s\" wrote a STATUS TYPE=version line "
+                      "with a missing VERSION field", mp->argv[0]);
+      return;
+    }
+
+    tor_free(mp->version);
+    mp->version = tor_strdup(version->value);
+
+    return;
+  }
 }
 
 /** Return a newly allocated string that tor should place in
