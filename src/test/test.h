@@ -111,6 +111,7 @@ extern struct testcase_t conflux_cell_tests[];
 extern struct testcase_t conflux_pool_tests[];
 extern struct testcase_t confmgr_tests[];
 extern struct testcase_t confparse_tests[];
+extern struct testcase_t congestion_control_tests[];
 extern struct testcase_t connection_tests[];
 extern struct testcase_t conscache_tests[];
 extern struct testcase_t consdiff_tests[];
