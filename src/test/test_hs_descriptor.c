@@ -25,6 +25,8 @@
 #include "test/log_test_helpers.h"
 #include "test/rng_test_helpers.h"
 
+#define TOR_CONGESTION_CONTROL_PRIVATE
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 
 #ifdef HAVE_CFLAG_WOVERLENGTH_STRINGS

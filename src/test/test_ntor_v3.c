@@ -13,7 +13,9 @@
 #include "core/crypto/onion_crypto.h"
 #include "core/or/extend_info_st.h"
 #include "core/or/crypt_path_st.h"
+#define TOR_CONGESTION_CONTROL_PRIVATE
 #define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 #include "app/config/config.h"
 

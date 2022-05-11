@@ -55,6 +55,7 @@
 #include "core/or/origin_circuit_st.h"
 #include "core/or/socks_request_st.h"
 
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 
 static int

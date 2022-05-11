@@ -7,6 +7,7 @@
  */
 
 #define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
+#define TOR_CONGESTION_CONTROL_PRIVATE
 
 #include "core/or/or.h"
 
@@ -18,6 +19,7 @@
 #include "core/or/channel.h"
 #include "core/mainloop/connection.h"
 #include "core/or/sendme.h"
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 #include "core/or/congestion_control_vegas.h"
 #include "core/or/congestion_control_nola.h"
@@ -84,8 +86,6 @@
 #define CELL_QUEUE_LOW_DFLT (10)
 #define CELL_QUEUE_HIGH_DFLT (256)
 
-static uint64_t congestion_control_update_circuit_rtt(congestion_control_t *,
-                                                      uint64_t);
 static bool congestion_control_update_circuit_bdp(congestion_control_t *,
                                                   const circuit_t *,
                                                   const crypt_path_t *,
@@ -103,33 +103,33 @@ int32_t cell_queue_low = CELL_QUEUE_LOW_DFLT;
 uint32_t or_conn_highwater = OR_CONN_HIGHWATER_DFLT;
 uint32_t or_conn_lowwater = OR_CONN_LOWWATER_DFLT;
 uint8_t cc_sendme_inc = SENDME_INC_DFLT;
-static cc_alg_t cc_alg = CC_ALG_DFLT;
+STATIC cc_alg_t cc_alg = CC_ALG_DFLT;
 
 /**
  * Number of cwnd worth of sendme acks to smooth RTT and BDP with,
  * using N_EWMA */
-static uint8_t n_ewma_cwnd_pct;
+static uint8_t n_ewma_cwnd_pct = N_EWMA_CWND_PCT_DFLT;
 
 /**
  * Maximum number N for the N-count EWMA averaging of RTT and BDP.
  */
-static uint8_t n_ewma_max;
+static uint8_t n_ewma_max = N_EWMA_MAX_DFLT;
 
 /**
  * Maximum number N for the N-count EWMA averaging of RTT in Slow Start.
  */
-static uint8_t n_ewma_ss;
+static uint8_t n_ewma_ss = N_EWMA_SS_DFLT;
 
 /**
  * Minimum number of sendmes before we begin BDP estimates
  */
-static uint8_t bwe_sendme_min;
+static uint8_t bwe_sendme_min = BWE_SENDME_MIN_DFLT;
 
 /**
  * Percentage of the current RTT to use when resetting the minimum RTT
  * for a circuit. (RTT is reset when the cwnd hits cwnd_min).
  */
-static uint8_t rtt_reset_pct;
+static uint8_t rtt_reset_pct = RTT_RESET_PCT_DFLT;
 
 /** Metric to count the number of congestion control circuits **/
 uint64_t cc_stats_circs_created = 0;
@@ -461,7 +461,7 @@ congestion_control_free_(congestion_control_t *cc)
 /**
  * Enqueue a u64 timestamp to the end of a queue of timestamps.
  */
-static inline void
+STATIC inline void
 enqueue_timestamp(smartlist_t *timestamps_u64, uint64_t timestamp_usec)
 {
   uint64_t *timestamp_ptr = tor_malloc(sizeof(uint64_t));
@@ -788,7 +788,7 @@ time_delta_should_use_heuristics(const congestion_control_t *cc)
   return false;
 }
 
-static bool is_monotime_clock_broken = false;
+STATIC bool is_monotime_clock_broken = false;
 
 /**
  * Returns true if the monotime delta is 0, or is significantly
@@ -799,7 +799,7 @@ static bool is_monotime_clock_broken = false;
  * so we can also provide a is_monotime_clock_reliable() function,
  * used by flow control rate timing.
  */
-static bool
+STATIC bool
 time_delta_stalled_or_jumped(const congestion_control_t *cc,
                              uint64_t old_delta, uint64_t new_delta)
 {
@@ -881,7 +881,7 @@ is_monotime_clock_reliable(void)
  * Returns the current circuit RTT in usecs, or 0 if it could not be
  * measured (due to clock jump, stall, etc).
  */
-static uint64_t
+STATIC uint64_t
 congestion_control_update_circuit_rtt(congestion_control_t *cc,
                                       uint64_t now_usec)
 {
