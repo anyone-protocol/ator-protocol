@@ -1,0 +1,6 @@
+  o Major bugfixes (sandbox):
+    - Fix sandbox to work on architectures that use Linux's generic syscall
+      interface, extending support for AArch64 (ARM64) and adding support for
+      RISC-V, allowing test_include.sh and the sandbox unit tests to pass on
+      these systems even when building with fragile hardening enabled. Fixes
+      bugs 40465 and 40599; bugfix on 0.2.5.1-alpha.
