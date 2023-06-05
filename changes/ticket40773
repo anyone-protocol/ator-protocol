@@ -1,0 +1,4 @@
+  o Minor bugfixes (compilation):
+    - Fix "initializer is not a constant" compilation error that manifests
+      itself on gcc versions < 8.1 and MSVC. Fixes bug 40773; bugfix on
+      0.4.8.1-alpha

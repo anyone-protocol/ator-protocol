@@ -28,8 +28,16 @@ static const int64_t hs_metrics_circ_build_time_buckets[] =
   60000  /* 60s */
 };
 
-static const size_t hs_metrics_circ_build_time_buckets_size =
-  ARRAY_LENGTH(hs_metrics_circ_build_time_buckets);
+// TODO: Define a constant for ARRAY_LENGTH(hs_metrics_circ_build_time_buckets)
+// and use where it applicable.
+//
+// This is commented out because it doesn't compile with gcc versions < 8.1
+// or with MSVC ("initializer element is not constant").
+//
+// See ticket#40773 and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69960#c18
+//
+/*static const size_t hs_metrics_circ_build_time_buckets_size =*/
+/*ARRAY_LENGTH(hs_metrics_circ_build_time_buckets);*/
 
 /** The base metrics that is a static array of metrics that are added to every
  * single new stores.
@@ -93,7 +101,7 @@ const hs_metrics_entry_t base_metrics[] =
     .type = METRICS_TYPE_HISTOGRAM,
     .name = METRICS_NAME(hs_intro_circ_build_time),
     .buckets = hs_metrics_circ_build_time_buckets,
-    .bucket_count = hs_metrics_circ_build_time_buckets_size,
+    .bucket_count = ARRAY_LENGTH(hs_metrics_circ_build_time_buckets),
     .help = "The introduction circuit build time in milliseconds",
   },
   {
@@ -101,7 +109,7 @@ const hs_metrics_entry_t base_metrics[] =
     .type = METRICS_TYPE_HISTOGRAM,
     .name = METRICS_NAME(hs_rend_circ_build_time),
     .buckets = hs_metrics_circ_build_time_buckets,
-    .bucket_count = hs_metrics_circ_build_time_buckets_size,
+    .bucket_count = ARRAY_LENGTH(hs_metrics_circ_build_time_buckets),
     .help = "The rendezvous circuit build time in milliseconds",
   },
   {
