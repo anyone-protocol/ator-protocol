@@ -1,0 +1,3 @@
+  o Minor bugfix (congestion control):
+    - Update default congestion control parameters to match consensus.
+      Fixes bug 40709; bugfix on 0.4.7.4-alpha.
