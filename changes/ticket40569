@@ -1,0 +1,4 @@
+  o Minor bugfix (congestion control):
+    - Reduce the accepted range of a circuit's negotiated 'cc_sendme_inc'
+      to be +/- 1 from the consensus parameter value. Fixes bug 40569;
+      bugfix on 0.4.7.4-alpha.
