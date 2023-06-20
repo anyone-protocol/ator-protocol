@@ -205,7 +205,7 @@ congestion_control_new_consensus_params(const networkstatus_t *ns)
         RTT_RESET_PCT_MAX);
 
 #define SENDME_INC_MIN 1
-#define SENDME_INC_MAX (255)
+#define SENDME_INC_MAX (254)
   cc_sendme_inc =
     networkstatus_get_param(NULL, "cc_sendme_inc",
         SENDME_INC_DFLT,
@@ -1443,19 +1443,16 @@ bool
 congestion_control_validate_sendme_increment(uint8_t sendme_inc)
 {
   /* We will only accept this response (and this circuit) if sendme_inc
-   * is within a factor of 2 of our consensus value. We should not need
+   * is within +/- 1 of the current consensus value. We should not need
    * to change cc_sendme_inc much, and if we do, we can spread out those
    * changes over smaller increments once every 4 hours. Exits that
    * violate this range should just not be used. */
-#define MAX_SENDME_INC_NEGOTIATE_FACTOR 2
 
   if (sendme_inc == 0)
     return false;
 
-  if (sendme_inc >
-      MAX_SENDME_INC_NEGOTIATE_FACTOR * congestion_control_sendme_inc() ||
-      sendme_inc <
-      congestion_control_sendme_inc() / MAX_SENDME_INC_NEGOTIATE_FACTOR) {
+  if (sendme_inc > (congestion_control_sendme_inc() + 1) ||
+      sendme_inc < (congestion_control_sendme_inc() - 1)) {
     return false;
   }
   return true;
