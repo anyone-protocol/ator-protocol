@@ -90,9 +90,6 @@ static bool congestion_control_update_circuit_bdp(congestion_control_t *,
                                                   const circuit_t *,
                                                   const crypt_path_t *,
                                                   uint64_t, uint64_t);
-/* For unit tests */
-void congestion_control_set_cc_enabled(void);
-
 /* Number of times the RTT value was reset. For MetricsPort. */
 static uint64_t num_rtt_reset;
 
@@ -387,6 +384,7 @@ congestion_control_enabled(void)
   return cc_alg != CC_ALG_SENDME;
 }
 
+#ifdef TOR_UNIT_TESTS
 /**
  * For unit tests only: set the cached consensus cc alg to
  * specified value.
@@ -396,6 +394,17 @@ congestion_control_set_cc_enabled(void)
 {
   cc_alg = CC_ALG_VEGAS;
 }
+
+/**
+ * For unit tests only: set the cached consensus cc alg to
+ * specified value.
+ */
+void
+congestion_control_set_cc_disabled(void)
+{
+  cc_alg = CC_ALG_SENDME;
+}
+#endif
 
 /**
  * Allocate and initialize fields in congestion control object.

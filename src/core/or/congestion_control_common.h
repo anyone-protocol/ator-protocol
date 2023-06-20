@@ -174,7 +174,7 @@ percent_max_mix(uint64_t a, uint64_t b, uint8_t pct_max)
 }
 
 /* Private section starts. */
-#ifdef TOR_CONGESTION_CONTROL_PRIVATE
+#ifdef TOR_CONGESTION_CONTROL_COMMON_PRIVATE
 
 /*
  * Unit tests declaractions.
@@ -182,6 +182,7 @@ percent_max_mix(uint64_t a, uint64_t b, uint8_t pct_max)
 #ifdef TOR_UNIT_TESTS
 
 void congestion_control_set_cc_enabled(void);
+void congestion_control_set_cc_disabled(void);
 
 #endif /* defined(TOR_UNIT_TESTS) */
 

@@ -7,6 +7,7 @@
  */
 
 #define HS_DESCRIPTOR_PRIVATE
+#define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
 
 #include "lib/crypt_ops/crypto_ed25519.h"
 #include "lib/crypt_ops/crypto_format.h"
@@ -24,7 +25,6 @@
 #include "test/log_test_helpers.h"
 #include "test/rng_test_helpers.h"
 
-#define TOR_CONGESTION_CONTROL_PRIVATE
 #include "core/or/congestion_control_common.h"
 
 #ifdef HAVE_CFLAG_WOVERLENGTH_STRINGS
