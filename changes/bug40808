@@ -1,0 +1,5 @@
+  o Minor bugfixes (KIST):
+    - Prevent KISTSchedRunInterval from having values of 0 or 1, neither of
+      which work properly. Additionally, make a separate KISTSchedRunIntervalClient
+      parameter, so that the client and relay KIST values can be set separately.
+      Set the default of both to 2ms. Fixes bug 40808; bugfix on 0.3.2.1-alpha.
