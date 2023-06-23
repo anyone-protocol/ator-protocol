@@ -88,10 +88,83 @@ test_congestion_control_clock(void *arg)
   congestion_control_free(cc);
 }
 
+/* =========== RTT Test Vectors ================== */
+
+typedef struct rtt_vec {
+  uint64_t sent_usec_in;
+  uint64_t got_sendme_usec_in;
+  uint64_t cwnd_in;
+  bool ss_in;
+  uint64_t curr_rtt_usec_out;
+  uint64_t ewma_rtt_usec_out;
+  uint64_t min_rtt_usec_out;
+} rtt_vec_t;
+
+static void
+run_rtt_test_vec(congestion_control_t *cc,
+                 rtt_vec_t *vec, size_t vec_len)
+{
+  for (size_t i = 0; i < vec_len; i++) {
+    enqueue_timestamp(cc->sendme_pending_timestamps,
+                      vec[i].sent_usec_in);
+  }
+
+  for (size_t i = 0; i < vec_len; i++) {
+    cc->cwnd = vec[i].cwnd_in;
+    cc->in_slow_start = vec[i].ss_in;
+    uint64_t curr_rtt_usec = congestion_control_update_circuit_rtt(cc,
+                                         vec[i].got_sendme_usec_in);
+
+    tt_int_op(curr_rtt_usec, OP_EQ, vec[i].curr_rtt_usec_out);
+    tt_int_op(cc->min_rtt_usec, OP_EQ, vec[i].min_rtt_usec_out);
+    tt_int_op(cc->ewma_rtt_usec, OP_EQ, vec[i].ewma_rtt_usec_out);
+  }
+ done:
+  is_monotime_clock_broken = false;
+}
+
+/**
+ * This test validates current, EWMA, and minRTT calculation
+ * from Sections 2.1 of Prop#324.
+ *
+ * We also do NOT exercise the sendme pacing code here. See
+ * test_sendme_is_next() for that, in test_sendme.c.
+ */
+void
+test_congestion_control_rtt(void *arg)
+{
+  (void)arg;
+  rtt_vec_t vect1[] = {
+    {100000, 200000, 124, 1, 100000, 100000, 100000},
+    {200000, 300000, 124, 1, 100000, 100000, 100000},
+    {350000, 500000, 124, 1, 150000, 133333, 100000},
+    {500000, 550000, 124, 1, 50000,  77777, 77777},
+    {600000, 700000, 124, 1, 100000, 92592, 77777},
+    {700000, 750000, 124, 1, 50000, 64197, 64197},
+    {750000, 875000, 124, 0, 125000, 104732, 104732},
+    {875000, 900000, 124, 0, 25000, 51577, 104732},
+    {900000, 950000, 200, 0, 50000, 50525, 50525}
+  };
+
+  circuit_params_t params;
+  congestion_control_t *cc = NULL;
+
+  params.cc_enabled = 1;
+  params.sendme_inc_cells = TLS_RECORD_MAX_CELLS;
+  cc_alg = CC_ALG_VEGAS;
+
+  cc = congestion_control_new(&params, CC_PATH_EXIT);
+  run_rtt_test_vec(cc, vect1, sizeof(vect1)/sizeof(rtt_vec_t));
+  congestion_control_free(cc);
+
+  return;
+}
+
 #define TEST_CONGESTION_CONTROL(name, flags) \
     { #name, test_##name, (flags), NULL, NULL }
 
 struct testcase_t congestion_control_tests[] = {
   TEST_CONGESTION_CONTROL(congestion_control_clock, TT_FORK),
+  TEST_CONGESTION_CONTROL(congestion_control_rtt, TT_FORK),
   END_OF_TESTCASES
 };
