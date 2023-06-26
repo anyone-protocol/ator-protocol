@@ -98,7 +98,7 @@ uint64_t cc_stats_vegas_circ_exited_ss = 0;
 static inline uint64_t
 vegas_bdp(const congestion_control_t *cc)
 {
-  return cc->bdp[BDP_ALG_CWND_RTT];
+  return cc->bdp;
 }
 
 /**
@@ -405,8 +405,7 @@ cwnd_full_reset(const congestion_control_t *cc)
  */
 int
 congestion_control_vegas_process_sendme(congestion_control_t *cc,
-                                        const circuit_t *circ,
-                                        const crypt_path_t *layer_hint)
+                                        const circuit_t *circ)
 {
   uint64_t queue_use;
 
@@ -422,7 +421,7 @@ congestion_control_vegas_process_sendme(congestion_control_t *cc,
     cc->next_cwnd_event--;
 
   /* Compute BDP and RTT. If we did not update, don't run the alg */
-  if (!congestion_control_update_circuit_estimates(cc, circ, layer_hint)) {
+  if (!congestion_control_update_circuit_estimates(cc, circ)) {
     cc->inflight = cc->inflight - cc->sendme_inc;
     return 0;
   }

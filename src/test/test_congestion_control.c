@@ -216,7 +216,7 @@ run_vegas_cwnd_test_vec(congestion_control_t *cc,
     circ->circuit_blocked_on_p_chan = vec[i].or_conn_blocked_in;
     cc->inflight = vec[i].inflight_in;
 
-    congestion_control_vegas_process_sendme(cc, circ, NULL);
+    congestion_control_vegas_process_sendme(cc, circ);
 
     /* If the or conn was blocked, ensure we updated our
      * CC state */

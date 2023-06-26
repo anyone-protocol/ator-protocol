@@ -106,19 +106,13 @@ struct congestion_control_t {
    * sendme_last_digests. */
   smartlist_t *sendme_pending_timestamps;
 
-  /**
-   * Smartlist of uint64_t monotime timestamp of when sendme's arrived.
-   * FIFO queue that is managed similar to sendme_last_digests.
-   * Used to estimate circuitbandwidth and BDP. */
-  smartlist_t *sendme_arrival_timestamps;
-
   /** RTT time data for congestion control. */
   uint64_t ewma_rtt_usec;
   uint64_t min_rtt_usec;
   uint64_t max_rtt_usec;
 
-  /* BDP estimates by algorithm */
-  uint64_t bdp[NUM_BDP_ALGS];
+  /* Vegas BDP estimate */
+  uint64_t bdp;
 
   /** Congestion window */
   uint64_t cwnd;
