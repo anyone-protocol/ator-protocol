@@ -36,8 +36,6 @@ LIBTOR_APP_A_SOURCES += 				\
 	src/core/or/sendme.c			\
 	src/core/or/congestion_control_common.c			\
 	src/core/or/congestion_control_vegas.c			\
-	src/core/or/congestion_control_nola.c			\
-	src/core/or/congestion_control_westwood.c			\
 	src/core/or/congestion_control_flow.c			\
 	src/core/or/conflux.c			\
 	src/core/or/conflux_cell.c			\
@@ -112,8 +110,6 @@ noinst_HEADERS +=					\
 	src/core/or/congestion_control_flow.h				\
 	src/core/or/congestion_control_common.h				\
 	src/core/or/congestion_control_vegas.h				\
-	src/core/or/congestion_control_nola.h				\
-	src/core/or/congestion_control_westwood.h				\
 	src/core/or/conflux.h				\
 	src/core/or/conflux_cell.h			\
 	src/core/or/conflux_params.h			\

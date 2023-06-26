@@ -22,8 +22,6 @@
 #include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 #include "core/or/congestion_control_vegas.h"
-#include "core/or/congestion_control_nola.h"
-#include "core/or/congestion_control_westwood.h"
 #include "core/or/congestion_control_st.h"
 #include "core/or/conflux.h"
 #include "core/or/conflux_util.h"
@@ -216,6 +214,13 @@ congestion_control_new_consensus_params(const networkstatus_t *ns)
         CC_ALG_DFLT,
         CC_ALG_MIN,
         CC_ALG_MAX);
+  if (cc_alg != CC_ALG_SENDME && cc_alg != CC_ALG_VEGAS) {
+    // Does not need rate limiting because consensus updates
+    // are at most 1x/hour
+    log_warn(LD_BUG, "Unsupported congestion control algorithm %d",
+               cc_alg);
+    cc_alg = CC_ALG_DFLT;
+  }
 
 #define BWE_SENDME_MIN_MIN 2
 #define BWE_SENDME_MIN_MAX (20)
@@ -316,37 +321,19 @@ congestion_control_init_params(congestion_control_t *cc,
     cc->cc_alg = cc_alg;
   }
 
-  bdp_alg_t default_bdp_alg = 0;
-
-  switch (cc->cc_alg) {
-    case CC_ALG_WESTWOOD:
-      default_bdp_alg = WESTWOOD_BDP_ALG;
-      break;
-    case CC_ALG_VEGAS:
-      default_bdp_alg = VEGAS_BDP_MIX_ALG;
-      break;
-    case CC_ALG_NOLA:
-      default_bdp_alg = NOLA_BDP_ALG;
-      break;
-    case CC_ALG_SENDME:
-    default:
-      tor_fragile_assert();
-      return; // No alg-specific params
-  }
-
   cc->bdp_alg =
     networkstatus_get_param(NULL, "cc_bdp_alg",
-        default_bdp_alg,
+        VEGAS_BDP_MIX_ALG,
         0,
         NUM_BDP_ALGS-1);
 
   /* Algorithm-specific parameters */
-  if (cc->cc_alg == CC_ALG_WESTWOOD) {
-    congestion_control_westwood_set_params(cc);
-  } else if (cc->cc_alg == CC_ALG_VEGAS) {
+  if (cc->cc_alg == CC_ALG_VEGAS) {
     congestion_control_vegas_set_params(cc, path);
-  } else if (cc->cc_alg == CC_ALG_NOLA) {
-    congestion_control_nola_set_params(cc);
+  } else {
+    // This should not happen anymore
+    log_warn(LD_BUG, "Unknown congestion control algorithm %d",
+             cc->cc_alg);
   }
 }
 
@@ -1203,23 +1190,9 @@ congestion_control_dispatch_cc_alg(congestion_control_t *cc,
                                    const crypt_path_t *layer_hint)
 {
   int ret = -END_CIRC_REASON_INTERNAL;
-  switch (cc->cc_alg) {
-    case CC_ALG_WESTWOOD:
-      ret = congestion_control_westwood_process_sendme(cc, circ, layer_hint);
-      break;
 
-    case CC_ALG_VEGAS:
-      ret = congestion_control_vegas_process_sendme(cc, circ, layer_hint);
-      break;
-
-    case CC_ALG_NOLA:
-      ret = congestion_control_nola_process_sendme(cc, circ, layer_hint);
-      break;
-
-    case CC_ALG_SENDME:
-    default:
-      tor_assert(0);
-  }
+  tor_assert_nonfatal_once(cc->cc_alg == CC_ALG_VEGAS);
+  ret = congestion_control_vegas_process_sendme(cc, circ, layer_hint);
 
   if (cc->cwnd > cwnd_max) {
     static ratelim_t cwnd_limit = RATELIM_INIT(60);
