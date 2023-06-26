@@ -1,0 +1,4 @@
+  o Minor bugfix (congestion control):
+    - Remove unused congestion control algorithms and BDP calculation
+      code, now that we have settled on and fully tuned Vegas. Fixes
+      bug 40566; bugfix on 0.4.7.4-alpha.
