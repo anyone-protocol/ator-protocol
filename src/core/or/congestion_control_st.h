@@ -79,22 +79,6 @@ typedef enum {
 /** Total number of BDP algs in bdp_alg_t enum */
 #define NUM_BDP_ALGS (BDP_ALG_PIECEWISE+1)
 
-/** Westwood algorithm parameters */
-struct westwood_params_t {
-    /** Cwnd backoff multiplier upon congestion (as percent) */
-    uint8_t cwnd_backoff_m;
-    /** Max RTT backoff multiplier upon congestion (as percent) */
-    uint8_t rtt_backoff_m;
-
-    /** Threshold between min and max RTT, to signal congestion (percent) */
-    uint8_t rtt_thresh;
-
-    /**
-     * If true, use minimum of BDP and backoff multiplication in backoff.
-     * If false, use maximum of BDP and backoff multiplication in backoff. */
-    bool min_backoff;
-};
-
 /** Vegas algorithm parameters. */
 struct vegas_params_t {
     /** The slow-start cwnd cap for RFC3742 */
@@ -112,12 +96,6 @@ struct vegas_params_t {
     /** Weighted average (percent) between cwnd estimator and
      * piecewise estimator. */
     uint8_t bdp_mix_pct;
-};
-
-/** NOLA consensus params */
-struct nola_params_t {
-    /** How many cells to add to BDP estimate to obtain cwnd */
-    uint16_t bdp_overshoot;
 };
 
 /** Fields common to all congestion control algorithms */
@@ -203,15 +181,9 @@ struct congestion_control_t {
    * consensus parameter during circuit setup. */
   bdp_alg_t bdp_alg;
 
-  /** Algorithm-specific parameters. The specific struct that is used
-   * depends upon the algorithm selected by the cc_alg parameter.
-   * These should not be accessed anywhere other than the algorithm-specific
-   * files. */
-  union {
-    struct westwood_params_t westwood_params;
-    struct vegas_params_t vegas_params;
-    struct nola_params_t nola_params;
-  };
+  /** Vegas-specific parameters. These should not be accessed anywhere
+   * other than the congestion_control_vegas.c file. */
+  struct vegas_params_t vegas_params;
 };
 
 /**
