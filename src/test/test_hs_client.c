@@ -15,6 +15,7 @@
 #define CIRCUITLIST_PRIVATE
 #define CONNECTION_PRIVATE
 #define CRYPT_PATH_PRIVATE
+#define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
 
 #include "test/test.h"
 #include "test/test_helpers.h"
@@ -54,7 +55,7 @@
 #include "core/or/origin_circuit_st.h"
 #include "core/or/socks_request_st.h"
 
-#define TOR_CONGESTION_CONTROL_PRIVATE
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 
 static int

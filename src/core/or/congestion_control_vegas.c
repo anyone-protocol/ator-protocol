@@ -37,30 +37,30 @@
 #define VEGAS_SSCAP_SBWS_DFLT (400)
 
 /* Exits are three hops, so params are based on 3 outbufs of cells */
-#define VEGAS_ALPHA_EXIT_DFLT (2*OUTBUF_CELLS)
+#define VEGAS_ALPHA_EXIT_DFLT (3*OUTBUF_CELLS)
 #define VEGAS_BETA_EXIT_DFLT (4*OUTBUF_CELLS)
 #define VEGAS_GAMMA_EXIT_DFLT (3*OUTBUF_CELLS)
-#define VEGAS_DELTA_EXIT_DFLT (6*OUTBUF_CELLS)
-#define VEGAS_SSCAP_EXIT_DFLT (500)
+#define VEGAS_DELTA_EXIT_DFLT (5*OUTBUF_CELLS)
+#define VEGAS_SSCAP_EXIT_DFLT (600)
 
 /* Onion rends are six hops, so params are based on 6 outbufs of cells */
 #define VEGAS_ALPHA_ONION_DFLT (3*OUTBUF_CELLS)
-#define VEGAS_BETA_ONION_DFLT (7*OUTBUF_CELLS)
-#define VEGAS_GAMMA_ONION_DFLT (5*OUTBUF_CELLS)
-#define VEGAS_DELTA_ONION_DFLT (9*OUTBUF_CELLS)
-#define VEGAS_SSCAP_ONION_DFLT (600)
+#define VEGAS_BETA_ONION_DFLT (6*OUTBUF_CELLS)
+#define VEGAS_GAMMA_ONION_DFLT (4*OUTBUF_CELLS)
+#define VEGAS_DELTA_ONION_DFLT (7*OUTBUF_CELLS)
+#define VEGAS_SSCAP_ONION_DFLT (475)
 
 /**
  * Number of sendme_incs between cwnd and inflight for cwnd to be
  * still considered full */
-#define VEGAS_CWND_FULL_GAP_DFLT (1)
+#define VEGAS_CWND_FULL_GAP_DFLT (4)
 static int cc_vegas_cwnd_full_gap = VEGAS_CWND_FULL_GAP_DFLT;
 
 /**
  * If the cwnd becomes less than this percent full at any point,
  * we declare it not full immediately.
  */
-#define VEGAS_CWND_FULL_MINPCT_DFLT (75)
+#define VEGAS_CWND_FULL_MINPCT_DFLT (25)
 static int cc_vegas_cwnd_full_minpct = VEGAS_CWND_FULL_MINPCT_DFLT;
 
 /**

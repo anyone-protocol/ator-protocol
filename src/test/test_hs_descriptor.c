@@ -7,6 +7,7 @@
  */
 
 #define HS_DESCRIPTOR_PRIVATE
+#define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
 
 #include "lib/crypt_ops/crypto_ed25519.h"
 #include "lib/crypt_ops/crypto_format.h"
@@ -25,6 +26,7 @@
 #include "test/rng_test_helpers.h"
 
 #define TOR_CONGESTION_CONTROL_PRIVATE
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 
 #ifdef HAVE_CFLAG_WOVERLENGTH_STRINGS
@@ -914,30 +916,21 @@ test_validate_sendme(void *arg)
 {
   (void)arg;
 
-  /* Test basic operation: factors of 2X in either direction are OK */
+  /* Test basic operation: +/- 1 in either direction are OK */
   cc_sendme_inc = 31;
-  tt_assert(congestion_control_validate_sendme_increment(15));
-  tt_assert(congestion_control_validate_sendme_increment(62));
+  tt_assert(congestion_control_validate_sendme_increment(30));
+  tt_assert(congestion_control_validate_sendme_increment(32));
 
-  /* Test basic operation: Exceeding 2X fails */
+  /* Test basic operation: Exceeding +/- 1 fails */
   cc_sendme_inc = 31;
-  tt_assert(!congestion_control_validate_sendme_increment(14));
-  tt_assert(!congestion_control_validate_sendme_increment(63));
+  tt_assert(!congestion_control_validate_sendme_increment(29));
+  tt_assert(!congestion_control_validate_sendme_increment(33));
 
   /* Test potential overflow conditions */
-  cc_sendme_inc = 129;
+  cc_sendme_inc = 254;
   tt_assert(congestion_control_validate_sendme_increment(255));
-  tt_assert(congestion_control_validate_sendme_increment(64));
-  tt_assert(!congestion_control_validate_sendme_increment(63));
-
-  cc_sendme_inc = 127;
-  tt_assert(!congestion_control_validate_sendme_increment(255));
-  tt_assert(congestion_control_validate_sendme_increment(254));
-
-  cc_sendme_inc = 255;
-  tt_assert(congestion_control_validate_sendme_increment(255));
-  tt_assert(congestion_control_validate_sendme_increment(127));
-  tt_assert(!congestion_control_validate_sendme_increment(126));
+  tt_assert(congestion_control_validate_sendme_increment(253));
+  tt_assert(!congestion_control_validate_sendme_increment(252));
 
   /* Test 0 case */
   cc_sendme_inc = 1;

@@ -7,6 +7,7 @@
  */
 
 #define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
+#define TOR_CONGESTION_CONTROL_PRIVATE
 
 #include "core/or/or.h"
 
@@ -18,6 +19,7 @@
 #include "core/or/channel.h"
 #include "core/mainloop/connection.h"
 #include "core/or/sendme.h"
+#include "core/or/congestion_control_st.h"
 #include "core/or/congestion_control_common.h"
 #include "core/or/congestion_control_vegas.h"
 #include "core/or/congestion_control_nola.h"
@@ -40,14 +42,14 @@
 #define SENDME_INC_DFLT (TLS_RECORD_MAX_CELLS)
 #define CIRCWINDOW_INIT (4*SENDME_INC_DFLT)
 
-#define CC_ALG_DFLT (CC_ALG_SENDME)
+#define CC_ALG_DFLT (CC_ALG_VEGAS)
 #define CC_ALG_DFLT_ALWAYS (CC_ALG_VEGAS)
 
-#define CWND_INC_DFLT (TLS_RECORD_MAX_CELLS)
+#define CWND_INC_DFLT (1)
 #define CWND_INC_PCT_SS_DFLT (100)
-#define CWND_INC_RATE_DFLT (1)
+#define CWND_INC_RATE_DFLT (SENDME_INC_DFLT)
 
-#define CWND_MIN_DFLT (2*SENDME_INC_DFLT)
+#define CWND_MIN_DFLT (CIRCWINDOW_INIT)
 #define CWND_MAX_DFLT (INT32_MAX)
 
 #define BWE_SENDME_MIN_DFLT (5)
@@ -84,15 +86,10 @@
 #define CELL_QUEUE_LOW_DFLT (10)
 #define CELL_QUEUE_HIGH_DFLT (256)
 
-static uint64_t congestion_control_update_circuit_rtt(congestion_control_t *,
-                                                      uint64_t);
 static bool congestion_control_update_circuit_bdp(congestion_control_t *,
                                                   const circuit_t *,
                                                   const crypt_path_t *,
                                                   uint64_t, uint64_t);
-/* For unit tests */
-void congestion_control_set_cc_enabled(void);
-
 /* Number of times the RTT value was reset. For MetricsPort. */
 static uint64_t num_rtt_reset;
 
@@ -106,33 +103,33 @@ int32_t cell_queue_low = CELL_QUEUE_LOW_DFLT;
 uint32_t or_conn_highwater = OR_CONN_HIGHWATER_DFLT;
 uint32_t or_conn_lowwater = OR_CONN_LOWWATER_DFLT;
 uint8_t cc_sendme_inc = SENDME_INC_DFLT;
-static cc_alg_t cc_alg = CC_ALG_DFLT;
+STATIC cc_alg_t cc_alg = CC_ALG_DFLT;
 
 /**
  * Number of cwnd worth of sendme acks to smooth RTT and BDP with,
  * using N_EWMA */
-static uint8_t n_ewma_cwnd_pct;
+static uint8_t n_ewma_cwnd_pct = N_EWMA_CWND_PCT_DFLT;
 
 /**
  * Maximum number N for the N-count EWMA averaging of RTT and BDP.
  */
-static uint8_t n_ewma_max;
+static uint8_t n_ewma_max = N_EWMA_MAX_DFLT;
 
 /**
  * Maximum number N for the N-count EWMA averaging of RTT in Slow Start.
  */
-static uint8_t n_ewma_ss;
+static uint8_t n_ewma_ss = N_EWMA_SS_DFLT;
 
 /**
  * Minimum number of sendmes before we begin BDP estimates
  */
-static uint8_t bwe_sendme_min;
+static uint8_t bwe_sendme_min = BWE_SENDME_MIN_DFLT;
 
 /**
  * Percentage of the current RTT to use when resetting the minimum RTT
  * for a circuit. (RTT is reset when the cwnd hits cwnd_min).
  */
-static uint8_t rtt_reset_pct;
+static uint8_t rtt_reset_pct = RTT_RESET_PCT_DFLT;
 
 /** Metric to count the number of congestion control circuits **/
 uint64_t cc_stats_circs_created = 0;
@@ -205,7 +202,7 @@ congestion_control_new_consensus_params(const networkstatus_t *ns)
         RTT_RESET_PCT_MAX);
 
 #define SENDME_INC_MIN 1
-#define SENDME_INC_MAX (255)
+#define SENDME_INC_MAX (254)
   cc_sendme_inc =
     networkstatus_get_param(NULL, "cc_sendme_inc",
         SENDME_INC_DFLT,
@@ -387,6 +384,7 @@ congestion_control_enabled(void)
   return cc_alg != CC_ALG_SENDME;
 }
 
+#ifdef TOR_UNIT_TESTS
 /**
  * For unit tests only: set the cached consensus cc alg to
  * specified value.
@@ -396,6 +394,17 @@ congestion_control_set_cc_enabled(void)
 {
   cc_alg = CC_ALG_VEGAS;
 }
+
+/**
+ * For unit tests only: set the cached consensus cc alg to
+ * specified value.
+ */
+void
+congestion_control_set_cc_disabled(void)
+{
+  cc_alg = CC_ALG_SENDME;
+}
+#endif
 
 /**
  * Allocate and initialize fields in congestion control object.
@@ -452,7 +461,7 @@ congestion_control_free_(congestion_control_t *cc)
 /**
  * Enqueue a u64 timestamp to the end of a queue of timestamps.
  */
-static inline void
+STATIC inline void
 enqueue_timestamp(smartlist_t *timestamps_u64, uint64_t timestamp_usec)
 {
   uint64_t *timestamp_ptr = tor_malloc(sizeof(uint64_t));
@@ -779,7 +788,7 @@ time_delta_should_use_heuristics(const congestion_control_t *cc)
   return false;
 }
 
-static bool is_monotime_clock_broken = false;
+STATIC bool is_monotime_clock_broken = false;
 
 /**
  * Returns true if the monotime delta is 0, or is significantly
@@ -790,7 +799,7 @@ static bool is_monotime_clock_broken = false;
  * so we can also provide a is_monotime_clock_reliable() function,
  * used by flow control rate timing.
  */
-static bool
+STATIC bool
 time_delta_stalled_or_jumped(const congestion_control_t *cc,
                              uint64_t old_delta, uint64_t new_delta)
 {
@@ -872,7 +881,7 @@ is_monotime_clock_reliable(void)
  * Returns the current circuit RTT in usecs, or 0 if it could not be
  * measured (due to clock jump, stall, etc).
  */
-static uint64_t
+STATIC uint64_t
 congestion_control_update_circuit_rtt(congestion_control_t *cc,
                                       uint64_t now_usec)
 {
@@ -1443,19 +1452,16 @@ bool
 congestion_control_validate_sendme_increment(uint8_t sendme_inc)
 {
   /* We will only accept this response (and this circuit) if sendme_inc
-   * is within a factor of 2 of our consensus value. We should not need
+   * is within +/- 1 of the current consensus value. We should not need
    * to change cc_sendme_inc much, and if we do, we can spread out those
    * changes over smaller increments once every 4 hours. Exits that
    * violate this range should just not be used. */
-#define MAX_SENDME_INC_NEGOTIATE_FACTOR 2
 
   if (sendme_inc == 0)
     return false;
 
-  if (sendme_inc >
-      MAX_SENDME_INC_NEGOTIATE_FACTOR * congestion_control_sendme_inc() ||
-      sendme_inc <
-      congestion_control_sendme_inc() / MAX_SENDME_INC_NEGOTIATE_FACTOR) {
+  if (sendme_inc > (congestion_control_sendme_inc() + 1) ||
+      sendme_inc < (congestion_control_sendme_inc() - 1)) {
     return false;
   }
   return true;

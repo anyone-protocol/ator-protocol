@@ -6,6 +6,7 @@
 #define CRYPT_PATH_PRIVATE
 #define RELAY_PRIVATE
 #define CONNECTION_PRIVATE
+#define TOR_CONGESTION_CONTROL_COMMON_PRIVATE
 #define TOR_CONGESTION_CONTROL_PRIVATE
 
 #include "core/or/or.h"
@@ -25,8 +26,8 @@
 #include "core/or/circuitstats.h"
 #include "core/or/circuitbuild.h"
 #include "core/or/circuituse.h"
-#include "core/or/congestion_control_common.h"
 #include "core/or/congestion_control_st.h"
+#include "core/or/congestion_control_common.h"
 #include "core/or/extendinfo.h"
 #include "core/mainloop/netstatus.h"
 #include "core/crypto/relay_crypto.h"

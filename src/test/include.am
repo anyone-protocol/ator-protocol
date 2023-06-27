@@ -151,6 +151,7 @@ src_test_test_SOURCES += \
 	src/test/test_conflux_pool.c \
 	src/test/test_confmgr.c \
 	src/test/test_confparse.c \
+	src/test/test_congestion_control.c \
 	src/test/test_connection.c \
 	src/test/test_conscache.c \
 	src/test/test_consdiff.c \
