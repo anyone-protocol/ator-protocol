@@ -491,7 +491,7 @@ sendme_process_circuit_level(crypt_path_t *layer_hint,
     return sendme_process_circuit_level_impl(layer_hint, circ);
   }
 
-  return congestion_control_dispatch_cc_alg(cc, circ, layer_hint);
+  return congestion_control_dispatch_cc_alg(cc, circ);
 }
 
 /**

@@ -46,16 +46,14 @@ congestion_control_t *congestion_control_new(
                                     cc_path_t path);
 
 int congestion_control_dispatch_cc_alg(congestion_control_t *cc,
-                                       circuit_t *circ,
-                                       const crypt_path_t *layer_hint);
+                                       circuit_t *circ);
 
 void congestion_control_note_cell_sent(congestion_control_t *cc,
                                        const circuit_t *circ,
                                        const crypt_path_t *cpath);
 
 bool congestion_control_update_circuit_estimates(congestion_control_t *,
-                                                 const circuit_t *,
-                                                 const crypt_path_t *);
+                                                 const circuit_t *);
 
 int congestion_control_get_package_window(const circuit_t *,
                                           const crypt_path_t *);
