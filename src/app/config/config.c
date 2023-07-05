@@ -182,7 +182,7 @@ static const char unix_q_socket_prefix[] = "unix:\"";
 #define MAX_CONSTRAINED_TCP_BUFFER 262144  /* 256k */
 
 /** macro to help with the bulk rename of *DownloadSchedule to
- * *DowloadInitialDelay . */
+ * *DownloadInitialDelay . */
 #ifndef COCCI
 #define DOWNLOAD_SCHEDULE(name) \
   { (#name "DownloadSchedule"), (#name "DownloadInitialDelay"), 0, 1 }
