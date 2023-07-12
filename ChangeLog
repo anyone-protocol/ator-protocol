@@ -1,3 +1,70 @@
+Changes in version 0.4.8.2-alpha - 2023-07-12
+  This is our second alpha containing some minor bugfixes and one major bugfix
+  about L2 vanguard rotation. We believe this will be the last alpha before the
+  rc in a couple of weeks.
+
+  o Major bugfixes (vanguards):
+    - Rotate to a new L2 vanguard whenever an existing one loses the
+      Stable or Fast flag. Previously, we would leave these relays in
+      the L2 vanguard list but never use them, and if all of our
+      vanguards end up like this we wouldn't have any middle nodes left
+      to choose from so we would fail to make onion-related circuits.
+      Fixes bug 40805; bugfix on 0.4.7.1-alpha.
+
+  o Minor feature (hs):
+    - Fix compiler warnings in equix and hashx when building with clang.
+      Closes ticket 40800.
+
+  o Minor features (fallbackdir):
+    - Regenerate fallback directories generated on July 12, 2023.
+
+  o Minor features (geoip data):
+    - Update the geoip files to match the IPFire Location Database, as
+      retrieved on 2023/07/12.
+
+  o Minor bugfix (congestion control):
+    - Reduce the accepted range of a circuit's negotiated 'cc_sendme_inc'
+      to be +/- 1 from the consensus parameter value. Fixes bug 40569;
+      bugfix on 0.4.7.4-alpha.
+    - Remove unused congestion control algorithms and BDP calculation
+      code, now that we have settled on and fully tuned Vegas. Fixes bug
+      40566; bugfix on 0.4.7.4-alpha.
+    - Update default congestion control parameters to match consensus.
+      Fixes bug 40709; bugfix on 0.4.7.4-alpha.
+
+  o Minor bugfixes (compilation):
+    - Fix "initializer is not a constant" compilation error that
+      manifests itself on gcc versions < 8.1 and MSVC. Fixes bug 40773;
+      bugfix on 0.4.8.1-alpha
+
+  o Minor bugfixes (conflux):
+    - Count leg launch attempts prior to attempting to launch them. This
+      avoids inifinite launch attempts due to internal circuit building
+      failures. Additionally, double-check that we have enough exits in
+      our consensus overall, before attempting to launch conflux sets.
+      Fixes bug 40811; bugfix on 0.4.8.1-alpha.
+    - Fix a case where we were resuming reading on edge connections that
+      were already marked for close. Fixes bug 40801; bugfix
+      on 0.4.8.1-alpha.
+    - Fix stream attachment order when creating conflux circuits, so
+      that stream attachment happens after finishing the full link
+      handshake, rather than upon set finalization. Fixes bug 40801;
+      bugfix on 0.4.8.1-alpha.
+    - Handle legs being closed or destroyed before computing an RTT
+      (resulting in warns about too many legs). Fixes bug 40810; bugfix
+      on 0.4.8.1-alpha.
+    - Remove a "BUG" warning from conflux_pick_first_leg that can be
+      triggered by broken or malicious clients. Fixes bug 40801; bugfix
+      on 0.4.8.1-alpha.
+
+  o Minor bugfixes (KIST):
+    - Prevent KISTSchedRunInterval from having values of 0 or 1, neither
+      of which work properly. Additionally, make a separate
+      KISTSchedRunIntervalClient parameter, so that the client and relay
+      KIST values can be set separately. Set the default of both to 2ms.
+      Fixes bug 40808; bugfix on 0.3.2.1-alpha.
+
+
 Changes in version 0.4.8.1-alpha - 2023-06-01
   This is the first alpha of the 0.4.8.x series. Two major features in this
   version which are Conflux and onion service Proof-of-Work (PoW). There are
