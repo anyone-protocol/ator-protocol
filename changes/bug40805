@@ -1,0 +1,7 @@
+  o Major bugfixes (vanguards):
+    - Rotate to a new L2 vanguard whenever an existing one loses the
+      Stable or Fast flag. Previously, we would leave these relays in the
+      L2 vanguard list but never use them, and if all of our vanguards
+      end up like this we wouldn't have any middle nodes left to choose
+      from so we would fail to make onion-related circuits. Fixes bug
+      40805; bugfix on 0.4.7.1-alpha.
