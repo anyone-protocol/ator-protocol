@@ -122,8 +122,11 @@ impl NetDefn {
 
 const PROLOGUE: &str = "\
 # This file has been converted from the IPFire Location database
-# using Tor's geoip-db-tool.  For more information on the data, see
-# https://location.ipfire.org/.
+# using Tor's geoip-db-tool, which is available in the
+# scripts/maint/geoip/geoip-db-tool directory in the Tor source
+# code repository at https://gitlab.torproject.org/tpo/core/tor/ .
+#
+# For more information on the data, see https://location.ipfire.org/.
 #
 # Below is the header from the original export:
 #
