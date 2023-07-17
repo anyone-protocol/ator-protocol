@@ -30,6 +30,7 @@
 #include "core/mainloop/cpuworker.h"
 #include "core/mainloop/mainloop.h"
 #include "core/or/connection_or.h"
+#include "core/or/policies.h"
 #include "core/or/port_cfg_st.h"
 
 #include "feature/hibernate/hibernate.h"
@@ -1149,6 +1150,13 @@ options_validate_relay_mode(const or_options_t *old_options,
   if (options->BridgeRelay == 1 && ! options->ORPort_set)
     REJECT("BridgeRelay is 1, ORPort is not set. This is an invalid "
            "combination.");
+
+  if (options->BridgeRelay == 1 && (options->ExitRelay == 1 ||
+      !policy_using_default_exit_options(options))) {
+    log_warn(LD_CONFIG, "BridgeRelay is 1, but ExitRelay is 1 or an "
+           "ExitPolicy is configured. Tor will start, but it will not "
+           "function as an exit relay.");
+  }
 
   if (server_mode(options)) {
     char *dircache_msg = NULL;
