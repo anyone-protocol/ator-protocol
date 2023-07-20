@@ -482,8 +482,10 @@ get_my_v3_legacy_signing_key(void)
  *   - schedule all previous cpuworkers to shut down _after_ processing
  *     pending work.  (This will cause fresh cpuworkers to be generated.)
  *   - generate and upload a fresh routerinfo.
+ *
+ * Return true on success, else false on error.
  */
-void
+bool
 rotate_onion_key(void)
 {
   char *fname, *fname_prev;
@@ -491,6 +493,7 @@ rotate_onion_key(void)
   or_state_t *state = get_or_state();
   curve25519_keypair_t new_curve25519_keypair;
   time_t now;
+  bool result = false;
   fname = get_keydir_fname("secret_onion_key");
   fname_prev = get_keydir_fname("secret_onion_key.old");
   /* There isn't much point replacing an old key with an empty file */
@@ -540,6 +543,7 @@ rotate_onion_key(void)
   tor_mutex_release(key_lock);
   mark_my_descriptor_dirty("rotated onion key");
   or_state_mark_dirty(state, get_options()->AvoidDiskWrites ? now+3600 : 0);
+  result = true;
   goto done;
  error:
   log_warn(LD_GENERAL, "Couldn't rotate onion key.");
@@ -549,6 +553,7 @@ rotate_onion_key(void)
   memwipe(&new_curve25519_keypair, 0, sizeof(new_curve25519_keypair));
   tor_free(fname);
   tor_free(fname_prev);
+  return result;
 }
 
 /** Log greeting message that points to new relay lifecycle document the
