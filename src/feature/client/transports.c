@@ -743,6 +743,7 @@ managed_proxy_destroy(managed_proxy_t *mp,
 
   /* free our version, if any is set. */
   tor_free(mp->version);
+  tor_free(mp->implementation);
 
   /* do we want to terminate our process if it's still running? */
   if (also_terminate_process && mp->process) {
@@ -1318,6 +1319,8 @@ handle_status_message(const config_line_t *values,
   /* Handle VERSION messages. */
   if (! strcasecmp(message_type->value, "version")) {
     const config_line_t *version = config_line_find(values, "VERSION");
+    const config_line_t *implementation = config_line_find(values,
+                                                           "IMPLEMENTATION");
 
     if (version == NULL) {
       log_warn(LD_PT, "Managed proxy \"%s\" wrote a STATUS TYPE=version line "
@@ -1325,8 +1328,17 @@ handle_status_message(const config_line_t *values,
       return;
     }
 
+    if (implementation == NULL) {
+      log_warn(LD_PT, "Managed proxy \"%s\" wrote a STATUS TYPE=version line "
+                      "with a missing IMPLEMENTATION field", mp->argv[0]);
+      return;
+    }
+
     tor_free(mp->version);
     mp->version = tor_strdup(version->value);
+
+    tor_free(mp->implementation);
+    mp->implementation = tor_strdup(implementation->value);
 
     return;
   }

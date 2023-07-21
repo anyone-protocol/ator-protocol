@@ -160,12 +160,17 @@ test_pt_status_parsing(void *arg)
 
   /* STATUS TYPE=version messages. */
   tt_ptr_op(mp->version, OP_EQ, NULL);
-  strlcpy(line, "STATUS TRANSPORT=x "
+  tt_ptr_op(mp->implementation, OP_EQ, NULL);
+
+  strlcpy(line, "STATUS "
+                "IMPLEMENTATION=xyz "
                 "TYPE=version "
                 "VERSION=\"1.33.7-hax beta\"",
                 sizeof(line));
   handle_proxy_line(line, mp);
+
   tt_str_op(mp->version, OP_EQ, "1.33.7-hax beta");
+  tt_str_op(mp->implementation, OP_EQ, "xyz");
 
   reset_mp(mp);
 

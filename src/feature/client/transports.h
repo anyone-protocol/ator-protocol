@@ -117,6 +117,9 @@ typedef struct {
   /** Version as set by STATUS TYPE=version messages. */
   char *version;
 
+  /** Implementation as set by the STATUS TYPE=version messages. */
+  char *implementation;
+
   /* The 'transports' list contains all the transports this proxy has
      launched. */
   smartlist_t *transports;
