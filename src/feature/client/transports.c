@@ -1786,9 +1786,21 @@ pt_get_extra_info_descriptor_string(void)
                              "transport %s %s%s",
                              t->name, addrport,
                              transport_args ? transport_args : "");
+
       tor_free(transport_args);
     } SMARTLIST_FOREACH_END(t);
 
+    if (mp->version != NULL) {
+      smartlist_add_asprintf(string_chunks,
+                             "transport-version %s",
+                             mp->version);
+    }
+
+    if (mp->implementation != NULL) {
+      smartlist_add_asprintf(string_chunks,
+                             "transport-implementation %s",
+                             mp->implementation);
+    }
   } SMARTLIST_FOREACH_END(mp);
 
   if (smartlist_len(string_chunks) == 0) {
