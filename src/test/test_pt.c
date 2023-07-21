@@ -162,6 +162,7 @@ test_pt_status_parsing(void *arg)
   tt_ptr_op(mp->version, OP_EQ, NULL);
   tt_ptr_op(mp->implementation, OP_EQ, NULL);
 
+  /* Normal case. */
   strlcpy(line, "STATUS "
                 "IMPLEMENTATION=xyz "
                 "TYPE=version "
@@ -171,7 +172,92 @@ test_pt_status_parsing(void *arg)
 
   tt_str_op(mp->version, OP_EQ, "1.33.7-hax beta");
   tt_str_op(mp->implementation, OP_EQ, "xyz");
+  reset_mp(mp);
 
+  /* Normal case but different case for TYPE value. */
+  strlcpy(line, "STATUS "
+                "IMPLEMENTATION=xyz "
+                "TYPE=vErSiON "
+                "VERSION=\"1.33.7-hax beta\"",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_str_op(mp->version, OP_EQ, "1.33.7-hax beta");
+  tt_str_op(mp->implementation, OP_EQ, "xyz");
+  reset_mp(mp);
+
+  /* IMPLEMENTATION and VERSION set but no TYPE. */
+  strlcpy(line, "STATUS "
+                "IMPLEMENTATION=xyz "
+                "VERSION=\"1.33.7-hax beta\"",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_assert(mp->version == NULL);
+  tt_assert(mp->implementation == NULL);
+  reset_mp(mp);
+
+  /* Multiple TYPE= is not allowed. */
+  strlcpy(line, "STATUS "
+                "IMPLEMENTATION=xyz "
+                "TYPE=version "
+                "VERSION=\"1.33.7-hax beta\" "
+                "TYPE=nothing",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_assert(mp->version == NULL);
+  tt_assert(mp->implementation == NULL);
+  reset_mp(mp);
+
+  /* Multiple TYPE= is not allowed. */
+  strlcpy(line, "STATUS "
+                "IMPLEMENTATION=xyz "
+                "TYPE=version "
+                "VERSION=\"1.33.7-hax beta\" "
+                "TYPE=version",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_assert(mp->version == NULL);
+  tt_assert(mp->implementation == NULL);
+  reset_mp(mp);
+
+  /* Missing VERSION. */
+  strlcpy(line, "STATUS "
+                "TYPE=version "
+                "IMPLEMENTATION=xyz ",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_assert(mp->version == NULL);
+  tt_assert(mp->implementation == NULL);
+  reset_mp(mp);
+
+  /* Many IMPLEMENTATION and VERSION. First found are used. */
+  strlcpy(line, "STATUS "
+                "TYPE=version "
+                "IMPLEMENTATION=xyz "
+                "VERSION=\"1.33.7-hax beta\" "
+                "IMPLEMENTATION=abc "
+                "VERSION=\"2.33.7-hax beta\" ",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_str_op(mp->version, OP_EQ, "1.33.7-hax beta");
+  tt_str_op(mp->implementation, OP_EQ, "xyz");
+  reset_mp(mp);
+
+  /* Control characters. Invalid input. */
+  strlcpy(line, "STATUS "
+                "TYPE=version "
+                "IMPLEMENTATION=xyz\0abc "
+                "VERSION=\"1.33.7-hax beta\"\0.3 ",
+                sizeof(line));
+  handle_proxy_line(line, mp);
+
+  tt_assert(mp->version == NULL);
+  tt_assert(mp->implementation == NULL);
   reset_mp(mp);
 
  done:

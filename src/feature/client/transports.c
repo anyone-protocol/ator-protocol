@@ -89,6 +89,7 @@
  * old transports from the circuitbuild.c subsystem.
  **/
 
+#include "lib/string/printf.h"
 #define PT_PRIVATE
 #include "core/or/or.h"
 #include "feature/client/bridges.h"
@@ -1307,6 +1308,11 @@ STATIC void
 handle_status_message(const config_line_t *values,
                       managed_proxy_t *mp)
 {
+  if (config_count_key(values, "TYPE") > 1) {
+      log_warn(LD_PT, "Managed proxy \"%s\" has multiple TYPE key which "
+                      "is not allowed.", mp->argv[0]);
+      return;
+  }
   const config_line_t *message_type = config_line_find(values, "TYPE");
 
   /* Check if we have a TYPE field? */
@@ -1790,16 +1796,22 @@ pt_get_extra_info_descriptor_string(void)
       tor_free(transport_args);
     } SMARTLIST_FOREACH_END(t);
 
-    if (mp->version != NULL) {
-      smartlist_add_asprintf(string_chunks,
-                             "transport-version %s",
-                             mp->version);
-    }
+    /* Set transport-info line. */
+    {
+      char *transport_info_args = NULL;
 
-    if (mp->implementation != NULL) {
-      smartlist_add_asprintf(string_chunks,
-                             "transport-implementation %s",
-                             mp->implementation);
+      if (mp->version) {
+        tor_asprintf(&transport_info_args, " version=%s", mp->version);
+      }
+      if (mp->implementation) {
+        tor_asprintf(&transport_info_args, " implementation=%s",
+                     mp->implementation);
+      }
+      if (transport_info_args) {
+        smartlist_add_asprintf(string_chunks, "transport-info%s",
+                               transport_info_args ? transport_info_args : "");
+        tor_free(transport_info_args);
+      }
     }
   } SMARTLIST_FOREACH_END(mp);
 
