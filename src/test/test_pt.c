@@ -31,6 +31,9 @@ reset_mp(managed_proxy_t *mp)
   mp->conf_state = PT_PROTO_LAUNCHED;
   SMARTLIST_FOREACH(mp->transports, transport_t *, t, transport_free(t));
   smartlist_clear(mp->transports);
+
+  tor_free(mp->version);
+  tor_free(mp->implementation);
 }
 
 static void
