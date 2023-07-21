@@ -1286,16 +1286,6 @@ parse_status_line(const char *line, managed_proxy_t *mp)
     goto done;
   }
 
-  /* We check if we received the TRANSPORT parameter, which is the only
-   * *required* value. */
-  const config_line_t *type = config_line_find(values, "TRANSPORT");
-
-  if (! type) {
-    log_warn(LD_PT, "Managed proxy \"%s\" wrote a STATUS line without "
-                    "TRANSPORT: %s", mp->argv[0], escaped(data));
-    goto done;
-  }
-
   /* Handle the different messages. */
   handle_status_message(values, mp);
 
