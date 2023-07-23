@@ -105,6 +105,7 @@
 #include "lib/buf/buffers.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_util.h"
+#include "lib/encoding/confline.h"
 
 #include "core/or/cell_st.h"
 #include "core/or/cpath_build_state_st.h"
@@ -4235,6 +4236,73 @@ my_exit_policy_rejects(const tor_addr_t *addr,
     return 1;
   }
   return 0;
+}
+
+/* Reapply exit policy to existing connections, possibly terminating
+ * connections
+ * no longer allowed by the policy.
+ */
+void
+connection_reapply_exit_policy(config_line_t *changes)
+{
+  int marked_for_close = 0;
+  smartlist_t *conn_list = NULL;
+  smartlist_t *policy = NULL;
+  int config_change_relevant = 0;
+
+  /* TODO if (get_options()->ReevaluateExitPolicy == 1) {*/
+  if (false) {
+    return;
+  }
+
+  for (const config_line_t *line = changes;
+       line && !config_change_relevant;
+       line = line->next) {
+    const char* exit_policy_options[] = {
+      "ExitRelay",
+      "ExitPolicy",
+      "ReducedExitPolicy",
+      "IPv6Exit",
+      NULL
+    };
+    for (unsigned int i = 0; exit_policy_options[i] != NULL; ++i) {
+      if (strcmp(line->key, exit_policy_options[i]) == 0) {
+        config_change_relevant = 1;
+        break;
+      }
+    }
+  }
+
+  if (!config_change_relevant) {
+    /* Policy did not change: no need to iterate over connections */
+    return;
+  }
+
+  // we can't use router_compare_to_my_exit_policy as it depend on the
+  // descriptor, which is regenerated asynchronously, so we have to parse the
+  // policy ourselves.
+  // We don't verify for our own IP, it's not part of the configuration.
+  policies_parse_exit_policy_from_options(get_options(), NULL, NULL, &policy);
+
+  conn_list = connection_list_by_type_purpose(CONN_TYPE_EXIT,
+                                              EXIT_PURPOSE_CONNECT);
+
+  SMARTLIST_FOREACH_BEGIN(conn_list, connection_t *, conn) {
+    addr_policy_result_t verdict = compare_tor_addr_to_addr_policy(&conn->addr,
+                                                                   conn->port,
+                                                                   policy);
+    if (verdict != ADDR_POLICY_ACCEPTED) {
+      connection_edge_end(TO_EDGE_CONN(conn), END_STREAM_REASON_EXITPOLICY);
+      connection_mark_for_close(conn);
+      ++marked_for_close;
+    }
+  } SMARTLIST_FOREACH_END(conn);
+
+  smartlist_free(conn_list);
+  smartlist_free(policy);
+
+  log_info(LD_GENERAL, "Marked %d connections to be closed as no longer "
+           "allowed per ExitPolicy", marked_for_close);
 }
 
 /** Return true iff the consensus allows network reentry. The default value is
