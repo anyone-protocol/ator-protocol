@@ -1,0 +1,4 @@
+  o Minor bugfixes (compilation):
+    - Fix all -Werror=enum-int-mismatch warnings. No behavior change. Fixes bug
+      40824; bugfix on 0.3.5.1-alpha.
+
