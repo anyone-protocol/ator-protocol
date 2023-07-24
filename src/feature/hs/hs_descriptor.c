@@ -2271,7 +2271,7 @@ desc_decode_superencrypted_v3(const hs_descriptor_t *desc,
                               hs_desc_superencrypted_data_t *
                               desc_superencrypted_out)
 {
-  int ret = HS_DESC_DECODE_SUPERENC_ERROR;
+  hs_desc_decode_status_t ret = HS_DESC_DECODE_SUPERENC_ERROR;
   char *message = NULL;
   size_t message_len;
   memarea_t *area = NULL;
@@ -2385,7 +2385,7 @@ desc_decode_encrypted_v3(const hs_descriptor_t *desc,
                          const curve25519_secret_key_t *client_auth_sk,
                          hs_desc_encrypted_data_t *desc_encrypted_out)
 {
-  int ret = HS_DESC_DECODE_ENCRYPTED_ERROR;
+  hs_desc_decode_status_t ret = HS_DESC_DECODE_ENCRYPTED_ERROR;
   char *message = NULL;
   size_t message_len;
   memarea_t *area = NULL;
@@ -2544,7 +2544,7 @@ hs_desc_decode_encrypted(const hs_descriptor_t *desc,
                          const curve25519_secret_key_t *client_auth_sk,
                          hs_desc_encrypted_data_t *desc_encrypted)
 {
-  int ret = HS_DESC_DECODE_ENCRYPTED_ERROR;
+  hs_desc_decode_status_t ret = HS_DESC_DECODE_ENCRYPTED_ERROR;
   uint32_t version;
 
   tor_assert(desc);
@@ -2594,7 +2594,7 @@ hs_desc_decode_superencrypted(const hs_descriptor_t *desc,
                               hs_desc_superencrypted_data_t *
                               desc_superencrypted)
 {
-  int ret = HS_DESC_DECODE_SUPERENC_ERROR;
+  hs_desc_decode_status_t ret = HS_DESC_DECODE_SUPERENC_ERROR;
   uint32_t version;
 
   tor_assert(desc);
@@ -2644,7 +2644,8 @@ hs_desc_decode_status_t
 hs_desc_decode_plaintext(const char *encoded,
                          hs_desc_plaintext_data_t *plaintext)
 {
-  int ok = 0, ret = HS_DESC_DECODE_PLAINTEXT_ERROR;
+  int ok = 0;
+  hs_desc_decode_status_t ret = HS_DESC_DECODE_PLAINTEXT_ERROR;
   memarea_t *area = NULL;
   smartlist_t *tokens = NULL;
   size_t encoded_len;
