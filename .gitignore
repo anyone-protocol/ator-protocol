@@ -47,6 +47,7 @@ core.*
 /.cache
 
 # /
+/Cargo.lock
 /Makefile
 /Makefile.in
 /aclocal.m4
@@ -71,6 +72,7 @@ core.*
 /stamp-h1
 /tags
 /TAGS
+/target
 /test-driver
 /tor.sh
 /tor.spec
