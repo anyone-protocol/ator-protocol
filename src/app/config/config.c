@@ -637,6 +637,7 @@ static const config_var_t option_vars_[] = {
   V(RephistTrackTime,            INTERVAL, "24 hours"),
   V_IMMUTABLE(RunAsDaemon,       BOOL,     "0"),
   V(ReducedExitPolicy,           BOOL,     "0"),
+  V(ReevaluateExitPolicy,        BOOL,     "0"),
   OBSOLETE("RunTesting"), // currently unused
   V_IMMUTABLE(Sandbox,           BOOL,     "0"),
   V(SafeLogging,                 STRING,   "1"),

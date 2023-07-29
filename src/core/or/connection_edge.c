@@ -4250,8 +4250,7 @@ connection_reapply_exit_policy(config_line_t *changes)
   smartlist_t *policy = NULL;
   int config_change_relevant = 0;
 
-  /* TODO if (get_options()->ReevaluateExitPolicy == 1) {*/
-  if (false) {
+  if (get_options()->ReevaluateExitPolicy == 0) {
     return;
   }
 
@@ -4262,6 +4261,7 @@ connection_reapply_exit_policy(config_line_t *changes)
       "ExitRelay",
       "ExitPolicy",
       "ReducedExitPolicy",
+      "ReevaluateExitPolicy",
       "IPv6Exit",
       NULL
     };
