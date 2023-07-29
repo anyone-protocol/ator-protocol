@@ -169,6 +169,25 @@ HASHX_API hashx_result hashx_exec(const hashx_ctx* ctx,
 */
 HASHX_API void hashx_free(hashx_ctx* ctx);
 
+#ifdef HASHX_RNG_CALLBACK
+/*
+ * Set a callback for inspecting or modifying the HashX random number stream.
+ *
+ * The callback and its user pointer are associated with the provided context
+ * even if it's re-used for another hash program. A callback value of NULL
+ * disables the callback.
+ *
+ * @param ctx is pointer to a HashX instance.
+ * @param callback is invoked after each new 64-bit pseudorandom value
+ *        is generated in a buffer. The callback may record it and/or replace
+ *        it. A NULL pointer here disables the callback.
+ * @param user_data is an opaque parameter given to the callback
+ */
+HASHX_API void hashx_rng_callback(hashx_ctx* ctx,
+                                  void (*callback)(uint64_t*, void*),
+                                  void* user_data);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

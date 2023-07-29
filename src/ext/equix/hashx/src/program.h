@@ -29,6 +29,10 @@ typedef struct hashx_program {
 	int branch_count;
 	int branches[16];
 #endif
+#ifdef HASHX_RNG_CALLBACK
+	void (*rng_callback)(uint64_t *buffer, void *user_data);
+	void *rng_callback_user_data;
+#endif
 } hashx_program;
 
 #ifdef __cplusplus

@@ -554,6 +554,10 @@ bool hashx_program_generate(const siphash_state* key, hashx_program* program) {
 		.ports = {{ 0 }}
 	};
 	hashx_siphash_rng_init(&ctx.gen, key);
+#ifdef HASHX_RNG_CALLBACK
+	ctx.gen.callback = program->rng_callback;
+	ctx.gen.callback_user_data = program->rng_callback_user_data;
+#endif
 	for (int i = 0; i < 8; ++i) {
 		ctx.registers[i].last_op = -1;
 		ctx.registers[i].latency = 0;

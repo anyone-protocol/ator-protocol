@@ -16,6 +16,8 @@ fn main() {
             "hashx/src/siphash_rng.c",
             "hashx/src/virtual_memory.c",
         ])
+        // Activate our patch for hashx_rng_callback
+        .define("HASHX_RNG_CALLBACK", "1")
         // Equi-X always uses HashX size 8 (64-bit output)
         .define("HASHX_SIZE", "8")
         // Avoid shared library API declarations, link statically
@@ -31,6 +33,7 @@ fn main() {
         .header_contents(
             "wrapper.h",
             r#"
+                #define HASHX_RNG_CALLBACK 1
                 #define HASHX_SIZE 8
                 #define HASHX_SHARED 1
                 #define EQUIX_SHARED 1

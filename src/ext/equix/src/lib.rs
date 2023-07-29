@@ -12,6 +12,10 @@
 //! See `LICENSE` for licensing information.
 //!
 
+use core::ffi::c_void;
+use core::mem;
+use core::ptr::null_mut;
+
 pub mod ffi {
     //! Low-level access to the C API
 
@@ -34,8 +38,14 @@ pub const HASHX_SIZE: usize = ffi::HASHX_SIZE as usize;
 /// Output value obtained by executing a HashX hash function
 pub type HashXOutput = [u8; HASHX_SIZE];
 
+/// Type for callback functions that inspect or replace the pseudorandom stream
+pub type RngCallback = Box<dyn FnMut(u64) -> u64>;
+
 /// Safe wrapper around a HashX context
-pub struct HashX(*mut ffi::hashx_ctx);
+pub struct HashX {
+    ctx: *mut ffi::hashx_ctx,
+    rng_callback: Option<RngCallback>,
+}
 
 impl HashX {
     /// Allocate a new HashX context
@@ -44,7 +54,10 @@ impl HashX {
         if ctx.is_null() {
             panic!("out of memory in hashx_alloc");
         }
-        Self(ctx)
+        Self {
+            ctx,
+            rng_callback: None,
+        }
     }
 
     /// Create a new hash function within this context, using the given seed
@@ -53,14 +66,15 @@ impl HashX {
     /// error occurs while the interpreter is disabled.
     #[inline(always)]
     pub fn make(&mut self, seed: &[u8]) -> HashXResult {
-        unsafe { ffi::hashx_make(self.0, seed.as_ptr() as *const std::ffi::c_void, seed.len()) }
+        unsafe { ffi::hashx_make(self.ctx, seed.as_ptr() as *const c_void, seed.len()) }
     }
 
     /// Check which implementation was selected by `make`
     #[inline(always)]
     pub fn query_type(&mut self) -> Result<HashXType, HashXResult> {
         let mut buffer = HashXType::HASHX_TYPE_INTERPRETED; // Arbitrary default
-        let result = unsafe { ffi::hashx_query_type(self.0, &mut buffer as *mut ffi::hashx_type) };
+        let result =
+            unsafe { ffi::hashx_query_type(self.ctx, &mut buffer as *mut ffi::hashx_type) };
         match result {
             HashXResult::HASHX_OK => Ok(buffer),
             e => Err(e),
@@ -71,23 +85,45 @@ impl HashX {
     #[inline(always)]
     pub fn exec(&mut self, input: u64) -> Result<HashXOutput, HashXResult> {
         let mut buffer: HashXOutput = Default::default();
-        let result = unsafe {
-            ffi::hashx_exec(
-                self.0,
-                input,
-                &mut buffer as *mut u8 as *mut std::ffi::c_void,
-            )
-        };
+        let result =
+            unsafe { ffi::hashx_exec(self.ctx, input, &mut buffer as *mut u8 as *mut c_void) };
         match result {
             HashXResult::HASHX_OK => Ok(buffer),
             e => Err(e),
         }
     }
+
+    /// Set a callback function that may inspect and/or modify the internal
+    /// pseudorandom number stream used by this context.
+    ///
+    /// The function will be owned by this context, and it replaces any
+    /// previous function that may have been set. Returns the previous callback
+    /// if any.
+    pub fn rng_callback(&mut self, callback: Option<RngCallback>) -> Option<RngCallback> {
+        // Keep ownership of our Rust value in the context wrapper, to match
+        // the lifetime of the mutable pointer that the C API saves.
+        let result = mem::replace(&mut self.rng_callback, callback);
+        match &mut self.rng_callback {
+            None => unsafe { ffi::hashx_rng_callback(self.ctx, None, null_mut()) },
+            Some(callback) => unsafe {
+                ffi::hashx_rng_callback(
+                    self.ctx,
+                    Some(wrapper),
+                    callback as *mut RngCallback as *mut c_void,
+                );
+            },
+        }
+        unsafe extern "C" fn wrapper(buffer: *mut u64, callback: *mut c_void) {
+            let callback: &mut RngCallback = unsafe { mem::transmute(callback) };
+            buffer.write(callback(buffer.read()));
+        }
+        result
+    }
 }
 
 impl Drop for HashX {
     fn drop(&mut self) {
-        let ctx = std::mem::replace(&mut self.0, std::ptr::null_mut());
+        let ctx = mem::replace(&mut self.ctx, null_mut());
         unsafe {
             ffi::hashx_free(ctx);
         }
@@ -146,7 +182,7 @@ impl EquiX {
         unsafe {
             ffi::equix_verify(
                 self.0,
-                challenge.as_ptr() as *const std::ffi::c_void,
+                challenge.as_ptr() as *const c_void,
                 challenge.len(),
                 solution as *const ffi::equix_solution,
             )
@@ -159,7 +195,7 @@ impl EquiX {
         unsafe {
             ffi::equix_solve(
                 self.0,
-                challenge.as_ptr() as *const std::ffi::c_void,
+                challenge.as_ptr() as *const c_void,
                 challenge.len(),
                 buffer as *mut ffi::equix_solutions_buffer,
             )
@@ -169,7 +205,7 @@ impl EquiX {
 
 impl Drop for EquiX {
     fn drop(&mut self) {
-        let ctx = std::mem::replace(&mut self.0, std::ptr::null_mut());
+        let ctx = mem::replace(&mut self.0, null_mut());
         unsafe {
             ffi::equix_free(ctx);
         }
@@ -180,6 +216,8 @@ impl Drop for EquiX {
 mod tests {
     use crate::*;
     use hex_literal::hex;
+    use std::cell::RefCell;
+    use std::sync::Arc;
 
     #[test]
     fn equix_context() {
@@ -289,5 +327,53 @@ mod tests {
         );
         assert_eq!(ctx.exec(123456), Ok(hex!("ab3d155bf4bbb0aa")));
         assert_eq!(ctx.exec(987654321123456789), Ok(hex!("8dfef0497c323274")));
+    }
+
+    #[test]
+    fn rng_callback_read() {
+        // Use a Rng callback to read the sequence of pseudorandom numbers
+        // without changing them, and spot check the list we get back.
+        let mut ctx = HashX::new(HashXType::HASHX_TRY_COMPILE);
+        let seq = Arc::new(RefCell::new(Vec::new()));
+        {
+            let seq = seq.clone();
+            ctx.rng_callback(Some(Box::new(move |value| {
+                seq.borrow_mut().push(value);
+                value
+            })));
+        }
+        assert_eq!(seq.borrow().len(), 0);
+        assert_eq!(ctx.make(b"abc"), HashXResult::HASHX_OK);
+        assert_eq!(ctx.exec(12345).unwrap(), hex!("c0bc95da7cc30f37"));
+        assert_eq!(seq.borrow().len(), 563);
+        assert_eq!(
+            seq.borrow()[..4],
+            [
+                0xf695edd02205449d,
+                0x51c1ac51cd19a7d1,
+                0xadf4cb303b9814cf,
+                0x79793a52d965083d
+            ]
+        );
+    }
+
+    #[test]
+    fn rng_callback_replace() {
+        // Use a Rng callback to replace the random number stream.
+        // We have to choose the replacement somewhat carefully since
+        // many stationary replacement values will cause infinite loops.
+        let mut ctx = HashX::new(HashXType::HASHX_TYPE_INTERPRETED);
+        let counter = Arc::new(RefCell::new(0u32));
+        {
+            let counter = counter.clone();
+            ctx.rng_callback(Some(Box::new(move |_value| {
+                *counter.borrow_mut() += 1;
+                0x0807060504030201
+            })));
+        }
+        assert_eq!(*counter.borrow(), 0);
+        assert_eq!(ctx.make(b"abc"), HashXResult::HASHX_OK);
+        assert_eq!(ctx.exec(12345).unwrap(), hex!("825a9b6dd5d074af"));
+        assert_eq!(*counter.borrow(), 575);
     }
 }
