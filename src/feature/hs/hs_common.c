@@ -1680,7 +1680,7 @@ hs_get_extend_info_from_lspecs(const smartlist_t *lspecs,
   if (!extend_info_addr_is_allowed(&ap.addr)) {
     log_fn(LOG_PROTOCOL_WARN, LD_REND,
            "Requested address is private and we are not allowed to extend to "
-           "it: %s:%u", fmt_addr(&ap.addr), ap.port);
+           "it: %s:%u", safe_str(fmt_addr(&ap.addr)), ap.port);
     goto done;
   }
 

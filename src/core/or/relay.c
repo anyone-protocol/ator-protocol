@@ -1469,7 +1469,7 @@ connection_edge_process_relay_cell_not_open(
           (get_options()->ClientDNSRejectInternalAddresses &&
            tor_addr_is_internal(&addr, 0))) {
         log_info(LD_APP, "...but it claims the IP address was %s. Closing.",
-                 fmt_addr(&addr));
+                 safe_str(fmt_addr(&addr)));
         connection_edge_end(conn, END_STREAM_REASON_TORPROTOCOL);
         connection_mark_unattached_ap(entry_conn,
                                       END_STREAM_REASON_TORPROTOCOL);
@@ -1480,7 +1480,7 @@ connection_edge_process_relay_cell_not_open(
           (family == AF_INET6 && ! entry_conn->entry_cfg.ipv6_traffic)) {
         log_fn(LOG_PROTOCOL_WARN, LD_APP,
                "Got a connected cell to %s with unsupported address family."
-               " Closing.", fmt_addr(&addr));
+               " Closing.", safe_str(fmt_addr(&addr)));
         connection_edge_end(conn, END_STREAM_REASON_TORPROTOCOL);
         connection_mark_unattached_ap(entry_conn,
                                       END_STREAM_REASON_TORPROTOCOL);
