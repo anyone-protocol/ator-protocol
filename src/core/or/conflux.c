@@ -536,7 +536,7 @@ conflux_note_cell_sent(conflux_t *cfx, circuit_t *circ, uint8_t relay_command)
 
 /** Find the leg with lowest non-zero curr_rtt_usec, and
  * pick it for our current leg. */
-static inline void
+static inline bool
 conflux_pick_first_leg(conflux_t *cfx)
 {
   conflux_leg_t *min_leg = NULL;
@@ -555,8 +555,20 @@ conflux_pick_first_leg(conflux_t *cfx)
   } CONFLUX_FOR_EACH_LEG_END(leg);
 
   if (!min_leg) {
-    // Get the 0th leg; if it does not exist, assert
-    tor_assert(smartlist_len(cfx->legs) > 0);
+    // Get the 0th leg; if it does not exist, log the set.
+    // Bug 40827 managed to hit this, so let's dump the sets
+    // in case it happens again.
+    if (BUG(smartlist_len(cfx->legs) <= 0)) {
+      // Since we have no legs, we have no idea if this is really a client
+      // or server set. Try to find any that match:
+      log_warn(LD_BUG, "Matching client sets:");
+      conflux_log_set(cfx, true);
+      log_warn(LD_BUG, "Matching server sets:");
+      conflux_log_set(cfx, false);
+      log_warn(LD_BUG, "End conflux set dump");
+      return false;
+    }
+
     min_leg = smartlist_get(cfx->legs, 0);
     tor_assert(min_leg);
     if (BUG(min_leg->linked_sent_usec == 0)) {
@@ -572,6 +584,8 @@ conflux_pick_first_leg(conflux_t *cfx)
   cfx->cells_until_switch = 0;
 
   cfx->curr_leg = min_leg;
+
+  return true;
 }
 
 /**
@@ -589,7 +603,8 @@ conflux_decide_next_circ(conflux_t *cfx)
   /* If we don't have a current leg yet, pick one.
    * (This is the only non-const operation in this function). */
   if (!cfx->curr_leg) {
-    conflux_pick_first_leg(cfx);
+    if (!conflux_pick_first_leg(cfx))
+      return NULL;
   }
 
   /* First, check if we can switch. */
