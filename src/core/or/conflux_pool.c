@@ -1509,6 +1509,49 @@ linked_update_stream_backpointers(circuit_t *circ)
   }
 }
 
+/** This is called when this circuit is the last leg.
+ *
+ * The "on_circuit" pointer is nullified here so it is not given back to the
+ * conflux subsytem between the circuit mark for close step and actually
+ * freeing the circuit which is when streams are destroyed.
+ *
+ * Reason is that when the connection edge inbuf is packaged in
+ * connection_edge_package_raw_inbuf(), the on_circuit pointer is used and
+ * then passed on to conflux to learn which leg to use. However, if the circuit
+ * was marked prior but not yet freed, there are no more legs remaining which
+ * leads to a linked circuit being used without legs. No bueno. */
+static void
+linked_detach_circuit(circuit_t *circ)
+{
+  tor_assert(circ);
+  tor_assert_nonfatal(circ->conflux);
+
+  if (CIRCUIT_IS_ORIGIN(circ)) {
+    origin_circuit_t *ocirc = TO_ORIGIN_CIRCUIT(circ);
+    tor_assert_nonfatal(circ->purpose == CIRCUIT_PURPOSE_CONFLUX_LINKED);
+    /* Iterate over stream list using next_stream pointer, until null */
+    for (edge_connection_t *stream = ocirc->p_streams; stream;
+           stream = stream->next_stream) {
+      /* Update the circuit pointer of each stream */
+      stream->on_circuit = NULL;
+    }
+  } else {
+    or_circuit_t *orcirc = TO_OR_CIRCUIT(circ);
+    /* Iterate over stream list using next_stream pointer, until null */
+    for (edge_connection_t *stream = orcirc->n_streams; stream;
+           stream = stream->next_stream) {
+      /* Update the circuit pointer of each stream */
+      stream->on_circuit = NULL;
+    }
+    /* Iterate over stream list using next_stream pointer, until null */
+    for (edge_connection_t *stream = orcirc->resolving_streams; stream;
+           stream = stream->next_stream) {
+      /* Update the circuit pointer of each stream */
+      stream->on_circuit = NULL;
+    }
+  }
+}
+
 /** Nullify all streams of the given circuit. */
 static void
 linked_nullify_streams(circuit_t *circ)
@@ -1549,6 +1592,7 @@ linked_circuit_closed(circuit_t *circ)
   if (CONFLUX_NUM_LEGS(circ->conflux) == 0) {
     /* Last leg, remove conflux object from linked set. */
     linked_pool_del(circ->conflux->nonce, is_client);
+    linked_detach_circuit(circ);
   } else {
     /* If there are other circuits, update streams backpointers and
      * nullify the stream lists. We do not free those streams in circuit_free_.
