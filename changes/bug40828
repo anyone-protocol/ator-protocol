@@ -1,0 +1,3 @@
+  o Minor bugfixes (protocol warn):
+    - Wrap a handful of cases where ProtocolWarning logs could emit IP
+      addresses. Fixes bug 40828; bugfix on 0.3.5.1-alpha.
