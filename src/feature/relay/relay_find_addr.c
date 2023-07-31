@@ -78,7 +78,7 @@ relay_address_new_suggestion(const tor_addr_t *suggested_addr,
     /* Do not believe anyone who says our address is their address. */
     log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
            "A relay endpoint %s is telling us that their address is ours.",
-           fmt_addr(peer_addr));
+           safe_str(fmt_addr(peer_addr)));
     return;
   }
 

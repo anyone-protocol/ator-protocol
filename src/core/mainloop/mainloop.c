@@ -1271,8 +1271,8 @@ run_connection_housekeeping(int i, time_t now)
     log_fn(LOG_PROTOCOL_WARN,LD_PROTOCOL,
            "Expiring stuck OR connection to fd %d (%s:%d). (%d bytes to "
            "flush; %d seconds since last write)",
-           (int)conn->s, fmt_and_decorate_addr(&conn->addr), conn->port,
-           (int)connection_get_outbuf_len(conn),
+           (int)conn->s, safe_str(fmt_and_decorate_addr(&conn->addr)),
+           conn->port, (int)connection_get_outbuf_len(conn),
            (int)(now-conn->timestamp_last_write_allowed));
     connection_or_close_normally(TO_OR_CONN(conn), 0);
   } else if (past_keepalive && !connection_get_outbuf_len(conn)) {
