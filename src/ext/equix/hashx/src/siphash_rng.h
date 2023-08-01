@@ -13,6 +13,10 @@ typedef struct siphash_rng {
 	uint64_t counter;
 	uint64_t buffer8, buffer32;
 	unsigned count8, count32;
+#ifdef HASHX_RNG_CALLBACK
+	void (*callback)(uint64_t *buffer, void *user_data);
+	void *callback_user_data;
+#endif
 } siphash_rng;
 
 #ifdef __cplusplus

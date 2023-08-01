@@ -55,3 +55,13 @@ void hashx_free(hashx_ctx* ctx) {
 		free(ctx);
 	}
 }
+
+#ifdef HASHX_RNG_CALLBACK
+void hashx_rng_callback(hashx_ctx* ctx,
+                        void (*callback)(uint64_t*, void*),
+                        void* callback_user_data)
+{
+	ctx->program.rng_callback = callback;
+	ctx->program.rng_callback_user_data = callback_user_data;
+}
+#endif
