@@ -2352,6 +2352,24 @@ connection_edge_package_raw_inbuf(edge_connection_t *conn, int package_partial,
     return -1;
   }
 
+  // Bug 40827: With conflux, we suspect marked circuits were getting here.
+  // We think we fixed it, but let's add a check and log sets if it still
+  // happens.
+  if (BUG(circ->marked_for_close)) {
+    log_warn(LD_BUG,
+             "called on circ that's already marked for close at %s:%d.",
+             circ->marked_for_close_file, circ->marked_for_close);
+    if (CIRCUIT_IS_CONFLUX(circ)) {
+      if (circ->conflux) {
+        conflux_log_set(circ->conflux, CIRCUIT_IS_ORIGIN(circ));
+      } else {
+        log_warn(LD_BUG, "  - circ is unlinked conflux");
+      }
+    }
+    conn->end_reason = END_STREAM_REASON_INTERNAL;
+    return -1;
+  }
+
   if (circuit_consider_stop_edge_reading(circ, cpath_layer))
     return 0;
 
