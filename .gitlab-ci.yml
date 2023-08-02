@@ -42,6 +42,7 @@ variables:
 .x86-64-template: &x86-64-template
   tags:
     - amd64
+    - physical
 
 # This template should be usable on any system that's based on apt.
 .apt-template: &apt-template |
@@ -119,8 +120,6 @@ debian-minimal:
 # Minimal check on debian/i386: just make, make check.
 #
 debian-i386-minimal:
-  tags:
-    - physical
   image: i386/debian:bullseye
   <<: *debian-template
   script:
