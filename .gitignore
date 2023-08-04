@@ -140,6 +140,8 @@ core.*
 # /scripts
 /scripts/maint/checkOptionDocs.pl
 /scripts/maint/updateVersions.pl
+scripts/maint/geoip/geoip
+scripts/maint/geoip/geoip6
 
 # /src/
 /src/Makefile
