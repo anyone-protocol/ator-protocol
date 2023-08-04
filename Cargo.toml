@@ -8,6 +8,7 @@
 
 members = [
     "src/ext/equix",
+    "scripts/maint/geoip/geoip-db-tool",
 ]
 
 resolver = "2"
