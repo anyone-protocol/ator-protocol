@@ -1,3 +1,36 @@
+Changes in version 0.4.8.3-rc - 2023-08-04
+  This is the first release candidate (and likely the only) of the 0.4.8.x
+  series. We fixed a major conflux bugfix which was a fatal asserts on the
+  relay Exit side. See below for more details. Couple minor bugfixes. Until
+  stable, name of the game here is stabilization.
+
+  o Major bugfixes (conflux):
+    - Fix a relay-side assert crash caused by attempts to use a conflux
+      circuit between circuit close and free, such that no legs were on
+      the conflux set. Fixed by nulling out the stream's circuit back-
+      pointer when the last leg is removed. Additional checks and log
+      messages have been added to detect other cases. Fixes bug 40827;
+      bugfix on 0.4.8.1-alpha.
+
+  o Minor features (fallbackdir):
+    - Regenerate fallback directories generated on August 04, 2023.
+    - Regenerate fallback directories generated on July 26, 2023.
+
+  o Minor features (geoip data):
+    - Update the geoip files to match the IPFire Location Database, as
+      retrieved on 2023/07/26.
+    - Update the geoip files to match the IPFire Location Database, as
+      retrieved on 2023/08/04.
+
+  o Minor bugfixes (compilation):
+    - Fix all -Werror=enum-int-mismatch warnings. No behavior change.
+      Fixes bug 40824; bugfix on 0.3.5.1-alpha.
+
+  o Minor bugfixes (protocol warn):
+    - Wrap a handful of cases where ProtocolWarning logs could emit IP
+      addresses. Fixes bug 40828; bugfix on 0.3.5.1-alpha.
+
+
 Changes in version 0.4.8.2-alpha - 2023-07-12
   This is our second alpha containing some minor bugfixes and one major bugfix
   about L2 vanguard rotation. We believe this will be the last alpha before the

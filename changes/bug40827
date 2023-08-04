@@ -1,8 +1,0 @@
-  o Major bugfixes (conflux):
-    - Fix a relay-side assert crash caused by attempts to use a conflux
-      circuit between circuit close and free, such that no legs were on
-      the conflux set. Fixed by nulling out the stream's circuit
-      back-pointer when the last leg is removed. Additional checks and
-      log messages have been added to detect other cases. Fixes bug 40827;
-      bugfix on 0.4.8.1-alpha.
-
