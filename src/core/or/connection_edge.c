@@ -4282,7 +4282,10 @@ connection_reapply_exit_policy(config_line_t *changes)
   // descriptor, which is regenerated asynchronously, so we have to parse the
   // policy ourselves.
   // We don't verify for our own IP, it's not part of the configuration.
-  policies_parse_exit_policy_from_options(get_options(), NULL, NULL, &policy);
+  if (BUG(policies_parse_exit_policy_from_options(get_options(), NULL, NULL,
+                                                  &policy) != 0)) {
+    return;
+  }
 
   conn_list = connection_list_by_type_purpose(CONN_TYPE_EXIT,
                                               EXIT_PURPOSE_CONNECT);
