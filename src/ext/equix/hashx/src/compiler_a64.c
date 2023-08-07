@@ -55,7 +55,7 @@ bool hashx_compile_a64(const hashx_program* program, uint8_t* code) {
 	uint8_t* target = NULL;
 	int creg = -1;
 	EMIT(pos, a64_prologue);
-	for (int i = 0; i < program->code_size; ++i) {
+	for (size_t i = 0; i < program->code_size; ++i) {
 		const instruction* instr = &program->code[i];
 		switch (instr->opcode)
 		{
