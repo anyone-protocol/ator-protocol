@@ -90,6 +90,7 @@ test_dos_conn_creation(void *arg)
        * second for each connection. */
       monotime_coarse_set_mock_time_nsec(monotime_now += BILLION);
       update_approx_time(++wallclock_now);
+      or_conn.tracked_for_dos_mitigation = 0;
       dos_new_client_conn(&or_conn, NULL);
     }
   }
@@ -99,12 +100,14 @@ test_dos_conn_creation(void *arg)
             dos_conn_addr_get_defense_type(addr));
 
   /* Register another conn and check that new conns are not allowed anymore */
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
   tt_int_op(DOS_CONN_DEFENSE_CLOSE, OP_EQ,
             dos_conn_addr_get_defense_type(addr));
 
   /* Close a client conn and see that a new conn will be permitted again */
   dos_close_client_conn(&or_conn);
+  or_conn.tracked_for_dos_mitigation = 0;
   tt_int_op(DOS_CONN_DEFENSE_NONE, OP_EQ,
             dos_conn_addr_get_defense_type(addr));
 
@@ -165,6 +168,7 @@ test_dos_circuit_creation(void *arg)
    * circuit counting subsystem */
   geoip_note_client_seen(GEOIP_CLIENT_CONNECT, addr, NULL, now);
   for (i = 0; i < min_conc_conns_for_cc ; i++) {
+    or_conn.tracked_for_dos_mitigation = 0;
     dos_new_client_conn(&or_conn, NULL);
   }
 
@@ -474,9 +478,13 @@ test_known_relay(void *arg)
   /* Suppose we have 5 connections in rapid succession, the counter should
    * always be 0 because we should ignore this. */
   dos_new_client_conn(&or_conn, NULL);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
   entry = geoip_lookup_client(&TO_CONN(&or_conn)->addr, NULL,
                               GEOIP_CLIENT_CONNECT);
@@ -489,7 +497,9 @@ test_known_relay(void *arg)
   tor_addr_parse(&TO_CONN(&or_conn)->addr, "42.42.42.43");
   geoip_note_client_seen(GEOIP_CLIENT_CONNECT, &TO_CONN(&or_conn)->addr,
                          NULL, 0);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
   entry = geoip_lookup_client(&TO_CONN(&or_conn)->addr, NULL,
                               GEOIP_CLIENT_CONNECT);
@@ -535,6 +545,7 @@ test_dos_conn_rate(void *arg)
   { /* Register many conns from this client but not enough to get it blocked */
     unsigned int i;
     for (i = 0; i < burst_conn - 1; i++) {
+      or_conn.tracked_for_dos_mitigation = 0;
       dos_new_client_conn(&or_conn, NULL);
     }
   }
@@ -545,6 +556,7 @@ test_dos_conn_rate(void *arg)
 
   /* Register another conn and check that new conns are not allowed anymore.
    * We should have reached our burst. */
+  or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
   tt_int_op(DOS_CONN_DEFENSE_CLOSE, OP_EQ,
             dos_conn_addr_get_defense_type(addr));

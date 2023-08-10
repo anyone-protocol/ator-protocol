@@ -968,6 +968,7 @@ dos_new_client_conn(or_connection_t *or_conn, const char *transport_name)
   clientmap_entry_t *entry;
 
   tor_assert(or_conn);
+  tor_assert_nonfatal(!or_conn->tracked_for_dos_mitigation);
 
   /* Past that point, we know we have at least one DoS detection subsystem
    * enabled so we'll start allocating stuff. */

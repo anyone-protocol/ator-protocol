@@ -83,6 +83,7 @@
 #include "lib/time/compat_time.h"
 
 #include "core/or/cell_queue_st.h"
+#include "core/or/or_connection_st.h"
 
 /* Global lists of channels */
 
@@ -1864,7 +1865,6 @@ channel_do_open_actions(channel_t *chan)
 {
   tor_addr_t remote_addr;
   int started_here;
-  time_t now = time(NULL);
   int close_origin_circuits = 0;
 
   tor_assert(chan);
@@ -1875,22 +1875,25 @@ channel_do_open_actions(channel_t *chan)
     circuit_build_times_network_is_live(get_circuit_build_times_mutable());
     router_set_status(chan->identity_digest, 1);
   } else {
-    /* only report it to the geoip module if it's a client */
+    /* only report it to the geoip module if it's a client and it hasn't
+     * already been set up for tracking earlier. (Incoming TLS connections
+     * are tracked before the handshake.) */
     if (channel_is_client(chan)) {
       if (channel_get_addr_if_possible(chan, &remote_addr)) {
-        char *transport_name = NULL;
         channel_tls_t *tlschan = BASE_CHAN_TO_TLS(chan);
-        if (chan->get_transport_name(chan, &transport_name) < 0)
-          transport_name = NULL;
-
-        geoip_note_client_seen(GEOIP_CLIENT_CONNECT,
-                               &remote_addr, transport_name,
-                               now);
-        /* Notify the DoS subsystem of a new client. */
-        if (tlschan && tlschan->conn) {
-          dos_new_client_conn(tlschan->conn, transport_name);
+        if (!tlschan->conn->tracked_for_dos_mitigation) {
+          char *transport_name = NULL;
+          if (chan->get_transport_name(chan, &transport_name) < 0) {
+            transport_name = NULL;
+          }
+          geoip_note_client_seen(GEOIP_CLIENT_CONNECT,
+                                 &remote_addr, transport_name,
+                                 time(NULL));
+          if (tlschan && tlschan->conn) {
+            dos_new_client_conn(tlschan->conn, transport_name);
+          }
+          tor_free(transport_name);
         }
-        tor_free(transport_name);
       }
       /* Otherwise the underlying transport can't tell us this, so skip it */
     }
