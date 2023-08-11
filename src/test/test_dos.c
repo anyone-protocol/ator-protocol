@@ -434,12 +434,12 @@ test_dos_bucket_refill(void *arg)
   dos_free_all();
 }
 
-/* Test if we avoid counting a known relay. */
+/* Test if we avoid counting a known relay. (We no longer do) */
 static void
 test_known_relay(void *arg)
 {
   clientmap_entry_t *entry = NULL;
-  routerstatus_t *rs = NULL; microdesc_t *md = NULL; routerinfo_t *ri = NULL;
+  routerstatus_t *rs = NULL;
 
   (void) arg;
 
@@ -475,8 +475,7 @@ test_known_relay(void *arg)
    * client connection. */
   geoip_note_client_seen(GEOIP_CLIENT_CONNECT, &TO_CONN(&or_conn)->addr,
                          NULL, 0);
-  /* Suppose we have 5 connections in rapid succession, the counter should
-   * always be 0 because we should ignore this. */
+  /* Suppose we have 5 connections in rapid succession */
   dos_new_client_conn(&or_conn, NULL);
   or_conn.tracked_for_dos_mitigation = 0;
   dos_new_client_conn(&or_conn, NULL);
@@ -489,26 +488,11 @@ test_known_relay(void *arg)
   entry = geoip_lookup_client(&TO_CONN(&or_conn)->addr, NULL,
                               GEOIP_CLIENT_CONNECT);
   tt_assert(entry);
-  /* We should have a count of 0. */
-  tt_uint_op(entry->dos_stats.conn_stats.concurrent_count, OP_EQ, 0);
-
-  /* To make sure that his is working properly, make a unknown client
-   * connection and see if we do get it. */
-  tor_addr_parse(&TO_CONN(&or_conn)->addr, "42.42.42.43");
-  geoip_note_client_seen(GEOIP_CLIENT_CONNECT, &TO_CONN(&or_conn)->addr,
-                         NULL, 0);
-  or_conn.tracked_for_dos_mitigation = 0;
-  dos_new_client_conn(&or_conn, NULL);
-  or_conn.tracked_for_dos_mitigation = 0;
-  dos_new_client_conn(&or_conn, NULL);
-  entry = geoip_lookup_client(&TO_CONN(&or_conn)->addr, NULL,
-                              GEOIP_CLIENT_CONNECT);
-  tt_assert(entry);
-  /* We should have a count of 2. */
-  tt_uint_op(entry->dos_stats.conn_stats.concurrent_count, OP_EQ, 2);
+  /* We should have a count of 5. */
+  tt_uint_op(entry->dos_stats.conn_stats.concurrent_count, OP_EQ, 5);
 
  done:
-  routerstatus_free(rs); routerinfo_free(ri); microdesc_free(md);
+  routerstatus_free(rs);
   smartlist_clear(dummy_ns->routerstatus_list);
   networkstatus_vote_free(dummy_ns);
   dos_free_all();

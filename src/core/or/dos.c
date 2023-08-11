@@ -976,14 +976,6 @@ dos_new_client_conn(or_connection_t *or_conn, const char *transport_name)
     goto end;
   }
 
-  /* We ignore any known address meaning an address of a known relay. The
-   * reason to do so is because network reentry is possible where a client
-   * connection comes from an Exit node. Even when we'll fix reentry, this is
-   * a robust defense to keep in place. */
-  if (nodelist_probably_contains_address(&TO_CONN(or_conn)->addr)) {
-    goto end;
-  }
-
   /* We are only interested in client connection from the geoip cache. */
   entry = geoip_lookup_client(&TO_CONN(or_conn)->addr, transport_name,
                               GEOIP_CLIENT_CONNECT);
