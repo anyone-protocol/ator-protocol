@@ -72,6 +72,7 @@ test_dos_conn_creation(void *arg)
 
   /* Initialize test data */
   or_connection_t or_conn;
+  memset(&or_conn, 0, sizeof or_conn);
   time_t wallclock_now = 1281533250; /* 2010-08-11 13:27:30 UTC */
   tt_int_op(AF_INET,OP_EQ, tor_addr_parse(&TO_CONN(&or_conn)->addr,
                                           "18.0.0.1"));
@@ -153,6 +154,7 @@ test_dos_circuit_creation(void *arg)
 
   /* Initialize test data */
   or_connection_t or_conn;
+  memset(&or_conn, 0, sizeof or_conn);
   time_t now = 1281533250; /* 2010-08-11 13:27:30 UTC */
   tt_int_op(AF_INET,OP_EQ, tor_addr_parse(&TO_CONN(&or_conn)->addr,
                                           "18.0.0.1"));
@@ -218,6 +220,7 @@ test_dos_bucket_refill(void *arg)
   channel_init(chan);
   chan->is_client = 1;
   or_connection_t or_conn;
+  memset(&or_conn, 0, sizeof or_conn);
   tt_int_op(AF_INET,OP_EQ, tor_addr_parse(&TO_CONN(&or_conn)->addr,
                                           "18.0.0.1"));
   tor_addr_t *addr = &TO_CONN(&or_conn)->addr;
@@ -459,6 +462,7 @@ test_known_relay(void *arg)
 
   /* Setup an OR conn so we can pass it to the DoS subsystem. */
   or_connection_t or_conn;
+  memset(&or_conn, 0, sizeof or_conn);
   tor_addr_parse(&TO_CONN(&or_conn)->addr, "42.42.42.42");
 
   rs = tor_malloc_zero(sizeof(*rs));
@@ -514,6 +518,7 @@ test_dos_conn_rate(void *arg)
 
   /* Initialize test data */
   or_connection_t or_conn;
+  memset(&or_conn, 0, sizeof or_conn);
   time_t now = 1281533250; /* 2010-08-11 13:27:30 UTC */
   tt_int_op(AF_INET,OP_EQ, tor_addr_parse(&TO_CONN(&or_conn)->addr,
                                           "18.0.0.1"));
