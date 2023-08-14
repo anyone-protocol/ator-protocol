@@ -368,6 +368,13 @@ tor_zstd_compress_process(tor_zstd_compress_state_t *state,
                                    &output, &input);
   }
 
+  if (ZSTD_isError(retval)) {
+    log_warn(LD_GENERAL, "Zstandard %s didn't finish: %s.",
+             state->compress ? "compression" : "decompression",
+             ZSTD_getErrorName(retval));
+    return TOR_COMPRESS_ERROR;
+  }
+
   state->input_so_far += input.pos;
   state->output_so_far += output.pos;
 
@@ -380,13 +387,6 @@ tor_zstd_compress_process(tor_zstd_compress_state_t *state,
       tor_compress_is_compression_bomb(state->input_so_far,
                                        state->output_so_far)) {
     log_warn(LD_DIR, "Possible compression bomb; abandoning stream.");
-    return TOR_COMPRESS_ERROR;
-  }
-
-  if (ZSTD_isError(retval)) {
-    log_warn(LD_GENERAL, "Zstandard %s didn't finish: %s.",
-             state->compress ? "compression" : "decompression",
-             ZSTD_getErrorName(retval));
     return TOR_COMPRESS_ERROR;
   }
 

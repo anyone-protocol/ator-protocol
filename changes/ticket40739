@@ -1,0 +1,6 @@
+  o Minor bugfixes (compression):
+    - Right after compression/decompression work is done, check for errors.
+      Before this, we would consider compression bomb before that and then
+      looking for errors leading to false positive on that log warning. Fixes
+      bug 40739; bugfix on 0.3.5.1-alpha. Patch by "cypherpunks".
+
