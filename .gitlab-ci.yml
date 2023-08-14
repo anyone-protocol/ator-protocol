@@ -253,3 +253,19 @@ debian-packaging-0.4.6:
   rules:
     - if: $CI_PROJECT_NAMESPACE == "tpo/core" &&
           $CI_COMMIT_BRANCH == "maint-0.4.6"
+
+#####
+# Run tests written in Rust, and run clippy on all Rust code here.
+rust-latest:
+  image: rust:latest
+  <<: *debian-template
+  script:
+    - apt-get install llvm-dev libclang-dev clang
+    - rustup show
+    - cargo build --locked --verbose
+    - cargo test --verbose
+    - rustup component add clippy
+    - rustup show
+    - cargo clippy --all-features --all-targets -- -D warnings
+  after_script:
+    - cargo clean
