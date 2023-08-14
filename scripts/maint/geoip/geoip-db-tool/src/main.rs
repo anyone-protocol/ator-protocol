@@ -152,8 +152,8 @@ fn convert(args: Args) -> std::io::Result<()> {
     // Read blocks, and then sort them by specificity and address.
     for nb in reader {
         match nb {
-            db::AnyBlock::AsBlock(a) => networks.push(a),
-            db::AnyBlock::NetBlock(n) => blocks.push(n),
+            db::AnyBlock::As(a) => networks.push(a),
+            db::AnyBlock::Net(n) => blocks.push(n),
             _ => {}
         }
     }
