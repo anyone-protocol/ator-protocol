@@ -47,7 +47,6 @@ core.*
 /.cache
 
 # /
-/Cargo.lock
 /Makefile
 /Makefile.in
 /aclocal.m4

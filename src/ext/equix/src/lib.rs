@@ -114,7 +114,7 @@ impl HashX {
             },
         }
         unsafe extern "C" fn wrapper(buffer: *mut u64, callback: *mut c_void) {
-            let callback: &mut RngCallback = unsafe { mem::transmute(callback) };
+            let callback = &mut *(callback as *mut RngCallback);
             buffer.write(callback(buffer.read()));
         }
         result

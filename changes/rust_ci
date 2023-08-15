@@ -1,0 +1,4 @@
+  o Minor features (testing):
+     - All Rust code is now linted (cargo clippy) as part of GitLab CI,
+       and existing warnings have been fixed.
+     - Any unit tests written in Rust now run as part of GitLab CI.
