@@ -467,8 +467,12 @@ conflux_decide_circ_for_send(conflux_t *cfx,
    * so these commands arrive in-order. */
   if (!new_circ && relay_command != RELAY_COMMAND_DATA) {
     /* Curr leg should be set, because conflux_decide_next_circ() should
-     * have set it earlier. */
-    tor_assert(cfx->curr_leg);
+     * have set it earlier. No BUG() here because the only caller BUG()s. */
+    if (!cfx->curr_leg) {
+      log_warn(LD_BUG, "No current leg for conflux with relay command %d",
+               relay_command);
+      return NULL;
+    }
     return cfx->curr_leg->circ;
   }
 

@@ -639,7 +639,8 @@ relay_send_command_from_edge_,(streamid_t stream_id, circuit_t *orig_circ,
     circ = conflux_decide_circ_for_send(orig_circ->conflux, orig_circ,
                                         relay_command);
     if (BUG(!circ)) {
-      log_warn(LD_BUG, "No circuit to send on for conflux");
+      log_warn(LD_BUG, "No circuit to send for conflux for relay command %d, "
+               "called from %s:%d", relay_command, filename, lineno);
       circ = orig_circ;
     } else {
       /* Conflux circuits always send multiplexed relay commands to
