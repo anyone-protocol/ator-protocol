@@ -968,18 +968,11 @@ dos_new_client_conn(or_connection_t *or_conn, const char *transport_name)
   clientmap_entry_t *entry;
 
   tor_assert(or_conn);
+  tor_assert_nonfatal(!or_conn->tracked_for_dos_mitigation);
 
   /* Past that point, we know we have at least one DoS detection subsystem
    * enabled so we'll start allocating stuff. */
   if (!dos_is_enabled()) {
-    goto end;
-  }
-
-  /* We ignore any known address meaning an address of a known relay. The
-   * reason to do so is because network reentry is possible where a client
-   * connection comes from an Exit node. Even when we'll fix reentry, this is
-   * a robust defense to keep in place. */
-  if (nodelist_probably_contains_address(&TO_CONN(or_conn)->addr)) {
     goto end;
   }
 
