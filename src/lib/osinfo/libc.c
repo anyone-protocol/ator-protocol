@@ -26,6 +26,10 @@
 #define STR_IMPL(x) #x
 #define STR(x) STR_IMPL(x)
 
+#if defined(__BSD_VISIBLE) || defined(__NETBSD_SOURCE)
+#include <sys/param.h>
+#endif /* defined(__BSD_VISIBLE) || defined(__NETBSD_SOURCE) */
+
 /** Return the name of the compile time libc. Returns NULL if we
  * cannot identify the libc. */
 const char *
@@ -46,8 +50,6 @@ tor_libc_get_name(void)
 const char *
 tor_libc_get_version_str(void)
 {
-#if defined(__BSD_VISIBLE) || defined(__NETBSD_SOURCE)
-#include <sys/param.h>
 #ifdef __DragonFly_version
   return STR(__DragonFly_version);
 #endif
@@ -60,7 +62,6 @@ tor_libc_get_version_str(void)
 #ifdef OpenBSD
   return STR(OpenBSD);
 #endif
-#endif /* defined(__BSD_VISIBLE) || defined(__NETBSD_SOURCE) */
 #ifdef CHECK_LIBC_VERSION
   const char *version = gnu_get_libc_version();
   if (version == NULL)
