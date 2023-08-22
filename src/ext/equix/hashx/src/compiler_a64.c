@@ -23,6 +23,9 @@
 
 #ifdef HASHX_COMPILER_A64
 
+/* Largest compiled instruction (BRANCH) */
+#define COMP_MAX_INSTR_SIZE 24
+
 static const uint8_t a64_prologue[] = {
 	0x07, 0x1c, 0x40, 0xf9, /* ldr x7, [x0, #56] */
 	0x06, 0x18, 0x40, 0xf9, /* ldr x6, [x0, #48] */
@@ -56,6 +59,8 @@ bool hashx_compile_a64(const hashx_program* program, uint8_t* code) {
 	int creg = -1;
 	EMIT(pos, a64_prologue);
 	for (size_t i = 0; i < program->code_size; ++i) {
+		if (pos + COMP_MAX_INSTR_SIZE > code + COMP_CODE_SIZE)
+			return false;
 		const instruction* instr = &program->code[i];
 		switch (instr->opcode)
 		{
@@ -145,6 +150,8 @@ bool hashx_compile_a64(const hashx_program* program, uint8_t* code) {
 			UNREACHABLE;
 		}
 	}
+	if (pos + sizeof a64_epilogue > code + COMP_CODE_SIZE)
+		return false;
 	EMIT(pos, a64_epilogue);
 	if (!hashx_vm_rx(code, COMP_CODE_SIZE))
 		return false;

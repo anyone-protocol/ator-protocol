@@ -25,6 +25,9 @@
 
 #ifdef HASHX_COMPILER_X86
 
+/* Largest compiled instruction (BRANCH) */
+#define COMP_MAX_INSTR_SIZE 10
+
 static const uint8_t x86_prologue[] = {
 #ifndef WINABI
 	0x48, 0x89, 0xF9,             /* mov rcx, rdi */
@@ -88,6 +91,8 @@ bool hashx_compile_x86(const hashx_program* program, uint8_t* code) {
 	uint8_t* target = NULL;
 	EMIT(pos, x86_prologue);
 	for (size_t i = 0; i < program->code_size; ++i) {
+		if (pos + COMP_MAX_INSTR_SIZE > code + COMP_CODE_SIZE)
+			return false;
 		const instruction* instr = &program->code[i];
 		switch (instr->opcode)
 		{
@@ -145,6 +150,8 @@ bool hashx_compile_x86(const hashx_program* program, uint8_t* code) {
 			UNREACHABLE;
 		}
 	}
+	if (pos + sizeof x86_epilogue > code + COMP_CODE_SIZE)
+		return false;
 	EMIT(pos, x86_epilogue);
 	return hashx_vm_rx(code, COMP_CODE_SIZE);
 }
