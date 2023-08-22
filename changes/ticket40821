@@ -1,0 +1,4 @@
+  o Major feature (denial of service):
+    - Extend DoS protection to partially opened channels and known relays.
+      Because re-entry is not allowed anymore, we can apply DoS protections onto
+      known IP namely relays. Fixes bug 40821; bugfix on 0.3.5.1-alpha.
