@@ -3056,7 +3056,7 @@ set_circuit_blocked_on_chan(circuit_t *circ, channel_t *chan, int block)
 /**
  * Helper function to block or unblock streams in a stream list.
  *
- * If <id>stream_id</id> is 0, apply the <b>block</b> state to all streams
+ * If <b>stream_id</b> is 0, apply the <b>block</b> state to all streams
  * in the stream list. If it is non-zero, only apply to that specific stream.
  */
 static void
