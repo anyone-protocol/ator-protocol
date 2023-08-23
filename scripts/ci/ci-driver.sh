@@ -456,7 +456,7 @@ if [[ "${STEM}" = "yes" ]]; then
     start_section "Stem"
     # 0.3.5 and onward have now disabled onion service v2 so we need to exclude
     # these Stem tests from now on.
-    EXCLUDE_TESTS="--exclude-test control.controller.test_ephemeral_hidden_services_v2 --exclude-test control.controller.test_hidden_services_conf --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth --exclude-test control.controller.test_without_ephemeral_hidden_services --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth_no_credentials"
+    EXCLUDE_TESTS="--exclude-test control.controller.test_ephemeral_hidden_services_v2 --exclude-test control.controller.test_hidden_services_conf --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth --exclude-test control.controller.test_without_ephemeral_hidden_services --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth_no_credentials control.controller.test_with_detached_ephemeral_hidden_services control.controller.test_with_invalid_ephemeral_hidden_service_port"
     if [[ "${TOR_VER_AT_LEAST_044}" = 'yes' ]]; then
         # XXXX This should probably be part of some test-stem make target.
 
