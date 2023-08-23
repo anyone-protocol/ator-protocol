@@ -1,5 +1,0 @@
-  o Major bugfixes (conflux):
-    - Fix a relay-side crash caused by side effects of the fix for bug
-      40827. Reverts part of that fix that caused the crash and adds
-      additional log messages to help find the root cause. Fixes bug
-      40834; bugfix on 0.4.8.3-rc.

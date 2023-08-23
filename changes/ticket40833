@@ -1,3 +1,0 @@
-  o Major bugfixes (proof of work, onion service, hashx):
-    - Fix a very rare buffer overflow in hashx, specific to the dynamic compiler
-      on aarch64 platforms. Fixes bug 40833; bugfix on 0.4.8.2-alpha.

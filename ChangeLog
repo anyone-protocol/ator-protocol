@@ -1,3 +1,49 @@
+Changes in version 0.4.8.4 - 2023-08-23
+  Finally, this is the very first stable release of the 0.4.8.x series making
+  Proof-of-Work (prop#327) and Conflux (prop#329) available to the entire
+  network. Some major bugfixes since the release candidate detailed below.
+
+  o Major feature (denial of service):
+    - Extend DoS protection to partially opened channels and known
+      relays. Because re-entry is not allowed anymore, we can apply DoS
+      protections onto known IP namely relays. Fixes bug 40821; bugfix
+      on 0.3.5.1-alpha.
+
+  o Major bugfixes (conflux):
+    - Fix a relay-side crash caused by side effects of the fix for bug
+      40827. Reverts part of that fix that caused the crash and adds
+      additional log messages to help find the root cause. Fixes bug
+      40834; bugfix on 0.4.8.3-rc.
+
+  o Major bugfixes (proof of work, onion service, hashx):
+    - Fix a very rare buffer overflow in hashx, specific to the dynamic
+      compiler on aarch64 platforms. Fixes bug 40833; bugfix
+      on 0.4.8.2-alpha.
+
+  o Minor features (fallbackdir):
+    - Regenerate fallback directories generated on August 23, 2023.
+
+  o Minor features (geoip data):
+    - Update the geoip files to match the IPFire Location Database, as
+      retrieved on 2023/08/23.
+
+  o Minor features (testing):
+    - All Rust code is now linted (cargo clippy) as part of GitLab CI, and
+      existing warnings have been fixed. - Any unit tests written in Rust now
+      run as part of GitLab CI.
+
+  o Minor bugfix (FreeBSD, compilation):
+    - Fix compilation issue on FreeBSD by properly importing
+      sys/param.h. Fixes bug 40825; bugfix on 0.4.8.1-alpha.
+
+  o Minor bugfixes (compression):
+    - Right after compression/decompression work is done, check for
+      errors. Before this, we would consider compression bomb before
+      that and then looking for errors leading to false positive on that
+      log warning. Fixes bug 40739; bugfix on 0.3.5.1-alpha. Patch
+      by "cypherpunks".
+
+
 Changes in version 0.4.8.3-rc - 2023-08-04
   This is the first release candidate (and likely the only) of the 0.4.8.x
   series. We fixed a major conflux bugfix which was a fatal asserts on the

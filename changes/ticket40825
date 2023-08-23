@@ -1,3 +1,0 @@
-  o Minor bugfix (FreeBSD, compilation):
-    - Fix compilation issue on FreeBSD by properly importing sys/param.h. Fixes
-      bug 40825; bugfix on 0.4.8.1-alpha.
