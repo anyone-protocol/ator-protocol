@@ -2071,22 +2071,32 @@ conflux_pool_init(void)
  * For use in rare bug cases that are hard to diagnose.
  */
 void
-conflux_log_set(const conflux_t *cfx, bool is_client)
+conflux_log_set(int loglevel, const conflux_t *cfx, bool is_client)
 {
   tor_assert(cfx);
 
-  log_warn(LD_BUG, "Conflux %s: %d linked, %d launched",
+  log_fn(loglevel,
+          LD_BUG,
+           "Conflux %s: %d linked, %d launched. Delivered: %"PRIu64"; "
+           "teardown: %d; Current: %p, Previous: %p",
                fmt_nonce(cfx->nonce), smartlist_len(cfx->legs),
-               cfx->num_leg_launch);
+               cfx->num_leg_launch,
+               cfx->last_seq_delivered, cfx->in_full_teardown,
+               cfx->curr_leg, cfx->prev_leg);
 
   // Log all linked legs
   int legs = 0;
   CONFLUX_FOR_EACH_LEG_BEGIN(cfx, leg) {
-   log_warn(LD_BUG,
+   const struct congestion_control_t *cc = circuit_ccontrol(leg->circ);
+   log_fn(loglevel, LD_BUG,
             " - Linked Leg %d purpose=%d; RTT %"PRIu64", sent: %"PRIu64
-            " marked: %d",
+            "; sent: %"PRIu64", recv: %"PRIu64", infl: %"PRIu64", "
+            "ptr: %p, idx: %d, marked: %d",
             legs, leg->circ->purpose, leg->circ_rtts_usec,
-            leg->linked_sent_usec, leg->circ->marked_for_close);
+            leg->linked_sent_usec, leg->last_seq_recv,
+            leg->last_seq_sent, cc->inflight, leg->circ,
+            leg->circ->global_circuitlist_idx,
+            leg->circ->marked_for_close);
    legs++;
   } CONFLUX_FOR_EACH_LEG_END(leg);
 
@@ -2094,16 +2104,18 @@ conflux_log_set(const conflux_t *cfx, bool is_client)
   unlinked_circuits_t *unlinked = unlinked_pool_get(cfx->nonce, is_client);
   if (unlinked) {
     // Log the number of legs and the is_for_linked_set status
-    log_warn(LD_BUG, " - Unlinked set:  %d legs, for link: %d",
+    log_fn(loglevel, LD_BUG, " - Unlinked set:  %d legs, for link: %d",
              smartlist_len(unlinked->legs), unlinked->is_for_linked_set);
     legs = 0;
     SMARTLIST_FOREACH_BEGIN(unlinked->legs, leg_t *, leg) {
-      log_warn(LD_BUG,
+      log_fn(loglevel, LD_BUG,
         "     Unlinked Leg: %d purpose=%d; linked: %d, RTT %"PRIu64", "
-        "sent: %"PRIu64" link ptr %p, marked: %d",
+        "sent: %"PRIu64" link ptr %p, circ ptr: %p, idx: %d, marked: %d",
                legs, leg->circ->purpose, leg->linked,
                leg->rtt_usec, leg->link_sent_usec,
-               leg->link, leg->circ->marked_for_close);
+               leg->link, leg->circ,
+               leg->circ->global_circuitlist_idx,
+               leg->circ->marked_for_close);
       legs++;
     } SMARTLIST_FOREACH_END(leg);
   }
