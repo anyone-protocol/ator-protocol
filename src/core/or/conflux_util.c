@@ -38,6 +38,13 @@ circuit_get_package_window(circuit_t *circ,
       tor_assert_nonfatal(circ->purpose ==
                           CIRCUIT_PURPOSE_CONFLUX_LINKED);
     }
+    circuit_t *orig_circ = circ;
+
+    /* If conflux is in the process of tearing down the set,
+     * the package window is 0 -- there is no room. */
+    if (circ->conflux->in_full_teardown)
+      return 0;
+
     circ = conflux_decide_next_circ(circ->conflux);
 
     /* If conflux has no circuit to send on, the package window is 0. */

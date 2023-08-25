@@ -604,6 +604,12 @@ conflux_decide_next_circ(conflux_t *cfx)
   // this once tuning is complete.
   conflux_validate_legs(cfx);
 
+  /* If the conflux set is tearing down and has no current leg,
+   * bail and give up */
+  if (cfx->in_full_teardown) {
+    return NULL;
+  }
+
   /* If we don't have a current leg yet, pick one.
    * (This is the only non-const operation in this function). */
   if (!cfx->curr_leg) {
