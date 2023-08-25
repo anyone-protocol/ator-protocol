@@ -37,7 +37,7 @@ void conflux_process_linked(circuit_t *circ, crypt_path_t *layer_hint,
 void conflux_process_linked_ack(circuit_t *circ);
 
 typedef struct conflux_t conflux_t;
-void conflux_log_set(const conflux_t *cfx, bool is_client);
+void conflux_log_set(int loglevel, const conflux_t *cfx, bool is_client);
 
 #ifdef TOR_UNIT_TESTS
 bool launch_new_set(int num_legs);

@@ -566,9 +566,9 @@ conflux_pick_first_leg(conflux_t *cfx)
       // Since we have no legs, we have no idea if this is really a client
       // or server set. Try to find any that match:
       log_warn(LD_BUG, "Matching client sets:");
-      conflux_log_set(cfx, true);
+      conflux_log_set(LOG_WARN, cfx, true);
       log_warn(LD_BUG, "Matching server sets:");
-      conflux_log_set(cfx, false);
+      conflux_log_set(LOG_WARN, cfx, false);
       log_warn(LD_BUG, "End conflux set dump");
       return false;
     }
@@ -578,7 +578,7 @@ conflux_pick_first_leg(conflux_t *cfx)
     if (BUG(min_leg->linked_sent_usec == 0)) {
       log_warn(LD_BUG, "Conflux has no legs with non-zero RTT. "
                "Using first leg.");
-      conflux_log_set(cfx, CIRCUIT_IS_ORIGIN(min_leg->circ));
+      conflux_log_set(LOG_WARN, cfx, CIRCUIT_IS_ORIGIN(min_leg->circ));
     }
   }
 

@@ -384,13 +384,13 @@ conflux_validate_legs(const conflux_t *cfx)
 
     /* Ensure we have no pending nonce on the circ */
     if (BUG(leg->circ->conflux_pending_nonce != NULL)) {
-      conflux_log_set(cfx, is_client);
+      conflux_log_set(LOG_WARN, cfx, is_client);
       continue;
     }
 
     /* Ensure we have a conflux object */
     if (BUG(leg->circ->conflux == NULL)) {
-      conflux_log_set(cfx, is_client);
+      conflux_log_set(LOG_WARN, cfx, is_client);
       continue;
     }
 
@@ -403,9 +403,10 @@ conflux_validate_legs(const conflux_t *cfx)
   // TODO-329-UDP: Eventually we want to allow three legs for the
   // exit case, to allow reconnection of legs to hit an RTT target.
   // For now, this validation helps find bugs.
-  if (BUG(num_legs > conflux_params_get_num_legs_set())) {
-    log_warn(LD_BUG, "Number of legs is above maximum of %d allowed: %d\n",
+  if (num_legs > conflux_params_get_num_legs_set()) {
+    log_fn(LOG_PROTOCOL_WARN,
+           LD_BUG, "Number of legs is above maximum of %d allowed: %d\n",
              conflux_params_get_num_legs_set(), smartlist_len(cfx->legs));
-    conflux_log_set(cfx, is_client);
+    conflux_log_set(LOG_PROTOCOL_WARN, cfx, is_client);
   }
 }
