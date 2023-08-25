@@ -1,0 +1,4 @@
+  o Minor feature (exit policies):
+    - Implement reevaluating new exit policy against existing connections. This
+      is controlled by new config option ReevaluateExitPolicy, defaulting to 0.
+      Closes ticket 40676.

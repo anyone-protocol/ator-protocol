@@ -2385,6 +2385,16 @@ is non-zero):
     policy options are set, Tor behaves as if ExitRelay were set to 0.
     (Default: auto)
 
+[[ReevaluateExitPolicy]] **ReevaluateExitPolicy** **0**|**1**::
+    If set, reevaluate the exit policy on existing connections when reloading
+    configuration. +
+     +
+    When the exit policy of an exit node change while reloading configuration,
+    connections made prior to this change could violate the new policy. By
+    setting this to 1, Tor will check if such connections exist, and mark them
+    for termination.
+    (Default: 0)
+
 [[ExtendAllowPrivateAddresses]] **ExtendAllowPrivateAddresses** **0**|**1**::
     When this option is enabled, Tor will connect to relays on localhost,
     RFC1918 addresses, and so on. In particular, Tor will make direct OR

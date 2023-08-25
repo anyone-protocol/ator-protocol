@@ -141,6 +141,8 @@ struct or_options_t {
                                         * Includes OutboundBindAddresses and
                                         * configured ports. */
   int ReducedExitPolicy; /**<Should we use the Reduced Exit Policy? */
+  int ReevaluateExitPolicy; /**<Should we re-evaluate Exit Policy on existing
+                             * connections when it changes? */
   struct config_line_t *SocksPolicy; /**< Lists of socks policy components */
   struct config_line_t *DirPolicy; /**< Lists of dir policy components */
   /** Local address to bind outbound sockets */

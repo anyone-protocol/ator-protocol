@@ -13,6 +13,7 @@
 #define TOR_CONNECTION_EDGE_H
 
 #include "lib/testsupport/testsupport.h"
+#include "lib/encoding/confline.h"
 
 #include "feature/hs/hs_service.h"
 
@@ -101,6 +102,7 @@ void connection_entry_set_controller_wait(entry_connection_t *conn);
 
 void connection_ap_about_to_close(entry_connection_t *edge_conn);
 void connection_exit_about_to_close(edge_connection_t *edge_conn);
+void connection_reapply_exit_policy(config_line_t *changes);
 
 MOCK_DECL(int,
           connection_ap_handshake_send_begin,(entry_connection_t *ap_conn));

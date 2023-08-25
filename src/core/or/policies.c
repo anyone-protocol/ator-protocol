@@ -1066,7 +1066,7 @@ socks_policy_permits_address(const tor_addr_t *addr)
 }
 
 /** Return 1 if <b>addr</b> is permitted to connect to our metrics port,
- * based on <b>socks_policy</b>. Else return 0.
+ * based on <b>metrics_policy</b>. Else return 0.
  */
 int
 metrics_policy_permits_address(const tor_addr_t *addr)

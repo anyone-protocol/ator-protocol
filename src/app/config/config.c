@@ -637,6 +637,7 @@ static const config_var_t option_vars_[] = {
   V(RephistTrackTime,            INTERVAL, "24 hours"),
   V_IMMUTABLE(RunAsDaemon,       BOOL,     "0"),
   V(ReducedExitPolicy,           BOOL,     "0"),
+  V(ReevaluateExitPolicy,        BOOL,     "0"),
   OBSOLETE("RunTesting"), // currently unused
   V_IMMUTABLE(Sandbox,           BOOL,     "0"),
   V(SafeLogging,                 STRING,   "1"),
@@ -996,6 +997,7 @@ set_options(or_options_t *new_val, char **msg)
     config_line_t *changes =
       config_get_changes(get_options_mgr(), old_options, new_val);
     control_event_conf_changed(changes);
+    connection_reapply_exit_policy(changes);
     config_free_lines(changes);
   }
 
