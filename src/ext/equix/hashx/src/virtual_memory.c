@@ -90,6 +90,7 @@ bool hashx_vm_rx(void* ptr, size_t bytes) {
 	return page_protect(ptr, bytes, PAGE_EXECUTE_READ);
 }
 
+#ifdef EQUIX_SUPPORT_HUGEPAGES
 void* hashx_vm_alloc_huge(size_t bytes) {
 	void* mem;
 #ifdef HASHX_WIN
@@ -124,6 +125,7 @@ void* hashx_vm_alloc_huge(size_t bytes) {
 #endif
 	return mem;
 }
+#endif /* EQUIX_SUPPORT_HUGEPAGES */
 
 void hashx_vm_free(void* ptr, size_t bytes) {
 	if (!ptr) {
