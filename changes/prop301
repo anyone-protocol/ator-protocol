@@ -1,0 +1,6 @@
+  o Removed features (directory authority):
+    - We include a new consensus method that removes support for
+      computing "package" lines in consensus documents.  This feature was
+      never used, and support for
+      including it in our votes was removed in 0.4.2.1-alpha.
+      Finishes implementation of proposal 301.

@@ -53,7 +53,7 @@
 #define MIN_SUPPORTED_CONSENSUS_METHOD 28
 
 /** The highest consensus method that we currently support. */
-#define MAX_SUPPORTED_CONSENSUS_METHOD 33
+#define MAX_SUPPORTED_CONSENSUS_METHOD 34
 
 /**
  * Lowest consensus method where microdescriptor lines are put in canonical
@@ -79,6 +79,12 @@
  * microdescriptor consensuses.
  */
 #define MIN_METHOD_TO_SUPPRESS_MD_PUBLISHED 33
+
+/**
+ * Lowest (supported) consensus method for which we do not include
+ * any "package" lines.
+ **/
+#define MIN_METHOD_TO_OMIT_PACKAGE_FINGERPRINTS 34
 
 /** Default bandwidth to clip unmeasured bandwidths to using method >=
  * MIN_METHOD_TO_CLIP_UNMEASURED_BW.  (This is not a consensus method; do not
