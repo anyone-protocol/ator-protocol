@@ -107,6 +107,7 @@ void* hashx_vm_alloc_huge(size_t bytes) {
 	mem = mmap(NULL, bytes, PAGE_READWRITE, MAP_PRIVATE | MAP_ANONYMOUS
 		| MAP_ALIGNED_SUPER, -1, 0);
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
+	(void)bytes;
 	mem = MAP_FAILED; // OpenBSD and NetBSD do not support huge pages
 #else
 	mem = mmap(NULL, bytes, PAGE_READWRITE, MAP_PRIVATE | MAP_ANONYMOUS
