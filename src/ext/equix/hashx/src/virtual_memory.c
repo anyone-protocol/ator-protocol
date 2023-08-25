@@ -18,6 +18,11 @@
 #define PAGE_READWRITE (PROT_READ | PROT_WRITE)
 #define PAGE_EXECUTE_READ (PROT_READ | PROT_EXEC)
 #define PAGE_EXECUTE_READWRITE (PROT_READ | PROT_WRITE | PROT_EXEC)
+#if defined(__NetBSD__) && defined(PROT_MPROTECT)
+#define PAGE_MMAP_PROT (PAGE_READWRITE | PROT_MPROTECT(PROT_EXEC))
+#else
+#define PAGE_MMAP_PROT PAGE_READWRITE
+#endif
 #endif
 
 #ifdef HASHX_WIN
@@ -57,7 +62,7 @@ void* hashx_vm_alloc(size_t bytes) {
 #ifdef HASHX_WIN
 	mem = VirtualAlloc(NULL, bytes, MEM_COMMIT, PAGE_READWRITE);
 #else
-	mem = mmap(NULL, bytes, PAGE_READWRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+	mem = mmap(NULL, bytes, PAGE_MMAP_PROT, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (mem == MAP_FAILED)
 		return NULL;
 #endif
