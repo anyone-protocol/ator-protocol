@@ -217,7 +217,7 @@ mod tests {
     use crate::*;
     use hex_literal::hex;
     use std::cell::RefCell;
-    use std::sync::Arc;
+    use std::rc::Rc;
 
     #[test]
     fn equix_context() {
@@ -334,7 +334,7 @@ mod tests {
         // Use a Rng callback to read the sequence of pseudorandom numbers
         // without changing them, and spot check the list we get back.
         let mut ctx = HashX::new(HashXType::HASHX_TRY_COMPILE);
-        let seq = Arc::new(RefCell::new(Vec::new()));
+        let seq = Rc::new(RefCell::new(Vec::new()));
         {
             let seq = seq.clone();
             ctx.rng_callback(Some(Box::new(move |value| {
@@ -363,7 +363,7 @@ mod tests {
         // We have to choose the replacement somewhat carefully since
         // many stationary replacement values will cause infinite loops.
         let mut ctx = HashX::new(HashXType::HASHX_TYPE_INTERPRETED);
-        let counter = Arc::new(RefCell::new(0u32));
+        let counter = Rc::new(RefCell::new(0u32));
         {
             let counter = counter.clone();
             ctx.rng_callback(Some(Box::new(move |_value| {
@@ -970,7 +970,7 @@ mod tests {
             let mut ctx = HashX::new(hash_type);
 
             // Fully replace the Rng stream, which must be exactly the right size
-            let counter = Arc::new(RefCell::new(0_usize));
+            let counter = Rc::new(RefCell::new(0_usize));
             {
                 let counter = counter.clone();
                 ctx.rng_callback(Some(Box::new(move |_value| {
