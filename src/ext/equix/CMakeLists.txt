@@ -11,6 +11,7 @@ set(EQUIX_VERSION_STR "${EQUIX_VERSION}.${EQUIX_VERSION_MINOR}.${EQUIX_VERSION_P
 project(equix)
 
 add_definitions(-DHASHX_SIZE=8)
+add_definitions(-DEQUIX_SUPPORT_HUGEPAGES)
 
 add_subdirectory("hashx")
 

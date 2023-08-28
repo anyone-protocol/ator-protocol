@@ -27,7 +27,11 @@ equix_ctx* equix_alloc(equix_ctx_flags flags) {
 
 	if (flags & EQUIX_CTX_SOLVE) {
 		if (flags & EQUIX_CTX_HUGEPAGES) {
+#ifdef EQUIX_SUPPORT_HUGEPAGES
 			ctx->heap = hashx_vm_alloc_huge(sizeof(solver_heap));
+#else
+			ctx->heap = NULL;
+#endif
 		}
 		else {
 			ctx->heap = malloc(sizeof(solver_heap));
