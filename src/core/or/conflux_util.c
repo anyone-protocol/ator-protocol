@@ -38,10 +38,31 @@ circuit_get_package_window(circuit_t *circ,
       tor_assert_nonfatal(circ->purpose ==
                           CIRCUIT_PURPOSE_CONFLUX_LINKED);
     }
+    circuit_t *orig_circ = circ;
+
+    /* If conflux is in the process of tearing down the set,
+     * the package window is 0 -- there is no room. */
+    if (circ->conflux->in_full_teardown)
+      return 0;
+
     circ = conflux_decide_next_circ(circ->conflux);
 
     /* If conflux has no circuit to send on, the package window is 0. */
     if (!circ) {
+      /* Bug #40842: Additional diagnostics for other potential cases */
+      if (!orig_circ->conflux->curr_leg) {
+        if (orig_circ->marked_for_close) {
+          log_warn(LD_BUG, "Conflux has no circuit to send on. "
+                           "Circuit %p idx %d marked at line %s:%d",
+                           orig_circ, orig_circ->global_circuitlist_idx,
+                           orig_circ->marked_for_close_file,
+                           orig_circ->marked_for_close);
+        } else {
+          log_warn(LD_BUG, "Conflux has no circuit to send on. "
+                           "Circuit %p idx %d not marked for close.",
+                           orig_circ, orig_circ->global_circuitlist_idx);
+        }
+      }
       return 0;
     }
 
@@ -76,6 +97,10 @@ conflux_can_send(conflux_t *cfx)
   if (send_circ) {
     return true;
   } else {
+    if (BUG(!cfx->in_full_teardown && !cfx->curr_leg)) {
+      log_fn(LOG_WARN,
+             LD_BUG, "Conflux has no current circuit to send on. ");
+    }
     return false;
   }
 }
