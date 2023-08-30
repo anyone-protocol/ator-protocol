@@ -8,8 +8,10 @@ TMP=$(mktemp -d)
 DB_PATH="/var/lib/location/database.db"
 
 # In case it exists as a dead symlink.
-if [ -e "$DB_PATH" ]; then
+if [ -h "$DB_PATH" ]; then
     unlink "$DB_PATH"
+elif [ -e "$DB_PATH" ]; then
+    rm -f "$DB_PATH"
 fi
 
 curl -o "$DB_PATH.xz" "https://location.ipfire.org/databases/1/location.db.xz"
