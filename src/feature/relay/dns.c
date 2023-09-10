@@ -563,6 +563,12 @@ send_resolved_cell,(edge_connection_t *conn, uint8_t answer_type,
   connection_edge_send_command(conn, RELAY_COMMAND_RESOLVED, buf, buflen);
 }
 
+void
+dns_send_resolved_error_cell(edge_connection_t *conn, uint8_t answer_type)
+{
+  send_resolved_cell(conn, answer_type, NULL);
+}
+
 /** Send a response to the RESOLVE request of a connection for an in-addr.arpa
  * address on connection <b>conn</b> which yielded the result <b>hostname</b>.
  * The answer type will be RESOLVED_HOSTNAME.

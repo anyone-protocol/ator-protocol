@@ -325,7 +325,8 @@ get_param_stream_defense_type(const networkstatus_t *ns)
   }
   return networkstatus_get_param(ns, "DoSStreamCreationDefenseType",
                                  DOS_STREAM_DEFENSE_TYPE_DEFAULT,
-                                 DOS_STREAM_DEFENSE_NONE, DOS_STREAM_DEFENSE_MAX);
+                                 DOS_STREAM_DEFENSE_NONE,
+                                 DOS_STREAM_DEFENSE_MAX);
 }
 
 /* Set circuit creation parameters located in the consensus or their default
@@ -834,6 +835,41 @@ dos_conn_addr_get_defense_type(const tor_addr_t *addr)
 
  end:
   return DOS_CONN_DEFENSE_NONE;
+}
+
+/* Stream creation public API. */
+
+/* Return the action to take against a BEGIN or RESOLVE cell. Return
+ *  DOS_STREAM_DEFENSE_NONE when no action should be taken.
+ *  Increment the appropriate counter when the cell was found to go over a
+ *  limit. */
+dos_stream_defense_type_t
+dos_stream_new_begin_or_resolve_cell(or_circuit_t *circ)
+{
+  if (!dos_stream_enabled || circ == NULL)
+    return DOS_STREAM_DEFENSE_NONE;
+
+  token_bucket_ctr_refill(&circ->stream_limiter,
+                          (uint32_t) monotime_coarse_absolute_sec());
+
+  if (token_bucket_ctr_get(&circ->stream_limiter) > 0) {
+    token_bucket_ctr_dec(&circ->stream_limiter, 1);
+    return DOS_STREAM_DEFENSE_NONE;
+  }
+  /* if defense type is DOS_STREAM_DEFENSE_NONE but DoSStreamEnabled is true,
+   * we count offending cells as rejected, despite them being actually
+   * accepted. */
+  ++stream_num_rejected;
+  return dos_stream_defense_type;
+}
+
+/* Initialize the token bucket for stream rate limit on a circuit. */
+void
+dos_stream_init_circ_tbf(or_circuit_t *circ)
+{
+  token_bucket_ctr_init(&circ->stream_limiter, dos_stream_rate,
+                        dos_stream_burst,
+                        (uint32_t) monotime_coarse_absolute_sec());
 }
 
 /* General API */

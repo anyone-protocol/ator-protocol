@@ -186,6 +186,10 @@ typedef enum dos_stream_defense_type_t {
   DOS_STREAM_DEFENSE_MAX            = 3,
 } dos_stream_defense_type_t;
 
+dos_stream_defense_type_t dos_stream_new_begin_or_resolve_cell(
+                                                          or_circuit_t *circ);
+void dos_stream_init_circ_tbf(or_circuit_t *circ);
+
 #ifdef DOS_PRIVATE
 
 STATIC uint32_t get_param_conn_max_concurrent_count(

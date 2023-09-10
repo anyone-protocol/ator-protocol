@@ -73,6 +73,7 @@
 #include "core/or/conflux_util.h"
 #include "core/or/circuitstats.h"
 #include "core/or/connection_or.h"
+#include "core/or/dos.h"
 #include "core/or/extendinfo.h"
 #include "core/or/policies.h"
 #include "core/or/reasons.h"
@@ -3990,6 +3991,7 @@ connection_exit_begin_conn(cell_t *cell, circuit_t *circ)
   begin_cell_t bcell;
   int rv;
   uint8_t end_reason=0;
+  dos_stream_defense_type_t dos_defense_type;
 
   assert_circuit_ok(circ);
   if (!CIRCUIT_IS_ORIGIN(circ)) {
@@ -4148,6 +4150,35 @@ connection_exit_begin_conn(cell_t *cell, circuit_t *circ)
 
   log_debug(LD_EXIT,"about to start the dns_resolve().");
 
+  /* TODO should this be moved higher to protect from a stream DoS on directory
+   * requests, and possibly against an onion service? (for OS, more changes
+   * would be required) */
+  dos_defense_type = dos_stream_new_begin_or_resolve_cell(or_circ);
+  switch (dos_defense_type) {
+    case DOS_STREAM_DEFENSE_NONE:
+      break;
+    case DOS_STREAM_DEFENSE_REFUSE_STREAM:
+      // we don't use END_STREAM_REASON_RESOURCELIMIT because it would make a
+      // client mark us as non-functional until they get a new consensus.
+      relay_send_end_cell_from_edge(rh.stream_id, circ, END_STREAM_REASON_MISC,
+                                    layer_hint);
+      connection_free_(TO_CONN(n_stream));
+      return 0;
+    case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
+      connection_free_(TO_CONN(n_stream));
+      /* TODO we could return REASON_NONE or REASON_RESOURCELIMIT. When closing
+       * circuits, you either get:
+       * - END_CIRC_REASON_NONE: tons of notice level "We tried for 15
+       *   seconds to connect to 'target' using exit X. Retrying on a new
+       *   circuit."
+       * - END_CIRC_REASON_RESOURCELIMIT: warn level "Guard X is failing
+       *   to carry an extremely large amount of streams on its circuits"
+       *
+       * I'm not sure which one we want
+       */
+      return -END_CIRC_REASON_NONE;
+  }
+
   /* send it off to the gethostbyname farm */
   switch (dns_resolve(n_stream)) {
     case 1: /* resolve worked; now n_stream is attached to circ. */
@@ -4171,17 +4202,21 @@ connection_exit_begin_conn(cell_t *cell, circuit_t *circ)
  * Called when we receive a RELAY_COMMAND_RESOLVE cell 'cell' along the
  * circuit <b>circ</b>;
  * begin resolving the hostname, and (eventually) reply with a RESOLVED cell.
+ *
+ * Return -(some circuit end reason) if we want to tear down <b>circ</b>.
+ * Else return 0.
  */
 int
 connection_exit_begin_resolve(cell_t *cell, or_circuit_t *circ)
 {
   edge_connection_t *dummy_conn;
   relay_header_t rh;
+  dos_stream_defense_type_t dos_defense_type;
 
   assert_circuit_ok(TO_CIRCUIT(circ));
   relay_header_unpack(&rh, cell->payload);
   if (rh.length > RELAY_PAYLOAD_SIZE)
-    return -1;
+    return 0;
 
   /* Note the RESOLVE stream as seen. */
   rep_hist_note_exit_stream(RELAY_COMMAND_RESOLVE);
@@ -4203,6 +4238,18 @@ connection_exit_begin_resolve(cell_t *cell, or_circuit_t *circ)
   dummy_conn->base_.purpose = EXIT_PURPOSE_RESOLVE;
 
   dummy_conn->on_circuit = TO_CIRCUIT(circ);
+
+  dos_defense_type = dos_stream_new_begin_or_resolve_cell(circ);
+  switch (dos_defense_type) {
+    case DOS_STREAM_DEFENSE_NONE:
+      break;
+    case DOS_STREAM_DEFENSE_REFUSE_STREAM:
+      dns_send_resolved_error_cell(dummy_conn, RESOLVED_TYPE_ERROR_TRANSIENT);
+      return 0;
+    case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
+      /* TODO maybe use REASON_RESOURCELIMIT? See connection_exit_begin_conn() */
+      return -END_CIRC_REASON_NONE;
+  }
 
   /* send it off to the gethostbyname farm */
   switch (dns_resolve(dummy_conn)) {

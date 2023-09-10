@@ -20,6 +20,8 @@ int dns_reset(void);
 void connection_dns_remove(edge_connection_t *conn);
 void assert_connection_edge_not_dns_pending(edge_connection_t *conn);
 int dns_resolve(edge_connection_t *exitconn);
+void dns_send_resolved_error_cell(edge_connection_t *conn,
+                                  uint8_t answer_type);
 int dns_seems_to_be_broken(void);
 int dns_seems_to_be_broken_for_ipv6(void);
 void dns_reset_correctness_checks(void);

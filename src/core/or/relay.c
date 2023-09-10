@@ -2015,8 +2015,7 @@ handle_relay_cell_command(cell_t *cell, circuit_t *circ,
                circ->purpose);
         return 0;
       }
-      connection_exit_begin_resolve(cell, TO_OR_CIRCUIT(circ));
-      return 0;
+      return connection_exit_begin_resolve(cell, TO_OR_CIRCUIT(circ));
     case RELAY_COMMAND_RESOLVED:
       if (conn) {
         log_fn(LOG_PROTOCOL_WARN, domain,

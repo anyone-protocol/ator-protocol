@@ -65,6 +65,7 @@
 #include "core/or/conflux.h"
 #include "core/or/conflux_pool.h"
 #include "core/or/crypt_path.h"
+#include "core/or/dos.h"
 #include "core/or/extendinfo.h"
 #include "core/or/status.h"
 #include "core/or/trace_probes_circuit.h"
@@ -1130,6 +1131,7 @@ or_circuit_new(circid_t p_circ_id, channel_t *p_chan)
   cell_queue_init(&circ->p_chan_cells);
 
   init_circuit_base(TO_CIRCUIT(circ));
+  dos_stream_init_circ_tbf(circ);
 
   tor_trace(TR_SUBSYS(circuit), TR_EV(new_or), circ);
   return circ;
