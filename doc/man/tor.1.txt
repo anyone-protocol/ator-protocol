@@ -3037,6 +3037,44 @@ Denial of Service mitigation subsystem described above.
     consensus parameter. If not defined in the consensus, the value is 0.
     (Default: auto)
 
+The following options are useful only for a exit relay.
+
+[[DoSStreamCreationEnabled]] **DoSStreamCreationEnabled** **0**|**1**|**auto**::
+
+    Enable the stream DoS mitigation. If set to 1 (enabled), tor will apply
+    rate limit on the creation of new streams and dns requests per circuit.
+    "auto" means use the consensus parameter. If not defined in the consensus,
+    the value is 0. (Default: auto)
+
+[[DoSStreamCreationDefenseType]] **DoSStreamCreationDefenseType** __NUM__::
+
+    This is the type of defense applied to a detected circuit or stream for the
+    stream mitigation. The possible values are:
+     +
+      1: No defense.
+     +
+      2: Reject the stream or resolve request.
+     +
+      3: Close the circuit creating to many streams.
+     +
+    "0" means use the consensus parameter. If not defined in the consensus, the value is 2.
+    (Default: 0)
+
+[[DoSStreamCreationtRate]] **DoSStreamCreationRate** __NUM__::
+
+    The allowed rate of stream cretion  from a single circuit per second. Coupled
+    with the burst (see below), if the limit is reached, actions can be taken
+    against the stream or circuit (DoSStreamCreationDefenseType). If not defined or
+    set to 0, it is controlled by a consensus parameter. If not defined in the
+    consensus, the value is 100. (Default: 0)
+
+[[DoSStreamCreationBurst]] **DoSStreamCreationBurst** __NUM__::
+
+    The allowed burst of stream creation from a circuit per second.
+    See the DoSStreamCreationRate for more details on this detection. If
+    not defined or set to 0, it is controlled by a consensus parameter. If not
+    defined in the consensus, the value is 300. (Default: 0)
+
 
 For onion services, mitigations are a work in progress and multiple options
 are currently available.

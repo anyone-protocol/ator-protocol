@@ -1,0 +1,5 @@
+  o Minor feature (exit relay, DoS(resitance):
+    - Implement a token-bucket based rate limiter for stream creation and
+      resolve request. It is configured by the DoSStream* family of 
+      configuration options.
+      Closes ticket 40736.
