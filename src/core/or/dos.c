@@ -839,6 +839,13 @@ dos_conn_addr_get_defense_type(const tor_addr_t *addr)
 
 /* Stream creation public API. */
 
+/** Return the number of rejected stream and resolve. */
+uint64_t
+dos_get_num_stream_rejected(void)
+{
+  return stream_num_rejected;
+}
+
 /* Return the action to take against a BEGIN or RESOLVE cell. Return
  *  DOS_STREAM_DEFENSE_NONE when no action should be taken.
  *  Increment the appropriate counter when the cell was found to go over a

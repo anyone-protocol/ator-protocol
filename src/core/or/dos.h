@@ -90,6 +90,7 @@ uint64_t dos_get_num_cc_rejected(void);
 uint64_t dos_get_num_conn_addr_rejected(void);
 uint64_t dos_get_num_conn_addr_connect_rejected(void);
 uint64_t dos_get_num_single_hop_refused(void);
+uint64_t dos_get_num_stream_rejected(void);
 
 /*
  * Circuit creation DoS mitigation subsystemn interface.

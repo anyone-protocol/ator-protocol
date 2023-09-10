@@ -38,6 +38,8 @@ void dns_launch_correctness_checks(void);
 #else /* !defined(HAVE_MODULE_RELAY) */
 
 #define dns_init() (0)
+#define dns_send_resolved_error_cell(conn, answer_type) \
+  ((void)(conn), (void)(answer_type))
 #define dns_seems_to_be_broken() (0)
 #define has_dns_init_failed() (0)
 #define dns_cache_total_allocation() (0)

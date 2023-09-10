@@ -433,6 +433,12 @@ fill_dos_values(void)
   metrics_store_entry_add_label(sentry,
           metrics_format_label("type", "introduce2_rejected"));
   metrics_store_entry_update(sentry, hs_dos_get_intro2_rejected_count());
+
+  sentry = metrics_store_add(the_store, rentry->type, rentry->name,
+                             rentry->help, 0, NULL);
+  metrics_store_entry_add_label(sentry,
+          metrics_format_label("type", "stream_rejected"));
+  metrics_store_entry_update(sentry, dos_get_num_stream_rejected());
 }
 
 /** Fill function for the RELAY_METRICS_CC_COUNTERS metric. */

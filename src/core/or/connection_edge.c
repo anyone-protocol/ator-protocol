@@ -4247,7 +4247,8 @@ connection_exit_begin_resolve(cell_t *cell, or_circuit_t *circ)
       dns_send_resolved_error_cell(dummy_conn, RESOLVED_TYPE_ERROR_TRANSIENT);
       return 0;
     case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
-      /* TODO maybe use REASON_RESOURCELIMIT? See connection_exit_begin_conn() */
+      /* TODO maybe use REASON_RESOURCELIMIT?
+       * See connection_exit_begin_conn() */
       return -END_CIRC_REASON_NONE;
   }
 
