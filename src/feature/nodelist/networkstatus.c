@@ -2451,7 +2451,9 @@ networkstatus_getinfo_by_purpose(const char *purpose_string, time_t now)
     if (ri->purpose != purpose)
       continue;
     set_routerstatus_from_routerinfo(&rs, node, ri);
-    smartlist_add(statuses, networkstatus_getinfo_helper_single(&rs));
+    char *text = routerstatus_format_entry(
+      &rs, NULL, NULL, NS_CONTROL_PORT, NULL, ri->cache_info.published_on);
+    smartlist_add(statuses, text);
   } SMARTLIST_FOREACH_END(ri);
 
   answer = smartlist_join_strings(statuses, "", 0, NULL);
