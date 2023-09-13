@@ -1,0 +1,3 @@
+  o Minor features (portability, android):
+    - Use /data/local/tmp for data storage on Android by default. Closes ticket
+      40487. Patch from Hans-Christoph Steiner.
