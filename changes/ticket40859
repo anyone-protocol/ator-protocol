@@ -1,0 +1,4 @@
+  o Minor features (testing):
+    - Enable Doxygen and Stem tests for 0.4.8 and clean-up some logic for
+      handling versions of Tor that are no longer supported. Closes ticket
+      40859.
