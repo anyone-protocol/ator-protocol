@@ -285,28 +285,6 @@ fi
 
 TOR_VERSION=$(grep -m 1 AC_INIT "${CI_SRCDIR}"/configure.ac | sed -e 's/.*\[//; s/\].*//;')
 
-# Use variables like these when we need to behave differently depending on
-# Tor version.  Only create the variables we need.
-TOR_VER_AT_LEAST_043=no
-TOR_VER_AT_LEAST_044=no
-
-# These are the currently supported Tor versions; no need to work with anything
-# ancient in this script.
-case "$TOR_VERSION" in
-    0.4.5.*)
-        TOR_VER_AT_LEAST_043=yes
-        TOR_VER_AT_LEAST_044=yes
-        ;;
-    0.4.6.*)
-        TOR_VER_AT_LEAST_043=yes
-        TOR_VER_AT_LEAST_044=yes
-        ;;
-    0.4.7.*)
-        TOR_VER_AT_LEAST_043=yes
-        TOR_VER_AT_LEAST_044=yes
-        ;;
-esac
-
 #############################################################################
 # Make sure the directories are all there.
 
@@ -398,14 +376,10 @@ FAILED_TESTS=""
 
 if [[ "${DOXYGEN}" = 'yes' ]]; then
     start_section Doxygen
-    if [[ "${TOR_VER_AT_LEAST_043}" = 'yes' ]]; then
-        if runcmd make doxygen; then
-            hooray "make doxygen has succeeded."
-        else
-            FAILED_TESTS="${FAILED_TESTS} doxygen"
-        fi
+    if runcmd make doxygen; then
+        hooray "make doxygen has succeeded."
     else
-        skipping "make doxygen: doxygen is broken for Tor < 0.4.3"
+        FAILED_TESTS="${FAILED_TESTS} doxygen"
     fi
     end_section Doxygen
 fi
@@ -457,30 +431,26 @@ if [[ "${STEM}" = "yes" ]]; then
     # 0.3.5 and onward have now disabled onion service v2 so we need to exclude
     # these Stem tests from now on.
     EXCLUDE_TESTS="--exclude-test control.controller.test_ephemeral_hidden_services_v2 --exclude-test control.controller.test_hidden_services_conf --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth --exclude-test control.controller.test_without_ephemeral_hidden_services --exclude-test control.controller.test_with_ephemeral_hidden_services_basic_auth_no_credentials --exclude-test control.controller.test_with_detached_ephemeral_hidden_services --exclude-test control.controller.test_with_invalid_ephemeral_hidden_service_port --exclude-test control.controller.test_ephemeral_hidden_services_v3"
-    if [[ "${TOR_VER_AT_LEAST_044}" = 'yes' ]]; then
-        # XXXX This should probably be part of some test-stem make target.
+    # XXXX This should probably be part of some test-stem make target.
 
-        # Disable the check around EXCLUDE_TESTS that requires double quote. We
-        # need it to be expanded.
-        # shellcheck disable=SC2086
-        if runcmd timelimit -p -t 520 -s USR1 -T 30 -S ABRT \
-            python3 "${STEM_PATH}/run_tests.py" \
-            --tor src/app/tor \
-            --integ --test control.controller \
-            $EXCLUDE_TESTS \
-            --test control.base_controller \
-            --test process \
-            --log TRACE \
-            --log-file stem.log ; then
-            hooray "Stem tests have succeeded"
-        else
-            error "Stem output:"
-            runcmd tail -1000 "${STEM_PATH}"/test/data/tor_log
-            runcmd grep -v "SocketClosed" stem.log | tail -1000
-            FAILED_TESTS="${FAILED_TESTS} stem"
-        fi
+    # Disable the check around EXCLUDE_TESTS that requires double quote. We
+    # need it to be expanded.
+    # shellcheck disable=SC2086
+    if runcmd timelimit -p -t 520 -s USR1 -T 30 -S ABRT \
+        python3 "${STEM_PATH}/run_tests.py" \
+        --tor src/app/tor \
+        --integ --test control.controller \
+        $EXCLUDE_TESTS \
+        --test control.base_controller \
+        --test process \
+        --log TRACE \
+        --log-file stem.log ; then
+        hooray "Stem tests have succeeded"
     else
-        skipping "Stem: broken with <= 0.4.3. See bug tor#40077"
+        error "Stem output:"
+        runcmd tail -1000 "${STEM_PATH}"/test/data/tor_log
+        runcmd grep -v "SocketClosed" stem.log | tail -1000
+        FAILED_TESTS="${FAILED_TESTS} stem"
     fi
     end_section "Stem"
 fi
