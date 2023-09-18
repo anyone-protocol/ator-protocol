@@ -364,22 +364,22 @@ test_sandbox_crypto_equix(void *arg)
 struct testcase_t sandbox_tests[] = {
   SANDBOX_TEST(is_active, TT_FORK),
 
-/* When Tor is built with fragile compiler-hardening the sandbox is unable to
- * filter requests to open files or directories (on systems where glibc uses
- * the "open" system call to provide this functionality), as doing so would
+/* When Tor is built with fragile compiler-hardening the sandbox is usually
+ * unable to filter requests to open files or directories, as doing so would
  * interfere with the address sanitizer as it retrieves information about the
  * running process via the filesystem.  Skip these tests in that case as the
  * corresponding functions are likely to have no effect and this will cause the
  * tests to fail. */
 #ifdef ENABLE_FRAGILE_HARDENING
   SANDBOX_TEST_SKIPPED(open_filename),
+  SANDBOX_TEST_SKIPPED(openat_filename),
   SANDBOX_TEST_SKIPPED(opendir_dirname),
 #else
   SANDBOX_TEST_IN_SANDBOX(open_filename),
+  SANDBOX_TEST_IN_SANDBOX(openat_filename),
   SANDBOX_TEST_IN_SANDBOX(opendir_dirname),
 #endif /* defined(ENABLE_FRAGILE_HARDENING) */
 
-  SANDBOX_TEST_IN_SANDBOX(openat_filename),
   SANDBOX_TEST_IN_SANDBOX(chmod_filename),
   SANDBOX_TEST_IN_SANDBOX(chown_filename),
   SANDBOX_TEST_IN_SANDBOX(rename_filename),
