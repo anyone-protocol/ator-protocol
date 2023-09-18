@@ -522,9 +522,10 @@ tor_zstd_warn_if_version_mismatched(void)
     tor_zstd_format_version(runtime_version, sizeof(runtime_version),
                             ZSTD_versionNumber());
 
-    log_warn(LD_GENERAL,
+    log_info(LD_GENERAL,
              "Tor was compiled with zstd %s, but is running with zstd %s. "
-             "For safety, we'll avoid using advanced zstd functionality.",
+             "For ABI compatibility reasons, we'll avoid using advanced zstd "
+             "functionality.",
              header_version, runtime_version);
   }
 #endif /* defined(HAVE_ZSTD) && defined(ENABLE_ZSTD_ADVANCED_APIS) */
