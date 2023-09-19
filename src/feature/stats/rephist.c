@@ -2290,19 +2290,14 @@ typedef struct {
 /** Keep track of the onionskin requests for an assessment period. */
 static overload_onionskin_assessment_t overload_onionskin_assessment;
 
-/**
- * We combine ntorv3 and ntor into the same stat, so we must
- * use this function to convert the cell type to a stat index.
+/** This function ensures that we clamp the maximum value of the given input
+ * <b>type</b> to NTOR in case the input is out of range.
  */
 static inline uint16_t
 onionskin_type_to_stat(uint16_t type)
 {
-  if (type == ONION_HANDSHAKE_TYPE_NTOR_V3) {
-    return ONION_HANDSHAKE_TYPE_NTOR;
-  }
-
   if (BUG(type > MAX_ONION_STAT_TYPE)) {
-    return MAX_ONION_STAT_TYPE; // use ntor if out of range
+    return MAX_ONION_STAT_TYPE; // use ntor_v3 if out of range
   }
 
   return type;
@@ -2371,7 +2366,8 @@ rep_hist_note_circuit_handshake_requested(uint16_t type)
   onion_handshakes_requested[stat]++;
 
   /* Only relays get to record requested onionskins. */
-  if (stat == ONION_HANDSHAKE_TYPE_NTOR) {
+  if (stat == ONION_HANDSHAKE_TYPE_NTOR ||
+      stat == ONION_HANDSHAKE_TYPE_NTOR_V3) {
     /* Assess if we've reached the overload general signal. */
     overload_general_onionskin_assessment();
 
@@ -2398,7 +2394,8 @@ rep_hist_note_circuit_handshake_dropped(uint16_t type)
   stats_n_onionskin_dropped[stat]++;
 
   /* Only relays get to record requested onionskins. */
-  if (stat == ONION_HANDSHAKE_TYPE_NTOR) {
+  if (stat == ONION_HANDSHAKE_TYPE_NTOR ||
+      stat == ONION_HANDSHAKE_TYPE_NTOR_V3) {
     /* Note the dropped ntor in the overload assessment object. */
     overload_onionskin_assessment.n_ntor_dropped++;
   }
@@ -2438,11 +2435,13 @@ rep_hist_log_circuit_handshake_stats(time_t now)
 {
   (void)now;
   log_notice(LD_HEARTBEAT, "Circuit handshake stats since last time: "
-             "%d/%d TAP, %d/%d NTor.",
+             "%d/%d TAP, %d/%d NTor, %d/%d NTor (v3).",
              onion_handshakes_assigned[ONION_HANDSHAKE_TYPE_TAP],
              onion_handshakes_requested[ONION_HANDSHAKE_TYPE_TAP],
              onion_handshakes_assigned[ONION_HANDSHAKE_TYPE_NTOR],
-             onion_handshakes_requested[ONION_HANDSHAKE_TYPE_NTOR]);
+             onion_handshakes_requested[ONION_HANDSHAKE_TYPE_NTOR],
+             onion_handshakes_assigned[ONION_HANDSHAKE_TYPE_NTOR_V3],
+             onion_handshakes_requested[ONION_HANDSHAKE_TYPE_NTOR_V3]);
   memset(onion_handshakes_assigned, 0, sizeof(onion_handshakes_assigned));
   memset(onion_handshakes_requested, 0, sizeof(onion_handshakes_requested));
 }

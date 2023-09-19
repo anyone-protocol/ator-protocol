@@ -1,0 +1,4 @@
+  o Minor bugfix (MetricsPort, relay):
+    - Handle rephist tracking of ntor and ntor_v3 handshakes individually such
+      that MetricsPort exposes the correct values. Fixes bug 40638; bugfix on 0.4.7.11.
+
