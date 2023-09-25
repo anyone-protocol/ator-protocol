@@ -102,8 +102,8 @@ void rep_hist_note_dns_error(int type, uint8_t error);
 void rep_hist_consensus_has_changed(const networkstatus_t *ns);
 
 /** We combine ntor and ntorv3 stats, so we have 3 stat types:
- * tap, fast, and ntor. The max type is ntor (2) */
-#define MAX_ONION_STAT_TYPE   ONION_HANDSHAKE_TYPE_NTOR
+ * tap, fast, and ntor. The max type is ntor_v3 (3) */
+#define MAX_ONION_STAT_TYPE   MAX_ONION_HANDSHAKE_TYPE
 
 extern uint64_t rephist_total_alloc;
 extern uint32_t rephist_total_num;
