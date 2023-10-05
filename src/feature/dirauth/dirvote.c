@@ -3945,14 +3945,10 @@ dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
   }
 
   if (family) {
-    if (consensus_method < MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS) {
-      smartlist_add_asprintf(chunks, "family %s\n", family);
-    } else {
-      const uint8_t *id = (const uint8_t *)ri->cache_info.identity_digest;
-      char *canonical_family = nodefamily_canonicalize(family, id, 0);
-      smartlist_add_asprintf(chunks, "family %s\n", canonical_family);
-      tor_free(canonical_family);
-    }
+    const uint8_t *id = (const uint8_t *)ri->cache_info.identity_digest;
+    char *canonical_family = nodefamily_canonicalize(family, id, 0);
+    smartlist_add_asprintf(chunks, "family %s\n", canonical_family);
+    tor_free(canonical_family);
   }
 
   if (summary && strcmp(summary, "reject 1-65535"))
@@ -4050,8 +4046,6 @@ static const struct consensus_method_range_t {
   int high;
 } microdesc_consensus_methods[] = {
   {MIN_SUPPORTED_CONSENSUS_METHOD,
-   MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS - 1},
-  {MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS,
    MIN_METHOD_FOR_UNPADDED_NTOR_KEY - 1},
   {MIN_METHOD_FOR_UNPADDED_NTOR_KEY,
    MAX_SUPPORTED_CONSENSUS_METHOD},

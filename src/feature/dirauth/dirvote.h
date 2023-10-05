@@ -55,12 +55,6 @@
 /** The highest consensus method that we currently support. */
 #define MAX_SUPPORTED_CONSENSUS_METHOD 34
 
-/**
- * Lowest consensus method where microdescriptor lines are put in canonical
- * form for improved compressibility and ease of storage. See proposal 298.
- **/
-#define MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS 29
-
 /** Lowest consensus method where an unpadded base64 onion-key-ntor is allowed
  * See #7869 */
 #define MIN_METHOD_FOR_UNPADDED_NTOR_KEY 30
