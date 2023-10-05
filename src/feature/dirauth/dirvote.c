@@ -3921,6 +3921,7 @@ dirvote_get_vote(const char *fp, int flags)
 STATIC microdesc_t *
 dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
 {
+  (void) consensus_method; // Currently unneeded...
   microdesc_t *result = NULL;
   char *key = NULL, *summary = NULL, *family = NULL;
   size_t keylen;
@@ -3939,8 +3940,7 @@ dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
 
   if (ri->onion_curve25519_pkey) {
     char kbuf[CURVE25519_BASE64_PADDED_LEN + 1];
-    bool add_padding = (consensus_method < MIN_METHOD_FOR_UNPADDED_NTOR_KEY);
-    curve25519_public_to_base64(kbuf, ri->onion_curve25519_pkey, add_padding);
+    curve25519_public_to_base64(kbuf, ri->onion_curve25519_pkey, false);
     smartlist_add_asprintf(chunks, "ntor-onion-key %s\n", kbuf);
   }
 
@@ -4046,8 +4046,6 @@ static const struct consensus_method_range_t {
   int high;
 } microdesc_consensus_methods[] = {
   {MIN_SUPPORTED_CONSENSUS_METHOD,
-   MIN_METHOD_FOR_UNPADDED_NTOR_KEY - 1},
-  {MIN_METHOD_FOR_UNPADDED_NTOR_KEY,
    MAX_SUPPORTED_CONSENSUS_METHOD},
   {-1, -1}
 };

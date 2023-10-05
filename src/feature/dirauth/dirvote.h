@@ -55,10 +55,6 @@
 /** The highest consensus method that we currently support. */
 #define MAX_SUPPORTED_CONSENSUS_METHOD 34
 
-/** Lowest consensus method where an unpadded base64 onion-key-ntor is allowed
- * See #7869 */
-#define MIN_METHOD_FOR_UNPADDED_NTOR_KEY 30
-
 /** Lowest consensus method for which we use the correct algorithm for
  * extracting the bwweightscale= and maxunmeasuredbw= parameters. See #19011.
  */
