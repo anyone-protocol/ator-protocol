@@ -1780,15 +1780,10 @@ networkstatus_compute_consensus(smartlist_t *votes,
   }
 
   {
-    if (consensus_method < MIN_METHOD_FOR_CORRECT_BWWEIGHTSCALE) {
-      max_unmeasured_bw_kb = (int32_t) extract_param_buggy(
-                  params, "maxunmeasuredbw", DEFAULT_MAX_UNMEASURED_BW_KB);
-    } else {
-      max_unmeasured_bw_kb = dirvote_get_intermediate_param_value(
-                  param_list, "maxunmeasurdbw", DEFAULT_MAX_UNMEASURED_BW_KB);
-      if (max_unmeasured_bw_kb < 1)
-        max_unmeasured_bw_kb = 1;
-    }
+    max_unmeasured_bw_kb = dirvote_get_intermediate_param_value(
+                param_list, "maxunmeasurdbw", DEFAULT_MAX_UNMEASURED_BW_KB);
+    if (max_unmeasured_bw_kb < 1)
+      max_unmeasured_bw_kb = 1;
   }
 
   /* Add the actual router entries. */
@@ -2371,15 +2366,10 @@ networkstatus_compute_consensus(smartlist_t *votes,
 
   {
     int64_t weight_scale;
-    if (consensus_method < MIN_METHOD_FOR_CORRECT_BWWEIGHTSCALE) {
-      weight_scale = extract_param_buggy(params, "bwweightscale",
-                                         BW_WEIGHT_SCALE);
-    } else {
-      weight_scale = dirvote_get_intermediate_param_value(
-                       param_list, "bwweightscale", BW_WEIGHT_SCALE);
-      if (weight_scale < 1)
-        weight_scale = 1;
-    }
+    weight_scale = dirvote_get_intermediate_param_value(
+                     param_list, "bwweightscale", BW_WEIGHT_SCALE);
+    if (weight_scale < 1)
+      weight_scale = 1;
     added_weights = networkstatus_compute_bw_weights_v10(chunks, G, M, E, D,
                                                          T, weight_scale);
   }
@@ -2479,53 +2469,6 @@ networkstatus_compute_consensus(smartlist_t *votes,
   smartlist_free(param_list);
 
   return result;
-}
-
-/** Extract the value of a parameter from a string encoding a list of
- * parameters, badly.
- *
- * This is a deliberately buggy implementation, for backward compatibility
- * with versions of Tor affected by #19011.  Once all authorities have
- * upgraded to consensus method 31 or later, then we can throw away this
- * function.  */
-STATIC int64_t
-extract_param_buggy(const char *params,
-                    const char *param_name,
-                    int64_t default_value)
-{
-  int64_t value = default_value;
-  const char *param_str = NULL;
-
-  if (params) {
-    char *prefix1 = NULL, *prefix2=NULL;
-    tor_asprintf(&prefix1, "%s=", param_name);
-    tor_asprintf(&prefix2, " %s=", param_name);
-    if (strcmpstart(params, prefix1) == 0)
-      param_str = params;
-    else
-      param_str = strstr(params, prefix2);
-    tor_free(prefix1);
-    tor_free(prefix2);
-  }
-
-  if (param_str) {
-    int ok=0;
-    char *eq = strchr(param_str, '=');
-    if (eq) {
-      value = tor_parse_long(eq+1, 10, 1, INT32_MAX, &ok, NULL);
-      if (!ok) {
-        log_warn(LD_DIR, "Bad element '%s' in %s",
-                 escaped(param_str), param_name);
-        value = default_value;
-      }
-    } else {
-      log_warn(LD_DIR, "Bad element '%s' in %s",
-               escaped(param_str), param_name);
-      value = default_value;
-    }
-  }
-
-  return value;
 }
 
 /** Given a list of networkstatus_t for each vote, return a newly allocated
