@@ -366,37 +366,14 @@ static const char test_ri[] =
   "iFJkKxxDx7ksxX0zdl7aPT4ORFEuRhCYS6el7YJmoyg=\n"
   "-----END SIGNATURE-----\n";
 
-static const char test_md2_25[] =
+static const char test_md2_withfamily_33[] =
   "onion-key\n"
   "-----BEGIN RSA PUBLIC KEY-----\n"
   "MIGJAoGBAMvEJ/JVNK7I38PPWhQMuCgkET/ki4WIas4tj5Kmqfb9kHqxMR+EunRD\n"
   "83k4pel1yB7QdV+iTd/4SZOI8RpZP+BO1KnOTWfpztAU1lDGr19/PwdwcHaILpBD\n"
   "nNzm6otk4/bKUQ0vqpOfJljtg0DfAm4uMAQ6BMFy6uEAF7+JupuPAgMBAAE=\n"
   "-----END RSA PUBLIC KEY-----\n"
-  "ntor-onion-key FChIfm77vrWB7JsxQ+jMbN6VSSp1P0DYbw/2aqey4iA=\n"
-  "p accept 1-65535\n"
-  "id ed25519 J5lkRqyL6qW+CpN3E4RIlgJZeLgwjtmOOrjZvVhuwLQ\n";
-
-static const char test_md2_withfamily_28[] =
-  "onion-key\n"
-  "-----BEGIN RSA PUBLIC KEY-----\n"
-  "MIGJAoGBAMvEJ/JVNK7I38PPWhQMuCgkET/ki4WIas4tj5Kmqfb9kHqxMR+EunRD\n"
-  "83k4pel1yB7QdV+iTd/4SZOI8RpZP+BO1KnOTWfpztAU1lDGr19/PwdwcHaILpBD\n"
-  "nNzm6otk4/bKUQ0vqpOfJljtg0DfAm4uMAQ6BMFy6uEAF7+JupuPAgMBAAE=\n"
-  "-----END RSA PUBLIC KEY-----\n"
-  "ntor-onion-key FChIfm77vrWB7JsxQ+jMbN6VSSp1P0DYbw/2aqey4iA=\n"
-  "family OtherNode !Strange\n"
-  "p accept 1-65535\n"
-  "id ed25519 J5lkRqyL6qW+CpN3E4RIlgJZeLgwjtmOOrjZvVhuwLQ\n";
-
-static const char test_md2_withfamily_29[] =
-  "onion-key\n"
-  "-----BEGIN RSA PUBLIC KEY-----\n"
-  "MIGJAoGBAMvEJ/JVNK7I38PPWhQMuCgkET/ki4WIas4tj5Kmqfb9kHqxMR+EunRD\n"
-  "83k4pel1yB7QdV+iTd/4SZOI8RpZP+BO1KnOTWfpztAU1lDGr19/PwdwcHaILpBD\n"
-  "nNzm6otk4/bKUQ0vqpOfJljtg0DfAm4uMAQ6BMFy6uEAF7+JupuPAgMBAAE=\n"
-  "-----END RSA PUBLIC KEY-----\n"
-  "ntor-onion-key FChIfm77vrWB7JsxQ+jMbN6VSSp1P0DYbw/2aqey4iA=\n"
+  "ntor-onion-key FChIfm77vrWB7JsxQ+jMbN6VSSp1P0DYbw/2aqey4iA\n"
   "family !Strange $D219590AC9513BCDEBBA9AB721007A4CC01BBAE3 othernode\n"
   "p accept 1-65535\n"
   "id ed25519 J5lkRqyL6qW+CpN3E4RIlgJZeLgwjtmOOrjZvVhuwLQ\n";
@@ -411,21 +388,12 @@ test_md_generate(void *arg)
   ri = router_parse_entry_from_string(test_ri, NULL, 0, 0, NULL, NULL);
   tt_assert(ri);
 
-  md = dirvote_create_microdescriptor(ri, 25);
-  tt_str_op(md->body, OP_EQ, test_md2_25);
-  tt_assert(ed25519_pubkey_eq(md->ed25519_identity_pkey,
-                              &ri->cache_info.signing_key_cert->signing_key));
-
   // Try family encoding.
   microdesc_free(md);
   ri->declared_family = smartlist_new();
   smartlist_add_strdup(ri->declared_family, "OtherNode !Strange");
-  md = dirvote_create_microdescriptor(ri, 28);
-  tt_str_op(md->body, OP_EQ, test_md2_withfamily_28);
-
-  microdesc_free(md);
-  md = dirvote_create_microdescriptor(ri, 29);
-  tt_str_op(md->body, OP_EQ, test_md2_withfamily_29);
+  md = dirvote_create_microdescriptor(ri, 33);
+  tt_str_op(md->body, OP_EQ, test_md2_withfamily_33);
 
  done:
   microdesc_free(md);
