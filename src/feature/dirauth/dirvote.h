@@ -55,10 +55,6 @@
 /** The highest consensus method that we currently support. */
 #define MAX_SUPPORTED_CONSENSUS_METHOD 34
 
-/** Lowest consensus method for which we handle the MiddleOnly flag specially.
- */
-#define MIN_METHOD_FOR_MIDDLEONLY 32
-
 /**
  * Lowest consensus method for which we suppress the published time in
  * microdescriptor consensuses.

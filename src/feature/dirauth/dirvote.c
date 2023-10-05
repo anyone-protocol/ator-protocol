@@ -2129,7 +2129,7 @@ networkstatus_compute_consensus(smartlist_t *votes,
       /* Starting with consensus method 32, we handle the middle-only
        * flag specially: when it is present, we clear some flags, and
        * set others. */
-      if (is_middle_only && consensus_method >= MIN_METHOD_FOR_MIDDLEONLY) {
+      if (is_middle_only) {
         remove_flag(chosen_flags, "Exit");
         remove_flag(chosen_flags, "V2Dir");
         remove_flag(chosen_flags, "Guard");
