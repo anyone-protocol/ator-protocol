@@ -4107,7 +4107,7 @@ vote_tweaks_for_umbw(networkstatus_t *v, int voter, time_t now)
                          NULL, 0, -1);
   /* If we're using a non-default clip bandwidth, add it to net_params */
   if (alternate_clip_bw > 0) {
-    tor_asprintf(&maxbw_param, "maxunmeasuredbw=%u", alternate_clip_bw);
+    tor_asprintf(&maxbw_param, "maxunmeasurdbw=%u", alternate_clip_bw);
     tt_assert(maxbw_param);
     if (maxbw_param) {
       smartlist_add(v->net_params, maxbw_param);
