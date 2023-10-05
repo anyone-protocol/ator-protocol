@@ -50,7 +50,7 @@
                 ((MIN_VOTE_SECONDS_TESTING)+(MIN_DIST_SECONDS_TESTING)+1)
 
 /** The lowest consensus method that we currently support. */
-#define MIN_SUPPORTED_CONSENSUS_METHOD 28
+#define MIN_SUPPORTED_CONSENSUS_METHOD 32
 
 /** The highest consensus method that we currently support. */
 #define MAX_SUPPORTED_CONSENSUS_METHOD 34
