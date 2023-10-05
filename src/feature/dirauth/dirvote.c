@@ -1780,15 +1780,10 @@ networkstatus_compute_consensus(smartlist_t *votes,
   }
 
   {
-    if (consensus_method < MIN_METHOD_FOR_CORRECT_BWWEIGHTSCALE) {
-      max_unmeasured_bw_kb = (int32_t) extract_param_buggy(
-                  params, "maxunmeasuredbw", DEFAULT_MAX_UNMEASURED_BW_KB);
-    } else {
-      max_unmeasured_bw_kb = dirvote_get_intermediate_param_value(
-                  param_list, "maxunmeasurdbw", DEFAULT_MAX_UNMEASURED_BW_KB);
-      if (max_unmeasured_bw_kb < 1)
-        max_unmeasured_bw_kb = 1;
-    }
+    max_unmeasured_bw_kb = dirvote_get_intermediate_param_value(
+                param_list, "maxunmeasurdbw", DEFAULT_MAX_UNMEASURED_BW_KB);
+    if (max_unmeasured_bw_kb < 1)
+      max_unmeasured_bw_kb = 1;
   }
 
   /* Add the actual router entries. */
@@ -2134,7 +2129,7 @@ networkstatus_compute_consensus(smartlist_t *votes,
       /* Starting with consensus method 32, we handle the middle-only
        * flag specially: when it is present, we clear some flags, and
        * set others. */
-      if (is_middle_only && consensus_method >= MIN_METHOD_FOR_MIDDLEONLY) {
+      if (is_middle_only) {
         remove_flag(chosen_flags, "Exit");
         remove_flag(chosen_flags, "V2Dir");
         remove_flag(chosen_flags, "Guard");
@@ -2371,15 +2366,10 @@ networkstatus_compute_consensus(smartlist_t *votes,
 
   {
     int64_t weight_scale;
-    if (consensus_method < MIN_METHOD_FOR_CORRECT_BWWEIGHTSCALE) {
-      weight_scale = extract_param_buggy(params, "bwweightscale",
-                                         BW_WEIGHT_SCALE);
-    } else {
-      weight_scale = dirvote_get_intermediate_param_value(
-                       param_list, "bwweightscale", BW_WEIGHT_SCALE);
-      if (weight_scale < 1)
-        weight_scale = 1;
-    }
+    weight_scale = dirvote_get_intermediate_param_value(
+                     param_list, "bwweightscale", BW_WEIGHT_SCALE);
+    if (weight_scale < 1)
+      weight_scale = 1;
     added_weights = networkstatus_compute_bw_weights_v10(chunks, G, M, E, D,
                                                          T, weight_scale);
   }
@@ -2479,53 +2469,6 @@ networkstatus_compute_consensus(smartlist_t *votes,
   smartlist_free(param_list);
 
   return result;
-}
-
-/** Extract the value of a parameter from a string encoding a list of
- * parameters, badly.
- *
- * This is a deliberately buggy implementation, for backward compatibility
- * with versions of Tor affected by #19011.  Once all authorities have
- * upgraded to consensus method 31 or later, then we can throw away this
- * function.  */
-STATIC int64_t
-extract_param_buggy(const char *params,
-                    const char *param_name,
-                    int64_t default_value)
-{
-  int64_t value = default_value;
-  const char *param_str = NULL;
-
-  if (params) {
-    char *prefix1 = NULL, *prefix2=NULL;
-    tor_asprintf(&prefix1, "%s=", param_name);
-    tor_asprintf(&prefix2, " %s=", param_name);
-    if (strcmpstart(params, prefix1) == 0)
-      param_str = params;
-    else
-      param_str = strstr(params, prefix2);
-    tor_free(prefix1);
-    tor_free(prefix2);
-  }
-
-  if (param_str) {
-    int ok=0;
-    char *eq = strchr(param_str, '=');
-    if (eq) {
-      value = tor_parse_long(eq+1, 10, 1, INT32_MAX, &ok, NULL);
-      if (!ok) {
-        log_warn(LD_DIR, "Bad element '%s' in %s",
-                 escaped(param_str), param_name);
-        value = default_value;
-      }
-    } else {
-      log_warn(LD_DIR, "Bad element '%s' in %s",
-               escaped(param_str), param_name);
-      value = default_value;
-    }
-  }
-
-  return value;
 }
 
 /** Given a list of networkstatus_t for each vote, return a newly allocated
@@ -3921,6 +3864,7 @@ dirvote_get_vote(const char *fp, int flags)
 STATIC microdesc_t *
 dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
 {
+  (void) consensus_method; // Currently unneeded...
   microdesc_t *result = NULL;
   char *key = NULL, *summary = NULL, *family = NULL;
   size_t keylen;
@@ -3939,20 +3883,15 @@ dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
 
   if (ri->onion_curve25519_pkey) {
     char kbuf[CURVE25519_BASE64_PADDED_LEN + 1];
-    bool add_padding = (consensus_method < MIN_METHOD_FOR_UNPADDED_NTOR_KEY);
-    curve25519_public_to_base64(kbuf, ri->onion_curve25519_pkey, add_padding);
+    curve25519_public_to_base64(kbuf, ri->onion_curve25519_pkey, false);
     smartlist_add_asprintf(chunks, "ntor-onion-key %s\n", kbuf);
   }
 
   if (family) {
-    if (consensus_method < MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS) {
-      smartlist_add_asprintf(chunks, "family %s\n", family);
-    } else {
-      const uint8_t *id = (const uint8_t *)ri->cache_info.identity_digest;
-      char *canonical_family = nodefamily_canonicalize(family, id, 0);
-      smartlist_add_asprintf(chunks, "family %s\n", canonical_family);
-      tor_free(canonical_family);
-    }
+    const uint8_t *id = (const uint8_t *)ri->cache_info.identity_digest;
+    char *canonical_family = nodefamily_canonicalize(family, id, 0);
+    smartlist_add_asprintf(chunks, "family %s\n", canonical_family);
+    tor_free(canonical_family);
   }
 
   if (summary && strcmp(summary, "reject 1-65535"))
@@ -4050,10 +3989,6 @@ static const struct consensus_method_range_t {
   int high;
 } microdesc_consensus_methods[] = {
   {MIN_SUPPORTED_CONSENSUS_METHOD,
-   MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS - 1},
-  {MIN_METHOD_FOR_CANONICAL_FAMILIES_IN_MICRODESCS,
-   MIN_METHOD_FOR_UNPADDED_NTOR_KEY - 1},
-  {MIN_METHOD_FOR_UNPADDED_NTOR_KEY,
    MAX_SUPPORTED_CONSENSUS_METHOD},
   {-1, -1}
 };

@@ -1,0 +1,3 @@
+  o Removed features:
+    - Directory authorities no longer support consensus methods
+      before method 32. Closes ticket 40835.

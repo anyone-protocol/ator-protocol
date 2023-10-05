@@ -4078,7 +4078,7 @@ gen_routerstatus_for_umbw(int idx, time_t now)
   if (vrs) {
     vrs->microdesc = tor_malloc_zero(sizeof(vote_microdesc_hash_t));
     tor_asprintf(&vrs->microdesc->microdesc_hash_line,
-                 "m 25,26,27,28 "
+                 "m 32,33 "
                  "sha256=xyzajkldsdsajdadlsdjaslsdksdjlsdjsdaskdaaa%d\n",
                  idx);
   }
@@ -4102,13 +4102,12 @@ vote_tweaks_for_umbw(networkstatus_t *v, int voter, time_t now)
   tt_assert(v->supported_methods);
   SMARTLIST_FOREACH(v->supported_methods, char *, c, tor_free(c));
   smartlist_clear(v->supported_methods);
-  /* Method 17 is MIN_METHOD_TO_CLIP_UNMEASURED_BW_KB */
   smartlist_split_string(v->supported_methods,
-                         "25 26 27 28",
+                         "32 33",
                          NULL, 0, -1);
   /* If we're using a non-default clip bandwidth, add it to net_params */
   if (alternate_clip_bw > 0) {
-    tor_asprintf(&maxbw_param, "maxunmeasuredbw=%u", alternate_clip_bw);
+    tor_asprintf(&maxbw_param, "maxunmeasurdbw=%u", alternate_clip_bw);
     tt_assert(maxbw_param);
     if (maxbw_param) {
       smartlist_add(v->net_params, maxbw_param);
