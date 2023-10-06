@@ -1,0 +1,3 @@
+  o Minor bugfixes (directory authority):
+    - Look at the network parameter "maxunmeasuredbw" with the
+      correct spelling.  Fixes bug 40869; bugfix on 0.4.6.1-alpha.
