@@ -1,0 +1,4 @@
+  o Minor feature (directory authority):
+    - Introduce MinimalAcceptedServerVersion to allow modification of minimal
+      accepted version for relays without requiring a new tor release.
+      Closes ticket 40817.
