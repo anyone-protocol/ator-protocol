@@ -404,8 +404,8 @@ dirserv_rejects_tor_version(const char *platform,
   static const char please_upgrade_string[] =
     "Tor version is insecure or unsupported. Please upgrade!";
 
-  /* Anything before 0.4.7.0 is unsupported. Reject them. */
-  if (!tor_version_as_new_as(platform,"0.4.7.0-alpha-dev")) {
+  if (!tor_version_as_new_as(platform,
+        dirauth_get_options()->MinimalAcceptedServerVersion)) {
     if (msg) {
       *msg = please_upgrade_string;
     }
