@@ -16,6 +16,7 @@
 #include "lib/encoding/confline.h"
 #include "lib/confmgt/confmgt.h"
 #include "lib/conf/confdecl.h"
+#include "lib/version/torversion.h"
 
 /* Required for dirinfo_type_t in or_options_t */
 #include "core/or/or.h"
@@ -442,7 +443,22 @@ dirauth_options_validate(const void *arg, char **msg)
     REJECT("Guard bandwdith threshold fraction is invalid.");
   }
 
+  if (tor_version_parse(options->MinimalAcceptedServerVersion,
+        &minimal_accepted_server_version) != 0) {
+    REJECT("Invalid MinimalAcceptedServerVersion");
+  }
+
+  tor_assertf(tor_version_parse(get_short_version(),
+        &recommended_version) == 0,
+      "We failed to parse our own version");
+  if (tor_version_compare(&recommended_version,
+        &minimal_accepted_server_version) < 0) {
+    REJECT("MinimalAcceptedServerVersion wants to reject the version "
+        "this node is running");
+  }
+
   char *recommended_versions;
+  int found_recommended_rejected_version = 0;
   /* Call these functions to produce warnings only. */
   recommended_versions = format_recommended_version_list(
       options->RecommendedClientVersions, 1);
@@ -450,11 +466,6 @@ dirauth_options_validate(const void *arg, char **msg)
 
   recommended_versions = format_recommended_version_list(
       options->RecommendedServerVersions, 1);
-
-  if (tor_version_parse(options->MinimalAcceptedServerVersion,
-        &minimal_accepted_server_version) != 0) {
-    REJECT("Invalid MinimalAcceptedServerVersion");
-  }
 
   smartlist_t *version_sl = smartlist_new();
   smartlist_split_string(version_sl, recommended_versions, ",",
@@ -468,8 +479,7 @@ dirauth_options_validate(const void *arg, char **msg)
 
     if (tor_version_compare(&recommended_version,
           &minimal_accepted_server_version) < 0) {
-      REJECT("MinimalAcceptedServerVersion wants to reject a recommended "
-          "version");
+      found_recommended_rejected_version = 1;
       break;
     }
   } SMARTLIST_FOREACH_END(version);
@@ -477,6 +487,9 @@ dirauth_options_validate(const void *arg, char **msg)
   SMARTLIST_FOREACH(version_sl, char *, version, tor_free(version));
   smartlist_free(version_sl);
   tor_free(recommended_versions);
+  if (found_recommended_rejected_version)
+      REJECT("MinimalAcceptedServerVersion wants to reject a recommended "
+          "version");
 
   if (options->TestingAuthDirTimeToLearnReachability > 2*60*60) {
     COMPLAIN("TestingAuthDirTimeToLearnReachability is insanely high.");
