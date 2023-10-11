@@ -1,0 +1,4 @@
+  o Minor feature (metrics port):
+    - New metrics on the MetricsPort for the number of BUG() that occurred at
+      runtime. Closes MR 760.
+
