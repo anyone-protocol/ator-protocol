@@ -182,7 +182,7 @@ typedef enum dos_stream_defense_type_t {
   /* Close the circuit */
   DOS_STREAM_DEFENSE_CLOSE_CIRCUIT  = 3,
 
-  /* Maimum value that can be used. Useful for the boundaries of the
+  /* Maximum value that can be used. Useful for the boundaries of the
    * consensus parameter. */
   DOS_STREAM_DEFENSE_MAX            = 3,
 } dos_stream_defense_type_t;

@@ -3055,7 +3055,7 @@ The following options are useful only for a exit relay.
      +
       2: Reject the stream or resolve request.
      +
-      3: Close the circuit creating to many streams.
+      3: Close the circuit creating too many streams.
      +
     "0" means use the consensus parameter. If not defined in the consensus, the value is 2.
     (Default: 0)
