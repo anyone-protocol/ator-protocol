@@ -3381,6 +3381,11 @@ on the public Tor network.
     multiple times: the values from multiple lines are spliced together. When
     this is set then **VersioningAuthoritativeDirectory** should be set too.
 
+[[MinimalAcceptedServerVersion]] **MinimalAcceptedServerVersion** __STRING__::
+   STRING is the oldest Tor version accepted by the directory authority for
+   relays and bridge. Any older version will be rejected.
+   (Default: 0.4.7.0-alpha-dev)
+
 [[V3AuthDistDelay]] **V3AuthDistDelay** __N__ **seconds**|**minutes**|**hours**::
     V3 authoritative directories only. Configures the server's preferred  delay
     between publishing its consensus and signature and assuming  it has all the
