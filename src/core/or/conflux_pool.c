@@ -1607,7 +1607,22 @@ linked_circuit_free(circuit_t *circ, bool is_client)
 
   /* Circuit can be freed without being closed and so we try to delete this leg
    * so we can learn if this circuit is the last leg or not. */
-  cfx_del_leg(circ->conflux, circ);
+  if (cfx_del_leg(circ->conflux, circ)) {
+    /* Check for instances of bug #40870, which we suspect happen
+     * during exit. If any happen outside of exit, BUG and warn. */
+    if (!circ->conflux->in_full_teardown) {
+      /* We should bug and warn if we're not in a shutdown process; that
+       * means we got here somehow without a close. */
+      if (BUG(!shutting_down)) {
+        log_warn(LD_BUG,
+                 "Conflux circuit %p being freed without being marked for "
+                 "full teardown via close, with shutdown state %d. "
+                 "Please report this.", circ, shutting_down);
+        conflux_log_set(LOG_WARN, circ->conflux, is_client);
+      }
+      circ->conflux->in_full_teardown = true;
+    }
+  }
 
   if (CONFLUX_NUM_LEGS(circ->conflux) > 0) {
     /* The last leg will free the streams but until then, we nullify to avoid
@@ -2126,14 +2141,36 @@ conflux_log_set(int loglevel, const conflux_t *cfx, bool is_client)
   }
 }
 
+/**
+ * Conflux needs a notification when tor_shutdown() begins, so that
+ * when circuits are freed, new legs are not launched.
+ *
+ * This needs a separate notification from conflux_pool_free_all(),
+ * because circuits must be freed before that function.
+ */
+void
+conflux_notify_shutdown(void)
+{
+  shutting_down = true;
+}
+
+#ifdef TOR_UNIT_TESTS
+/**
+ * For unit tests: Clear the shutting down state so we resume building legs.
+ */
+void
+conflux_clear_shutdown(void)
+{
+  shutting_down = false;
+}
+#endif
+
 /** Free and clean up the conflux pool subsystem. This is called by the subsys
  * manager AFTER all circuits have been freed which implies that all objects in
  * the pools aren't referenced anymore. */
 void
 conflux_pool_free_all(void)
 {
-  shutting_down = true;
-
   digest256map_free(client_linked_pool, free_conflux_void_);
   digest256map_free(server_linked_pool, free_conflux_void_);
   digest256map_free(client_unlinked_pool, free_unlinked_void_);

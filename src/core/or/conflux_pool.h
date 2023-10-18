@@ -12,6 +12,7 @@
 #include "core/or/or.h"
 
 void conflux_pool_init(void);
+void conflux_notify_shutdown(void);
 void conflux_pool_free_all(void);
 
 origin_circuit_t *conflux_get_circ_for_conn(const entry_connection_t *conn,
@@ -41,6 +42,7 @@ void conflux_log_set(int loglevel, const conflux_t *cfx, bool is_client);
 
 #ifdef TOR_UNIT_TESTS
 bool launch_new_set(int num_legs);
+void conflux_clear_shutdown(void);
 digest256map_t *get_linked_pool(bool is_client);
 digest256map_t *get_unlinked_pool(bool is_client);
 extern uint8_t DEFAULT_CLIENT_UX;

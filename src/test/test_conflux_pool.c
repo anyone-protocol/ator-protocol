@@ -396,6 +396,7 @@ test_setup(void)
 static void
 test_clear_circs(void)
 {
+  conflux_notify_shutdown();
   SMARTLIST_FOREACH(circ_pairs, circ_pair_t *, circ_pair, {
     tor_free(circ_pair);
   });
@@ -430,6 +431,9 @@ test_clear_circs(void)
   tor_assert(smartlist_len(mock_cell_delivery) == 0);
 
   (void)free_fake_origin_circuit;
+
+  /* Clear shutdown flag so we can resume testing again. */
+  conflux_clear_shutdown();
 }
 
 static void
