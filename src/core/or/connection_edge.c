@@ -4150,9 +4150,8 @@ connection_exit_begin_conn(cell_t *cell, circuit_t *circ)
 
   log_debug(LD_EXIT,"about to start the dns_resolve().");
 
-  /* TODO should this be moved higher to protect from a stream DoS on directory
-   * requests, and possibly against an onion service? (for OS, more changes
-   * would be required) */
+  // in the future we may want to have a similar defense for BEGIN_DIR and
+  // BEGIN sent to OS.
   dos_defense_type = dos_stream_new_begin_or_resolve_cell(or_circ);
   switch (dos_defense_type) {
     case DOS_STREAM_DEFENSE_NONE:
@@ -4166,17 +4165,7 @@ connection_exit_begin_conn(cell_t *cell, circuit_t *circ)
       return 0;
     case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
       connection_free_(TO_CONN(n_stream));
-      /* TODO we could return REASON_NONE or REASON_RESOURCELIMIT. When closing
-       * circuits, you either get:
-       * - END_CIRC_REASON_NONE: tons of notice level "We tried for 15
-       *   seconds to connect to 'target' using exit X. Retrying on a new
-       *   circuit."
-       * - END_CIRC_REASON_RESOURCELIMIT: warn level "Guard X is failing
-       *   to carry an extremely large amount of streams on its circuits"
-       *
-       * I'm not sure which one we want
-       */
-      return -END_CIRC_REASON_NONE;
+      return -END_CIRC_REASON_RESOURCELIMIT;
   }
 
   /* send it off to the gethostbyname farm */
@@ -4247,9 +4236,7 @@ connection_exit_begin_resolve(cell_t *cell, or_circuit_t *circ)
       dns_send_resolved_error_cell(dummy_conn, RESOLVED_TYPE_ERROR_TRANSIENT);
       return 0;
     case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
-      /* TODO maybe use REASON_RESOURCELIMIT?
-       * See connection_exit_begin_conn() */
-      return -END_CIRC_REASON_NONE;
+      return -END_CIRC_REASON_RESOURCELIMIT;
   }
 
   /* send it off to the gethostbyname farm */
