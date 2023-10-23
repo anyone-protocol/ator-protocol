@@ -1682,6 +1682,17 @@ guard_obeys_md_dirserver_restriction(const entry_guard_t *guard)
 }
 
 /**
+ * Return true if a restriction is reachability related, such that it should
+ * cause us to consider additional primary guards when selecting one.
+ */
+static bool
+entry_guard_restriction_is_reachability(const entry_guard_restriction_t *rst)
+{
+  tor_assert(rst);
+  return (rst->type == RST_OUTDATED_MD_DIRSERVER);
+}
+
+/**
  * Return true iff <b>guard</b> obeys the restrictions defined in <b>rst</b>.
  * (If <b>rst</b> is NULL, there are no restrictions.)
  */
@@ -2127,14 +2138,44 @@ select_primary_guard_for_circuit(guard_selection_t *gs,
   const int need_descriptor = (usage == GUARD_USAGE_TRAFFIC);
   entry_guard_t *chosen_guard = NULL;
 
-  int num_entry_guards = get_n_primary_guards_to_use(usage);
+  int num_entry_guards_to_consider = get_n_primary_guards_to_use(usage);
   smartlist_t *usable_primary_guards = smartlist_new();
+  int num_entry_guards_considered = 0;
 
   SMARTLIST_FOREACH_BEGIN(gs->primary_entry_guards, entry_guard_t *, guard) {
     entry_guard_consider_retry(guard);
     if (!entry_guard_obeys_restriction(guard, rst)) {
       log_info(LD_GUARD, "Entry guard %s doesn't obey restriction, we test the"
           " next one", entry_guard_describe(guard));
+      if (!entry_guard_restriction_is_reachability(rst)) {
+        log_info(LD_GUARD,
+                 "Skipping guard %s due to circuit path restriction. "
+                 "Have %d, considered: %d, to consider: %d",
+                 entry_guard_describe(guard),
+                 smartlist_len(usable_primary_guards),
+                 num_entry_guards_considered,
+                 num_entry_guards_to_consider);
+        /* If the restriction is a circuit path restriction (as opposed to a
+         * reachability restriction), count this as considered. */
+        num_entry_guards_considered++;
+
+        /* If we have considered enough guards, *and* we actually have a guard,
+         * then proceed to select one from the list. */
+        if (num_entry_guards_considered >= num_entry_guards_to_consider) {
+          /* This should not happen with 2-leg conflux unless there is a
+           * race between removing a failed leg and a retry, but check
+           * anyway and log. */
+          if (smartlist_len(usable_primary_guards) == 0) {
+            static ratelim_t guardlog = RATELIM_INIT(60);
+            log_fn_ratelim(&guardlog, LOG_NOTICE, LD_GUARD,
+                           "All current guards excluded by path restriction "
+                           "type %d; using an additonal guard.",
+                           rst->type);
+          } else {
+            break;
+          }
+        }
+      }
       continue;
     }
     if (guard->is_reachable != GUARD_REACHABLE_NO) {
@@ -2146,7 +2187,11 @@ select_primary_guard_for_circuit(guard_selection_t *gs,
       *state_out = GUARD_CIRC_STATE_USABLE_ON_COMPLETION;
       guard->last_tried_to_connect = approx_time();
       smartlist_add(usable_primary_guards, guard);
-      if (smartlist_len(usable_primary_guards) >= num_entry_guards)
+      num_entry_guards_considered++;
+
+      /* If we have considered enough guards, then proceed to select
+       * one from the list. */
+      if (num_entry_guards_considered >= num_entry_guards_to_consider) {
         break;
     }
   } SMARTLIST_FOREACH_END(guard);
