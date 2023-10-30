@@ -4234,8 +4234,10 @@ connection_exit_begin_resolve(cell_t *cell, or_circuit_t *circ)
       break;
     case DOS_STREAM_DEFENSE_REFUSE_STREAM:
       dns_send_resolved_error_cell(dummy_conn, RESOLVED_TYPE_ERROR_TRANSIENT);
+      connection_free_(TO_CONN(dummy_conn));
       return 0;
     case DOS_STREAM_DEFENSE_CLOSE_CIRCUIT:
+      connection_free_(TO_CONN(dummy_conn));
       return -END_CIRC_REASON_RESOURCELIMIT;
   }
 

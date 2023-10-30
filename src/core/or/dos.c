@@ -357,9 +357,9 @@ set_dos_parameters(const networkstatus_t *ns)
 
   /* Stream. */
   dos_stream_enabled = get_param_stream_enabled(ns);
-  dos_stream_defense_type = get_param_stream_rate(ns);
-  dos_stream_rate = get_param_stream_burst(ns);
-  dos_stream_burst = get_param_stream_defense_type(ns);
+  dos_stream_defense_type = get_param_stream_defense_type(ns);
+  dos_stream_rate = get_param_stream_rate(ns);
+  dos_stream_burst = get_param_stream_burst(ns);
 }
 
 /* Free everything for the circuit creation DoS mitigation subsystem. */
