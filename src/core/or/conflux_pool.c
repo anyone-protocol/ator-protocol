@@ -1990,6 +1990,9 @@ conflux_process_linked(circuit_t *circ, crypt_path_t *layer_hint,
     connection_ap_attach_pending(1);
   }
 
+  /* This cell is now considered valid for clients. */
+  circuit_read_valid_data(TO_ORIGIN_CIRCUIT(circ), cell_len);
+
   goto end;
 
  close:
