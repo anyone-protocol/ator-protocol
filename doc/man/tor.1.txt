@@ -3060,9 +3060,9 @@ The following options are useful only for a exit relay.
     "0" means use the consensus parameter. If not defined in the consensus, the value is 2.
     (Default: 0)
 
-[[DoSStreamCreationtRate]] **DoSStreamCreationRate** __NUM__::
+[[DoSStreamCreationRate]] **DoSStreamCreationRate** __NUM__::
 
-    The allowed rate of stream cretion  from a single circuit per second. Coupled
+    The allowed rate of stream creation from a single circuit per second. Coupled
     with the burst (see below), if the limit is reached, actions can be taken
     against the stream or circuit (DoSStreamCreationDefenseType). If not defined or
     set to 0, it is controlled by a consensus parameter. If not defined in the
