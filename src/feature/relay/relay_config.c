@@ -1151,8 +1151,8 @@ options_validate_relay_mode(const or_options_t *old_options,
     REJECT("BridgeRelay is 1, ORPort is not set. This is an invalid "
            "combination.");
 
-  if (options->BridgeRelay == 1 && (options->ExitRelay == 1 ||
-      !policy_using_default_exit_options(options))) {
+  if (options->BridgeRelay == 1 && !(options->ExitRelay == 0 ||
+      policy_using_default_exit_options(options))) {
     log_warn(LD_CONFIG, "BridgeRelay is 1, but ExitRelay is 1 or an "
            "ExitPolicy is configured. Tor will start, but it will not "
            "function as an exit relay.");
