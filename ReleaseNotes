@@ -21,7 +21,7 @@ Changes in version 0.4.8.9 - 2023-11-09
   o Major bugfixes (onion service, TROVE-2023-006):
     - Fix a possible hard assert on a NULL pointer when recording a
       failed rendezvous circuit on the service side for the MetricsPort.
-      Fixes bug 40883; bugfix on 0.4.8.1-alpha
+      Fixes bug 40883; bugfix on 0.4.8.1-alpha.
 
   o Minor features (fallbackdir):
     - Regenerate fallback directories generated on November 09, 2023.
@@ -78,7 +78,7 @@ Changes in version 0.4.8.7 - 2023-09-25
 
 Changes in version 0.4.8.6 - 2023-09-18
   This version contains an important fix for onion service regarding congestion
-  control and its reliability. Apart from that, uneeded BUG warnings have been
+  control and its reliability. Apart from that, unneeded BUG warnings have been
   suppressed especially about a compression bomb seen on relays. We strongly
   recommend, in particular onion service operators, to upgrade as soon as
   possible to this latest stable.
