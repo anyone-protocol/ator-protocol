@@ -471,7 +471,7 @@ dirauth_options_validate(const void *arg, char **msg)
   smartlist_split_string(version_sl, recommended_versions, ",",
       SPLIT_SKIP_SPACE, 0);
   SMARTLIST_FOREACH_BEGIN(version_sl, const char *, version) {
-    if (tor_version_parse(version,
+    if (version[0] != '\0' && tor_version_parse(version,
           &recommended_version) != 0) {
       COMPLAIN("Found unparseable version in RecommendedServerVersions");
       continue;
