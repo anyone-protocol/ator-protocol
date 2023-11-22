@@ -1,0 +1,3 @@
+  o Minor bugfixes (bridge):
+    - Don't warn when BridgeRelay is 1 and ExitRelay is explicitly set to 0.
+      Fixes bug 40884; bugfix on 0.4.8.3-rc.
