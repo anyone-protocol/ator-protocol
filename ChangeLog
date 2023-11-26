@@ -68,6 +68,10 @@ Changes in version 0.4.8.3-rc - 2023-08-04
     - Update the geoip files to match the IPFire Location Database, as
       retrieved on 2023/08/04.
 
+  o Minor features (bridge):
+    - warn when a bridge is also configure to be an exit relay.
+      Closes ticket 40819.
+
   o Minor bugfixes (compilation):
     - Fix all -Werror=enum-int-mismatch warnings. No behavior change.
       Fixes bug 40824; bugfix on 0.3.5.1-alpha.
