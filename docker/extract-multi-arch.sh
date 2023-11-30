@@ -35,6 +35,10 @@ do
 
     echo "[$platform] Copying binaries"
     docker cp $CONTAINER:/usr/local/bin/tor $ATOR_BUILD_DIR/$platform/
+    docker cp $CONTAINER:/usr/local/bin/tor-gencert $ATOR_BUILD_DIR/$platform/
+    docker cp $CONTAINER:/usr/local/bin/tor-print-ed-signing-cert $ATOR_BUILD_DIR/$platform/
+    docker cp $CONTAINER:/usr/local/bin/tor-resolve $ATOR_BUILD_DIR/$platform/
+    docker cp $CONTAINER:/usr/local/bin/torify $ATOR_BUILD_DIR/$platform/
 
     echo "[$platform] Removing container"
     docker rm -v $CONTAINER
