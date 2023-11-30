@@ -1,6 +1,8 @@
 #!/bin/bash
+
 set -o errexit
 
+# Add chmod aliases
 chmodf() { find $2 -type f -exec chmod -v $1 {} \;
 }
 chmodd() { find $2 -type d -exec chmod -v $1 {} \;
