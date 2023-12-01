@@ -6,7 +6,7 @@ This directory contains configs to build and run ATOR protocol binaries using do
 
 Build an image:
 ```sh
-docker build -t ator-protocol .
+docker build -f Dockerfile -t ator-protocol ../
 ```
 
 ## Extracting multi-arch binaries

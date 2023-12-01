@@ -9,17 +9,14 @@ set -o errexit
 ATOR_PLATFORMS="${ATOR_PLATFORMS:-linux/arm64,linux/amd64}"
 ATOR_ROOT="${ATOR_ROOT:-..}"
 ATOR_BUILD_DIR="${ATOR_BUILD_DIR:-build}"
-ATOR_DOCKERFILE="$ATOR_ROOT/Dockerfile"
 
-if [ ! -f $ATOR_DOCKERFILE ]; then
-    echo "Dockerfile not found in the ATOR_ROOT"
+if [ ! -f 'Dockerfile' ]; then
+    echo "Dockerfile not found"
     exit 1
 fi
 
 # Build images for specified platforms
-pushd $ATOR_ROOT
-docker buildx build --platform $ATOR_PLATFORMS -t ator-protocol .
-popd
+docker buildx build -f Dockerfile --platform $ATOR_PLATFORMS -t ator-protocol $ATOR_ROOT
 
 IFS=', ' read -r -a platforms <<< "$ATOR_PLATFORMS"
 
