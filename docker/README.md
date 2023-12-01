@@ -6,12 +6,17 @@ This directory contains configs to build and run ATOR protocol binaries using do
 
 Build an image:
 ```sh
-docker build -f Dockerfile -t ator-protocol ../
+docker build -t ator-protocol .
 ```
 
 ## Extracting multi-arch binaries
 
 You can use `./extract-multi-arch.sh` script to build and extract binaries for different architectures using docker.
+
+If you did not configure buildx for multi-arch build, run:
+```sh
+docker buildx create --use
+```
 
 Example for `linux/arm64`:
 ```sh
@@ -31,7 +36,7 @@ Resulting binaries will be available in `build/` directory.
 
 ### Configuration File
 
-Before running the container, make sure you copy `./config/torrc` to `./torrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
+Before running the container, make sure you copy `./config/torrc-example` to `./torrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
 
 ### External IP
 

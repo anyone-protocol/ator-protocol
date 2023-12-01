@@ -22,8 +22,8 @@ ControlSocket 0
 # Run as a relay only (change policy to enable exit node)
 ExitPolicy reject *:*        # no exits allowed
 ExitPolicy reject6 *:*
-ExitRelay 1
-IPv6Exit 1
+ExitRelay 0
+IPv6Exit 0
 
 # Set limits
 #AccountingMax 999 GB

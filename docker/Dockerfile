@@ -60,10 +60,10 @@ RUN adduser --quiet \
         chmod 02700 /var/lib/tor
 
 # Copy Tor configuration file
-COPY ./docker/config/torrc /etc/tor/torrc
+COPY ./config/torrc-example /etc/tor/torrc
 
 # Copy scripts including docker-entrypoint
-COPY ./docker/scripts/ /usr/local/bin/
+COPY ./scripts/ /usr/local/bin/
 
 # Expose ORPort, DirPort
 EXPOSE ${BUILD_TOR_ORPORT} ${BUILD_TOR_DIRPORT}
