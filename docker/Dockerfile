@@ -42,7 +42,7 @@ RUN apt-get update && \
     apt_temps="build-essential automake git" && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
-    git clone ${ATOR_REPO} && cd ator-protocol && git checkout ${ATOR_VER} && \
+    git clone ${ATOR_REPO} && cd ator-protocol && git fetch origin ${ATOR_VER} && git switch --detach ${ATOR_VER} && \
     cp /auth_dirs.inc /fallback_dirs.inc src/app/config/ && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
