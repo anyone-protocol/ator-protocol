@@ -29,6 +29,12 @@ ENV TOR_NICKNAME=ATORv4
 # Sets a user which will be used running ator-protocol
 ENV TOR_USER=atord
 
+# TODO: Remove once ator-protocol auth dirs established
+# Copy temporary list of directory authorities to prevent ator-protocol connecting
+# to the original Tor network during development
+COPY ./dummy-dirs/auth_dirs.inc /
+COPY ./dummy-dirs/fallback_dirs.inc /
+
 # Install build dependencies, compile ator-protocol binaries and cleanup temporary dependencies
 RUN apt-get update && \
     apt_build_deps="libssl-dev zlib1g-dev libevent-dev ca-certificates dh-apparmor libseccomp-dev debhelper" && \
@@ -37,6 +43,7 @@ RUN apt-get update && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
     git clone ${ATOR_REPO} && cd ator-protocol && git checkout ${ATOR_VER} && \
+    cp /auth_dirs.inc /fallback_dirs.inc src/app/config/ && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
