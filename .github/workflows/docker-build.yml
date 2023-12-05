@@ -36,7 +36,7 @@ jobs:
           context: ./docker/
           file: ./docker/Dockerfile
           push: true
-          tags: svforte/ator-protocol:${{ github.sha }}-${{ matrix.platform.image-suffix }}
+          tags: svforte/ator-protocol-${{ matrix.platform.image-suffix }}:${{ github.sha }}
           platforms: ${{ matrix.platform.name }}
           build-args: |
             ATOR_VER=${{ github.sha }}
@@ -57,5 +57,5 @@ jobs:
       - name: Create and Push Docker Manifest
         run: |
           docker buildx imagetools create -t svforte/ator-protocol:${{ github.sha }} \
-            svforte/ator-protocol:${{ github.sha }}-amd64 \
-            svforte/ator-protocol:${{ github.sha }}-arm64
+            svforte/ator-protocol-amd64:${{ github.sha }} \
+            svforte/ator-protocol-arm64:${{ github.sha }}
