@@ -1,0 +1,38 @@
+name: Build and Push Docker Image on Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ${{ matrix.platform.runs-on }}
+    strategy:
+      matrix:
+        platform:
+          - name: linux/amd64
+            image-suffix: amd64
+            runs-on: ubuntu-latest
+          - name: linux/arm64
+            image-suffix: arm64
+            runs-on: arm64
+    steps:
+      - uses: ./.github/actions/build-and-push
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          docker-image: ${{ secrets.DOCKER_BASE_REPO }}-${{ matrix.platform.image-suffix }}:latest
+          docker-platform: ${{ matrix.platform.name }}
+          version: ${{ github.sha }}
+
+  multiarch-push:
+    runs-on: arm64
+    needs: build-and-push
+    steps:
+      - uses: ./.github/actions/multiarch-push
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO }}
+          docker-tag: latest
