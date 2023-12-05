@@ -1,9 +1,17 @@
-name: Build and Push Docker Image on Pull Requests
+name: Build and Push Docker Images
 
 on:
+  push:
+    tags:
+      - 'ator-*'
+    branches:
+      - main
   pull_request:
     branches:
       - main
+
+env:
+  image-tag: ${{ github.ref == 'refs/heads/main' && 'latest' || (github.ref_type == 'tag' && github.ref_name || github.sha) }}
 
 jobs:
   build-and-push:
@@ -25,7 +33,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-image: ${{ secrets.DOCKER_BASE_REPO }}-${{ matrix.platform.image-suffix }}:${{ github.sha }}
+          docker-image: ${{ secrets.DOCKER_BASE_REPO }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
 
@@ -41,4 +49,4 @@ jobs:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
           docker-base-repo: ${{ secrets.DOCKER_BASE_REPO }}
-          docker-tag: ${{ github.sha }}
+          docker-tag: ${{ env.image-tag }}
