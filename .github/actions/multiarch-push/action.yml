@@ -22,6 +22,7 @@ runs:
         password: ${{ inputs.docker-password }}
 
     - name: Create and Push Docker Manifest
+      shell: bash
       run: |
         docker buildx imagetools create \
           -t ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }} \

@@ -20,7 +20,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - uses: ./.github/actions/build-and-push
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
@@ -34,7 +35,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - uses: ./.github/actions/multiarch-push
+      - name: Multiarch push
+        uses: ./.github/actions/multiarch-push
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
