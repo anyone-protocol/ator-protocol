@@ -743,7 +743,7 @@ try_finalize_set(unlinked_circuits_t *unlinked)
 
   /* If there are too many legs, we can't link. */
   if (smartlist_len(unlinked->legs) +
-      smartlist_len(unlinked->cfx->legs) > CONFLUX_MAX_CIRCS) {
+      smartlist_len(unlinked->cfx->legs) > conflux_params_get_max_legs_set()) {
     log_fn(LOG_PROTOCOL_WARN, LD_CIRC,
            "Conflux set has too many legs to link. "
            "Rejecting this circuit.");
