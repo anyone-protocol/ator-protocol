@@ -187,6 +187,8 @@ conflux_free_(conflux_t *cfx)
   if (!cfx) {
     return;
   }
+  tor_assert(cfx->legs);
+  tor_assert(cfx->ooo_q);
 
   SMARTLIST_FOREACH_BEGIN(cfx->legs, conflux_leg_t *, leg) {
     SMARTLIST_DEL_CURRENT(cfx->legs, leg);
@@ -260,6 +262,8 @@ unlinked_free(unlinked_circuits_t *unlinked)
   if (!unlinked) {
     return;
   }
+  tor_assert(unlinked->legs);
+
   /* This cfx is pointing to a linked set. */
   if (!unlinked->is_for_linked_set) {
     conflux_free(unlinked->cfx);
@@ -1611,6 +1615,9 @@ linked_circuit_free(circuit_t *circ, bool is_client)
 {
   tor_assert(circ);
   tor_assert(circ->conflux);
+  tor_assert(circ->conflux->legs);
+  tor_assert(circ->conflux->ooo_q);
+
   if (is_client) {
     tor_assert(circ->purpose == CIRCUIT_PURPOSE_CONFLUX_LINKED);
   }
