@@ -3,7 +3,21 @@ job "ator-dir-auth-dev" {
   type = "service" 
 
   group "dir-auth-dev-group" {
-    count = 1
+    count = 3
+    
+    spread {
+      attribute = "${node.datacenter}"
+      weight    = 100
+      target "dc1" {
+        percent = 34
+      }
+      target "dc2" {
+        percent = 33
+      }
+      target "dc3" {
+        percent = 33
+      }
+    }
 
     network  {
       port "orport" {
