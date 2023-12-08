@@ -1,53 +1,46 @@
-job "ator-da-node-dev1" {
-  datacenters = ["dc1"]
+job "ator-dir-auth-dev" {
+  datacenters = ["ator-fin"]
   type = "service" 
-  group "da1" {
+
+  group "dir-auth-dev-group" {
+    count = 1
+
     network  {
-      port "p1" {
+      port "orport" {
         to = 9001
       }
-      port "p2" {
+      port "dirport" {
         to = 9030
       }
 
     }
-    count = 1
-    volume "ator" {
+
+    volume "dir-auth-dev-1" {
       type      = "host"
       read_only = false
-      source    = "ator"
-    }    
-
-    update {
-      max_parallel = 1
-      health_check = "checks"
-      min_healthy_time  = "30s"
-      healthy_deadline = "2m"
-      auto_revert = true
-      auto_promote = true
-      canary = 2
+      source    = "dir-auth-dev-1"
     }
-  
-    task "da" {
+
+    task "dir-auth-dev-1-task" {
       driver = "docker"
     
       volume_mount {
-        volume      = "ator"
+        volume      = "dir-auth-dev-1"
         destination = "/var/lib/tor/"
         read_only   = false
       } 
           
       config {
-        image = "svforte/ator-protocol:42c6db411a6d3cdffafcc6e09cf4ad4d5aa23456"
-        ports = ["p1", "p2"]
+        image = "ator-development/ator-protocol:[[.deploy]]"
+        ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc"
         ]
       }
 
       resources {
-        cpu = 500
-        memory = 256
+        cpu = 2048
+        memory = 2048
       }  
 
       template {
