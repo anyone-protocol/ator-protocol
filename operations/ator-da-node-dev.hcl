@@ -45,7 +45,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "ator-development/ator-protocol:[[.deploy]]"
+        image = "ator-development/ator-protocol:latest"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc"
