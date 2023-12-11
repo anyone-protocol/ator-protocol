@@ -29,17 +29,17 @@ job "ator-dir-auth-dev" {
 
     }
 
-    volume "dir-auth-dev-1" {
+    volume "dir-auth-dev" {
       type      = "host"
       read_only = false
-      source    = "dir-auth-dev-1"
+      source    = "dir-auth-dev"
     }
 
-    task "dir-auth-dev-1-task" {
+    task "dir-auth-dev-task" {
       driver = "docker"
     
       volume_mount {
-        volume      = "dir-auth-dev-1"
+        volume      = "dir-auth-dev"
         destination = "/var/lib/tor/"
         read_only   = false
       } 
