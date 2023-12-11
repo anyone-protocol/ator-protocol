@@ -21,10 +21,10 @@ job "ator-dir-auth-dev" {
 
     network  {
       port "orport" {
-        to = 9001
+        static = 9001
       }
       port "dirport" {
-        to = 9030
+        static = 9030
       }
 
     }
