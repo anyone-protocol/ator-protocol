@@ -48,7 +48,7 @@ job "ator-dir-auth-dev" {
         image = "ator-development/ator-protocol:[[.deploy]]"
         ports = ["orport", "dirport"]
         volumes = [
-          "local/tor-data:/var/lib/tor"
+          "local/torrc:/etc/tor/torrc"
         ]
       }
 
