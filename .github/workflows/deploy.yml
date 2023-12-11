@@ -1,6 +1,9 @@
 name: Deploy New Version
 
 on:
+  push:
+    branches:
+      - feature/ator-22-automated-deploy
   workflow_dispatch:
 
 env:
