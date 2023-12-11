@@ -6,15 +6,15 @@ job "ator-dir-auth-dev" {
     count = 3
     
     spread {
-      attribute = "${node.datacenter}"
+      attribute = "${node.unique.id}"
       weight    = 100
-      target "dc1" {
+      target "067a42a8-d8fe-8b19-5851-43079e0eabb4" {
         percent = 34
       }
-      target "dc2" {
+      target "16be0723-edc1-83c4-6c02-193d96ec308a" {
         percent = 33
       }
-      target "dc3" {
+      target "e6e0baed-8402-fd5c-7a15-8dd49e7b60d9" {
         percent = 33
       }
     }
@@ -48,7 +48,7 @@ job "ator-dir-auth-dev" {
         image = "ator-development/ator-protocol:[[.deploy]]"
         ports = ["orport", "dirport"]
         volumes = [
-          "local/torrc:/etc/tor/torrc"
+          "local/tor-data:/var/lib/tor"
         ]
       }
 
