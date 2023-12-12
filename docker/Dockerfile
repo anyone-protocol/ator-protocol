@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of ator-protocol to use.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ATOR_VER="9509c943ff259455f321dfa32d7ba82273c5c074"
+ARG ATOR_VER="8a729c50a87974b78822227c14c03f3fb6be514e"
 ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
 # Sets ator-protocol ports for build time
