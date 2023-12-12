@@ -2,12 +2,23 @@
 
 This directory contains configs to build and run ATOR protocol binaries using docker
 
+**Important!** 
+`This docker image will be built with dummy directory authorities, production ready DAs will be introduced later.`
+
 ## Building Docker Image
 
 Build an image:
 ```sh
 docker build -t ator-protocol .
 ```
+
+## Building Docker Image with a specific tag (version of the protocol)
+
+Build an image with a specific tag:
+```sh
+docker build -t ator-protocol . --build-arg="ATOR_VER=${TAG}"
+```
+Both lightweight and annotated git tags are applicable.
 
 ## Extracting multi-arch binaries
 
