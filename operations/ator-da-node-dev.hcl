@@ -48,7 +48,8 @@ job "ator-dir-auth-dev" {
         image = "ator-development/ator-protocol:latest"
         ports = ["orport", "dirport"]
         volumes = [
-          "local/torrc:/etc/tor/torrc"
+          "local/torrc:/etc/tor/torrc",
+          "local/keys:/var/lib/tor/keys"
         ]
       }
 
@@ -59,6 +60,24 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
+          {{with secret kv/da-node/dev/authority_certificate}}
+          {{.Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/authority_certificate"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/da-node/dev/fingerprint}}
+          {{.Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/fingerprint"
+      }
+
+      template {
+        data = <<EOH
           ##=================== /etc/torrc =====================##
           # see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
 
@@ -66,8 +85,11 @@ job "ator-dir-auth-dev" {
           User atord
           DataDirectory /var/lib/tor
 
+          AuthoritativeDirectory 1
+          V3AuthoritativeDirectory 1
+
           # Server's public IP Address (usually automatic)
-          #Address 10.10.10.10
+          Address {{ env NOMAD_IP_dirport }}
 
           # Port to advertise for incoming Tor connections.
           ORPort 9001                  # common ports are 9001, 443
@@ -105,6 +127,20 @@ job "ator-dir-auth-dev" {
           #ContactInfo atorv4@example.org
         EOH
         destination = "local/torrc"
+      }
+
+      service {
+        port = "dirport"
+        check {
+          name     = "dir auth alive"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "10s"
+          check_restart {
+            limit = 10
+            grace = "30s"
+          }
+        }
       }
     }    
   }
