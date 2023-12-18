@@ -155,7 +155,7 @@ job "ator-dir-auth-dev" {
           V3AuthoritativeDirectory 1
 
           # Server's public IP Address (usually automatic)
-          Address {{ key "ator-network/dev/dir-auth-${node.unique.id}/public_ipv4" }}
+          Address {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/public_ipv4") }}
 
           # Port to advertise for incoming Tor connections.
           ORPort 9001                  # common ports are 9001, 443
