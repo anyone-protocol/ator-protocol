@@ -93,7 +93,7 @@ job "ator-dir-auth-dev" {
 
           # Port to advertise for incoming Tor connections.
           ORPort 9001                  # common ports are 9001, 443
-          #ORPort [IPv6-address]:9001
+          #ORPort {{ env NOMAD_IP_orport }}:9001
 
           # Mirror directory information for others (optional, not used on bridge)
           DirPort 9030                 # common ports are 9030, 80
