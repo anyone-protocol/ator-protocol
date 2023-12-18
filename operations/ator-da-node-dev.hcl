@@ -53,6 +53,10 @@ job "ator-dir-auth-dev" {
         ]
       }
 
+      vault {
+        policies = ["ator-network-read"]
+      }
+
       resources {
         cpu = 2048
         memory = 2048
