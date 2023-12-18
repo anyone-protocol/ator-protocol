@@ -60,28 +60,28 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{key "ator-network/dev/dir-auth-${node.unique.id}/authority_certificate}}
+          {{ key "ator-network/dev/dir-auth-${node.unique.id}/authority_certificate" }}
         EOH
         destination = "local/tor/keys/authority_certificate"
       }
 
       template {
         data = <<EOH
-          {{key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint}}
+          {{ key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint" }}
         EOH
         destination = "local/tor/fingerprint"
       }
 
       template {
         data = <<EOH
-          {{key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint_ed25519}}
+          {{ key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint_ed25519" }}
         EOH
         destination = "local/tor/fingerprint_ed25519"
       }
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/authority_identity_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/authority_identity_key" }}
           {{ .Data.data}}
           {{end}}
         EOH
@@ -90,7 +90,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/authority_signing_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/authority_signing_key" }}
           {{.Data.data}}
           {{end}}
         EOH
@@ -99,7 +99,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_master_id_secret_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_master_id_secret_key_base64" }}
           {{ base64Decode .Data.data}}
           {{end}}
         EOH
@@ -108,7 +108,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_signing_secret_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_signing_secret_key_base64" }}
           {{ base64Decode .Data.data}}
           {{end}}
         EOH
@@ -117,7 +117,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_id_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/secret_id_key_base64" }}
           {{ base64Decode .Data.data}}
           {{end}}
         EOH
@@ -126,7 +126,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key_base64" }}
           {{ base64Decode .Data.data}}
           {{end}}
         EOH
@@ -135,7 +135,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key_ntor}}
+          {{ with secret "kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key_ntor_base64" }}
           {{ base64Decode .Data.data}}
           {{end}}
         EOH
