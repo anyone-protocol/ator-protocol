@@ -49,7 +49,7 @@ job "ator-dir-auth-dev" {
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
-          "local/keys:/var/lib/tor/keys"
+          "local/tor:/var/lib/tor"
         ]
       }
 
@@ -60,20 +60,86 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{with secret kv/da-node/dev/authority_certificate}}
-          {{.Data.data}}
-          {{end}}
+          {{key "ator-network/dev/dir-auth-${node.unique.id}/authority_certificate}}
         EOH
-        destination = "local/keys/authority_certificate"
+        destination = "local/tor/keys/authority_certificate"
       }
 
       template {
         data = <<EOH
-          {{with secret kv/da-node/dev/fingerprint}}
+          {{key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint}}
+        EOH
+        destination = "local/tor/fingerprint"
+      }
+
+      template {
+        data = <<EOH
+          {{key "ator-network/dev/dir-auth-${node.unique.id}/fingerprint_ed25519}}
+        EOH
+        destination = "local/tor/fingerprint_ed25519"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/authority_identity_key}}
+          {{ .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/authority_identity_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/authority_signing_key}}
           {{.Data.data}}
           {{end}}
         EOH
-        destination = "local/keys/fingerprint"
+        destination = "local/keys/authority_signing_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_master_id_secret_key}}
+          {{ base64Decode .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/ed25519_master_id_secret_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/ed25519_signing_secret_key}}
+          {{ base64Decode .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/ed25519_signing_secret_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_id_key}}
+          {{ base64Decode .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/secret_id_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key}}
+          {{ base64Decode .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/secret_onion_key"
+      }
+
+      template {
+        data = <<EOH
+          {{with secret kv/ator-network/dev/dir-auth-${node.unique.id}/secret_onion_key_ntor}}
+          {{ base64Decode .Data.data}}
+          {{end}}
+        EOH
+        destination = "local/keys/secret_onion_key_ntor"
       }
 
       template {
