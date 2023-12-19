@@ -105,31 +105,36 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}EOH
+{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}
+EOH
         destination = "local/tor/keys/ed25519_master_id_secret_key"
       }
 
       template {
         data = <<EOH
-{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}EOH
+{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}
+EOH
         destination = "local/tor/keys/ed25519_signing_secret_key"
       }
 
       template {
         data = <<EOH
-{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}EOH
+{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}
+EOH
         destination = "local/tor/keys/secret_id_key"
       }
 
       template {
         data = <<EOH
-{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}EOH
+{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}
+EOH
         destination = "local/tor/keys/secret_onion_key"
       }
 
       template {
         data = <<EOH
-{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}EOH
+{{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}
+EOH
         destination = "local/tor/keys/secret_onion_key_ntor"
       }
 
