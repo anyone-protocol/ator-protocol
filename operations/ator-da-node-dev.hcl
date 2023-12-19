@@ -195,8 +195,8 @@ job "ator-dir-auth-dev" {
           
           ## If no Nickname or ContactInfo is set, docker-entrypoint will use
           ## the environment variables to add Nickname/ContactInfo below
-          #Nickname ATORv4example          # only use letters and numbers
-          #ContactInfo atorv4@example.org
+          Nickname ATORv4example          # only use letters and numbers
+          ContactInfo atorv4@example.org
         EOH
         destination = "local/torrc"
       }
