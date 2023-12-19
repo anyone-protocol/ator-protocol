@@ -49,8 +49,8 @@ job "ator-dir-auth-dev" {
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
-          "local/tor/keys:/var/lib/tor/keys"
-          "local/tor/fingerprint:/var/lib/tor/fingerprint"
+          "local/tor/keys:/var/lib/tor/keys",
+          "local/tor/fingerprint:/var/lib/tor/fingerprint",
           "local/tor/fingerprint_ed25519:/var/lib/tor/fingerprint_ed25519"
         ]
       }
