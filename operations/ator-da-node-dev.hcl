@@ -91,7 +91,7 @@ job "ator-dir-auth-dev" {
           {{ .Data.data.authority_identity_key}}
           {{end}}
         EOH
-        destination = "local/keys/authority_identity_key"
+        destination = "local/tor/keys/authority_identity_key"
       }
 
       template {
@@ -100,7 +100,7 @@ job "ator-dir-auth-dev" {
           {{.Data.data.authority_signing_key}}
           {{end}}
         EOH
-        destination = "local/keys/authority_signing_key"
+        destination = "local/tor/keys/authority_signing_key"
       }
 
       template {
@@ -109,7 +109,7 @@ job "ator-dir-auth-dev" {
           {{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}
           {{end}}
         EOH
-        destination = "local/keys/ed25519_master_id_secret_key"
+        destination = "local/tor/keys/ed25519_master_id_secret_key"
       }
 
       template {
@@ -118,7 +118,7 @@ job "ator-dir-auth-dev" {
           {{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}
           {{end}}
         EOH
-        destination = "local/keys/ed25519_signing_secret_key"
+        destination = "local/tor/keys/ed25519_signing_secret_key"
       }
 
       template {
@@ -127,7 +127,7 @@ job "ator-dir-auth-dev" {
           {{ base64Decode .Data.data.secret_id_key_base64}}
           {{end}}
         EOH
-        destination = "local/keys/secret_id_key"
+        destination = "local/tor/keys/secret_id_key"
       }
 
       template {
@@ -136,7 +136,7 @@ job "ator-dir-auth-dev" {
           {{ base64Decode .Data.data.secret_onion_key_base64}}
           {{end}}
         EOH
-        destination = "local/keys/secret_onion_key"
+        destination = "local/tor/keys/secret_onion_key"
       }
 
       template {
@@ -145,7 +145,7 @@ job "ator-dir-auth-dev" {
           {{ base64Decode .Data.data.secret_onion_key_ntor_base64}}
           {{end}}
         EOH
-        destination = "local/keys/secret_onion_key_ntor"
+        destination = "local/tor/keys/secret_onion_key_ntor"
       }
 
       template {
