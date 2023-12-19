@@ -45,7 +45,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "ator-development/ator-protocol:latest"
+        image = "svforte/ator-protocol:latest"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
@@ -78,15 +78,15 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint_ed25519") }}
+          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint-ed25519") }}
         EOH
         destination = "local/tor/fingerprint_ed25519"
       }
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/authority_identity_key") }}
-          {{ .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ .Data.data.authority_identity_key}}
           {{end}}
         EOH
         destination = "local/keys/authority_identity_key"
@@ -94,8 +94,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/authority_signing_key") }}
-          {{.Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{.Data.data.authority_signing_key}}
           {{end}}
         EOH
         destination = "local/keys/authority_signing_key"
@@ -103,8 +103,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/ed25519_master_id_secret_key_base64") }}
-          {{ base64Decode .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}
           {{end}}
         EOH
         destination = "local/keys/ed25519_master_id_secret_key"
@@ -112,8 +112,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/ed25519_signing_secret_key_base64") }}
-          {{ base64Decode .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}
           {{end}}
         EOH
         destination = "local/keys/ed25519_signing_secret_key"
@@ -121,8 +121,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/secret_id_key_base64") }}
-          {{ base64Decode .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ base64Decode .Data.data.secret_id_key_base64}}
           {{end}}
         EOH
         destination = "local/keys/secret_id_key"
@@ -130,8 +130,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/secret_onion_key_base64") }}
-          {{ base64Decode .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ base64Decode .Data.data.secret_onion_key_base64}}
           {{end}}
         EOH
         destination = "local/keys/secret_onion_key"
@@ -139,8 +139,8 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s/secret_onion_key_ntor_base64") }}
-          {{ base64Decode .Data.data}}
+          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
+          {{ base64Decode .Data.data.secret_onion_key_ntor_base64}}
           {{end}}
         EOH
         destination = "local/keys/secret_onion_key_ntor"
