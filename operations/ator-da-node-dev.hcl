@@ -51,7 +51,7 @@ job "ator-dir-auth-dev" {
           "local/torrc:/etc/tor/torrc",
           "local/tor/keys:/var/lib/tor/keys",
           "local/tor/fingerprint:/var/lib/tor/fingerprint",
-          "local/tor/fingerprint_ed25519:/var/lib/tor/fingerprint-ed25519"
+          "local/tor/fingerprint-ed25519:/var/lib/tor/fingerprint-ed25519"
         ]
       }
 
@@ -82,7 +82,7 @@ job "ator-dir-auth-dev" {
         data = <<EOH
           {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint-ed25519") }}
         EOH
-        destination = "local/tor/fingerprint_ed25519"
+        destination = "local/tor/fingerprint-ed25519"
       }
 
       template {
