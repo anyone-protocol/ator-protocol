@@ -49,7 +49,7 @@ job "ator-dir-auth-dev" {
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
-          "local/tor/keys:/var/lib/tor/keys"
+          "secrets/tor/keys:/var/lib/tor/keys"
         ]
       }
 
@@ -65,49 +65,49 @@ job "ator-dir-auth-dev" {
       template {
         change_mode = "noop"
         data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/authority_certificate`) }}"
-        destination = "local/tor/keys/authority_certificate"
+        destination = "secrets/tor/keys/authority_certificate"
       }
       
       template {
         change_mode = "noop"
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
-        destination = "local/tor/keys/authority_identity_key"
+        destination = "secrets/tor/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
-        destination = "local/tor/keys/authority_signing_key"
+        destination = "secrets/tor/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
-        destination = "local/tor/keys/ed25519_master_id_secret_key"
+        destination = "secrets/tor/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
-        destination = "local/tor/keys/ed25519_signing_secret_key"
+        destination = "secrets/tor/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
-        destination = "local/tor/keys/secret_id_key"
+        destination = "secrets/tor/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
-        destination = "local/tor/keys/secret_onion_key"
+        destination = "secrets/tor/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
-        destination = "local/tor/keys/secret_onion_key_ntor"
+        destination = "secrets/tor/keys/secret_onion_key_ntor"
       }
 
       template {
