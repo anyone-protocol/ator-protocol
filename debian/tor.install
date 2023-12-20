@@ -1,0 +1,13 @@
+usr/bin
+usr/share/doc
+usr/share/man
+etc/tor
+
+contrib/client-tools/torify usr/bin
+debian/tor-instance-create usr/sbin
+debian/tor-service-defaults-torrc usr/share/tor
+debian/tor-service-defaults-torrc-instances usr/share/tor
+debian/systemd/tor.service lib/systemd/system
+debian/systemd/tor@.service lib/systemd/system
+debian/systemd/tor@default.service lib/systemd/system
+debian/systemd/tor-generator lib/systemd/system-generators

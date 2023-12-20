@@ -1,0 +1,14 @@
+DataDirectory /var/lib/tor-instances/@@NAME@@
+PidFile /run/tor-instances/@@NAME@@/tor.pid
+RunAsDaemon 0
+User _tor-@@NAME@@
+SyslogIdentityTag @@NAME@@
+
+ControlSocket /run/tor-instances/@@NAME@@/control GroupWritable RelaxDirModeCheck
+SocksPort unix:/run/tor-instances/@@NAME@@/socks WorldWritable
+
+CookieAuthentication 1
+CookieAuthFileGroupReadable 1
+CookieAuthFile /run/tor-instances/@@NAME@@/control.authcookie
+
+Log notice syslog
