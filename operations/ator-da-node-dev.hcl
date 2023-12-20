@@ -45,7 +45,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "svforte/ator-protocol:latest"
+        image = "svforte/ator-protocol:432db9df31a30338039738ee4d6da7ccc74001d7"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
@@ -58,51 +58,60 @@ job "ator-dir-auth-dev" {
       }
 
       resources {
-        cpu = 2048
-        memory = 2048
+        cpu = 256
+        memory = 256
       }  
 
       template {
+        change_mode = "noop"
         data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/authority_certificate`) }}"
         destination = "local/tor/keys/authority_certificate"
       }
       
       template {
+        change_mode = "noop"
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "local/tor/keys/authority_identity_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "local/tor/keys/authority_signing_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "local/tor/keys/ed25519_master_id_secret_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "local/tor/keys/ed25519_signing_secret_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "local/tor/keys/secret_id_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "local/tor/keys/secret_onion_key"
       }
 
       template {
+        change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "local/tor/keys/secret_onion_key_ntor"
       }
 
       template {
+        change_mode = "noop"
         data = <<EOH
           ##=================== /etc/torrc =====================##
           # see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
@@ -149,7 +158,7 @@ job "ator-dir-auth-dev" {
           
           ## If no Nickname or ContactInfo is set, docker-entrypoint will use
           ## the environment variables to add Nickname/ContactInfo below
-          #Nickname ATORv4example          # only use letters and numbers
+          Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
           ContactInfo atorv4@example.org
         EOH
         destination = "local/torrc"
