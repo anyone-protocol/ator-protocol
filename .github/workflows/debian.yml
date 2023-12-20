@@ -90,15 +90,15 @@ jobs:
     container:
       image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
     steps:
-      - name: 'Cleanup Build Directory'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
       - name: Install Dependencies
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install build-essential devscripts reprepro fakeroot
+          apt-get -y install sudo build-essential devscripts reprepro fakeroot
+      - name: 'Cleanup Build Directory'
+        run: |
+          sudo rm -rf ./* || true
+          sudo rm -rf ./.??* || true
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
