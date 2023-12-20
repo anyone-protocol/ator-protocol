@@ -400,15 +400,15 @@ test_bwmgt_dir_conn_global_write_low(void *arg)
   ret = connection_dir_is_global_write_low(conn, INT_MAX);
   tt_int_op(ret, OP_EQ, 1);
 
-  /* Now, lets try with a connection address from dummyda1. It should always
+  /* Now, lets try with a connection address from DummyDA. It should always
    * pass even though our limit is too low. */
-  addr_family = tor_addr_parse(&conn->addr, "1.5.1.1");
+  addr_family = tor_addr_parse(&conn->addr, "4.3.2.1");
   tt_int_op(addr_family, OP_EQ, AF_INET);
   ret = connection_dir_is_global_write_low(conn, INT_MAX);
   tt_int_op(ret, OP_EQ, 0);
 
-  /* IPv6 testing of dummyda2. */
-  addr_family = tor_addr_parse(&conn->addr, "[1111:1:4000:6000::1000:2]");
+  /* IPv6 testing of DummyDA. */
+  addr_family = tor_addr_parse(&conn->addr, "[123:123:123:123::123:123]");
   tt_int_op(addr_family, OP_EQ, AF_INET6);
   ret = connection_dir_is_global_write_low(conn, INT_MAX);
   tt_int_op(ret, OP_EQ, 0);
