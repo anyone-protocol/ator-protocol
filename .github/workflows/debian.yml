@@ -49,23 +49,43 @@ jobs:
         build:
           # Debian amd64
           - os: debian
-            suite: 'bullseye'
+            suite: bullseye
             arch: amd64
             runner: ubuntu-latest
           - os: debian
-            suite: 'bookworm'
+            suite: bookworm
             arch: amd64
             runner: ubuntu-latest
 
+          # Debian arm64
+          - os: debian
+            suite: bullseye
+            arch: arm64
+            runner: arm64
+          - os: debian
+            suite: bookworm
+            arch: arm64
+            runner: arm64
+
           # Ubuntu amd64
           - os: ubuntu
-            suite: 'focal'
+            suite: focal
             arch: amd64
             runner: ubuntu-latest
           - os: ubuntu
-            suite: 'jammy'
+            suite: jammy
             arch: amd64
             runner: ubuntu-latest
+
+          # Ubuntu arm64
+          - os: ubuntu
+            suite: focal
+            arch: arm64
+            runner: arm64
+          - os: ubuntu
+            suite: jammy
+            arch: arm64
+            runner: arm64
     needs: build-source
     container:
       image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
