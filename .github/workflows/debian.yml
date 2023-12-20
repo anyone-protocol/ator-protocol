@@ -94,11 +94,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install sudo build-essential devscripts reprepro fakeroot
-      - name: 'Cleanup Build Directory'
-        run: |
-          sudo rm -rf ./* || true
-          sudo rm -rf ./.??* || true
+          apt-get -y install build-essential devscripts reprepro fakeroot
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
