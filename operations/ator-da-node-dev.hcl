@@ -156,6 +156,7 @@ job "ator-dir-auth-dev" {
       }
 
       service {
+        name = "dir-auth-dev"
         port = "dirport"
         check {
           name     = "dir auth alive"
