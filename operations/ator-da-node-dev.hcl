@@ -51,7 +51,7 @@ job "ator-dir-auth-dev" {
           "local/torrc:/etc/tor/torrc",
           "local/tor/keys:/var/lib/tor/keys",
           "local/tor/fingerprint:/var/lib/tor/fingerprint",
-          "local/tor/fingerprint_ed25519:/var/lib/tor/fingerprint_ed25519"
+          "local/tor/fingerprint-ed25519:/var/lib/tor/fingerprint-ed25519"
         ]
       }
 
@@ -73,18 +73,14 @@ job "ator-dir-auth-dev" {
       
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ .Data.data.authority_identity_key}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}
         EOH
         destination = "local/tor/keys/authority_identity_key"
       }
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{.Data.data.authority_signing_key}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}
         EOH
         destination = "local/tor/keys/authority_signing_key"
       }
@@ -98,9 +94,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}
         EOH
         destination = "local/tor/keys/ed25519_master_id_secret_key"
       }
@@ -114,36 +108,28 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}
         EOH
         destination = "local/tor/keys/ed25519_signing_secret_key"
       }
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ base64Decode .Data.data.secret_id_key}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key}}{{end}}
         EOH
         destination = "local/tor/keys/secret_id_key"
       }
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ base64Decode .Data.data.secret_onion_key_base64}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}
         EOH
         destination = "local/tor/keys/secret_onion_key"
       }
 
       template {
         data = <<EOH
-          {{ with secret  (env "node.unique.id" | printf "kv/ator-network/dev/dir-auth-%s") }}
-          {{ base64Decode .Data.data.secret_onion_key_ntor_base64}}
-          {{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}
         EOH
         destination = "local/tor/keys/secret_onion_key_ntor"
       }
@@ -159,7 +145,7 @@ job "ator-dir-auth-dev" {
         data = <<EOH
           {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint-ed25519") }}
         EOH
-        destination = "local/tor/fingerprint_ed25519"
+        destination = "local/tor/fingerprint-ed25519"
       }
 
       template {
@@ -209,8 +195,8 @@ job "ator-dir-auth-dev" {
           
           ## If no Nickname or ContactInfo is set, docker-entrypoint will use
           ## the environment variables to add Nickname/ContactInfo below
-          #Nickname ATORv4example          # only use letters and numbers
-          #ContactInfo atorv4@example.org
+          Nickname ATORv4example          # only use letters and numbers
+          ContactInfo atorv4@example.org
         EOH
         destination = "local/torrc"
       }
