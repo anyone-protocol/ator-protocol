@@ -1,0 +1,124 @@
+name: Build Debian Packages
+
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  build-source:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup
+        run: |
+          apt-get -y install $(cat debian/.debian-ci/build_source/build-depends)
+          git config --global --add safe.directory $(realpath .)
+      - name: Build Source
+        run: |
+          $(pwd)/debian/.debian-ci/build_source/build-script
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-packages
+          path: source-packages/
+
+  build-binary:
+    runs-on: ${{ matrix.build.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          # Debian amd64
+          - os: debian
+            suite: 'bullseye'
+            arch: amd64
+            runner: ubuntu-latest
+          - os: debian
+            suite: 'bookworm'
+            arch: amd64
+            runner: ubuntu-latest
+
+          # Ubuntu amd64
+          - os: ubuntu
+            suite: 'focal'
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: 'jammy'
+            arch: amd64
+            runner: ubuntu-latest
+    needs: build-source
+    container:
+      image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install build-essential devscripts reprepro fakeroot
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: source-packages
+          path: source-packages/
+      - name: Build Package
+        run: |
+          find source-packages
+          upstream_version="$(head -n1 source-packages/version.txt)"
+          if [ -z "$upstream_version" ]; then echo >&2 "Did not get package version from artifact."; exit 1; fi
+          echo $upstream_version
+
+          srcchanges="$(ls -1 source-packages/tor_"$upstream_version"*${{ matrix.build.suite }}+*_src.changes)"
+          echo "srcchanges: $srcchanges"
+          if [ "$(echo "$srcchanges" | wc -l)" != 1 ] || [ -z "$srcchanges" ] ; then echo >&2 "Weird number of changes files found."; exit 1; fi
+
+          case "${{ matrix.build.arch }}" in
+            amd64) build_selector="-b";;
+            *)     build_selector="-B";;
+          esac
+
+          echo "source changes file:"
+          cat "$srcchanges"
+          dsc="$(dcmd --dsc "$srcchanges")"
+          echo "dsc file is ${dsc}"
+          cat "$dsc"
+
+          mkdir build-tree
+          cd build-tree
+          dpkg-source -x ../${dsc}
+          cd tor-${upstream_version}
+          apt-get -y build-dep .
+          debuild -rfakeroot -uc -us "$build_selector"
+          cd ..
+          binchanges="$(ls -1 *.changes)"
+          if [ "$(echo "$binchanges" | wc -l)" != 1 ] || [ -z "$binchanges" ] ; then echo >&2 "Weird number of changes files produced."; exit 1; fi
+          cd ..
+
+          mkdir RESULT
+          dcmd ln -v "build-tree/${binchanges}" RESULT
+          mkdir binary-packages
+          mv -v --no-target-directory RESULT binary-packages/"${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ator-protocol-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+          path: binary-packages/
