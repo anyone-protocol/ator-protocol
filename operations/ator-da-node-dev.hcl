@@ -115,7 +115,7 @@ job "ator-dir-auth-dev" {
 
       template {
         data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key}}{{end}}
+          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}
         EOH
         destination = "local/tor/keys/secret_id_key"
       }
