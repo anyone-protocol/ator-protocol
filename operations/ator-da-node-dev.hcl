@@ -65,87 +65,53 @@ job "ator-dir-auth-dev" {
       }  
 
       template {
-        data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/authority_certificate") }}
-        EOH
+        data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/authority_certificate`) }}"
         destination = "local/tor/keys/authority_certificate"
       }
       
       template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}
-        EOH
-        destination = "local/tor/keys/authority_identity_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}
-        EOH
-        destination = "local/tor/keys/authority_signing_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/ed25519_master_id_public_key_base64") }}
-        EOH
-        destination = "local/tor/keys/ed25519_master_id_public_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}
-        EOH
-        destination = "local/tor/keys/ed25519_master_id_secret_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/ed25519_signing_cert_base64") }}
-        EOH
-        destination = "local/tor/keys/ed25519_signing_cert"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}
-        EOH
-        destination = "local/tor/keys/ed25519_signing_secret_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}
-        EOH
-        destination = "local/tor/keys/secret_id_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}
-        EOH
-        destination = "local/tor/keys/secret_onion_key"
-      }
-
-      template {
-        data = <<EOH
-          {{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}
-        EOH
-        destination = "local/tor/keys/secret_onion_key_ntor"
-      }
-
-      template {
-        data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint") }}
-        EOH
+        data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/fingerprint`) }}"
         destination = "local/tor/fingerprint"
       }
 
       template {
-        data = <<EOH
-          {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/fingerprint-ed25519") }}
-        EOH
+        data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/fingerprint-ed25519`) }}"
         destination = "local/tor/fingerprint-ed25519"
+      }
+
+      template {
+        data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        destination = "local/tor/keys/authority_identity_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
+        destination = "local/tor/keys/authority_signing_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        destination = "local/tor/keys/ed25519_master_id_secret_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        destination = "local/tor/keys/ed25519_signing_secret_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        destination = "local/tor/keys/secret_id_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        destination = "local/tor/keys/secret_onion_key"
+      }
+
+      template {
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        destination = "local/tor/keys/secret_onion_key_ntor"
       }
 
       template {
