@@ -1,3 +1,6 @@
+// Temporary list of directory authorities to prevent ator-protocol connecting
+// to the original Tor network during development
+
 "dummyda1 orport=9001 "
   "v3ident=096E694D944AC11F689D3883AC314DDBC298A7A4 "
   "ipv6=[1111:1:4000:6000::1000:1]:443 "
