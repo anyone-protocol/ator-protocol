@@ -49,9 +49,7 @@ job "ator-dir-auth-dev" {
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
-          "local/tor/keys:/var/lib/tor/keys",
-          "local/tor/fingerprint:/var/lib/tor/fingerprint",
-          "local/tor/fingerprint-ed25519:/var/lib/tor/fingerprint-ed25519"
+          "local/tor/keys:/var/lib/tor/keys"
         ]
       }
 
@@ -69,16 +67,6 @@ job "ator-dir-auth-dev" {
         destination = "local/tor/keys/authority_certificate"
       }
       
-      template {
-        data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/fingerprint`) }}"
-        destination = "local/tor/fingerprint"
-      }
-
-      template {
-        data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/fingerprint-ed25519`) }}"
-        destination = "local/tor/fingerprint-ed25519"
-      }
-
       template {
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "local/tor/keys/authority_identity_key"
