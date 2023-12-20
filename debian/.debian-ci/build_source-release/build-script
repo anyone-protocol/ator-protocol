@@ -1,0 +1,165 @@
+#!/bin/bash
+
+# build a release debian source package given signed commits and
+# upstream tarballs
+
+
+# Copyright 2007--2021 Peter Palfrader
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+set -u
+set -x
+set -o pipefail
+
+pkg=tor
+
+base="$PWD"
+keyring_upstream="${base}/keyrings/upstream.gpg"
+keyring_debian="${base}/keyrings/debian.gpg"
+
+if [ -z "${CI_COMMIT_TAG:-}" ] ; then
+  echo >&2 "CI_COMMIT_TAG variable not set"
+  exit 1
+fi
+
+debian_tag="${CI_COMMIT_TAG}"
+debian_version="${debian_tag#debian-tor-}"
+if [ "${debian_version}" = "${debian_tag}" ] ; then
+  echo >&2 "debian_tag variable does not start with 'debian-tor-'."
+  exit 1
+fi
+upstream_version="${debian_version%-*}"
+if [ "${debian_version}" = "${upstream_version}" ] ; then
+  echo >&2 "Malformed debian_version '$debian_version'"
+  exit 1
+fi
+
+if [ -z "$(git tag -l "$debian_tag")" ]; then
+    echo >&2 "Tag $debian_tag does not exist."
+    exit 1
+fi
+
+cd "${base}/src/debian-tor"
+if [ -z "$(git tag -l "$debian_tag")" ]; then
+  echo >&2 "Tag ${debian_tag} does not exist."
+  exit 1
+fi
+
+changelog_version="$(dpkg-parsechangelog | grep-dctrl -sVersion -n .)"
+if [ "${debian_version}" != "${changelog_version}" ] ; then
+  echo >&2 "Tag version (${debian_version}) versus debian/change version (${changelog_version}) mismatch."
+  exit 1
+fi
+
+mkdir -v "${base}/build"
+
+# get original upstream tarball and verify it.
+##############################################
+cd "${base}/src/pristine-upstream"
+git branch pristine-tar origin/master
+
+cd "${base}/src/debian-tor"
+git remote add pristine "${base}/src/pristine-upstream"
+git fetch pristine --depth 1 pristine-tar:pristine-tar
+tarball="${pkg}-${upstream_version}.tar.gz"
+pristine-tar checkout "${tarball}"
+mv -v "${tarball}" "${base}/build/"
+
+cd "${base}/src/pristine-upstream-signatures"
+if [ -e "${tarball}.asc" ]; then
+  signature="${tarball}.asc"
+  cp -v "${base}/src/pristine-upstream-signatures/${signature}" "${base}/build/"
+
+  cd "${base}/build/"
+  gpgv --keyring "$keyring_upstream" "$signature" "$tarball"
+elif [ -e "${tarball}.sha256sum" ] && [ -e "${tarball}.sha256sum.asc" ] ; then
+  shafile="${tarball}.sha256sum"
+  signature="${shafile}.asc"
+  gpgv --keyring "$keyring_upstream" "$signature" "$shafile"
+  expect="$(awk '{print $1}' <  "$shafile")"
+  if [ -z "${expect}" ]; then
+    echo >&2 "Did not get a checksum"
+    exit 1
+  fi
+
+  cd "${base}/build/"
+  got="$(sha256sum < "${tarball}" | awk '{print $1}')"
+  if [ "${got}" != "${expect}" ]; then
+    echo >&2 "Checksum mismatch: expected: ${expect}; got: ${got}"
+    exit 1
+  fi
+else
+  echo >&2 "Unable to verify upstream tarball."
+  exit 1
+fi
+
+origtar="${pkg}_${upstream_version}.orig.tar.gz"
+ln "${tarball}" "${origtar}"
+tar xaf "${tarball}" --transform 's#^[^/]*#upstream#'
+
+# get and verify debian tree
+############################
+
+mkdir "${base}/gpghome"
+cp -v "$keyring_debian" "${base}/gpghome/pubring.gpg"
+cd "${base}/src/debian-tor"
+GNUPGHOME="${base}/gpghome" git tag -v "${debian_tag}"
+micro_revision=$(git rev-parse --short=16 "${debian_tag}")
+
+mkdir "${base}/build/deb"
+git archive "${debian_tag}" | (cd "${base}/build/deb" && tar xf -)
+
+# check the source for differences and build source
+cd "${base}/build"
+if diff -qr deb upstream | grep -v '^Only in ' | grep .; then
+  echo >&2 "Unwanted difference in source trees!"
+  exit 1
+fi
+
+mv -v --no-target-directory deb/debian upstream/debian
+echo "\"$micro_revision\"" > upstream/debian/micro-revision.i
+dpkg-source -b upstream $origtar
+
+if ! [ -e "${pkg}_${debian_version}.dsc" ]; then
+  echo >&2 "Did not produce ${pkg}_${debian_version}.dsc!"
+  exit 1
+fi
+
+# build them ALL
+ddir="${pkg}-${upstream_version}"
+PATH="${base}/build/upstream/debian/misc:$PATH"
+. "$(which build-tor-sources)"
+set -x
+set +e
+backport_all "$pkg" "$ddir" "$origtar" "$debian_version"
+include_orig="-sa"
+for i in *.dsc; do
+    dpkg-source -x "$i"
+    (cd "$ddir" && dpkg-genchanges -S $include_orig) > ${i%.dsc}_src.changes
+    include_orig=""
+    rm -r "$ddir"
+done
+
+mkdir "${base}/RESULT"
+for i in *changes; do dcmd mv -v "$i" "${base}/RESULT"; done
+echo "$upstream_version" > "${base}/RESULT/version.txt"
+echo "$debian_version" >> "${base}/RESULT/version.txt"

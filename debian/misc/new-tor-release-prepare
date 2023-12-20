@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# helper script to prepare a tor debian release.
+
+# Usage: new-tor <full version> <target>
+#
+# Copyright 2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017 Peter Palfrader
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+set -e
+set -u
+
+TORGIT="$HOME/projects/tor/tor"
+TORDEBBASE="$HOME/projects/debian/debian/tor"
+
+cd "$TORGIT"
+if [ -n "$(git status --porcelain)" ]; then
+  echo "git status reports differences, aborting." >&2
+  git status >&2
+  exit 1
+fi
+
+
+#############################
+# learn about the version
+echo -n "Tor version: "
+if [ -n "${1:-}" ]; then echo "$1"; version="$1"; shift; else read version; fi
+debv=${version##*-}
+upv=${version%-*}
+tree=${upv%.*}
+if [ "$upv-$debv" != "$version" ] ;then
+  echo >&2 "Cannot parse version $version"
+  exit 1
+fi
+
+echo -n "Branch: "
+if [ -n "${1:-}" ]; then echo "$1"; branch="$1"; shift; else read branch; fi
+case "$branch" in
+  debian)
+    merge_branch="debian-merge"
+    ;;
+  *)
+    s="${branch#debian-}"
+    if [ "$s" = "$branch" ]; then
+      echo >&2 "Cannot parse or unexpected branch $version"
+      exit 1
+    fi
+    merge_branch="debian-merge-$s"
+    ;;
+esac
+
+# verify git tag
+tag="tor-$upv"
+cd "$TORGIT"
+git fetch origin
+git tag -v "$tag"
+echo "Continue? [y/N]"; read ans; [ "$ans" = "y" ] || exit 1
+
+
+(
+  tordebdir="$TORDEBBASE/$tree.X/$version"
+  mkdir -p "$tordebdir"
+  cd "$tordebdir"
+  tarball="tor-$upv.tar.gz"
+  wget -c https://www.torproject.org/dist/"$tarball"{,.asc,.sha256sum,.sha256sum.asc} || true
+  if ! [ -e "${tarball}" ] ; then
+    echo >&2 "Download failed"
+    exit 1
+  fi
+  if [ -e "$tarball.asc" ]; then
+    gpg --verify "$tarball.asc"
+  elif [ -e "${tarball}.sha256sum" ] && [ -e "${tarball}.sha256sum.asc" ] ; then
+    gpg --verify "${tarball}.sha256sum.asc"
+    expect="$(awk '{print $1}' <  "${tarball}.sha256sum")"
+    if [ -z "${expect}" ]; then
+      echo >&2 "Did not get a checksum"
+      exit 1
+    fi
+    got="$(sha256sum < "${tarball}" | awk '{print $1}')"
+    if [ "${got}" != "${expect}" ]; then
+      echo >&2 "Checksum mismatch: expected: ${expect}; got: ${got}"
+      exit 1
+    fi
+  else
+    echo >&2 "Unable to verify upstream tarball."
+    exit 1
+  fi
+  echo "Continue? [y/N]"; read ans; [ "$ans" = "y" ] || exit 1
+)
+
+git checkout main
+git pull
+git checkout "$branch"
+git pull
+git checkout -b "$merge_branch"
+git merge --no-ff --commit --no-edit "$tag"
+dch --newversion "$version" "New upstream version."
+dch --release ''
+git ci -m "New upstream version: $upv" debian/changelog
+git co "$branch"
+git merge --no-ff --commit --no-edit "$merge_branch"
+git branch -d "$merge_branch"

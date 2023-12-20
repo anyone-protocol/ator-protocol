@@ -1,0 +1,33 @@
+#!/usr/bin/env /lib/runit/invoke-run
+readonly daemon=/usr/bin/tor
+exec 2>&1
+
+# This directory is referenced in /usr/share/tor/tor-service-defaults-torrc
+# and must exist.
+readonly rundir=/run/tor
+if ! [ -d "${rundir}" ]; then
+	mkdir -m 02755 "${rundir}"
+	chown debian-tor:debian-tor "${rundir}"
+	! [ -x /sbin/restorecon ] || /sbin/restorecon "${rundir}"
+fi
+
+MAX_FILEDESCRIPTORS="${MAX_FILEDESCRIPTORS:-65536}"
+ulimit -n "${MAX_FILEDESCRIPTORS}"
+
+# default invocation
+set -- "${daemon}"                                             \
+	--defaults-torrc /usr/share/tor/tor-service-defaults-torrc \
+	-f /etc/tor/torrc                                          \
+	--Log 'notice stdout'                                      \
+	--RunAsDaemon 0
+
+if ! "$@" --verify-config ; then
+	echo "persistent error: Tor configuration is not valid"
+	exec sv down tor
+fi
+
+if aa-status --enabled ; then
+	set -- /usr/bin/aa-exec --profile=system_tor -- "$@"
+fi
+
+exec /usr/bin/env -i "$@"
