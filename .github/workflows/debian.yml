@@ -90,6 +90,10 @@ jobs:
     container:
       image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
     steps:
+      - name: 'Cleanup Build Directory'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
       - name: Install Dependencies
         run: |
           apt-get -y update
