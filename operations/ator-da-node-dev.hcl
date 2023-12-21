@@ -162,7 +162,9 @@ Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nic
 ContactInfo atorv4@example.org
 
 Log info
-V3AuthVotingInterval 15 minutes
+V3AuthVotingInterval 5 minutes
+V3AuthVoteDelay 20 seconds
+V3AuthDistDelay 20 seconds
         EOH
         destination = "local/torrc"
       }
