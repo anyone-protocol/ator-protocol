@@ -165,6 +165,7 @@ Log info
 V3AuthVotingInterval 5 minutes
 V3AuthVoteDelay 20 seconds
 V3AuthDistDelay 20 seconds
+ControlPort 9051
         EOH
         destination = "local/torrc"
       }
