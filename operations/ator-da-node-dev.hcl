@@ -160,12 +160,6 @@ IPv6Exit 0
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
 ContactInfo atorv4@example.org
-
-Log info
-V3AuthVotingInterval 5 minutes
-V3AuthVoteDelay 20 seconds
-V3AuthDistDelay 20 seconds
-ControlPort 9051
         EOH
         destination = "local/torrc"
       }
