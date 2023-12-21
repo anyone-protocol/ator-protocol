@@ -1,13 +1,13 @@
 // List container additional dummy dir (DummyDA), to make tests passing.
 // TODO: Remove it once we have ipv6 addresses and dirs with bridge mode.
 
-"ATORv4aebifuho orport=9001 "
+"ATORDAeucdev orport=9001 "
   "v3ident=7652FE7D5B120F1D6A747FF11FF2F423C6428789 "
   "49.13.145.234:9030 4ECBB2E310BEE9D3E840F569747CFB55DEB6B00F",
-"ATORv4ohpaequi orport=9001 "
+"ATORDAusedev orport=9001 "
   "v3ident=108915505A15CAF5DF9DDEC3FCB498953419D1F9 "
   "5.161.108.187:9030 5CECD90F9BF611E5010F718FC0FC12C1B470B746",
-"ATORv4oalahfup orport=9001 "
+"ATORDAuswdev orport=9001 "
   "v3ident=54FC95706E969D4FC46974439D1D698AD1C84B64 "
   "5.78.90.106:9030 A6BFD7BA6F41883E044B5429788FFA4E47DD1257",
 "DummyDA orport=9001 bridge "
