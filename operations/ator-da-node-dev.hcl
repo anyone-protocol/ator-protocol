@@ -45,7 +45,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "svforte/ator-protocol:latest"
+        image = "svforte/ator-protocol:c4dec3a888efced555f451ca8632ea14607fe58b"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
@@ -160,6 +160,9 @@ IPv6Exit 0
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
 ContactInfo atorv4@example.org
+
+Log info
+V3AuthVotingInterval 15 minutes
         EOH
         destination = "local/torrc"
       }
