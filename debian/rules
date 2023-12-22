@@ -1,0 +1,75 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+DH_VERBOSE ?= 1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# allow building against libdmalloc4 - it better be installed
+ifneq (,$(findstring with-dmalloc,$(DEB_BUILD_OPTIONS)))
+	confflags += --with-dmalloc
+endif
+# allow building with --enable-openbsd-malloc
+ifneq (,$(findstring enable-openbsd-malloc,$(DEB_BUILD_OPTIONS)))
+	confflags += --enable-openbsd-malloc
+endif
+
+ifeq ($(DEB_HOST_ARCH_OS),linux)
+	dhoptions += --with systemd
+	confflags += --enable-systemd
+endif
+
+%:
+	dh \
+		$@ \
+		--with quilt \
+		--with autoreconf \
+		--with runit \
+		$(dhoptions) \
+		--builddirectory=build \
+		--parallel
+
+override_dh_auto_configure:
+	! [ -e debian/micro-revision.i ] || cp debian/micro-revision.i ./micro-revision.i
+	dh_auto_configure -- \
+		$(confflags) \
+		--prefix=/usr \
+		--mandir=\$${prefix}/share/man \
+		--infodir=\$${prefix}/share/info \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--disable-silent-rules \
+		--enable-gcc-warnings-advisory \
+		--enable-gpl
+
+override_dh_clean:
+	! [ -e debian/micro-revision.i ] || rm -f ./micro-revision.i
+
+	# Normally the .deb wouldn't ship with a ../.git, but if we do, include the revision number
+	if [ -d .git ] && which git >/dev/null; then \
+		echo "\"`git rev-parse --short=16 HEAD`\"" > "debian/micro-revision.i" ; \
+	fi
+
+	rm -f debian/tor-instance-create.8
+
+	dh_clean
+
+override_dh_auto_build:
+	dh_auto_build
+	a2x -f manpage debian/tor-instance-create.8.txt
+	chmod +x debian/systemd/tor-generator
+
+override_dh_install-arch:
+	dh_install --fail-missing
+
+	rm debian/tor/etc/tor/torrc.sample
+	cp build/src/config/torrc.minimal debian/tor/etc/tor/torrc
+
+	cp debian/tor.apparmor-profile             debian/tor/etc/apparmor.d/system_tor
+	cp debian/tor.apparmor-profile.abstraction debian/tor/etc/apparmor.d/abstractions/tor
+	dh_apparmor --profile-name=system_tor -ptor
+
+override_dh_strip:
+	dh_strip --dbgsym-migration='tor-dbg (<< 0.3.1.5-alpha)'
+override_dh_installinit:
+	dh_installinit --error-handler=tor_error_init

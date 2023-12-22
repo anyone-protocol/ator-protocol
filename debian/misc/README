@@ -1,0 +1,5 @@
+These scripts are used by weasel and infrastructure while releasing Tor
+Debian packages.  They might not be useful to other people directly.  At
+least not yet.  Patches welcome.
+
+-- weasel, August 2017

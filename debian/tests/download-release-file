@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# Download a file via Tor.
+#
+# This script launches an instance of a Tor client and attempts to
+# download a Release file from deb.debian.org.  It uses torsocks and
+# curl to do the request and ca-certificates to authenticate the https
+# endpoint.  It also uses netcat to talk to the tor instance it started
+# to learn the local socks port and the PID of the detached tor daemon.
+#
+# Copyright (c) 2018 Peter Palfrader
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+set -u
+
+if [ -n "${AUTOPKGTEST_TMP:-}" ]; then
+  tmpdir=""
+  cd "$AUTOPKGTEST_TMP"
+else
+  tmpdir="$(mktemp -d /tmp/tortest.XXXXXX)"
+  cd "$tmpdir"
+fi
+
+LOGFILE="log"
+
+torpid=""
+
+cleanup() {
+  if [ -n "$torpid" ]; then
+    /sbin/start-stop-daemon --name tor --pid "$torpid" --stop --retry 35
+    torpid=""
+  fi
+  if [ -f "$LOGFILE" ]; then
+    cat "$LOGFILE"
+  fi
+  if [ -n "$tmpdir" ]; then
+    rm -rf "$tmpdir"
+  fi
+}
+trap "cleanup" EXIT
+
+cat > torrc << EOF
+RunAsDaemon 1
+SafeLogging 0
+SocksPort auto
+DataDirectory $(pwd)/tor
+Log notice file $LOGFILE
+ControlSocket $(pwd)/ctl RelaxDirModeCheck
+EOF
+
+/usr/bin/tor -f torrc
+echo "Tor started."
+
+torpid="$(
+  ( echo 'authenticate';
+    echo 'getinfo process/pid';
+    echo 'quit' ) |
+  nc.openbsd -U ctl |
+  tr -d '\r' |
+  awk -F= '$1 == "250-process/pid" { print $2 }'
+  )"
+
+sockslistener="$(
+  ( echo 'authenticate';
+    echo 'getinfo net/listeners/socks';
+    echo 'quit' ) |
+  nc.openbsd -U ctl |
+  tr -d '\r' |
+  awk -F= '$1 == "250-net/listeners/socks" { print $2 }' |
+  tr -d '"'
+  )"
+
+IFS=: read socksaddr socksport <<< "$sockslistener"
+if [ -z "$socksaddr" ] || [ -z "$socksport" ]; then
+  echo >&2 "Could not figure out SOCKS address ($socksaddr) or port ($socksport)."
+  exit 1
+fi
+
+echo "Getting file."
+
+
+rm -f Release
+torsocks 2>&1 -a "$socksaddr" -P "$socksport" \
+  curl \
+    --retry 5 \
+    --max-time 300 \
+    --location \
+    -o Release \
+    --stderr - \
+    https://deb.debian.org/debian/dists/stable/Release && rc=0 || rc=$?
+
+if [ "$rc" -eq 0 ] && grep 'Origin:[[:space:]]*Debian' Release; then
+  echo "Successfully downloaded a Release file."
+  exit 0
+else
+  echo >&2 "Downloading Release file failed (curl exit code $rc)."
+  exit 1
+fi

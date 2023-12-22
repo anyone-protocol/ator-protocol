@@ -1,0 +1,178 @@
+#!/bin/bash
+
+# Serve and download a file through .onion services
+#
+# This script launches an instance of a Tor client and attempts to
+# download a file from an onion service set up by onionshare.  It uses
+# torsocks and curl to do the request.  It also uses netcat to talk to
+# the tor instance it started to learn the local socks port and the PID
+# of the detached tor daemon.  And of course it uses onionshare for
+# setting up the onion.
+#
+# Copyright (c) 2018 Peter Palfrader
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+set -u
+
+if [ -n "${AUTOPKGTEST_TMP:-}" ]; then
+  tmpdir=""
+  cd "$AUTOPKGTEST_TMP"
+else
+  tmpdir="$(mktemp -d /tmp/tortest.XXXXXX)"
+  cd "$tmpdir"
+fi
+
+LOGFILE="log"
+ONIONSHARELOG="onionshare.log"
+
+torpid=""
+onionsharepid=""
+
+cleanup() {
+  if [ -n "$torpid" ]; then
+    echo "Stopping Tor"
+    /sbin/start-stop-daemon --name tor --pid "$torpid" --stop --retry 35
+    torpid=""
+  fi
+  if [ -n "$onionsharepid" ] &&
+    /sbin/start-stop-daemon --name pipetty --pid "$onionsharepid" --stop --signal 0 --quiet ; then
+    echo "Stopping onionshare"
+    /sbin/start-stop-daemon --name pipetty --pid "$onionsharepid" --stop --retry 35
+    onionsharepid=""
+  else
+    echo "Onionshare is not running"
+  fi
+  if [ -f "$LOGFILE" ]; then
+    echo "== ${LOGFILE} =="
+    cat "$LOGFILE"
+    echo "================"
+  fi
+  if [ -f "$ONIONSHARELOG" ]; then
+    echo "== ${ONIONSHARELOG} =="
+    cat "$ONIONSHARELOG"
+    echo "================"
+  fi
+  if [ -n "$tmpdir" ]; then
+    rm -rf "$tmpdir"
+  fi
+}
+trap "cleanup" EXIT
+
+launchshare() {
+  if [ -z "$onionsharepid" ] ||
+     ! /sbin/start-stop-daemon --name pipetty --pid "$onionsharepid" --stop --signal 0 --quiet ; then
+    echo "Onionshare is not (yet) running."
+    if [ -f "$ONIONSHARELOG" ]; then
+      echo "== ${ONIONSHARELOG} =="
+      cat "$ONIONSHARELOG"
+      echo "================"
+    fi
+    echo "(Re-)Launching onionshare."
+    pipetty onionshare --debug data > "$ONIONSHARELOG" 2>&1 &
+    onionsharepid="$!"
+  fi
+}
+
+cat > torrc << EOF
+RunAsDaemon 1
+SafeLogging 0
+SocksPort auto
+DataDirectory $(pwd)/tor
+Log notice file $LOGFILE
+ControlSocket $(pwd)/ctl RelaxDirModeCheck
+EOF
+
+/usr/bin/tor -f torrc
+echo "Tor started."
+
+torpid="$(
+  ( echo 'authenticate';
+    echo 'getinfo process/pid';
+    echo 'quit' ) |
+  nc.openbsd -U ctl |
+  tr -d '\r' |
+  awk -F= '$1 == "250-process/pid" { print $2 }'
+  )"
+
+sockslistener="$(
+  ( echo 'authenticate';
+    echo 'getinfo net/listeners/socks';
+    echo 'quit' ) |
+  nc.openbsd -U ctl |
+  tr -d '\r' |
+  awk -F= '$1 == "250-net/listeners/socks" { print $2 }' |
+  tr -d '"'
+  )"
+
+IFS=: read socksaddr socksport <<< "$sockslistener"
+if [ -z "$socksaddr" ] || [ -z "$socksport" ]; then
+  echo >&2 "Could not figure out SOCKS address ($socksaddr) or port ($socksport)."
+  exit 1
+fi
+
+echo "Preparing a file to share."
+head -c 128 /dev/urandom | base64 > data
+
+echo "Setting up share."
+launchshare
+
+timeout=600
+while [ "$timeout" -ge 0 ]; do
+  url=$(grep '^http.*\.onion/' "$ONIONSHARELOG" || true)
+  [ -n "$url" ] && break
+  sleep 1
+  launchshare
+  timeout=$(( timeout - 1 ))
+done
+if [ -z "$url" ]; then
+  echo >&2 "Did not learn a .onion address from ${ONIONSHARELOG}."
+  exit 1
+fi
+echo "Fetching file."
+
+torsocks 2>&1 -a "$socksaddr" -P "$socksport" \
+  curl \
+    --retry 5 \
+    --max-time 300 \
+    --location \
+    -o data.zip \
+    --stderr - \
+    "$url/download" && rc=0 || rc=$?
+
+if ! [ "$rc" -eq 0 ]; then
+  echo >&2 "Downloading file failed (curl exit code $rc)."
+  exit 1
+fi
+
+echo "Comparing file."
+
+(mkdir unzip && cd unzip && unzip ../data.zip)
+
+if cmp data unzip/data; then
+  echo "Successfully downloaded file."
+  exit 0
+else
+  echo "Files differ!"
+  exit 1
+fi
