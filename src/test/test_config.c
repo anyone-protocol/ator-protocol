@@ -1999,13 +1999,14 @@ test_config_adding_default_trusted_dir_servers(void *arg)
   routerlist_free_all();
 
   /* Assume we only have one bridge authority */
-  add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
-  tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
+  // TODO(ator): uncomment once we have default bridge authorities
+  // add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
+  // tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
+  // tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
 
-  /* Assume we have two V3 authorities */
+  /* Assume we have three V3 authorities */
   add_default_trusted_dir_authorities(V3_DIRINFO);
-  tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 2);
+  tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 3);
   tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 3);
 
  done:
@@ -2222,7 +2223,8 @@ test_config_adding_dir_servers(void *arg)
                          1 : 0)
                         );
       /* If we have no default bridge authority, something has gone wrong */
-      tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
+      // TODO(ator): uncomment once we have default bridge authorities
+      // tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
 
       /* Count v3 Authorities */
       SMARTLIST_FOREACH(fallback_servers,
