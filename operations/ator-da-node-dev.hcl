@@ -1,6 +1,7 @@
 job "ator-dir-auth-dev" {
   datacenters = ["ator-fin"]
   type = "service" 
+  namespace = "ator-network"
 
   group "dir-auth-dev-group" {
     count = 3
