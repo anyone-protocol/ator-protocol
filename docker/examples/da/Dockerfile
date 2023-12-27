@@ -1,0 +1,53 @@
+FROM debian:bookworm
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG ATOR_VER="8a729c50a87974b78822227c14c03f3fb6be514e"
+ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+
+ENV TOR_NICKNAME=ATORv4
+
+ENV TOR_USER=atord
+
+RUN apt-get update && \
+    apt_build_deps="libssl-dev zlib1g-dev libevent-dev ca-certificates dh-apparmor libseccomp-dev debhelper" && \
+    apt_runtime_deps="iputils-ping curl pwgen" && \
+    apt_temps="build-essential automake git" && \
+    apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
+    mkdir /src && cd /src && \
+    git clone ${ATOR_REPO} && cd ator-protocol && git fetch origin ${ATOR_VER} && git switch --detach ${ATOR_VER}
+
+# Copy actual list of da to rebuild the image with correct one
+COPY /auth_dirs.inc /src/ator-protocol/src/app/config/auth_dirs.inc
+COPY /fallback_dirs.inc /src/ator-protocol/src/app/config/fallback_dirs.inc
+
+RUN cd /src/ator-protocol && \
+    ./autogen.sh && \
+    ./configure --disable-asciidoc && \
+    make && \
+    make install && \
+    apt-get -y purge --auto-remove $apt_temps && \
+    apt-get clean && rm -r /var/lib/apt/lists/* && \
+    rm -rf /src/*
+
+RUN adduser --quiet \
+        --system \
+        --disabled-password \
+        --home /var/lib/tor \
+        --no-create-home \
+        --shell /bin/false \
+        --group \
+        $TOR_USER && \
+        mkdir -p /var/lib/tor && \
+        chown $TOR_USER:$TOR_USER /var/lib/tor && \
+        chmod 02700 /var/lib/tor
+
+COPY ./torrc-da /etc/torrc
+
+COPY ./scripts/ /usr/local/bin/
+
+EXPOSE 9001 9030
+
+ENTRYPOINT ["docker-entrypoint"]
+
+CMD ["tor", "-f", "/etc/tor/torrc"]
