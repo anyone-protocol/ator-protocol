@@ -95,11 +95,11 @@ Run new DA connecting to the existing compose network, specific port and volumes
 docker run  --network=da_local --ip=172.0.0.14 -v ./tor/da4:/var/lib/tor/ -v ./tor/da4:/etc/tor ator-protocol-local
 ```
 
-(Optional) Wait until new DA will be liste as a relay in consensus
+(Optional) Wait until new DA will be listed as a relay in consensus
 
 Update container in compose to use new version of the image (with new DA hardcoded):
 ```
-docker-compose up --d
+docker-compose up -d
 ```
 
 Wait until existed DA will vote for new DA and it will be listed in consensus
