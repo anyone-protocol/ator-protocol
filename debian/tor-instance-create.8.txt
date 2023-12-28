@@ -26,14 +26,14 @@ home directory and a mostly empty tor configuration file.
 The new user and group are named **_tor-**__instance_name__.  The user's
 home directory, which is also the DataDirectory of the new tor instance,
 is **/var/lib/tor-instances/**__instance_name__.  The configuration file
-for that instance is **/etc/tor/instances/**__instance_name__**/torrc**.
+for that instance is **/etc/tor/instances/**__instance_name__**/anonrc**.
 Logs go to syslog by default.
 
 To start this new service, use
 **systemctl start tor@**__instance_name__.  Stopping, restarting, and
 reloading the config works accordingly.  Stopping/Starting/.. the
 **tor** service should affect all instances.
-The "main" instance which lives in /var/lib/tor and has /etc/tor/torrc
+The "main" instance which lives in /var/lib/tor and has /etc/tor/anonrc
 as its configuration file is known to systemd as **tor@default**.
 
 There currently is no **tor-instance-remove** script.  To remove an

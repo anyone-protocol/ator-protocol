@@ -451,7 +451,7 @@ test_conn_get_connection(uint8_t state, uint8_t type, uint8_t purpose)
   return NULL;
 }
 
-/* Helper function to parse a set of torrc options in a text format and return
+/* Helper function to parse a set of anonrc options in a text format and return
  * a newly allocated or_options_t object containing the configuration. On
  * error, NULL is returned indicating that the conf couldn't be parsed
  * properly. */

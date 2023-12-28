@@ -838,7 +838,7 @@ consdiffmgr_cleanup(void)
 
 /**
  * Initialize the consensus diff manager and its cache, and configure
- * its parameters based on the latest torrc and networkstatus parameters.
+ * its parameters based on the latest anonrc and networkstatus parameters.
  */
 void
 consdiffmgr_configure(const consdiff_cfg_t *cfg)

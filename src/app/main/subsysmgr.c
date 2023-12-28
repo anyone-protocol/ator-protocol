@@ -403,7 +403,7 @@ subsystems_get_state_idx(const subsys_fns_t *sys)
 
 /**
  * Call all appropriate set_options() methods to tell the various subsystems
- * about a new set of torrc options.  Return 0 on success, -1 on
+ * about a new set of anonrc options.  Return 0 on success, -1 on
  * nonrecoverable failure.
  **/
 int

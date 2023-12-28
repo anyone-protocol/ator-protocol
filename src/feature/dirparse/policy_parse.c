@@ -99,7 +99,7 @@ router_parse_addr_policy_item_from_string,(const char *s, int assume_action,
 
   /* Ensure that accept6/reject6 fields are followed by IPv6 addresses.
    * AF_UNSPEC addresses are only permitted on the accept/reject field type.
-   * Unlike descriptors, torrcs exit policy accept/reject can be followed by
+   * Unlike descriptors, anonrcs exit policy accept/reject can be followed by
    * either an IPv4 or IPv6 address. */
   if ((tok->tp == K_ACCEPT6 || tok->tp == K_REJECT6) &&
        tor_addr_family(&r->addr) != AF_INET6) {

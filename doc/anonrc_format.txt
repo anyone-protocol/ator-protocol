@@ -1,5 +1,5 @@
 
-This document specifies the current format and semantics of the torrc
+This document specifies the current format and semantics of the anonrc
 file, as of July 2015.  Note that we make no guarantee about the
 stability of this format.  If you write something designed for strict
 compatibility with this document, please expect us to break it sooner or
@@ -18,7 +18,7 @@ does, not what it should do.
    ; specified in RFC5234.
 
    ; A file is interpreted as every Entry in the file, in order.
-   TorrcFile = *Line [ UnterminatedLine ]
+   AnonrcFile = *Line [ UnterminatedLine ]
 
    Line = BlankLine LF / Entry LF
    UnterminatedLine = BlankLine / Entry
@@ -88,8 +88,8 @@ does, not what it should do.
    There are four configuration "domains", from lowest to highest priority:
 
       * Built-in defaults
-      * The "torrc_defaults" file, if any
-      * The "torrc" file, if any
+      * The "anonrc_defaults" file, if any
+      * The "anonrc" file, if any
       * Arguments provided on the command line, if any.
 
    Normally, values from high-priority domains override low-priority

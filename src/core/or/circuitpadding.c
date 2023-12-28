@@ -18,7 +18,7 @@
  * which is also referred as a "padding machine" in this file.  Currently,
  * these state machines are hardcoded in the source code (e.g. see
  * circpad_machines_init()), but in the future we will be able to
- * serialize them in the torrc or the consensus.
+ * serialize them in the anonrc or the consensus.
  *
  * As specified by prop#254, clients can negotiate padding with relays by using
  * PADDING_NEGOTIATE cells. After successful padding negotiation, padding
@@ -103,7 +103,7 @@ static uint64_t circpad_global_padding_sent;
 static uint64_t circpad_global_nonpadding_sent;
 
 /** This is the list of circpad_machine_spec_t's parsed from consensus and
- *  torrc that have origin_side == 1 (ie: are for client side).
+ *  anonrc that have origin_side == 1 (ie: are for client side).
  *
  *  The machines in this smartlist are considered immutable and they are used
  *  as-is by circuits so they should not change or get deallocated in Tor's
@@ -111,7 +111,7 @@ static uint64_t circpad_global_nonpadding_sent;
 STATIC smartlist_t *origin_padding_machines = NULL;
 
 /** This is the list of circpad_machine_spec_t's parsed from consensus and
- *  torrc that have origin_side == 0 (ie: are for relay side).
+ *  anonrc that have origin_side == 0 (ie: are for relay side).
  *
  *  The machines in this smartlist are considered immutable and they are used
  *  as-is by circuits so they should not change or get deallocated in Tor's
@@ -1344,7 +1344,7 @@ circpad_new_consensus_params(const networkstatus_t *ns)
 }
 
 /**
- * Return true if padding is allowed by torrc and consensus.
+ * Return true if padding is allowed by anonrc and consensus.
  */
 static bool
 circpad_is_padding_allowed(void)
@@ -1370,7 +1370,7 @@ circpad_is_padding_allowed(void)
  * optionally allow very light padding of things like circuit setup
  * while there is no other traffic on the circuit).
  *
- * TODO: Don't apply limits to machines form torrc.
+ * TODO: Don't apply limits to machines form anonrc.
  *
  * Returns 1 if limits are set and we've hit them. Otherwise returns 0.
  */
@@ -2022,7 +2022,7 @@ circpad_machine_conditions_apply(origin_circuit_t *circ,
   if (circpad_padding_disabled || !get_options()->CircuitPadding)
     return 0;
 
-  /* If the consensus or our torrc has selected reduced connection padding,
+  /* If the consensus or our anonrc has selected reduced connection padding,
    * then only allow this machine if it is flagged as acceptable under
    * reduced padding conditions */
   if (circpad_padding_reduced || get_options()->ReducedCircuitPadding) {
@@ -2684,7 +2684,7 @@ circpad_circ_responder_machine_init(void)
   circpad_machine_states_init(circ_responder_machine, 3);
 
   /* This is the settings of the state machine. In the future we are gonna
-     serialize this into the consensus or the torrc */
+     serialize this into the consensus or the anonrc */
 
   /* We transition to the burst state on padding receive and on non-padding
    * receive */
@@ -2772,7 +2772,7 @@ circpad_circ_responder_machine_init(void)
  * Initialize all of our padding machines.
  *
  * This is called at startup. It sets up some global machines, and then
- * loads some from torrc, and from the tor consensus.
+ * loads some from anonrc, and from the tor consensus.
  */
 void
 circpad_machines_init(void)
@@ -2791,7 +2791,7 @@ circpad_machines_init(void)
   circpad_machine_client_hide_rend_circuits(origin_padding_machines);
   circpad_machine_relay_hide_rend_circuits(relay_padding_machines);
 
-  // TODO: Parse machines from consensus and torrc
+  // TODO: Parse machines from consensus and anonrc
 #ifdef TOR_UNIT_TESTS
   circpad_circ_client_machine_init();
   circpad_circ_responder_machine_init();

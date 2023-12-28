@@ -28,7 +28,7 @@ RUN_DAEMON="yes"
 # other system resources, then you can renice tor.  See nice(1) for a
 # bit more information.  Another way to limit the CPU usage of an Onion
 # Router is to set a lower BandwidthRate, as CPU usage is mostly a function
-# of the amount of traffic flowing through your node.  Consult the torrc(5)
+# of the amount of traffic flowing through your node.  Consult the anonrc(5)
 # manual page for more information on setting BandwidthRate.
 #
 # NICE="--nicelevel 5"
@@ -39,7 +39,7 @@ RUN_DAEMON="yes"
 
 #
 # Uncomment the ulimit call below, and set "DisableDebuggerAttachment 0"
-# in /etc/tor/torrc, if you want tor to produce coredumps on segfaults
+# in /etc/tor/anonrc, if you want tor to produce coredumps on segfaults
 # and assert errors.
 #
 # Keeping coredumps around is some sort of security issue since they

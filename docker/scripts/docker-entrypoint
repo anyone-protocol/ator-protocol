@@ -8,7 +8,7 @@ chmodf() { find $2 -type f -exec chmod -v $1 {} \;
 chmodd() { find $2 -type d -exec chmod -v $1 {} \;
 }
 
-# If DataDirectory, identity keys or torrc is mounted here,
+# If DataDirectory, identity keys or anonrc is mounted here,
 # ownership needs to be changed to the TOR_USER user
 chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/tor
 
@@ -21,7 +21,7 @@ if [ ! -e /tor-config-done ]; then
     touch /tor-config-done
 
     # Add Nickname from env variable or randomized, if none has been set
-    if ! grep -q '^Nickname ' /etc/tor/torrc; then
+    if ! grep -q '^Nickname ' /etc/tor/anonrc; then
         if [ ${TOR_NICKNAME} == "ATORv4" ] || [ -z "${TOR_NICKNAME}" ]; then
             # if user did not change the default nickname, genetrate a random pronounceable one
             RPW=$(pwgen -0A 8)
@@ -30,23 +30,23 @@ if [ ! -e /tor-config-done ]; then
         else
             echo "Setting chosen Nickname: ${TOR_NICKNAME}"
         fi
-        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/torrc
+        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/anonrc
     fi
 
-    # Add Contact_Email from env variable, if none has been set in torrc
-    if ! grep -q '^ContactInfo ' /etc/tor/torrc; then
+    # Add Contact_Email from env variable, if none has been set in anonrc
+    if ! grep -q '^ContactInfo ' /etc/tor/anonrc; then
         # if CONTACT_EMAIL is not null
         if [ -n "${CONTACT_EMAIL}" ]; then
             echo "Setting Contact Email: ${CONTACT_EMAIL}"
-            echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/torrc
+            echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/anonrc
         fi
     fi
 fi
 
-# Display OS version, Tor version & torrc in log
+# Display OS version, Tor version & anonrc in log
 echo -e "Debian Version: \c" && cat /etc/debian_version
 tor --version
-cat /etc/tor/torrc
+cat /etc/tor/anonrc
 
 # else default to run whatever the user wanted like "bash"
 exec "$@"

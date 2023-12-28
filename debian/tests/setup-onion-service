@@ -94,7 +94,7 @@ launchshare() {
   fi
 }
 
-cat > torrc << EOF
+cat > anonrc << EOF
 RunAsDaemon 1
 SafeLogging 0
 SocksPort auto
@@ -103,7 +103,7 @@ Log notice file $LOGFILE
 ControlSocket $(pwd)/ctl RelaxDirModeCheck
 EOF
 
-/usr/bin/tor -f torrc
+/usr/bin/tor -f anonrc
 echo "Tor started."
 
 torpid="$(

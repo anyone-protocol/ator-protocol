@@ -162,7 +162,7 @@ typedef struct circpad_machine_conditions_t {
 
   /**
    * This machine is ok to use if reduced padding is set in consensus
-   * or torrc. This machine will still be applied even if reduced padding
+   * or anonrc. This machine will still be applied even if reduced padding
    * is not set; this flag only acts to exclude machines that don't have
    * it set when reduced padding is requested. Therefore, reduced padding
    * machines should appear at the lowest priority in the padding machine
@@ -289,7 +289,7 @@ typedef uint16_t circpad_statenum_t;
  * This struct describes the histograms and/or probability distributions, as
  * well as parameters of a single state in the adaptive padding machine.
  * Instances of this struct exist in global circpad machine definitions that
- * come from torrc or the consensus.
+ * come from anonrc or the consensus.
  */
 typedef struct circpad_state_t {
   /**
@@ -615,7 +615,7 @@ typedef struct circpad_machine_runtime_t {
  * This specifies a particular padding machine to use after negotiation.
  *
  * The constants for machine_num_t are in trunnel.
- * We want to be able to define extra numbers in the consensus/torrc, though.
+ * We want to be able to define extra numbers in the consensus/anonrc, though.
  */
 typedef uint8_t circpad_machine_num_t;
 
@@ -730,7 +730,7 @@ void circpad_circuit_free_all_machineinfos(struct circuit_t *circ);
 bool circpad_padding_is_from_expected_hop(struct circuit_t *circ,
                                          crypt_path_t *from_hop);
 
-/** Serializaton functions for writing to/from torrc and consensus */
+/** Serializaton functions for writing to/from anonrc and consensus */
 char *circpad_machine_spec_to_string(const circpad_machine_spec_t *machine);
 const circpad_machine_spec_t *circpad_string_to_machine(const char *str);
 

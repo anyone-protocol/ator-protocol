@@ -730,7 +730,7 @@ test_channelpadding_negotiation(void *arg)
    * 1. Clients reject negotiation, relays accept it.
    *    * Bridges accept negotiation from their clients,
    *      but not from relays.
-   * 2. Torrc options can override client-side negotiation
+   * 2. Anonrc options can override client-side negotiation
    * 3. Test a version issue in channelpadidng cell
    * 4. Test channelpadding_reduced_padding
    */
@@ -771,7 +771,7 @@ test_channelpadding_negotiation(void *arg)
   get_options_mutable()->BridgeRelay = 0;
   get_options_mutable()->ORPort_set = 0;
 
-  /* Test case #2: Torrc options */
+  /* Test case #2: Anonrc options */
   /* ConnectionPadding auto; Relay doesn't support us */
   ((channel_tls_t*)relay3_client)->conn->link_proto = 4;
   relay3_client->padding_enabled = 0;

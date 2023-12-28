@@ -80,8 +80,8 @@ AC_ARG_ENABLE(coverage,
    AS_HELP_STRING(--enable-coverage, [enable coverage support in the unit-test build]))
 AC_ARG_ENABLE(asserts-in-tests,
    AS_HELP_STRING(--disable-asserts-in-tests, [disable tor_assert() calls in the unit tests, for branch coverage]))
-AC_ARG_ENABLE(system-torrc,
-   AS_HELP_STRING(--disable-system-torrc, [don't look for a system-wide torrc file]))
+AC_ARG_ENABLE(system-anonrc,
+   AS_HELP_STRING(--disable-system-anonrc, [don't look for a system-wide anonrc file]))
 AC_ARG_ENABLE(libfuzzer,
    AS_HELP_STRING(--enable-libfuzzer, [build extra fuzzers based on 'libfuzzer']))
 AC_ARG_ENABLE(oss-fuzz,
@@ -148,9 +148,9 @@ if test "$enable_static_tor" = "yes"; then
 fi
 AC_SUBST(TOR_STATIC_LDFLAGS)
 
-if test "$enable_system_torrc" = "no"; then
-  AC_DEFINE(DISABLE_SYSTEM_TORRC, 1,
-            [Defined if we're not going to look for a torrc in SYSCONF])
+if test "$enable_system_anonrc" = "no"; then
+  AC_DEFINE(DISABLE_SYSTEM_ANONRC, 1,
+            [Defined if we're not going to look for a anonrc in SYSCONF])
 fi
 
 if test "$enable_memory_sentinels" = "no"; then
@@ -2617,8 +2617,8 @@ AC_CONFIG_FILES([
 	Doxyfile
 	Makefile
 	contrib/operator-tools/tor.logrotate
-	src/config/torrc.sample
-	src/config/torrc.minimal
+	src/config/anonrc.sample
+	src/config/anonrc.minimal
 	scripts/maint/checkOptionDocs.pl
         warning_flags
 ])

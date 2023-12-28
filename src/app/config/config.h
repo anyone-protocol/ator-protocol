@@ -63,7 +63,7 @@ void options_init(or_options_t *options);
 #define OPTIONS_DUMP_MINIMAL 1
 #define OPTIONS_DUMP_ALL 2
 char *options_dump(const or_options_t *options, int how_to_dump);
-int options_init_from_torrc(int argc, char **argv);
+int options_init_from_anonrc(int argc, char **argv);
 setopt_err_t options_init_from_string(const char *cf_defaults, const char *cf,
                             int command, const char *command_arg, char **msg);
 int option_is_recognized(const char *key);
@@ -71,7 +71,7 @@ const char *option_get_canonical_name(const char *key);
 struct config_line_t *option_get_assignment(const or_options_t *options,
                                      const char *key);
 int options_save_current(void);
-const char *get_torrc_fname(int defaults_fname);
+const char *get_anonrc_fname(int defaults_fname);
 typedef enum {
   DIRROOT_DATADIR,
   DIRROOT_CACHEDIR,
@@ -221,7 +221,7 @@ int port_cfg_line_extract_addrport(const char *line,
                                    int *is_unix_out,
                                    const char **rest_out);
 
-/** Represents the information stored in a torrc Bridge line. */
+/** Represents the information stored in a anonrc Bridge line. */
 typedef struct bridge_line_t {
   tor_addr_t addr; /* The IP address of the bridge. */
   uint16_t port; /* The TCP port of the bridge. */

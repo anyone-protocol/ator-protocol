@@ -130,7 +130,7 @@ count_exit_with_conflux_support(const networkstatus_t *ns)
 /**
  * Return true iff conflux feature is enabled and usable for a given circuit.
  *
- * Circ may be NULL, in which case we only check the consensus and torrc. */
+ * Circ may be NULL, in which case we only check the consensus and anonrc. */
 bool
 conflux_is_enabled(const circuit_t *circ)
 {

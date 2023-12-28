@@ -73,7 +73,7 @@ compute_num_cpus_impl(void)
 /** This is an arbitrary number but at this point in time, it is not that
  * uncommon to see servers up to that amount of CPUs. Most servers will likely
  * be around 16 to 32 cores now. Lets take advantage of large machines! The
- * "NumCPUs" torrc option overrides this maximum. */
+ * "NumCPUs" anonrc option overrides this maximum. */
 #define MAX_DETECTABLE_CPUS 128
 
 /** Return how many CPUs we are running with.  We assume that nobody is
@@ -92,7 +92,7 @@ compute_num_cpus(void)
       /* LCOV_EXCL_START */
       log_notice(LD_GENERAL, "Wow!  I detected that you have %d CPUs. I "
                  "will not autodetect any more than %d, though.  If you "
-                 "want to configure more, set NumCPUs in your torrc",
+                 "want to configure more, set NumCPUs in your anonrc",
                  num_cpus, MAX_DETECTABLE_CPUS);
       num_cpus = MAX_DETECTABLE_CPUS;
       /* LCOV_EXCL_STOP */

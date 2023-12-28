@@ -123,9 +123,9 @@ do_hup(void)
   router_reset_warnings();
   routerlist_reset_warnings();
   /* first, reload config variables, in case they've changed */
-  if (options->ReloadTorrcOnSIGHUP) {
+  if (options->ReloadAnonrcOnSIGHUP) {
     /* no need to provide argc/v, they've been cached in init_from_config */
-    int init_rv = options_init_from_torrc(0, NULL);
+    int init_rv = options_init_from_anonrc(0, NULL);
     if (init_rv < 0) {
       log_err(LD_CONFIG,"Reading config failed--see warnings above. "
               "For usage, try -h.");
@@ -133,7 +133,7 @@ do_hup(void)
     } else if (BUG(init_rv > 0)) {
       // LCOV_EXCL_START
       /* This should be impossible: the only "return 1" cases in
-       * options_init_from_torrc are ones caused by command-line arguments;
+       * options_init_from_anonrc are ones caused by command-line arguments;
        * but they can't change while Tor is running. */
       return -1;
       // LCOV_EXCL_STOP
@@ -608,7 +608,7 @@ tor_init(int argc, char *argv[])
   /* Warn _if_ the tracing subsystem is built in. */
   tracing_log_warning();
 
-  int init_rv = options_init_from_torrc(argc,argv);
+  int init_rv = options_init_from_anonrc(argc,argv);
   if (init_rv < 0) {
     log_err(LD_CONFIG,"Reading config failed--see warnings above.");
     return -1;
@@ -625,7 +625,7 @@ tor_init(int argc, char *argv[])
   congestion_control_new_consensus_params(NULL);
   flow_control_new_consensus_params(NULL);
 
-  /* Initialize circuit padding to defaults+torrc until we get a consensus */
+  /* Initialize circuit padding to defaults+anonrc until we get a consensus */
   circpad_machines_init();
 
   /* Initialize hidden service DoS subsystem. We need to do this once the
@@ -934,23 +934,23 @@ sandbox_init_filter(void)
   else
     sandbox_cfg_allow_open_filename(&cfg, tor_strdup("/etc/resolv.conf"));
 
-  const char *torrc_defaults_fname = get_torrc_fname(1);
-  if (torrc_defaults_fname) {
-    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(torrc_defaults_fname));
+  const char *anonrc_defaults_fname = get_anonrc_fname(1);
+  if (anonrc_defaults_fname) {
+    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(anonrc_defaults_fname));
   }
-  const char *torrc_fname = get_torrc_fname(0);
-  if (torrc_fname) {
-    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(torrc_fname));
-    // allow torrc backup and torrc.tmp to make SAVECONF work
-    char *torrc_bck = NULL;
-    tor_asprintf(&torrc_bck, CONFIG_BACKUP_PATTERN, torrc_fname);
-    sandbox_cfg_allow_rename(&cfg, tor_strdup(torrc_fname), torrc_bck);
-    char *torrc_tmp = NULL;
-    tor_asprintf(&torrc_tmp, "%s.tmp", torrc_fname);
-    sandbox_cfg_allow_rename(&cfg, torrc_tmp, tor_strdup(torrc_fname));
-    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(torrc_tmp));
+  const char *anonrc_fname = get_anonrc_fname(0);
+  if (anonrc_fname) {
+    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(anonrc_fname));
+    // allow anonrc backup and anonrc.tmp to make SAVECONF work
+    char *anonrc_bck = NULL;
+    tor_asprintf(&anonrc_bck, CONFIG_BACKUP_PATTERN, anonrc_fname);
+    sandbox_cfg_allow_rename(&cfg, tor_strdup(anonrc_fname), anonrc_bck);
+    char *anonrc_tmp = NULL;
+    tor_asprintf(&anonrc_tmp, "%s.tmp", anonrc_fname);
+    sandbox_cfg_allow_rename(&cfg, anonrc_tmp, tor_strdup(anonrc_fname));
+    sandbox_cfg_allow_open_filename(&cfg, tor_strdup(anonrc_tmp));
     // we need to stat the existing backup file
-    sandbox_cfg_allow_stat_filename(&cfg, tor_strdup(torrc_bck));
+    sandbox_cfg_allow_stat_filename(&cfg, tor_strdup(anonrc_bck));
   }
 
   SMARTLIST_FOREACH(options->FilesOpenedByIncludes, char *, f, {

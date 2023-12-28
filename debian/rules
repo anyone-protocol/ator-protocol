@@ -62,8 +62,8 @@ override_dh_auto_build:
 override_dh_install-arch:
 	dh_install --fail-missing
 
-	rm debian/tor/etc/tor/torrc.sample
-	cp build/src/config/torrc.minimal debian/tor/etc/tor/torrc
+	rm debian/tor/etc/tor/anonrc.sample
+	cp build/src/config/anonrc.minimal debian/tor/etc/tor/anonrc
 
 	cp debian/tor.apparmor-profile             debian/tor/etc/apparmor.d/system_tor
 	cp debian/tor.apparmor-profile.abstraction debian/tor/etc/apparmor.d/abstractions/tor

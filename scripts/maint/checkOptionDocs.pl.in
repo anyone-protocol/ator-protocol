@@ -3,11 +3,11 @@ use strict;
 
 my %options = ();
 my %descOptions = ();
-my %torrcSampleOptions = ();
+my %anonrcSampleOptions = ();
 my %manPageOptions = ();
 
 # Load the canonical list as actually accepted by Tor.
-open(F, "@abs_top_builddir@/src/app/tor --list-torrc-options |") or die;
+open(F, "@abs_top_builddir@/src/app/tor --list-anonrc-options |") or die;
 while (<F>) {
     next if m!\[notice\] Tor v0\.!;
     if (m!^([A-Za-z0-9_]+)!) {
@@ -19,8 +19,8 @@ while (<F>) {
 }
 close F;
 
-# Load the contents of torrc.sample
-sub loadTorrc {
+# Load the contents of anonrc.sample
+sub loadAnonrc {
     my ($fname, $options) = @_;
     local *F;
     open(F, "$fname") or die;
@@ -34,7 +34,7 @@ sub loadTorrc {
     0;
 }
 
-loadTorrc("@abs_top_srcdir@/src/config/torrc.sample.in", \%torrcSampleOptions);
+loadAnonrc("@abs_top_srcdir@/src/config/anonrc.sample.in", \%anonrcSampleOptions);
 
 # Try to figure out what's in the man page.
 
@@ -70,7 +70,7 @@ sub subtractHashes {
 # subtractHashes("No online docs", \%options, \%descOptions);
 # subtractHashes("Orphaned online docs", \%descOptions, \%options);
 
-subtractHashes("Orphaned in torrc.sample.in", \%torrcSampleOptions, \%options);
+subtractHashes("Orphaned in anonrc.sample.in", \%anonrcSampleOptions, \%options);
 
 subtractHashes("Not in man page", \%options, \%manPageOptions);
 subtractHashes("Orphaned in man page", \%manPageOptions, \%options);

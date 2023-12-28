@@ -3037,7 +3037,7 @@ connection_read_proxy_handshake(connection_t *conn)
         }
 
         /* Username and password lengths should have been checked
-           above and during torrc parsing. */
+           above and during anonrc parsing. */
         tor_assert(usize <= MAX_SOCKS5_AUTH_FIELD_SIZE &&
                    psize <= MAX_SOCKS5_AUTH_FIELD_SIZE);
         reqsize = 3 + usize + psize;

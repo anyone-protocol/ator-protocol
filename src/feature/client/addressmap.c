@@ -9,7 +9,7 @@
  *
  * \brief The addressmap module manages the processes by which we rewrite
  * addresses in client requess.  It handles the MapAddress controller and
- * torrc commands, and the TrackHostExits feature, and the client-side DNS
+ * anonrc commands, and the TrackHostExits feature, and the client-side DNS
  * cache (deprecated).
  */
 
@@ -34,8 +34,8 @@
  *
  * There are 5 ways to set an address mapping:
  * - A MapAddress command from the controller [permanent]
- * - An AddressMap directive in the torrc [permanent]
- * - When a TrackHostExits torrc directive is triggered [temporary]
+ * - An AddressMap directive in the anonrc [permanent]
+ * - When a TrackHostExits anonrc directive is triggered [temporary]
  * - When a DNS resolve succeeds [temporary]
  * - When a DNS resolve fails [temporary]
  *

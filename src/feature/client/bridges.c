@@ -38,7 +38,7 @@
 #include "feature/nodelist/microdesc_st.h"
 
 /** Information about a configured bridge. Currently this just matches the
- * ones in the torrc file, but one day we may be able to learn about new
+ * ones in the anonrc file, but one day we may be able to learn about new
  * bridges on our own, and remember them in the state file. */
 struct bridge_info_t {
   /** Address and port of the bridge, as configured by the user.*/
@@ -75,7 +75,7 @@ static void rewrite_node_address_for_bridge(const bridge_info_t *bridge,
 /** A list of configured bridges. Whenever we actually get a descriptor
  * for one, we add it as an entry guard.  Note that the order of bridges
  * in this list does not necessarily correspond to the order of bridges
- * in the torrc. */
+ * in the anonrc. */
 static smartlist_t *bridge_list = NULL;
 
 /** Mark every entry of the bridge list to be removed on our next call to

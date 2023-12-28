@@ -14,12 +14,12 @@
 ;   Step 4. Copy ssleay32.dll and libeay32.dll from OpenSSL into "bin".
 ;   Step 5. Run man2html on tor.1.in; call the result tor-reference.html
 ;           Run man2html on tor-resolve.1; call the result tor-resolve.html
-;   Step 6. Copy torrc.sample.in to torrc.sample.
+;   Step 6. Copy anonrc.sample.in to anonrc.sample.
 ;   Step 7. Build tor.exe and tor_resolve.exe; save the result into bin.
 ;   Step 8. cd into contrib and run "makensis tor.nsi".
 ;
 ; Problems:
-;   - Copying torrc.sample.in to torrc.sample and tor.1.in (implicitly)
+;   - Copying anonrc.sample.in to anonrc.sample and tor.1.in (implicitly)
 ;     to tor.1 is a Bad Thing, and leaves us with @autoconf@ vars in the final
 ;     result.
 ;   - Building Tor requires too much windows C clue.
@@ -95,23 +95,23 @@ Section "Tor" Tor
    File "${BIN}\tor_resolve.exe"
    WriteIniStr "$INSTDIR\Tor Website.url" "InternetShortcut" "URL" ${WEBSITE}
 
-   StrCpy $configfile "torrc"
+   StrCpy $configfile "anonrc"
    StrCpy $configdir $APPDATA\Tor
 ;   ;If $APPDATA isn't valid here (Early win95 releases with no updated
 ;   ; shfolder.dll) then we put it in the program directory instead.
 ;   StrCmp $APPDATA "" "" +2
 ;      StrCpy $configdir $INSTDIR
    SetOutPath $configdir
-   ;If there's already a torrc config file, ask if they want to
+   ;If there's already a anonrc config file, ask if they want to
    ;overwrite it with the new one.
-   IfFileExists "$configdir\torrc" "" endiftorrc
+   IfFileExists "$configdir\anonrc" "" endifanonrc
       MessageBox MB_ICONQUESTION|MB_YESNO "You already have a Tor config file.$\r$\nDo you want to overwrite it with the default sample config file?" IDNO yesreplace
-      Delete $configdir\torrc
-      Goto endiftorrc
+      Delete $configdir\anonrc
+      Goto endifanonrc
      yesreplace:
-      StrCpy $configfile "torrc.sample"
-   endiftorrc:
-   File /oname=$configfile "..\src\config\torrc.sample"
+      StrCpy $configfile "anonrc.sample"
+   endifanonrc:
+   File /oname=$configfile "..\src\config\anonrc.sample"
 SectionEnd
 
 Section "OpenSSL 0.9.8a" OpenSSL
@@ -152,7 +152,7 @@ Section "Start Menu" StartMenu
       RMDir /r "$SMPROGRAMS\Tor"
    CreateDirectory "$SMPROGRAMS\Tor"
    CreateShortCut "$SMPROGRAMS\Tor\Tor.lnk" "$INSTDIR\tor.exe"
-   CreateShortCut "$SMPROGRAMS\Tor\Torrc.lnk" "Notepad.exe" "$configdir\torrc"
+   CreateShortCut "$SMPROGRAMS\Tor\Anonrc.lnk" "Notepad.exe" "$configdir\anonrc"
    CreateShortCut "$SMPROGRAMS\Tor\Tor Website.lnk" "$INSTDIR\Tor Website.url"
    CreateShortCut "$SMPROGRAMS\Tor\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
    IfFileExists "$INSTDIR\Documents\*.*" "" endifdocs
@@ -182,8 +182,8 @@ Section "Uninstall"
    Delete "$INSTDIR\tor.exe"
    Delete "$INSTDIR\tor_resolve.exe"
    Delete "$INSTDIR\Tor Website.url"
-   Delete "$INSTDIR\torrc"
-   Delete "$INSTDIR\torrc.sample"
+   Delete "$INSTDIR\anonrc"
+   Delete "$INSTDIR\anonrc.sample"
    StrCmp $configdir $INSTDIR +2 ""
       RMDir /r $configdir
    Delete "$INSTDIR\Uninstall.exe"

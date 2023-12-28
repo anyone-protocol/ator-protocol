@@ -254,7 +254,7 @@ Beforehand, install google-perftools.
 Now you can run Tor with profiling enabled, and use the pprof utility to look at
 performance! See the gperftools manual for more info, but basically:
 
-2. Run `env CPUPROFILE=/tmp/profile src/app/tor -f <path/torrc>`. The profile file
+2. Run `env CPUPROFILE=/tmp/profile src/app/tor -f <path/anonrc>`. The profile file
    is not written to until Tor finishes execution.
 
 3. Run `pprof src/app/tor /tmp/profile` to start the REPL.

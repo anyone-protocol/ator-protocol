@@ -1771,7 +1771,7 @@ circuit_build_failed(origin_circuit_t *circ)
    *
    * Path selection failures can happen spuriously for a number
    * of reasons (such as aggressive/invalid user-specified path
-   * restrictions in the torrc, insufficient microdescriptors, and
+   * restrictions in the anonrc, insufficient microdescriptors, and
    * non-user reasons like exitpolicy issues), and so should not be
    * counted as failures below.
    */
@@ -1779,7 +1779,7 @@ circuit_build_failed(origin_circuit_t *circ)
     static ratelim_t pathfail_limit = RATELIM_INIT(3600);
     log_fn_ratelim(&pathfail_limit, LOG_NOTICE, LD_CIRC,
              "Our circuit %u (id: %" PRIu32 ") died due to an invalid "
-             "selected path, purpose %s. This may be a torrc "
+             "selected path, purpose %s. This may be a anonrc "
              "configuration issue, or a bug.",
               TO_CIRCUIT(circ)->n_circ_id, circ->global_identifier,
               circuit_purpose_to_string(TO_CIRCUIT(circ)->purpose));
@@ -2004,7 +2004,7 @@ circuit_is_hs_v3(const circuit_t *circ)
  * or pinned Layer2 or Layer3 guards.
  *
  * This function takes both the circuit purpose and the
- * torrc options for pinned middles/vanguards into account
+ * anonrc options for pinned middles/vanguards into account
  * (ie: the circuit must be a hidden service circuit and
  * vanguards/pinned middles must be enabled for it to return
  * true).

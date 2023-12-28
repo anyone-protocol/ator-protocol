@@ -90,11 +90,11 @@ getinfo_helper_misc(control_connection_t *conn, const char *question,
   } else if (!strcmp(question, "bw-event-cache")) {
     *answer = get_bw_samples();
   } else if (!strcmp(question, "config-file")) {
-    const char *a = get_torrc_fname(0);
+    const char *a = get_anonrc_fname(0);
     if (a)
       *answer = tor_strdup(a);
   } else if (!strcmp(question, "config-defaults-file")) {
-    const char *a = get_torrc_fname(1);
+    const char *a = get_anonrc_fname(1);
     if (a)
       *answer = tor_strdup(a);
   } else if (!strcmp(question, "config-text")) {
@@ -1498,12 +1498,12 @@ typedef struct getinfo_item_t {
 static const getinfo_item_t getinfo_items[] = {
   ITEM("version", misc, "The current version of Tor."),
   ITEM("bw-event-cache", misc, "Cached BW events for a short interval."),
-  ITEM("config-file", misc, "Current location of the \"torrc\" file."),
+  ITEM("config-file", misc, "Current location of the \"anonrc\" file."),
   ITEM("config-defaults-file", misc, "Current location of the defaults file."),
   ITEM("config-text", misc,
        "Return the string that would be written by a saveconf command."),
   ITEM("config-can-saveconf", misc,
-       "Is it possible to save the configuration to the \"torrc\" file?"),
+       "Is it possible to save the configuration to the \"anonrc\" file?"),
   ITEM("accounting/bytes", accounting,
        "Number of bytes read/written so far in the accounting interval."),
   ITEM("accounting/bytes-left", accounting,

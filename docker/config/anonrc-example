@@ -1,5 +1,5 @@
-##=================== /etc/torrc =====================##
-# see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
+##=================== /etc/anonrc =====================##
+# see /usr/local/etc/tor/anonrc.sample and https://www.torproject.org/docs/tor-manual.html.en
 
 # Run Tor as a regular user (do not change this)
 User atord

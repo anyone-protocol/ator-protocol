@@ -188,7 +188,7 @@ static int compare_guards_by_sampled_idx(const void **a_, const void **b_);
 int
 should_apply_guardfraction(const networkstatus_t *ns)
 {
-  /* We need to check the corresponding torrc option and the consensus
+  /* We need to check the corresponding anonrc option and the consensus
    * parameter if we need to. */
   const or_options_t *options = get_options();
 
@@ -370,7 +370,7 @@ randomize_time,(time_t now, time_t max_backdate))
  * @name parameters for networkstatus algorithm
  *
  * These parameters are taken from the consensus; some are overrideable in
- * the torrc.
+ * the anonrc.
  */
 /**@{*/
 /**
@@ -543,7 +543,7 @@ get_nonprimary_guard_idle_timeout(void)
 }
 /**
  * If our configuration retains fewer than this fraction of guards from the
- * torrc, we are in a restricted setting.
+ * anonrc, we are in a restricted setting.
  */
 STATIC double
 get_meaningful_restriction_threshold(void)
@@ -556,7 +556,7 @@ get_meaningful_restriction_threshold(void)
 }
 /**
  * If our configuration retains fewer than this fraction of guards from the
- * torrc, we are in an extremely restricted setting, and should warn.
+ * anonrc, we are in an extremely restricted setting, and should warn.
  */
 STATIC double
 get_extreme_restriction_threshold(void)
@@ -4080,7 +4080,7 @@ typedef struct layer2_guard_t {
 bool
 vanguards_lite_is_enabled(void)
 {
-  /* First check torrc option and then maybe also the consensus parameter. */
+  /* First check anonrc option and then maybe also the consensus parameter. */
   const or_options_t *options = get_options();
 
   /* If the option is explicitly disabled, that's the final word here */

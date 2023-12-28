@@ -76,25 +76,25 @@ Section "Tor" Tor
 	Call ExtractIcon
 	WriteINIStr "$INSTDIR\Tor Website.url" "InternetShortcut" "URL" ${WEBSITE}
 
-	StrCpy $CONFIGFILE "torrc"
+	StrCpy $CONFIGFILE "anonrc"
 	StrCpy $CONFIGDIR $APPDATA\Tor
 ;   ;If $APPDATA isn't valid here (Early win95 releases with no updated
 ;   ; shfolder.dll) then we put it in the program directory instead.
 ;   StrCmp $APPDATA "" "" +2
 ;      StrCpy $CONFIGDIR $INSTDIR
 	SetOutPath $CONFIGDIR
-	;If there's already a torrc config file, ask if they want to
+	;If there's already a anonrc config file, ask if they want to
 	;overwrite it with the new one.
-	${If} ${FileExists} "$CONFIGDIR\torrc"
+	${If} ${FileExists} "$CONFIGDIR\anonrc"
 		MessageBox MB_ICONQUESTION|MB_YESNO "You already have a Tor config file.$\r$\nDo you want to overwrite it with the default sample config file?" IDYES Yes IDNO No
 		Yes:
-			Delete $CONFIGDIR\torrc
+			Delete $CONFIGDIR\anonrc
 			Goto Next
 		No:
-			StrCpy $CONFIGFILE "torrc.sample"
+			StrCpy $CONFIGFILE "anonrc.sample"
 		Next:
 	${EndIf}
-	File /oname=$CONFIGFILE "..\src\config\torrc.sample"
+	File /oname=$CONFIGFILE "..\src\config\anonrc.sample"
 
 ; the geoip file needs to be included and stuffed into the right directory
 ; otherwise tor is unhappy
@@ -205,8 +205,8 @@ Function un.InstallFiles
 	Delete "$INSTDIR\tor.exe"
 	Delete "$INSTDIR\tor-resolve.exe"
 	Delete "$INSTDIR\Tor Website.url"
-	Delete "$INSTDIR\torrc"
-	Delete "$INSTDIR\torrc.sample"
+	Delete "$INSTDIR\anonrc"
+	Delete "$INSTDIR\anonrc.sample"
 	Delete "$INSTDIR\tor.ico"
 	Delete "$SMSTARTUP\Tor.lnk"
 	Delete "$INSTDIR\Uninstall.exe"
@@ -236,7 +236,7 @@ FunctionEnd
 Function CreateTorLinks
 	CreateDirectory "$SMPROGRAMS\Tor"
 	CreateShortCut "$SMPROGRAMS\Tor\Tor.lnk" "$INSTDIR\tor.exe" "" "$INSTDIR\tor.ico"
-	CreateShortCut "$SMPROGRAMS\Tor\Torrc.lnk" "Notepad.exe" "$CONFIGDIR\torrc"
+	CreateShortCut "$SMPROGRAMS\Tor\Anonrc.lnk" "Notepad.exe" "$CONFIGDIR\anonrc"
 	CreateShortCut "$SMPROGRAMS\Tor\Tor Website.lnk" "$INSTDIR\Tor Website.url"
 	CreateShortCut "$SMPROGRAMS\Tor\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 FunctionEnd

@@ -104,12 +104,12 @@ trap 'rm -rf "$DATA_DIR"' 0
 # Use an absolute path for this or Tor will complain
 DATA_DIR=$(cd "${DATA_DIR}" && pwd)
 
-touch "${DATA_DIR}/empty_torrc"
-touch "${DATA_DIR}/empty_defaults_torrc"
+touch "${DATA_DIR}/empty_anonrc"
+touch "${DATA_DIR}/empty_defaults_anonrc"
 
 QUIETLY="--hush"
 SILENTLY="--quiet"
-TOR="${TOR_BINARY} ${QUIETLY} --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f ${DATA_DIR}/empty_torrc --defaults-torrc ${DATA_DIR}/empty_defaults_torrc"
+TOR="${TOR_BINARY} ${QUIETLY} --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f ${DATA_DIR}/empty_anonrc --defaults-anonrc ${DATA_DIR}/empty_defaults_anonrc"
 
 ##### SETUP
 #

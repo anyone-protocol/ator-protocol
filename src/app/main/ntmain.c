@@ -477,18 +477,18 @@ nt_service_stop(SC_HANDLE hService)
 
 /** Build a formatted command line used for the NT service. Return a
  * pointer to the formatted string on success, or NULL on failure.  Set
- * *<b>using_default_torrc</b> to true if we're going to use the default
- * location to torrc, or 1 if an option was specified on the command line.
+ * *<b>using_default_anonrc</b> to true if we're going to use the default
+ * location to anonrc, or 1 if an option was specified on the command line.
  */
 static char *
-nt_service_command_line(int *using_default_torrc)
+nt_service_command_line(int *using_default_anonrc)
 {
   TCHAR tor_exe[MAX_PATH+1];
   char tor_exe_ascii[MAX_PATH*2+1];
   char *command=NULL, *options=NULL;
   smartlist_t *sl;
   int i;
-  *using_default_torrc = 1;
+  *using_default_anonrc = 1;
 
   /* Get the location of tor.exe */
   if (0 == GetModuleFileName(NULL, tor_exe, MAX_PATH))
@@ -501,8 +501,8 @@ nt_service_command_line(int *using_default_torrc)
         !strcmp(backup_argv[i], "-options")) {
       while (++i < backup_argc) {
         if (!strcmp(backup_argv[i], "-f") ||
-            !strcmp(backup_argv[i], "--torrc-file"))
-          *using_default_torrc = 0;
+            !strcmp(backup_argv[i], "--anonrc-file"))
+          *using_default_anonrc = 0;
         smartlist_add(sl, backup_argv[i]);
       }
     }
@@ -557,7 +557,7 @@ nt_service_install(int argc, char **argv)
   SID_NAME_USE sidUse;
   DWORD sidLen = 0, domainLen = 0;
   int is_win2k_or_worse = 0;
-  int using_default_torrc = 0;
+  int using_default_anonrc = 0;
 
   nt_service_loadlibrary();
 
@@ -565,7 +565,7 @@ nt_service_install(int argc, char **argv)
   if ((hSCManager = nt_service_open_scm()) == NULL)
     return -1;
   /* Build the command line used for the service */
-  if ((command = nt_service_command_line(&using_default_torrc)) == NULL) {
+  if ((command = nt_service_command_line(&using_default_anonrc)) == NULL) {
     printf("Unable to build service command line.\n");
     service_fns.CloseServiceHandle_fn(hSCManager);
     return -1;
@@ -624,7 +624,7 @@ nt_service_install(int argc, char **argv)
   }
   /* XXXX This warning could be better about explaining how to resolve the
    * situation. */
-  if (using_default_torrc)
+  if (using_default_anonrc)
     printf("IMPORTANT NOTE:\n"
         "    The Tor service will run under the account \"%s\".  This means\n"
         "    that Tor will look for its configuration file under that\n"

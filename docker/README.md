@@ -47,11 +47,11 @@ Resulting binaries will be available in `build/` directory.
 
 ### Configuration File
 
-Before running the container, make sure you copy `./config/torrc-example` to `./torrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
+Before running the container, make sure you copy `./config/anonrc-example` to `./anonrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
 
 ### External IP
 
-Ensure that your container ports are accessible from outside and that the `Address` parameter in `torrc` corresponds to your external IP address. Otherwise, other nodes will not be able to use your node as a Relay or Directory Authority.
+Ensure that your container ports are accessible from outside and that the `Address` parameter in `anonrc` corresponds to your external IP address. Otherwise, other nodes will not be able to use your node as a Relay or Directory Authority.
 
 ### Secrets
 

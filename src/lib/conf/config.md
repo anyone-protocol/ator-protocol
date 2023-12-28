@@ -6,7 +6,7 @@
 ## Introduction
 
 Tor uses a shared, table-driven mechanism to handle its
-configuration (torrc) files and its state files.  Each module can
+configuration (anonrc) files and its state files.  Each module can
 declare a set of named fields for these files, and get notified
 whenever the configuration changes, or when the state is about to be
 flushed to disk.
@@ -51,7 +51,7 @@ code about your module's configuration/state.
 If you're writing configuration code, you'll need a function that receives
 the configuration object, and acts upon it.  This function needs to be safe
 to call multiple times, since Tor will reconfigure its subsystems whenever it
-re-reads the torrc, gets a configuration change from a controller, or
+re-reads the anonrc, gets a configuration change from a controller, or
 restarts in process.  This function goes in your subsystem's
 subsys_fns_t.set_options field.
 

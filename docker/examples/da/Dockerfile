@@ -42,7 +42,7 @@ RUN adduser --quiet \
         chown $TOR_USER:$TOR_USER /var/lib/tor && \
         chmod 02700 /var/lib/tor
 
-COPY ./torrc-da /etc/torrc
+COPY ./anonrc-da /etc/anonrc
 
 COPY ./scripts/ /usr/local/bin/
 
@@ -50,4 +50,4 @@ EXPOSE 9001 9030
 
 ENTRYPOINT ["docker-entrypoint"]
 
-CMD ["tor", "-f", "/etc/tor/torrc"]
+CMD ["tor", "-f", "/etc/tor/anonrc"]

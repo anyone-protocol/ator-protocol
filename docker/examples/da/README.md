@@ -23,7 +23,7 @@ Wait at least 30 mins until consensus will be created. (may take more than 1 hou
 
 Each network participant's state is mounted to apropriate subfolder in temp `tor` directory
 
-Torrc file for each participant also mounted to the corresponding subfolder.
+Anonrc file for each participant also mounted to the corresponding subfolder.
 
 #### Add one more directory authority to consensus
 
@@ -34,7 +34,7 @@ cd /tor/da4
 Generate DA keys:
 ```
 docker run -i -w /var/lib/tor/keys \
-  -v ./torrc:/etc/tor/torrc \
+  -v ./anonrc:/etc/tor/anonrc \
   -v ./tor-data:/var/lib/tor/ \
   svforte/ator-protocol:latest \
   tor-gencert --create-identity-key
@@ -43,7 +43,7 @@ chmod -R 777 tor-data/
 Generate Relay keys and fingerprint:
 ```
 ATOR_CONTAINER=$(docker create \
-  -v ./torrc:/etc/tor/torrc \
+  -v ./anonrc:/etc/tor/anonrc \
   -v ./tor-data:/var/lib/tor/ \
   svforte/ator-protocol:latest)
 docker start $ATOR_CONTAINER

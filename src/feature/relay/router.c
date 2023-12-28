@@ -1918,7 +1918,7 @@ router_check_descriptor_address_port_consistency(const tor_addr_t *addr,
 }
 
 /** Tor relays only have one IPv4 or/and one IPv6 address in the descriptor,
- * which is derived from the Address torrc option, or guessed using various
+ * which is derived from the Address anonrc option, or guessed using various
  * methods in relay_find_addr_to_publish().
  *
  * Warn the operator if there is no ORPort associated with the given address
@@ -1928,7 +1928,7 @@ router_check_descriptor_address_port_consistency(const tor_addr_t *addr,
  *
  * This catches a few common config errors:
  *  - operators who expect ORPorts and DirPorts to be advertised on the
- *    ports' listen addresses, rather than the torrc Address (or guessed
+ *    ports' listen addresses, rather than the anonrc Address (or guessed
  *    addresses in the absence of an Address config). This includes
  *    operators who attempt to put their ORPort and DirPort on different
  *    addresses;
@@ -3021,7 +3021,7 @@ router_dump_router_to_string(routerinfo_t *router,
     }
 
     // Make sure our value is lowercased in the descriptor instead of just
-    // forwarding what the user wrote in their torrc directly.
+    // forwarding what the user wrote in their anonrc directly.
     tor_strlower(bd);
 
     smartlist_add_asprintf(chunks, "bridge-distribution-request %s\n", bd);

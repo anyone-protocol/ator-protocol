@@ -1695,7 +1695,7 @@ hs_get_extend_info_from_lspecs(const smartlist_t *lspecs,
 /***********************************************************************/
 
 /** Initialize the entire HS subsystem. This is called in tor_init() before any
- * torrc options are loaded. Only for >= v3. */
+ * anonrc options are loaded. Only for >= v3. */
 void
 hs_init(void)
 {

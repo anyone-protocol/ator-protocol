@@ -8,7 +8,7 @@ chmodf() { find $2 -type f -exec chmod -v $1 {} \;
 chmodd() { find $2 -type d -exec chmod -v $1 {} \;
 }
 
-# If DataDirectory, identity keys or torrc is mounted here,
+# If DataDirectory, identity keys or anonrc is mounted here,
 # ownership needs to be changed to the TOR_USER user
 chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/tor
 
@@ -20,20 +20,20 @@ if [ ! -e /tor-config-done ]; then
     # Run this only once
     touch /tor-config-done
 
-    if [ ! -f /etc/tor/torrc ]; then
-        cp /etc/torrc /etc/tor/
+    if [ ! -f /etc/tor/anonrc ]; then
+        cp /etc/anonrc /etc/tor/
 
         # Add Address from env variable
         echo "Setting Contact Email: ${IP_ADDRESS}"
-        echo -e "\nAddress ${IP_ADDRESS}" >> /etc/tor/torrc
+        echo -e "\nAddress ${IP_ADDRESS}" >> /etc/tor/anonrc
 
         # Add Nickname from env variable
         echo "Setting chosen Nickname: ${TOR_NICKNAME}"
-        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/torrc
+        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/anonrc
 
         # Add ContactInfo from env variable
         echo "Setting Contact Email: ${CONTACT_EMAIL}"
-        echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/torrc
+        echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/anonrc
     fi
 
     # Generate keys
@@ -49,10 +49,10 @@ if [ ! -e /tor-config-done ]; then
     
 fi
 
-# Display OS version, Tor version & torrc in log
+# Display OS version, Tor version & anonrc in log
 echo -e "Debian Version: \c" && cat /etc/debian_version
 tor --version
-cat /etc/tor/torrc
+cat /etc/tor/anonrc
 
 # else default to run whatever the user wanted like "bash"
 exec "$@"

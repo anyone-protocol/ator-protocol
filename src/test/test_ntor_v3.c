@@ -244,7 +244,7 @@ run_full_handshake(circuit_params_t *serv_params_in,
  * Test congestion control negotiation logic.
  *
  * This tests that congestion control is only enabled when both
- * client and server agree, via consensus param or torrc.
+ * client and server agree, via consensus param or anonrc.
  *
  * It also tests that when they agree, they agree on the server's
  * version of sendme_inc.

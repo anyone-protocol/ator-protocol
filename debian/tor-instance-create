@@ -67,7 +67,7 @@ if echo "x$name" | grep -q '[^a-zA-Z0-9]' ||
 fi
 
 etc="$BASEETC/$name"
-torrc="$etc/torrc"
+anonrc="$etc/anonrc"
 home="$BASEDATA/$name"
 user="_tor-$name"
 
@@ -83,14 +83,14 @@ adduser --quiet \
 install -Z -d -m 02700 -o "$user" -g "$user" "$home"
 install -d "$etc"
 
-[ -e "$torrc" ] || cat > "$torrc" << EOF
+[ -e "$anonrc" ] || cat > "$anonrc" << EOF
 # This is the tor configuration file for tor instance $name.
 #
 # To start/reload/etc this instance, run "systemctl start tor@$name" (or reload, or..).
 # This instance will run as user $user; its data directory is $home.
 #
 # Append to the list of socks interfaces configured via
-# /usr/share/tor/tor-service-defaults-torrc-instances
+# /usr/share/tor/tor-service-defaults-anonrc-instances
 # which is unix:/run/tor-instances/$name/socks
 
 +SocksPort auto

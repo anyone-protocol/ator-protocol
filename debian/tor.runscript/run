@@ -2,7 +2,7 @@
 readonly daemon=/usr/bin/tor
 exec 2>&1
 
-# This directory is referenced in /usr/share/tor/tor-service-defaults-torrc
+# This directory is referenced in /usr/share/tor/tor-service-defaults-anonrc
 # and must exist.
 readonly rundir=/run/tor
 if ! [ -d "${rundir}" ]; then
@@ -16,8 +16,8 @@ ulimit -n "${MAX_FILEDESCRIPTORS}"
 
 # default invocation
 set -- "${daemon}"                                             \
-	--defaults-torrc /usr/share/tor/tor-service-defaults-torrc \
-	-f /etc/tor/torrc                                          \
+	--defaults-anonrc /usr/share/tor/tor-service-defaults-anonrc \
+	-f /etc/tor/anonrc                                          \
 	--Log 'notice stdout'                                      \
 	--RunAsDaemon 0
 

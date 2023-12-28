@@ -24,18 +24,18 @@
 #
 # Configuration Files
 #
-# torrc -- Usually needed. This file is passed to Tor on the command line
+# anonrc -- Usually needed. This file is passed to Tor on the command line
 #      with the "-f" flag. (If you omit it, you'll test Tor's behavior when
 #      it receives a nonexistent configuration file.)
 #
-# torrc.defaults -- Optional. If present, it is passed to Tor on the command
-#      line with the --defaults-torrc option. If this file is absent, an empty
+# anonrc.defaults -- Optional. If present, it is passed to Tor on the command
+#      line with the --defaults-anonrc option. If this file is absent, an empty
 #      file is passed instead to prevent Tor from reading the system defaults.
 #
 # cmdline -- Optional. If present, it contains command-line arguments that
 #      will be passed to Tor.
 #
-# (included torrc files or directories) -- Optional. Additional files can be
+# (included anonrc files or directories) -- Optional. Additional files can be
 #      included in configuration, using the "%include" directive. Files or
 #      directories can be included in any of the config files listed above.
 #      Include paths should be specified relative to the test case directory.
@@ -206,7 +206,7 @@ MODULES_WITHOUT_CONFIG_TESTS="dircache\\|pow"
 # We don't actually want to support foreign accents here
 # shellcheck disable=SC2018,SC2019
 TOR_LIBS_ENABLED="$("$TOR_BINARY" --verify-config \
-                      -f "$EMPTY" --defaults-torrc "$EMPTY" \
+                      -f "$EMPTY" --defaults-anonrc "$EMPTY" \
                     | sed -n 's/.* Tor .* running on .* with\(.*\) and .* .* as libc\./\1/p' \
                     | tr 'A-Z' 'a-z' | tr ',' '\n' \
                     | grep -v "$STANDARD_LIBS" | grep -v "n/a" \
@@ -250,7 +250,7 @@ echo "Disabled Modules: ${TOR_MODULES_DISABLED:-(None)}"
 TRUE=0
 FALSE=1
 
-# Run tor --verify-config on the torrc $1, and defaults torrc $2, which may
+# Run tor --verify-config on the anonrc $1, and defaults anonrc $2, which may
 # be $EMPTY. Pass tor the extra command line arguments $3, which will be
 # passed unquoted.
 # Send tor's standard output to stderr.
@@ -262,20 +262,20 @@ log_verify_config()
     printf "$ %s %s %s %s %s %s %s\\n" \
     "$TOR_BINARY" --verify-config \
                   -f "$1" \
-                  --defaults-torrc "$2" \
+                  --defaults-anonrc "$2" \
                   "$3" \
                   >&2
     # We need cmdline unquoted
     # shellcheck disable=SC2086
     "$TOR_BINARY" --verify-config \
                   -f "$1" \
-                  --defaults-torrc "$2" \
+                  --defaults-anonrc "$2" \
                   $3 \
                   >&2 \
         || true
 }
 
-# Run "tor --dump-config short" on the torrc $1, and defaults torrc $2, which
+# Run "tor --dump-config short" on the anonrc $1, and defaults anonrc $2, which
 # may be $EMPTY. Pass tor the extra command line arguments $3, which will be
 # passed unquoted. Send tor's standard output to $4.
 #
@@ -295,14 +295,14 @@ dump_config()
     FULL_TOR_CMD=$(printf "$ %s %s %s %s %s %s %s %s" \
          "$TOR_BINARY" --dump-config short \
                        -f "$1" \
-                       --defaults-torrc "$2" \
+                       --defaults-anonrc "$2" \
                        "$3"
              )
     # We need cmdline unquoted
     # shellcheck disable=SC2086
     if ! "$TOR_BINARY" --dump-config short \
                        -f "$1" \
-                       --defaults-torrc "$2" \
+                       --defaults-anonrc "$2" \
                        $3 \
                        > "$4"; then
         fail_printf "'%s': Tor --dump-config reported an error%s:\\n%s\\n" \
@@ -338,7 +338,7 @@ filter()
 # Compare the expected file $1, and output file $2.
 #
 # If they are different, fail. Log the differences between the files.
-# Run log_verify_config() with torrc $3, defaults torrc $4, and command
+# Run log_verify_config() with anonrc $3, defaults anonrc $4, and command
 # line $5, to log Tor's error messages.
 #
 # If the file contents are identical, returns true. Otherwise, return false.
@@ -369,7 +369,7 @@ check_diff()
     fi
 }
 
-# Run "tor --dump-config short" on the torrc $1, and defaults torrc $2, which
+# Run "tor --dump-config short" on the anonrc $1, and defaults anonrc $2, which
 # may be $EMPTY. Pass tor the extra command line arguments $3, which will be
 # passed unquoted. Send tor's standard output to $4, after running $FILTER
 # on it.
@@ -430,7 +430,7 @@ check_empty_pattern()
     fi
 }
 
-# Run tor --verify-config on the torrc $1, and defaults torrc $2, which may
+# Run tor --verify-config on the anonrc $1, and defaults anonrc $2, which may
 # be $EMPTY. Pass tor the extra command line arguments $3, which will be
 # passed unquoted. Send tor's standard output to $4.
 #
@@ -446,14 +446,14 @@ verify_config()
     FULL_TOR_CMD=$(printf "$ %s %s %s %s %s %s %s" \
     "$TOR_BINARY" --verify-config \
                   -f "$1" \
-                  --defaults-torrc "$2" \
+                  --defaults-anonrc "$2" \
                   "$3"
              )
     # We need cmdline unquoted
     # shellcheck disable=SC2086
     "$TOR_BINARY" --verify-config \
                   -f "$1" \
-                  --defaults-torrc "$2" \
+                  --defaults-anonrc "$2" \
                   $3 \
                   > "$4" || RESULT=$FALSE
 
@@ -490,7 +490,7 @@ check_pattern()
     fi
 }
 
-# Run tor --verify-config on the torrc $1, and defaults torrc $2, which may
+# Run tor --verify-config on the anonrc $1, and defaults anonrc $2, which may
 # be $EMPTY. Pass tor the extra command line arguments $3, which will be
 # passed unquoted. Send tor's standard output to $4.
 #
@@ -542,8 +542,8 @@ for dir in "${EXAMPLEDIR}"/*; do
     PREV_DIR="$(pwd)"
     cd "$dir"
 
-    if test -f "./torrc.defaults"; then
-        DEFAULTS="./torrc.defaults"
+    if test -f "./anonrc.defaults"; then
+        DEFAULTS="./anonrc.defaults"
     else
         DEFAULTS="${DATA_DIR}/EMPTY"
     fi
@@ -601,7 +601,7 @@ for dir in "${EXAMPLEDIR}"/*; do
     elif test -f "$EXPECTED"; then
         # This case should succeed: run dump-config and see if it does.
 
-        if check_dump_config "./torrc" \
+        if check_dump_config "./anonrc" \
                              "$DEFAULTS" \
                              "$CMDLINE" \
                              "${DATA_DIR}/output.${testname}" \
@@ -619,7 +619,7 @@ for dir in "${EXAMPLEDIR}"/*; do
         if test -f "$EXPECTED_LOG"; then
             # This case should succeed: run verify-config and see if it does.
 
-            check_verify_config "./torrc" \
+            check_verify_config "./anonrc" \
                                 "$DEFAULTS" \
                                 "$CMDLINE" \
                                 "${DATA_DIR}/output_log.${testname}" \
@@ -629,7 +629,7 @@ for dir in "${EXAMPLEDIR}"/*; do
         else
             printf "\\nNOTICE: Missing '%s_log' file:\\n" \
                    "$EXPECTED" >&2
-            log_verify_config "./torrc" \
+            log_verify_config "./anonrc" \
                               "$DEFAULTS" \
                               "$CMDLINE"
         fi
@@ -637,7 +637,7 @@ for dir in "${EXAMPLEDIR}"/*; do
    elif test -f "$ERROR"; then
         # This case should fail: run verify-config and see if it does.
 
-        check_verify_config "./torrc" \
+        check_verify_config "./anonrc" \
                             "$DEFAULTS" \
                             "$CMDLINE" \
                             "${DATA_DIR}/output.${testname}" \

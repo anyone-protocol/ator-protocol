@@ -3,9 +3,9 @@ This is the Debian package for Tor, The Onion Router.
 # Startup and Configuration
 
 If Tor is started by init, it loads the configuration snippets from
-/usr/share/tor/tor-service-defaults-torrc before consulting /etc/tor/torrc.
+/usr/share/tor/tor-service-defaults-anonrc before consulting /etc/tor/anonrc.
 
-The tor-service-defaults-torrc file tells Tor to run as daemon, create
+The tor-service-defaults-anonrc file tells Tor to run as daemon, create
 pidfile, sets its data directory and configures cookie authentication.
 
 If Tor is started not from the init script, then it will behave like
@@ -23,7 +23,7 @@ As of the 0.3.0.x tree, the Debian packages for Tor by
 default log to syslog.
 
 You can restore the previous behavior by adding something
-like "Log notice file /var/log/tor/log" to your torrc.
+like "Log notice file /var/log/tor/log" to your anonrc.
 
 # Filesystem access by the Tor service
 

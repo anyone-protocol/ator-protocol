@@ -46,7 +46,7 @@ endif
 EXTRA_DIST+= doc/asciidoc-helper.sh			\
 	     $(html_in) $(man_in) $(txt_in)			\
 	     doc/state-contents.txt				\
-	     doc/torrc_format.txt 				\
+	     doc/anonrc_format.txt 				\
 	     doc/tor-doxygen.css 				\
 	     doc/TUNING						\
 	     doc/HACKING/README.1st.md				\

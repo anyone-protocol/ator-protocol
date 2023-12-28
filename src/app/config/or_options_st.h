@@ -27,19 +27,19 @@ struct routerset_t;
  * Exit-only, OR-only, PT-only, or any of them */
 typedef enum {
   /** Outbound IP address for Exit connections. Controlled by the
-   * `OutboundBindAddressExit` configuration entry in torrc. */
+   * `OutboundBindAddressExit` configuration entry in anonrc. */
   OUTBOUND_ADDR_EXIT,
 
   /** Outbound IP address for OR connections. Controlled by the
-   * `OutboundBindAddressOR` configuration entry in torrc. */
+   * `OutboundBindAddressOR` configuration entry in anonrc. */
   OUTBOUND_ADDR_OR,
 
   /** Outbound IP address for PT connections. Controlled by the
-   * `OutboundBindAddressPT` configuration entry in torrc. */
+   * `OutboundBindAddressPT` configuration entry in anonrc. */
   OUTBOUND_ADDR_PT,
 
   /** Outbound IP address for any outgoing connections. Controlled by the
-   * OutboundBindAddress configuration entry in torrc. This value is used as
+   * OutboundBindAddress configuration entry in anonrc. This value is used as
    * fallback if the more specific OUTBOUND_ADDR_EXIT, OUTBOUND_ADDR_OR, and
    * OUTBOUND_ADDR_PT are unset. */
   OUTBOUND_ADDR_ANY,
@@ -866,9 +866,9 @@ struct or_options_t {
    * ?? and A1 are excluded. Has no effect if we don't know any GeoIP data. */
   int GeoIPExcludeUnknown;
 
-  /** If true, SIGHUP should reload the torrc.  Sometimes controllers want
+  /** If true, SIGHUP should reload the anonrc.  Sometimes controllers want
    * to make this false. */
-  int ReloadTorrcOnSIGHUP;
+  int ReloadAnonrcOnSIGHUP;
 
   /** The main parameter for picking circuits within a connection.
    *
@@ -1029,7 +1029,7 @@ struct or_options_t {
    * If -1, we should do whatever the consensus parameter says. */
   int ExtendByEd25519ID;
 
-  /** Bool (default: 0): Tells if a %include was used on torrc */
+  /** Bool (default: 0): Tells if a %include was used on anonrc */
   int IncludeUsed;
 
   /** The seconds after expiration which we as a relay should keep old
@@ -1056,7 +1056,7 @@ struct or_options_t {
   /** An ordered list of scheduler_types mapped from Schedulers. */
   struct smartlist_t *SchedulerTypes_;
 
-  /** List of files that were opened by %include in torrc and torrc-defaults */
+  /** List of files that were opened by %include in anonrc and anonrc-defaults */
   struct smartlist_t *FilesOpenedByIncludes;
 
   /** If true, Tor shouldn't install any posix signal handlers, since it is

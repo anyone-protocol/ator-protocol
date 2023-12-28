@@ -60,7 +60,7 @@ RUN adduser --quiet \
         chmod 02700 /var/lib/tor
 
 # Copy Tor configuration file
-COPY ./config/torrc-example /etc/tor/torrc
+COPY ./config/anonrc-example /etc/tor/anonrc
 
 # Copy scripts including docker-entrypoint
 COPY ./scripts/ /usr/local/bin/
@@ -70,4 +70,4 @@ EXPOSE ${BUILD_TOR_ORPORT} ${BUILD_TOR_DIRPORT}
 
 ENTRYPOINT ["docker-entrypoint"]
 
-CMD ["tor", "-f", "/etc/tor/torrc"]
+CMD ["tor", "-f", "/etc/tor/anonrc"]

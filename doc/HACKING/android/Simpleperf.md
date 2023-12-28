@@ -75,7 +75,7 @@ was spend on the call.
   is executed and places it under the `app_bin/` directory on the
   device.
 
-  To access binaries, `torrc` files, and other useful information on
+  To access binaries, `anonrc` files, and other useful information on
   the device do the following:
 
 ```console
@@ -86,7 +86,7 @@ was spend on the call.
 ```
 
   Descriptors, control authentication cookie, state, and other files can be
-  found in the `app_data` directory. The `torrc` can be found in the `app_bin/`
+  found in the `app_data` directory. The `anonrc` can be found in the `app_bin/`
   directory.
 
 - You can enable logging in Tor via the syslog (or android) log
@@ -95,7 +95,7 @@ was spend on the call.
 ```console
       $ adb shell
       (device):/ $ run-as org.torproject.android
-      (device):/data/data/org.torproject.android $ echo -e "\nLog info syslog" >> app_bin/torrc
+      (device):/data/data/org.torproject.android $ echo -e "\nLog info syslog" >> app_bin/anonrc
 ```
 
   Start Tor the normal way via Orbot and collect the logs from your computer using

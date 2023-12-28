@@ -795,11 +795,11 @@ get_kist_scheduler(void)
   return &kist_scheduler;
 }
 
-/* Check the torrc (and maybe consensus) for the configured KIST scheduler run
+/* Check the anonrc (and maybe consensus) for the configured KIST scheduler run
  * interval.
- * - If torrc > 0, then return the positive torrc value (should use KIST, and
+ * - If anonrc > 0, then return the positive anonrc value (should use KIST, and
  *   should use the set value)
- * - If torrc == 0, then look in the consensus for what the value should be.
+ * - If anonrc == 0, then look in the consensus for what the value should be.
  *   - If == 0, then return 0 (don't use KIST)
  *   - If > 0, then return the positive consensus value
  *   - If consensus doesn't say anything, return 10 milliseconds, default.
@@ -810,7 +810,7 @@ kist_scheduler_run_interval(void)
   int run_interval = get_options()->KISTSchedRunInterval;
 
   if (run_interval != 0) {
-    log_debug(LD_SCHED, "Found KISTSchedRunInterval=%" PRId32 " in torrc. "
+    log_debug(LD_SCHED, "Found KISTSchedRunInterval=%" PRId32 " in anonrc. "
                         "Using that.", run_interval);
     return run_interval;
   }

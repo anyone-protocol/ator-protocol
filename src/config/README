@@ -5,30 +5,30 @@ geoip6
 
     Geoip files for IPv4 and IPv6
 
-torrc.minimal, torrc.sample:
+anonrc.minimal, anonrc.sample:
 
-    generated from torrc.minimal.in and torrc.sample.in by autoconf.
+    generated from anonrc.minimal.in and anonrc.sample.in by autoconf.
 
-torrc.minimal.in:
+anonrc.minimal.in:
 
-    A very small torrc, suitable for installation by default in
-    /etc/tor/torrc.
+    A very small anonrc, suitable for installation by default in
+    /etc/tor/anonrc.
 
-    We try to change torrc.minimal.in as infrequently as possible,
+    We try to change anonrc.minimal.in as infrequently as possible,
     since doing so makes the users of many packages have to re-build
-    their torrc files.
+    their anonrc files.
 
 
-torrc.minimal.in-staging
+anonrc.minimal.in-staging
 
-    This is where we stage changes to torrc.minimal.in over time so
+    This is where we stage changes to anonrc.minimal.in over time so
     that when we have a change large enough to warrant a new
-    torrc.minimal.in, we can copy all the other changes over
+    anonrc.minimal.in, we can copy all the other changes over
     wholesale.
 
-torrc.sample.in:
+anonrc.sample.in:
 
-    A verbose, discursive, batteries-included torrc.  Suitable for
+    A verbose, discursive, batteries-included anonrc.  Suitable for
     letting people know how to set up various options, including those
     most people shouldn't mess with.
 

@@ -208,7 +208,7 @@ typedef enum {
   HS_CIRCUIT_ID_PROTOCOL_HAPROXY
 } hs_circuit_id_protocol_t;
 
-/** Service configuration. The following are set from the torrc options either
+/** Service configuration. The following are set from the anonrc options either
  * set by the configuration file or by the control port. Nothing else should
  * change those values. */
 typedef struct hs_service_config_t {

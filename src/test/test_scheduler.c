@@ -858,7 +858,7 @@ test_scheduler_initfree(void *arg)
 
   tt_ptr_op(channels_pending, OP_NE, NULL);
   tt_ptr_op(run_sched_ev, OP_NE, NULL);
-  /* We have specified nothing in the torrc and there's no consensus so the
+  /* We have specified nothing in the anonrc and there's no consensus so the
    * KIST scheduler is what should be in use */
   tt_ptr_op(the_scheduler, OP_EQ, get_kist_scheduler());
   tt_int_op(sched_run_interval, OP_EQ, KIST_SCHED_RUN_INTERVAL_DEFAULT);

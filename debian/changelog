@@ -512,8 +512,8 @@ tor (0.3.4.2-alpha-1) experimental; urgency=medium
 tor (0.3.4.1-alpha-1) experimental; urgency=medium
 
   * New upstream tree.
-  * Start using upstream's minimal torrc as our default /etc/tor/torrc.
-  * Put longer torrc.sample into /usr/share/doc.
+  * Start using upstream's minimal anonrc as our default /etc/tor/anonrc.
+  * Put longer anonrc.sample into /usr/share/doc.
 
  -- Peter Palfrader <weasel@debian.org>  Fri, 18 May 2018 10:33:45 +0200
 
@@ -916,7 +916,7 @@ tor (0.2.8.2-alpha-1) experimental; urgency=medium
       directories.
     - Use the RelaxDirModeCheck option for the control unix domain socket
       so that works.
-    - tor-instance-create: in the torrc we create, append to the SocksPort
+    - tor-instance-create: in the anonrc we create, append to the SocksPort
       list using + instead of overriding what is configured in the defaults
       file.
     - apparmor: allow reading of {/var,}/run/tor, and writing of
@@ -950,7 +950,7 @@ tor (0.2.7.6-1) unstable; urgency=high
   * Change the apparmor profile tor allow Tor to access the systemd
     notification socket.  Thanks to regar42.  Closes Tor#17693.
   * tor-instance-create: Do systemctl daemon-reload *after* writing the
-    new torrc.
+    new anonrc.
 
  -- Peter Palfrader <weasel@debian.org>  Thu, 10 Dec 2015 21:48:34 +0100
 
@@ -1339,7 +1339,7 @@ tor (0.2.4.3-alpha-1) experimental; urgency=low
     tor-dbg.  Also call dh_link before dh_install*, so that nothing creates a
     /usr/share/doc/tor-dbg directory.
   * No longer call dh_link with arguments to create the
-    /usr/share/man/man5/torrc.5 -> ../man8/tor.8 symlink in the tor package,
+    /usr/share/man/man5/anonrc.5 -> ../man8/tor.8 symlink in the tor package,
     instead create and populate debian/tor.links accordingly.
   * Call configure with --disable-silent-rules, so we actually see what
     the build did in a log.
@@ -1520,7 +1520,7 @@ tor (0.2.3.12-alpha-1) experimental; urgency=low
 
 tor (0.2.3.11-alpha-2) experimental; urgency=low
 
-  * init script:  use the new defaults torrc file also for when we
+  * init script:  use the new defaults anonrc file also for when we
     try to check our configuration (tor --verify-config) prior to starting
     tor.  (Might close TorBug#4954.)
 
@@ -1532,8 +1532,8 @@ tor (0.2.3.11-alpha-1) experimental; urgency=low
   * No longer patch Tor to set DataDirectory, RunAsDaemon etc. when run
     as root or debian-tor.
     Instead ship with a file setting all these options in
-    /usr/share/tor/tor-service-defaults-torrc and cause our init-script
-    to pass --defaults-torrc <that-file> to the tor started by that script.
+    /usr/share/tor/tor-service-defaults-anonrc and cause our init-script
+    to pass --defaults-anonrc <that-file> to the tor started by that script.
   * No longer fail postinst when the init script fails to restart tor.
     Patch provided by Carl Fuerstenberg (closes: #652884).
 
@@ -2419,7 +2419,7 @@ tor (0.1.2.13-3) unstable; urgency=low
 
 tor (0.1.2.13-2) unstable; urgency=low
 
-  * In options_init_from_torrc()'s error path only config_free() options
+  * In options_init_from_anonrc()'s error path only config_free() options
     if they already have been initialized (closes: #421235).
 
  -- Peter Palfrader <weasel@debian.org>  Fri, 27 Apr 2007 13:06:37 +0200
@@ -2957,11 +2957,11 @@ tor (0.0.8+0.0.9pre6-1) unstable; urgency=low
 
 tor (0.0.8+0.0.9pre5-2) unstable; urgency=low
 
-  * Symlink tor(8) manpage to torrc(5).
+  * Symlink tor(8) manpage to anonrc(5).
   * Make logs readable by the system administrators (group adm).
   * Point to /var/log/tor (the directory) instead of a single
     file (/var/log/tor/log) in the debian patch of the manpage.
-  * Do not patch the default torrc to include settings we really want.
+  * Do not patch the default anonrc to include settings we really want.
     Instead modify the compiled in default options.  Those settings are
 
     - RunAsDaemon is enabled by default.
@@ -3127,8 +3127,8 @@ tor (0.0.5+0.0.6rc2-1) unstable; urgency=low
 tor (0.0.5-1) unstable; urgency=low
 
   * New upstream release.
-  * Upstream installs a torrc.sample file now, rather than torrc.
-    Keep using torrc as dpkg handles conffile upgrades.
+  * Upstream installs a anonrc.sample file now, rather than anonrc.
+    Keep using anonrc as dpkg handles conffile upgrades.
 
  -- Peter Palfrader <weasel@debian.org>  Tue, 30 Mar 2004 20:54:00 +0200
 
@@ -3178,7 +3178,7 @@ tor (0.0.1+0.0.2pre24-1) unstable; urgency=low
   * Do not strip binaries for now.
   * Add "# ulimit -c unlimited" to tor.default
   * Always enable DataDirectory.
-  * Actually use dpatch now (to modify upstream torrc.in)
+  * Actually use dpatch now (to modify upstream anonrc.in)
   * Wait for tor to die in init stop.  Let the user know if it doesn't.
 
  -- Peter Palfrader <weasel@debian.org>  Wed,  3 Mar 2004 14:10:25 +0100

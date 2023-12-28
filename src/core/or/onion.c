@@ -594,7 +594,7 @@ created_cell_format(cell_t *cell_out, const created_cell_t *cell_in)
   return 0;
 }
 
-/** Return true iff we are configured (by torrc or by the networkstatus
+/** Return true iff we are configured (by anonrc or by the networkstatus
  * parameters) to use Ed25519 identities in our Extend2 cells. */
 static int
 should_include_ed25519_id_extend_cells(const networkstatus_t *ns,

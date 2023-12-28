@@ -207,7 +207,7 @@ struct channel_t {
    * padding via either the link protocol version or
    * channelpadding_negotiate cells.
    *
-   * Clients can override this with ConnectionPadding in torrc to
+   * Clients can override this with ConnectionPadding in anonrc to
    * disable or force padding to relays, but relays cannot override the
    * client's request.
    */
@@ -243,7 +243,7 @@ struct channel_t {
    * These two fields specify the minimum and maximum negotiated timeout
    * values for inactivity (send or receive) before we decide to pad a
    * channel. These fields can be set either via a PADDING_NEGOTIATE cell,
-   * or the torrc option ReducedConnectionPadding. The consensus parameters
+   * or the anonrc option ReducedConnectionPadding. The consensus parameters
    * nf_ito_low and nf_ito_high are used to ensure that padding can only be
    * negotiated to be less frequent than what is specified in the consensus.
    * (This is done to prevent wingnut clients from requesting excessive

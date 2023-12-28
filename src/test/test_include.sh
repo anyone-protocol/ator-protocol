@@ -85,29 +85,29 @@ if test "$UNAME_OS" = 'CYGWIN' || \
 fi
 
 # create test folder structure in configdir
-torrcd="$configdir/torrc.d"
-mkdir "$torrcd"
-mkdir "$torrcd/folder"
-mkdir "$torrcd/empty_folder"
-echo "NodeFamily 1" > "$torrcd/01_one.conf"
-echo "NodeFamily 2" > "$torrcd/02_two.conf"
-echo "NodeFamily 3" > "$torrcd/aa_three.conf"
-echo "NodeFamily 42" > "$torrcd/.hidden.conf"
-echo "NodeFamily 6" > "$torrcd/foo"
-touch "$torrcd/empty.conf"
-echo "# comment" > "$torrcd/comment.conf"
-echo "NodeFamily 4" > "$torrcd/folder/04_four.conf"
-echo "NodeFamily 5" > "$torrcd/folder/05_five.conf"
-torrc="$configdir/torrc"
-echo "Sandbox 1" > "$torrc"
+anonrcd="$configdir/anonrc.d"
+mkdir "$anonrcd"
+mkdir "$anonrcd/folder"
+mkdir "$anonrcd/empty_folder"
+echo "NodeFamily 1" > "$anonrcd/01_one.conf"
+echo "NodeFamily 2" > "$anonrcd/02_two.conf"
+echo "NodeFamily 3" > "$anonrcd/aa_three.conf"
+echo "NodeFamily 42" > "$anonrcd/.hidden.conf"
+echo "NodeFamily 6" > "$anonrcd/foo"
+touch "$anonrcd/empty.conf"
+echo "# comment" > "$anonrcd/comment.conf"
+echo "NodeFamily 4" > "$anonrcd/folder/04_four.conf"
+echo "NodeFamily 5" > "$anonrcd/folder/05_five.conf"
+anonrc="$configdir/anonrc"
+echo "Sandbox 1" > "$anonrc"
 echo "
-%include $torrcd/*.conf
-%include $torrcd/f*
-%include $torrcd/*/*
-%include $torrcd/empty_folder
-%include $torrcd/empty.conf
-%include $torrcd/comment.conf
-" >> "$torrc"
+%include $anonrcd/*.conf
+%include $anonrcd/f*
+%include $anonrcd/*/*
+%include $anonrcd/empty_folder
+%include $anonrcd/empty.conf
+%include $anonrcd/comment.conf
+" >> "$anonrc"
 
 "${PYTHON:-python}" "${abs_top_srcdir:-.}/src/test/test_include.py" "${TOR_BINARY}" "$datadir" "$configdir"
 

@@ -149,10 +149,10 @@ scripts/maint/geoip/geoip6
 # /src/config/
 /src/config/Makefile
 /src/config/Makefile.in
-/src/config/sample-server-torrc
-/src/config/torrc
-/src/config/torrc.sample
-/src/config/torrc.minimal
+/src/config/sample-server-anonrc
+/src/config/anonrc
+/src/config/anonrc.sample
+/src/config/anonrc.minimal
 
 # /src/ext/
 /src/ext/ed25519/ref10/libed25519_ref10.lib

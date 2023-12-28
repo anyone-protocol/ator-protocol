@@ -3049,7 +3049,7 @@ get_max_intro_circ_per_period(const hs_service_t *service)
   num_wanted_ip = service->config.num_intro_points;
 
   /* The calculation is as follow. We have a number of intro points that we
-   * want configured as a torrc option (num_intro_points). We then add an
+   * want configured as a anonrc option (num_intro_points). We then add an
    * extra value so we can launch multiple circuits at once and pick the
    * quickest ones. For instance, we want 3 intros, we add 2 extra so we'll
    * pick 5 intros and launch 5 circuits. */

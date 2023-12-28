@@ -36,11 +36,11 @@ echo "A"
 DATA_DIR=$(mktemp -d -t tor_cmdline_tests.XXXXXX)
 trap 'rm -rf "$DATA_DIR"' 0
 
-# 1. Test list-torrc-options.
+# 1. Test list-anonrc-options.
 OUT="${DATA_DIR}/output"
 
 echo "B"
-"${TOR_BINARY}" --list-torrc-options > "$OUT"
+"${TOR_BINARY}" --list-anonrc-options > "$OUT"
 
 echo "C"
 

@@ -67,25 +67,25 @@ The following options in this section are only recognized on the
 [[opt-h]] **`-h`**, **`--help`**::
     Display a short help message and exit.
 
-[[opt-f]] **`-f`**, **`--torrc-file`** __FILE__::
+[[opt-f]] **`-f`**, **`--anonrc-file`** __FILE__::
     Specify a new configuration file to contain further Tor configuration
     options, or pass *-* to make Tor read its configuration from standard
-    input. (Default: **`@CONFDIR@/torrc`**, or **`$HOME/.torrc`** if
+    input. (Default: **`@CONFDIR@/anonrc`**, or **`$HOME/.anonrc`** if
     that file is not found.)
 
-[[opt-allow-missing-torrc]] **`--allow-missing-torrc`**::
+[[opt-allow-missing-anonrc]] **`--allow-missing-anonrc`**::
     Allow the configuration file specified by **`-f`** to be missing,
-    if the defaults-torrc file (see below) is accessible.
+    if the defaults-anonrc file (see below) is accessible.
 
-[[opt-defaults-torrc]] **`--defaults-torrc`** __FILE__::
+[[opt-defaults-anonrc]] **`--defaults-anonrc`** __FILE__::
     Specify a file in which to find default values for Tor options.  The
     contents of this file are overridden by those in the regular
     configuration file, and by those on the command line. (Default:
-    **`@CONFDIR@/torrc-defaults`**.)
+    **`@CONFDIR@/anonrc-defaults`**.)
 
-[[opt-ignore-missing-torrc]] **`--ignore-missing-torrc`**::
-    Specify that Tor should treat a missing torrc file as though it
-    were empty. Ordinarily, Tor does this for missing default torrc files,
+[[opt-ignore-missing-anonrc]] **`--ignore-missing-anonrc`**::
+    Specify that Tor should treat a missing anonrc file as though it
+    were empty. Ordinarily, Tor does this for missing default anonrc files,
     but not for those specified on the command line.
 
 [[opt-hash-password]] **`--hash-password`** __PASSWORD__::
@@ -115,7 +115,7 @@ The following options in this section are only recognized on the
 [[opt-nt-service]] **`--nt-service`**::
     Used internally to implement a Windows service.
 
-[[opt-list-torrc-options]] **`--list-torrc-options`**::
+[[opt-list-anonrc-options]] **`--list-anonrc-options`**::
     List all valid options.
 
 [[opt-list-deprecated-options]] **`--list-deprecated-options`**::
@@ -1279,14 +1279,14 @@ The following options are useful only for clients (that is, if
 
     1. When evaluating MapAddress expressions Tor stops when it hits the most
     recently added expression that matches the requested address. So if you
-    have the following in your torrc, www.torproject.org will map to
+    have the following in your anonrc, www.torproject.org will map to
     198.51.100.1:
 
      MapAddress www.torproject.org 192.0.2.1
      MapAddress www.torproject.org 198.51.100.1
 
     2. Tor evaluates the MapAddress configuration until it finds no matches. So
-    if you have the following in your torrc, www.torproject.org will map to
+    if you have the following in your anonrc, www.torproject.org will map to
     203.0.113.1:
 
       MapAddress 198.51.100.1 203.0.113.1
@@ -2240,7 +2240,7 @@ is non-zero):
     server descriptor to the bridge database, rather than
     to the public directory authorities. +
      +
-    Note: make sure that no MyFamily lines are present in your torrc when
+    Note: make sure that no MyFamily lines are present in your anonrc when
     relay is configured in bridge mode.
 
 //Out of order because it logically belongs after BridgeRelay.
@@ -2858,7 +2858,7 @@ details.)
     As of Tor 0.4.6.1-alpha, non-authoritative relays (see
     AuthoritativeDirectory) will not publish the DirPort but will still listen
     on it. Clients don't use the DirPorts on relays, so it is safe for you
-    to remove the DirPort from your torrc configuration.
+    to remove the DirPort from your anonrc configuration.
 
 [[DirPortFrontPage]] **DirPortFrontPage** __FILENAME__::
     When this option is set, it takes an HTML file and publishes it as "/" on
@@ -2905,7 +2905,7 @@ The mitigations take place at relays, and are as follows:
   3. If a client asks to establish a rendezvous point to you directly (ex:
      Tor2Web client), ignore the request.
 
-These defenses can be manually controlled by torrc options, but relays will
+These defenses can be manually controlled by anonrc options, but relays will
 also take guidance from consensus parameters using these same names, so there's
 no need to configure anything manually. In doubt, do not change those values.
 
@@ -3651,7 +3651,7 @@ Service side:
 Client side:
 
   To access a v3 onion service with client authorization as a client, make sure
-  you have ClientOnionAuthDir set in your torrc. Then, in the
+  you have ClientOnionAuthDir set in your anonrc. Then, in the
   <ClientOnionAuthDir> directory, create an .auth_private file for the onion
   service corresponding to this key (i.e. 'bob_onion.auth_private').  The
   contents of the <ClientOnionAuthDir>/<user>.auth_private file should look like:
@@ -3860,14 +3860,14 @@ The following options are used for running a testing Tor network.
 
 == NON-PERSISTENT OPTIONS
 
-These options are not saved to the torrc file by the "SAVECONF" controller
+These options are not saved to the anonrc file by the "SAVECONF" controller
 command.  Other options of this type are documented in control-spec.txt,
 section 5.4. End-users should mostly ignore them.
 
 [[UnderscorePorts]] **{dbl_}ControlPort**, **{dbl_}DirPort**, **{dbl_}DNSPort**, **{dbl_}ExtORPort**, **{dbl_}NATDPort**, **{dbl_}ORPort**, **{dbl_}SocksPort**, **{dbl_}TransPort**::
     These underscore-prefixed options are variants of the regular Port
     options.  They behave the same, except they are not saved to the
-    torrc file by the controller's SAVECONF command.
+    anonrc file by the controller's SAVECONF command.
 
 
 == SIGNALS
@@ -3905,11 +3905,11 @@ Tor catches the following signals:
 
 == FILES
 
-**`@CONFDIR@/torrc`**::
+**`@CONFDIR@/anonrc`**::
     Default location of the configuration file.
 
-**`$HOME/.torrc`**::
-    Fallback location for torrc, if @CONFDIR@/torrc is not found.
+**`$HOME/.anonrc`**::
+    Fallback location for anonrc, if @CONFDIR@/anonrc is not found.
 
 **`@LOCALSTATEDIR@/lib/tor/`**::
     The tor process stores keys and other data here.

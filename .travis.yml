@@ -185,9 +185,9 @@ install:
   ## Installs are unreliable on macOS, so we just rely on brew list --versions
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then spatch --version; fi
   ## We don't want Tor tests to depend on default configuration file at
-  ## ~/.torrc. So we put some random bytes in there, to make sure we get build
+  ## ~/.anonrc. So we put some random bytes in there, to make sure we get build
   ## failures in case Tor is reading it during CI jobs.
-  - dd ibs=1 count=1024 if=/dev/urandom > ~/.torrc
+  - dd ibs=1 count=1024 if=/dev/urandom > ~/.anonrc
 
 script:
   # Skip test_rebind and test_include on macOS
