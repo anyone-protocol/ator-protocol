@@ -12,7 +12,7 @@
 !define INSTALLER "tor-${VERSION}-win32.exe"
 !define WEBSITE "https://www.torproject.org/"
 !define LICENSE "LICENSE"
-!define BIN "..\bin" ;BIN is where it expects to find tor.exe, tor-resolve.exe
+!define BIN "..\bin" ;BIN is where it expects to find tor.exe, anon-resolve.exe
 
 
 SetCompressor /SOLID LZMA ;Tighter compression
@@ -156,7 +156,7 @@ SectionEnd
 
 Function ExtractBinaries
 	File "${BIN}\tor.exe"
-	File "${BIN}\tor-resolve.exe"
+	File "${BIN}\anon-resolve.exe"
 FunctionEnd
 
 Function ExtractGEOIP
@@ -182,9 +182,9 @@ FunctionEnd
 
 Function ExtractHTML
 	File "..\doc\tor.html"
-	File "..\doc\torify.html"
-	File "..\doc\tor-resolve.html"
-	File "..\doc\tor-gencert.html"
+	File "..\doc\anonify.html"
+	File "..\doc\anon-resolve.html"
+	File "..\doc\anon-gencert.html"
 FunctionEnd
 
 Function ExtractReleaseDocs
@@ -203,7 +203,7 @@ FunctionEnd
 Function un.InstallFiles
 	Delete "$DESKTOP\Tor.lnk"
 	Delete "$INSTDIR\tor.exe"
-	Delete "$INSTDIR\tor-resolve.exe"
+	Delete "$INSTDIR\anon-resolve.exe"
 	Delete "$INSTDIR\Tor Website.url"
 	Delete "$INSTDIR\anonrc"
 	Delete "$INSTDIR\anonrc.sample"

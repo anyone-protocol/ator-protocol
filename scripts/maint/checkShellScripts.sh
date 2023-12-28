@@ -55,8 +55,8 @@ if [ -e \
     shellcheck \
         "$TOPLEVEL/contrib/dirauth-tools/nagios-check-tor-authority-cert"
 fi
-if [ -e "$TOPLEVEL/contrib/client-tools/torify" ]; then
-    shellcheck "$TOPLEVEL/contrib/client-tools/torify"
+if [ -e "$TOPLEVEL/contrib/client-tools/anonify" ]; then
+    shellcheck "$TOPLEVEL/contrib/client-tools/anonify"
 fi
 if [ -d "$TOPLEVEL/scripts/git" ]; then
     shellcheck "$TOPLEVEL/scripts/git/"*.git-hook

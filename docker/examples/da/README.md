@@ -37,7 +37,7 @@ docker run -i -w /var/lib/tor/keys \
   -v ./anonrc:/etc/tor/anonrc \
   -v ./tor-data:/var/lib/tor/ \
   svforte/ator-protocol:latest \
-  tor-gencert --create-identity-key
+  anon-gencert --create-identity-key
 chmod -R 777 tor-data/
 ```
 Generate Relay keys and fingerprint:

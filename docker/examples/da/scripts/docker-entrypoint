@@ -40,7 +40,7 @@ if [ ! -e /tor-config-done ]; then
     KEYPATH=/var/lib/tor/keys
     if [ ! -f ${KEYPATH}/authority_identity_key ]; then
         mkdir -p ${KEYPATH}
-        echo "password" | tor-gencert --create-identity-key \
+        echo "password" | anon-gencert --create-identity-key \
             -i ${KEYPATH}/authority_identity_key \
             -s ${KEYPATH}/authority_signing_key \
             -c ${KEYPATH}/authority_certificate \

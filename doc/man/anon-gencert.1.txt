@@ -4,25 +4,25 @@
 // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
 :man source:   Tor
 :man manual:   Tor Manual
-tor-gencert(1)
+anon-gencert(1)
 ==============
 Tor Project, Inc.
 
 NAME
 ----
-tor-gencert - Generate certs and keys for Tor directory authorities
+anon-gencert - Generate certs and keys for Tor directory authorities
 
 SYNOPSIS
 --------
-**tor-gencert** [-h|--help] [-v] [-r|--reuse] [--create-identity-key] [-i __id_file__] [-c
+**anon-gencert** [-h|--help] [-v] [-r|--reuse] [--create-identity-key] [-i __id_file__] [-c
 __cert_file__] [-m __num__] [-a __address__:__port__]
 
 DESCRIPTION
 -----------
-**tor-gencert** generates certificates and private keys for use by Tor
+**anon-gencert** generates certificates and private keys for use by Tor
 directory authorities running the v3 Tor directory protocol, as used by
 Tor 0.2.0 and later. If you are not running a directory authority, you
-don't need to use tor-gencert. +
+don't need to use anon-gencert. +
 
 Every directory authority has a long term authority __identity__ __key__ (which
 is distinct from the identity key it uses as a Tor server); this key
@@ -48,7 +48,7 @@ OPTIONS
 
 **--create-identity-key**::
     Generate a new identity key. You should only use this option the first time
-    you run tor-gencert; in the future, you should use the identity key that's
+    you run anon-gencert; in the future, you should use the identity key that's
     already there.
 
 **-i** __FILENAME__::

@@ -71,12 +71,12 @@ static size_t passphrase_len = 0;
 static EVP_PKEY *identity_key = NULL;
 static EVP_PKEY *signing_key = NULL;
 
-/** Write a usage message for tor-gencert to stderr. */
+/** Write a usage message for anon-gencert to stderr. */
 static void
 show_help(void)
 {
   fprintf(stderr, "Syntax:\n"
-          "tor-gencert [-h|--help] [-v] [-r|--reuse] [--create-identity-key]\n"
+          "anon-gencert [-h|--help] [-v] [-r|--reuse] [--create-identity-key]\n"
           "        [-i identity_key_file] [-s signing_key_file] "
           "[-c certificate_file]\n"
           "        [-m lifetime_in_months] [-a address:port] "
@@ -542,7 +542,7 @@ generate_certificate(void)
   return 0;
 }
 
-/** Entry point to tor-gencert */
+/** Entry point to anon-gencert */
 int
 main(int argc, char **argv)
 {

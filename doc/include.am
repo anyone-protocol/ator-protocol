@@ -12,7 +12,7 @@
 # part of the source distribution, so that people without asciidoc can
 # just use the .1 and .html files.
 
-all_mans = doc/man/tor doc/man/tor-gencert doc/man/tor-resolve doc/man/torify doc/man/tor-print-ed-signing-cert
+all_mans = doc/man/tor doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify doc/man/anon-print-ed-signing-cert
 
 if USE_ASCIIDOC
 txt_in = $(all_mans:=.1.txt)
@@ -76,16 +76,16 @@ $(man_in) :
 	$(AM_V_GEN)$(top_srcdir)/doc/asciidoc-helper.sh man @A2X@ $(top_srcdir)/$@
 
 doc/man/tor.1.in: doc/man/tor.1.txt
-doc/man/torify.1.in: doc/man/torify.1.txt
-doc/man/tor-gencert.1.in: doc/man/tor-gencert.1.txt
-doc/man/tor-resolve.1.in: doc/man/tor-resolve.1.txt
-doc/man/tor-print-ed-signing-cert.1.in: doc/man/tor-print-ed-signing-cert.1.txt
+doc/man/anonify.1.in: doc/man/anonify.1.txt
+doc/man/anon-gencert.1.in: doc/man/anon-gencert.1.txt
+doc/man/anon-resolve.1.in: doc/man/anon-resolve.1.txt
+doc/man/anon-print-ed-signing-cert.1.in: doc/man/anon-print-ed-signing-cert.1.txt
 
 doc/man/tor.html.in: doc/man/tor.1.txt
-doc/man/torify.html.in: doc/man/torify.1.txt
-doc/man/tor-gencert.html.in: doc/man/tor-gencert.1.txt
-doc/man/tor-resolve.html.in: doc/man/tor-resolve.1.txt
-doc/man/tor-print-ed-signing-cert.html.in: doc/man/tor-print-ed-signing-cert.1.txt
+doc/man/anonify.html.in: doc/man/anonify.1.txt
+doc/man/anon-gencert.html.in: doc/man/anon-gencert.1.txt
+doc/man/anon-resolve.html.in: doc/man/anon-resolve.1.txt
+doc/man/anon-print-ed-signing-cert.html.in: doc/man/anon-print-ed-signing-cert.1.txt
 
 # use config.status to swap all machine-specific magic strings
 # in the asciidoc with their replacements.
@@ -97,16 +97,16 @@ $(asciidoc_product) :
 	$(AM_V_at)$(top_builddir)/config.status -q --file=$@;
 
 doc/man/tor.html: doc/man/tor.html.in
-doc/man/tor-gencert.html: doc/man/tor-gencert.html.in
-doc/man/tor-resolve.html: doc/man/tor-resolve.html.in
-doc/man/tor-print-ed-signing-cert.html: doc/man/tor-print-ed-signing-cert.html.in
-doc/man/torify.html: doc/man/torify.html.in
+doc/man/anon-gencert.html: doc/man/anon-gencert.html.in
+doc/man/anon-resolve.html: doc/man/anon-resolve.html.in
+doc/man/anon-print-ed-signing-cert.html: doc/man/anon-print-ed-signing-cert.html.in
+doc/man/anonify.html: doc/man/anonify.html.in
 
 doc/man/tor.1: doc/man/tor.1.in
-doc/man/tor-gencert.1: doc/man/tor-gencert.1.in
-doc/man/tor-resolve.1: doc/man/tor-resolve.1.in
-doc/man/tor-print-ed-signing-cert.1: doc/man/tor-print-ed-signing-cert.1.in
-doc/man/torify.1: doc/man/torify.1.in
+doc/man/anon-gencert.1: doc/man/anon-gencert.1.in
+doc/man/anon-resolve.1: doc/man/anon-resolve.1.in
+doc/man/anon-print-ed-signing-cert.1: doc/man/anon-print-ed-signing-cert.1.in
+doc/man/anonify.1: doc/man/anonify.1.in
 
 CLEANFILES+= $(asciidoc_product)
 DISTCLEANFILES+= $(html_in) $(man_in)

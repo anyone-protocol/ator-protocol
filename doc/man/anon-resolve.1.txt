@@ -4,24 +4,24 @@
 // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
 :man source:   Tor
 :man manual:   Tor Manual
-tor-resolve(1)
+anon-resolve(1)
 ==============
 Peter Palfrader
 
 NAME
 ----
-tor-resolve - resolve a hostname to an IP address via tor
+anon-resolve - resolve a hostname to an IP address via tor
 
 SYNOPSIS
 --------
-**tor-resolve** [-4|-5] [-v] [-x] [-p __socksport__] __hostname__ [__sockshost__[:__socksport__]]
+**anon-resolve** [-4|-5] [-v] [-x] [-p __socksport__] __hostname__ [__sockshost__[:__socksport__]]
 
 DESCRIPTION
 -----------
-**tor-resolve** is a simple script to connect to a SOCKS proxy that knows about
+**anon-resolve** is a simple script to connect to a SOCKS proxy that knows about
 the SOCKS RESOLVE command, hand it a hostname, and return an IP address.
 
-By default, **tor-resolve** uses the Tor server running on 127.0.0.1 on SOCKS
+By default, **anon-resolve** uses the Tor server running on 127.0.0.1 on SOCKS
 port 9050.  If this isn't what you want, you should specify an explicit
 __sockshost__ and/or __socksport__ on the command line.
 
@@ -45,6 +45,6 @@ OPTIONS
 
 SEE ALSO
 --------
-**tor**(1), **torify**(1). +
+**tor**(1), **anonify**(1). +
 
 For protocol details, see: https://spec.torproject.org/socks-extensions

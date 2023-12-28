@@ -21,10 +21,10 @@ instructions on configuration, build, and testing with clang's sanitizers.
 client-tools/ -- Tools for use with Tor clients
 -----------------------------------------------
 
-torify is a small wrapper script around torsocks.
+anonify is a small wrapper script around torsocks.
 
-tor-resolve.py uses Tor's SOCKS port extensions to perform DNS lookups.  You
-should probably use src/tools/tor-resolve instead.
+anon-resolve.py uses Tor's SOCKS port extensions to perform DNS lookups.  You
+should probably use src/tools/anon-resolve instead.
 
 dist/ -- Scripts and files for use when packaging Tor
 -----------------------------------------------------

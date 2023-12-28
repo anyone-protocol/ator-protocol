@@ -4,21 +4,21 @@
 // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
 :man source:   Tor
 :man manual:   Tor Manual
-tor-print-ed-signing-cert(1)
+anon-print-ed-signing-cert(1)
 ============================
 Tor Project, Inc.
 
 NAME
 ----
-tor-print-ed-signing-cert - print expiration date of ed25519 signing certificate
+anon-print-ed-signing-cert - print expiration date of ed25519 signing certificate
 
 SYNOPSIS
 --------
-**tor-print-ed-signing-cert** __<path to ed25519_signing_cert file>__
+**anon-print-ed-signing-cert** __<path to ed25519_signing_cert file>__
 
 DESCRIPTION
 -----------
-**tor-print-ed-signing-cert** is utility program for Tor relay operators to
+**anon-print-ed-signing-cert** is utility program for Tor relay operators to
 check expiration date of ed25519 signing certificate.
 
 Expiration date is printed in three formats:

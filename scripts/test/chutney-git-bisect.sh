@@ -33,8 +33,8 @@ if [ -n "$4" ]; then
     CHUTNEY_SKIP_ON_FAIL_CMD="$CHUTNEY_PATH/tools/test-network.sh --flavour $4"
 fi
 
-CHUTNEY_BUILD_CMD_OR="make src/or/tor src/tools/tor-gencert"
-CHUTNEY_BUILD_CMD_APP="make src/app/tor src/tools/tor-gencert"
+CHUTNEY_BUILD_CMD_OR="make src/or/tor src/tools/anon-gencert"
+CHUTNEY_BUILD_CMD_APP="make src/app/tor src/tools/anon-gencert"
 if ! ( $CHUTNEY_BUILD_CMD_APP || $CHUTNEY_BUILD_CMD_OR ) ; then
     echo "building '$CHUTNEY_BUILD_CMD_APP || $CHUTNEY_BUILD_CMD_OR' failed, skip"
     exit 125

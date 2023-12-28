@@ -170,7 +170,7 @@ The following options in this section are only recognized on the
 
 **`--passphrase-fd`** __FILEDES__::
     File descriptor to read the passphrase from.  Note that unlike with the
-    tor-gencert program, the entire file contents are read and used as
+    anon-gencert program, the entire file contents are read and used as
     the passphrase, including any trailing newlines.
     If the file descriptor is not specified, the passphrase is read
     from the terminal by default.
@@ -3985,7 +3985,7 @@ __DataDirectory__/**`key-pinning-journal`**::
 
 __KeyDirectory__/**`authority_identity_key`**::
     A v3 directory authority's master identity key, used to authenticate its
-    signing key. Tor doesn't use this while it's running. The tor-gencert
+    signing key. Tor doesn't use this while it's running. The anon-gencert
     program uses this. If you're running an authority, you should keep this key
     offline, and not put it in this file.
 
@@ -4149,7 +4149,7 @@ __HiddenServiceDirectory__/**`onion_service_non_anonymous`**::
 
 For more information, refer to the Tor Project website at
 https://www.torproject.org/ and the Tor specifications at
-https://spec.torproject.org. See also **torsocks**(1) and **torify**(1).
+https://spec.torproject.org. See also **torsocks**(1) and **anonify**(1).
 
 == BUGS
 

@@ -12,7 +12,7 @@
 
 
 compat() {
-	echo "torify is now just a wrapper around torsocks(1) for backwards compatibility."
+	echo "anonify is now just a wrapper around torsocks(1) for backwards compatibility."
 }
 
 usage() {

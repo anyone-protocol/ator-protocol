@@ -135,7 +135,7 @@ static authority_cert_t *legacy_key_certificate = NULL;
 
 /* (Note that v3 authorities also have a separate "authority identity key",
  * but this key is never actually loaded by the Tor process.  Instead, it's
- * used by tor-gencert to sign new signing keys and make new key
+ * used by anon-gencert to sign new signing keys and make new key
  * certificates. */
 
 /** Indicate if the IPv6 address should be omitted from the descriptor when
@@ -995,7 +995,7 @@ init_keys(void)
     if (init_v3_authority_keys()<0) {
       log_err(LD_GENERAL, "We're configured as a V3 authority, but we "
               "were unable to load our v3 authority keys and certificate! "
-              "Use tor-gencert to generate them. Dying.");
+              "Use anon-gencert to generate them. Dying.");
       return -1;
     }
     cert = get_my_v3_authority_cert();

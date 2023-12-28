@@ -106,7 +106,7 @@ which contains several sub-modules.
      modules start up when required, and so on.
 
    - \refdir{tools} -- Binaries other than Tor that we produce.
-      Currently this is tor-resolve, tor-gencert, and the tor_runner.o helper
+      Currently this is anon-resolve, anon-gencert, and the tor_runner.o helper
       module.
 
    - `test` -- unit tests, regression tests, and a few integration

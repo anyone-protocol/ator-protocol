@@ -2624,7 +2624,7 @@ AC_CONFIG_FILES([
 ])
 
 if test "x$asciidoc" = "xtrue" && test "$ASCIIDOC" = "none"; then
-  regular_mans="doc/man/tor doc/man/tor-gencert doc/man/tor-resolve doc/man/torify"
+  regular_mans="doc/man/tor doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify"
   for file in $regular_mans ; do
     if ! [[ -f "$srcdir/$file.1.in" ]] || ! [[ -f "$srcdir/$file.html.in" ]] ; then
       echo "==================================";

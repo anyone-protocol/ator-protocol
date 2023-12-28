@@ -3,7 +3,7 @@ usr/share/doc
 usr/share/man
 etc/tor
 
-contrib/client-tools/torify usr/bin
+contrib/client-tools/anonify usr/bin
 debian/tor-instance-create usr/sbin
 debian/tor-service-defaults-anonrc usr/share/tor
 debian/tor-service-defaults-anonrc-instances usr/share/tor

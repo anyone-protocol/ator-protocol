@@ -8,8 +8,8 @@
  * \brief Header for resolve.c
  **/
 
-#ifndef TOR_RESOLVE_H
-#define TOR_RESOLVE_H
+#ifndef anon_resolve_H
+#define anon_resolve_H
 
 #include "orconfig.h"
 #include "lib/cc/torint.h"
@@ -70,4 +70,4 @@ MOCK_DECL(STATIC int, tor_addr_lookup_host_impl, (const char *name,
                                                   struct tor_addr_t *addr));
 #endif
 
-#endif /* !defined(TOR_RESOLVE_H) */
+#endif /* !defined(anon_resolve_H) */

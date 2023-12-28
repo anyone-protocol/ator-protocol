@@ -551,12 +551,12 @@ do_resolve(const char *hostname,
 static void
 usage(void)
 {
-  puts("Syntax: tor-resolve [-4] [-5] [-v] [-x] [-p port] "
+  puts("Syntax: anon-resolve [-4] [-5] [-v] [-x] [-p port] "
        "hostname [sockshost[:socksport]]");
   exit(1);
 }
 
-/** Entry point to tor-resolve */
+/** Entry point to anon-resolve */
 int
 main(int argc, char **argv)
 {

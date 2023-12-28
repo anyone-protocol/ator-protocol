@@ -393,7 +393,7 @@ test-network-clean:
 .PHONY: test-network-run
 # We need the word splitting in the "for" lines, so we can't quote
 # $(skip_flavors) or $(flavors)
-test-network-run: need-chutney-path test-driver $(TESTING_TOR_BINARY) src/tools/tor-gencert
+test-network-run: need-chutney-path test-driver $(TESTING_TOR_BINARY) src/tools/anon-gencert
 	@flavors=""; \
 	skip_flavors=""; \
 	if test -n "$(ipv4_flavors)"; then \
@@ -530,8 +530,8 @@ coverage-html-full: all
 	$(MAKE) reset-gcov
 	$(MAKE) check
 	$(MAKE) test-stem-full
-	CHUTNEY_TOR=tor-cov CHUTNEY_TOR_GENCERT=tor-cov-gencert $(top_srcdir)/src/test/test-network.sh
-	CHUTNEY_TOR=tor-cov CHUTNEY_TOR_GENCERT=tor-cov-gencert $(top_srcdir)/src/test/test-network.sh --flavor hs
+	CHUTNEY_TOR=tor-cov CHUTNEY_anon_gencert=tor-cov-gencert $(top_srcdir)/src/test/test-network.sh
+	CHUTNEY_TOR=tor-cov CHUTNEY_anon_gencert=tor-cov-gencert $(top_srcdir)/src/test/test-network.sh --flavor hs
 	lcov --capture --rc lcov_branch_coverage=1 --no-external --directory . --output-file "$(HTML_COVER_DIR)/lcov.tmp"
 	lcov --remove "$(HTML_COVER_DIR)/lcov.tmp" --rc lcov_branch_coverage=1 'test/*' 'ext/tinytest*' '/usr/*' --output-file "$(HTML_COVER_DIR)/lcov.info"
 	genhtml --branch-coverage -o "$(HTML_COVER_DIR)" "$(HTML_COVER_DIR)/lcov.info"

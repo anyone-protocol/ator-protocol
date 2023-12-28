@@ -1141,7 +1141,7 @@ tor (0.2.5.5-alpha-1) experimental; urgency=low
   * New upstream version.
   * upstream contrib/ directory cleanup, requires adapting paths in
     tor.docs and tor.install:
-    - torify moved to contrib/client-tools/
+    - anonify moved to contrib/client-tools/
     - tor-exit-notice.html moved to contrib/operator-tools/
   * Restrict build dependency on libseccomp-dev to amd64 and i386 only.
     Build-Conflict with it on the other archs.
@@ -1176,9 +1176,9 @@ tor (0.2.5.2-alpha-1) experimental; urgency=low
 tor (0.2.5.1-alpha-1) experimental; urgency=low
 
   * New upstream tree, new upstream version.
-  * Current alpha no longer /builds/ contrib/torify, it just ships it.
-    Adapt debian/tor.install to get it from contrib/torify instead of
-    build/contrib/torify.
+  * Current alpha no longer /builds/ contrib/anonify, it just ships it.
+    Adapt debian/tor.install to get it from contrib/anonify instead of
+    build/contrib/anonify.
 
  -- Peter Palfrader <weasel@debian.org>  Tue, 01 Oct 2013 20:28:59 +0200
 
@@ -1240,7 +1240,7 @@ tor (0.2.4.12-alpha-2) experimental; urgency=low
 tor (0.2.4.12-alpha-1) experimental; urgency=low
 
   * New upstream version.
-  * Forward port 03_tor_manpage_in_section_8.dpatch: torify.1 no longer
+  * Forward port 03_tor_manpage_in_section_8.dpatch: anonify.1 no longer
     references tsocks.
   * No longer install contrib/tor-tsocks.conf - it was dropped upstream.
   * Update year in debian/copyright.
@@ -1496,7 +1496,7 @@ tor (0.2.3.14-alpha-1) experimental; urgency=low
   * New upstream version.
     - No longer need backported 45ace4844b020cb754d3bb65f1021bfeb5115f9e
       from master to fix a test suite stack overflow.
-  * torify now no longer can use tsocks.  Change recommends from
+  * anonify now no longer can use tsocks.  Change recommends from
     torsocks | tsocks to just torsocks.
 
  -- Peter Palfrader <weasel@debian.org>  Tue, 24 Apr 2012 08:34:05 +0200
@@ -1740,7 +1740,7 @@ tor (0.2.2.16-alpha-1) experimental; urgency=low
   * New upstream version.
   * Downgrade torsocks/tsocks dependency to a recommends.  That tool
     is not needed if you only run a relay, or if you access Tor only
-    using polipo or privoxy.  The torify(1) wrapper that makes use
+    using polipo or privoxy.  The anonify(1) wrapper that makes use
     of torsocks or tsocks already handles their absense and emmits a
     proper message telling the user what they are missing (closes: #595898).
   * Remove suggests of mixminion which is no longer in the archive
@@ -1819,11 +1819,11 @@ tor (0.2.2.9-alpha-1) experimental; urgency=low
       + Therefore build-depend on asciidoc (>= 8.2), docbook-xml,
         docbook-xsl, and xmlto.
       + update 03_tor_manpage_in_section_8 to patch the .txt files now.
-      + Remove tor.1.in torify.1.in tor-gencert.1.in tor-resolve.1.in in
+      + Remove tor.1.in anonify.1.in anon-gencert.1.in anon-resolve.1.in in
         the doc directory during clean.
       + And try to work around missing (and if it wasn't, broken)
         build-system for the manpages.
-      + The torify.1 manpage gets installed by upstream, no longer need
+      + The anonify.1 manpage gets installed by upstream, no longer need
         to do it manually in debian/rules.
     - The original design paper is no longer shipped with Tor.
       + Remove debian/hexdump-*.pdf (which we used to work around
@@ -2029,7 +2029,7 @@ tor (0.2.1.11-alpha-1) experimental; urgency=high
 
   * New upstream version:
     - Fixes a possible remote heap buffer overflow bug.
-    - torify(1) manpage mentions DNS leaks now (closes: #495829).
+    - anonify(1) manpage mentions DNS leaks now (closes: #495829).
   * README.Debian: No longer claim we change the default 'Group' setting
     when run as debian-user.  That setting no longer exists.
   * Forward port 03_tor_manpage_in_section_8.dpatch.
@@ -2809,7 +2809,7 @@ tor (0.1.0.10-0.pre.1) UNRELEASED; urgency=low
   * Add a snippet to disable epoll in etc/default/tor, commented out.
   * Add a snippet to set nice level in etc/default/tor.
   * Wait for 60 seconds in init stop.  35 is too little.
-  * Don't depend on python anymore - tor-resolve is C now.
+  * Don't depend on python anymore - anon-resolve is C now.
   * If "with-dmalloc" is in DEB_BUILD_OPTIONS we build against libdmalloc4.
     Of course the -dev package needs to be installed.
   * Update README.Debian to say that upstream now does have a default
@@ -3053,7 +3053,7 @@ tor (0.0.7.2+0.0.8pre3-1) unstable; urgency=low
 tor (0.0.7.2+0.0.8pre2-1) unstable; urgency=low
 
   * New upstream (pre)release.
-  * Depend on python as we now have a python script: tor_resolve
+  * Depend on python as we now have a python script: anon_resolve
 
  -- Peter Palfrader <weasel@debian.org>  Wed,  4 Aug 2004 20:09:26 +0200
 
@@ -3087,7 +3087,7 @@ tor (0.0.6.2-1) unstable; urgency=medium
   * Recommend socat.
   * Since tor is in /usr/sbin, the manpage should be in section 8, not
     in section 1.  Move it there, including updating the section in
-    the manpage itself and the reference in torify(1).
+    the manpage itself and the reference in anonify(1).
   * Update debian/copyright file.
 
  -- Peter Palfrader <weasel@debian.org>  Sun, 16 May 2004 10:47:20 +0200
@@ -3213,7 +3213,7 @@ tor (0.0.1+0.0.2pre21-1) unstable; urgency=low
 
 tor (0.0.1+0.0.2pre20-2) unstable; urgency=low
 
-  * Add torify script, documentation, and config file.  Means we also
+  * Add anonify script, documentation, and config file.  Means we also
     depend on tsocks now rather than just recommending it.  Right now
     we install it in debian/rules, but upcoming versions might install
     it in upstream's make install target.

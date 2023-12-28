@@ -1907,7 +1907,7 @@ Changes in version 0.4.6.5 - 2021-06-14
       on 0.2.2.9-alpha.
 
   o Major bugfixes (signing key):
-    - In the tor-gencert utility, give an informative error message if
+    - In the anon-gencert utility, give an informative error message if
       the passphrase given in `--create-identity-key` is too short.
       Fixes bug 40189; bugfix on 0.2.0.1-alpha. Patch by Neel Chauhan.
 
@@ -5648,7 +5648,7 @@ Changes in version 0.4.2.5 - 2019-12-09
       bug 31490; bugfix on 0.3.2.1-alpha. Patch by Neel Chauhan.
 
   o Minor bugfixes (operator tools):
-    - Make tor-print-ed-signing-cert(1) print certificate expiration
+    - Make anon-print-ed-signing-cert(1) print certificate expiration
       date in RFC 1123 and UNIX timestamp formats, to make output
       machine readable. Fixes bug 31012; bugfix on 0.3.5.1-alpha.
 
@@ -7391,9 +7391,9 @@ Changes in version 0.4.1.5 - 2019-08-20
       failure, and fixes Coverity warnings CID 1444117 and CID 1444118.
       Fixes bug 29823; bugfix on 0.2.9.1-alpha.
 
-  o Minor bugfixes (tor-resolve):
-    - Fix a memory leak in tor-resolve that could happen if Tor gave it
-      a malformed SOCKS response. (Memory leaks in tor-resolve don't
+  o Minor bugfixes (anon-resolve):
+    - Fix a memory leak in anon-resolve that could happen if Tor gave it
+      a malformed SOCKS response. (Memory leaks in anon-resolve don't
       actually matter, but it's good to fix them anyway.) Fixes bug
       30151; bugfix on 0.4.0.1-alpha.
 
@@ -7459,7 +7459,7 @@ Changes in version 0.4.1.5 - 2019-08-20
       These include autogen.sh (ticket 26069), test_keygen.sh (ticket
       29062), test_switch_id.sh (ticket 29065), test_rebind.sh (ticket
       29063), src/test/fuzz/minimize.sh (ticket 30079), test_rust.sh
-      (ticket 29064), torify (ticket 29070), asciidoc-helper.sh (29926),
+      (ticket 29064), anonify (ticket 29070), asciidoc-helper.sh (29926),
       fuzz_multi.sh (30077), fuzz_static_testcases.sh (ticket 29059),
       nagios-check-tor-authority-cert (ticket 29071),
       src/test/fuzz/fixup_filenames.sh (ticket 30078), test-network.sh
@@ -8849,8 +8849,8 @@ Changes in version 0.3.5.7 - 2019-01-07
     - Add scripts/test/chutney-git-bisect.sh, for bisecting using
       chutney. Implements ticket 27211.
 
-  o Minor features (tor-resolve):
-    - The tor-resolve utility can now be used with IPv6 SOCKS proxies.
+  o Minor features (anon-resolve):
+    - The anon-resolve utility can now be used with IPv6 SOCKS proxies.
       Side-effect of the refactoring for ticket 26526.
 
   o Minor features (UI):
@@ -9201,7 +9201,7 @@ Changes in version 0.3.5.7 - 2019-01-07
       modules. Closes ticket 26526.
 
   o Documentation:
-    - In the tor-resolve(1) manpage, fix the reference to socks-
+    - In the anon-resolve(1) manpage, fix the reference to socks-
       extensions.txt by adding a web URL. Resolves ticket 27853.
     - Mention that we require Python to be 2.7 or newer for some
       integration tests that we ship with Tor. Resolves ticket 27677.
@@ -11209,7 +11209,7 @@ Changes in version 0.3.3.6 - 2018-05-22
       event_base_once() function. (This function tends to leak memory if
       the event_base is closed before the event fires.) Fixes bug 24584;
       bugfix on 0.2.8.1-alpha.
-    - Fix a harmless memory leak in tor-resolve. Fixes bug 24582; bugfix
+    - Fix a harmless memory leak in anon-resolve. Fixes bug 24582; bugfix
       on 0.2.1.1-alpha.
 
   o Minor bugfixes (network IPv6 test):
@@ -14179,7 +14179,7 @@ Changes in version 0.3.1.7 - 2017-09-18
       cached-extrainfo, secret_onion_key{,_ntor}.old, hidserv-stats,
       approved-routers, sr-random, and diff-cache. Found while fixing
       ticket 22347.
-    - Clarify the manpage for the (deprecated) torify script. Closes
+    - Clarify the manpage for the (deprecated) anonify script. Closes
       ticket 6892.
     - Clarify the behavior of the KeepAliveIsolateSOCKSAuth sub-option.
       Closes ticket 21873.
@@ -15127,8 +15127,8 @@ Changes in version 0.3.0.6 - 2017-04-26
       call chutney's newer tools/test-network.sh when available. Fixes
       bug 21562; bugfix on 0.2.9.1-alpha.
 
-  o Minor bugfixes (tor-resolve):
-    - The tor-resolve command line tool now rejects hostnames over 255
+  o Minor bugfixes (anon-resolve):
+    - The anon-resolve command line tool now rejects hostnames over 255
       characters in length. Previously, it would silently truncate them,
       which could lead to bugs. Fixes bug 21280; bugfix on 0.0.9pre5.
       Patch by "junglefowl".
@@ -15744,8 +15744,8 @@ Changes in version 0.2.9.10 - 2017-03-01
     - Repair a couple of (unreachable or harmless) cases of the risky
       comparison-by-subtraction pattern that caused bug 21278.
 
-  o Minor bugfixes (tor-resolve, backport from 0.3.0.3-alpha):
-    - The tor-resolve command line tool now rejects hostnames over 255
+  o Minor bugfixes (anon-resolve, backport from 0.3.0.3-alpha):
+    - The anon-resolve command line tool now rejects hostnames over 255
       characters in length. Previously, it would silently truncate them,
       which could lead to bugs. Fixes bug 21280; bugfix on 0.0.9pre5.
       Patch by "junglefowl".
@@ -16457,7 +16457,7 @@ Changes in version 0.2.9.8 - 2016-12-19
       Fixes bug 19122; bugfix on 0.0.2pre16 (the first version to have
       a manpage!).
     - Fix the description of the --passphrase-fd option in the
-      tor-gencert manpage. The option is used to pass the number of a
+      anon-gencert manpage. The option is used to pass the number of a
       file descriptor to read the passphrase from, not to read the file
       descriptor from. Fixes bug 19505; bugfix on 0.2.0.20-alpha.
 
@@ -17166,7 +17166,7 @@ Changes in version 0.2.8.6 - 2016-08-02
       by teor.
     - Fix a memory leak in "tor --list-fingerprint". Fixes part of bug
       18672; bugfix on 0.2.5.1-alpha.
-    - Fix a memory leak in tor-gencert. Fixes part of bug 18672; bugfix
+    - Fix a memory leak in anon-gencert. Fixes part of bug 18672; bugfix
       on 0.2.0.1-alpha.
 
   o Minor bugfixes (pluggable transports):
@@ -17255,7 +17255,7 @@ Changes in version 0.2.8.6 - 2016-08-02
       on platforms with 32-bit time_t. Fixes bug 18479; bugfix on
       0.0.2pre14. Patch by teor.
 
-  o Minor bugfixes (tor-gencert):
+  o Minor bugfixes (anon-gencert):
     - Correctly handle the case where an authority operator enters a
       passphrase but sends an EOF before sending a newline. Fixes bug
       17443; bugfix on 0.2.0.20-rc. Found by junglefowl.
@@ -17936,7 +17936,7 @@ Changes in version 0.2.7.5 - 2015-11-20
       DirPort configured in order for the authorities to assign that
       particular flag. Patch by "teor". Fixed as part of 14882; bugfix
       on 0.2.6.3-alpha.
-    - Fix the usage message of tor-resolve(1) so that it no longer lists
+    - Fix the usage message of anon-resolve(1) so that it no longer lists
       the removed -F option. Fixes bug 16913; bugfix on 0.2.2.28-beta.
 
   o Removed code:
@@ -18499,7 +18499,7 @@ Changes in version 0.2.6.6 - 2015-03-24
   o Minor features (directory authorities):
     - Don't list relays with a bandwidth estimate of 0 in the consensus.
       Implements a feature proposed during discussion of bug 13000.
-    - In tor-gencert, report an error if the user provides the same
+    - In anon-gencert, report an error if the user provides the same
       argument more than once.
     - If a directory authority can't find a best consensus method in the
       votes that it holds, it now falls back to its favorite consensus
@@ -18868,7 +18868,7 @@ Changes in version 0.2.6.6 - 2015-03-24
     - Make transparent proxy support work along with the seccomp2
       sandbox. Fixes part of bug 13808; bugfix on 0.2.5.1-alpha. Patch
       by Francisco Blas Izquierdo Riera.
-    - Fix a memory leak in tor-resolve when running with the sandbox
+    - Fix a memory leak in anon-resolve when running with the sandbox
       enabled. Fixes bug 14050; bugfix on 0.2.5.9-rc.
     - Allow glibc fatal errors to be sent to stderr before Tor exits.
       Previously, glibc would try to write them to /dev/tty, and the
@@ -19094,9 +19094,9 @@ Changes in version 0.2.6.6 - 2015-03-24
       ticket 9708.
     - Adding section on OpenBSD to our TUNING document. Thanks to mmcc
       for writing the OpenBSD-specific tips. Resolves ticket 13702.
-    - Make the tor-resolve documentation match its help string and its
+    - Make the anon-resolve documentation match its help string and its
       options. Resolves part of ticket 14325.
-    - Log a more useful error message from tor-resolve when failing to
+    - Log a more useful error message from anon-resolve when failing to
       look up a hidden service address. Resolves part of ticket 14325.
     - Document the bridge-authority-only 'networkstatus-bridges' file.
       Closes ticket 13713; patch from "tom".
@@ -19363,7 +19363,7 @@ Changes in version 0.2.5.10 - 2014-10-24
   o Major features (security):
     - The ntor handshake is now on-by-default, no matter what the
       directory authorities recommend. Implements ticket 8561.
-    - Make the "tor-gencert" tool used by directory authority operators
+    - Make the "anon-gencert" tool used by directory authority operators
       create 2048-bit signing keys by default (rather than 1024-bit, since
       1024-bit is uncomfortably small these days). Addresses ticket 10324.
     - Warn about attempts to run hidden services and relays in the same
@@ -19751,7 +19751,7 @@ Changes in version 0.2.5.10 - 2014-10-24
       bugfix on 0.2.0.3-alpha. Based on a patch from "rl1987".
 
   o Minor bugfixes (build, auxiliary programs):
-    - Stop preprocessing the "torify" script with autoconf, since
+    - Stop preprocessing the "anonify" script with autoconf, since
       it no longer refers to LOCALSTATEDIR. Fixes bug 5505; patch
       from Guilhem.
     - The tor-fw-helper program now follows the standard convention and
@@ -20058,7 +20058,7 @@ Changes in version 0.2.5.10 - 2014-10-24
     - Fix a small memory leak when signing a directory object. Fixes bug
       11275; bugfix on 0.2.4.13-alpha.
     - Resolve some memory leaks found by coverity in the unit tests, on
-      exit in tor-gencert, and on a failure to compute digests for our
+      exit in anon-gencert, and on a failure to compute digests for our
       own keys when generating a v3 networkstatus vote. These leaks
       should never have affected anyone in practice.
 
@@ -21416,7 +21416,7 @@ Changes in version 0.2.4.19 - 2013-12-11
       Fixes bug 7280; bugfix on 0.2.3.1-alpha.
 
   o Documentation fixes:
-    - Make the torify manpage no longer refer to tsocks; torify hasn't
+    - Make the anonify manpage no longer refer to tsocks; anonify hasn't
       supported tsocks since 0.2.3.14-alpha.
     - Make the tor manpage no longer reference tsocks.
     - Fix the GeoIPExcludeUnknown documentation to refer to
@@ -22389,7 +22389,7 @@ Changes in version 0.2.3.25 - 2012-11-19
     - Warn when Tor is configured to use accounting in a way that can
       link a hidden service to some other hidden service or public
       address. Resolves ticket 6490.
-    - Fix a minor formatting issue in one of tor-gencert's error messages.
+    - Fix a minor formatting issue in one of anon-gencert's error messages.
       Fixes bug 4574.
 
   o Testing:
@@ -22570,7 +22570,7 @@ Changes in version 0.2.3.25 - 2012-11-19
       INTRODUCE2 cells to the introduction point data structures.
       Previously, we would use one replay-detection cache per hidden
       service. Required by fix for bug 3460.
-    - The helper programs tor-gencert, tor-resolve, and tor-checkkey
+    - The helper programs anon-gencert, anon-resolve, and tor-checkkey
       no longer link against Libevent: they never used it, but
       our library structure used to force them to link it.
 
@@ -22587,7 +22587,7 @@ Changes in version 0.2.3.25 - 2012-11-19
     - Remove some old code to work around even older versions of Tor that
       used forked processes to handle DNS requests. Such versions of Tor
       are no longer in use as relays.
-    - The "torify" script no longer supports the "tsocks" socksifier
+    - The "anonify" script no longer supports the "tsocks" socksifier
       tool, since tsocks doesn't support DNS and UDP right for Tor.
       Everyone should be using torsocks instead. Fixes bugs 3530 and
       5180. Based on a patch by "ugh".
@@ -23146,7 +23146,7 @@ Changes in version 0.2.1.31 - 2011-10-26
       fixes bug 1172.
     - Build correctly on OSX with zlib 1.2.4 and higher with all warnings
       enabled. Fixes bug 1526.
-    - Remove undocumented option "-F" from tor-resolve: it hasn't done
+    - Remove undocumented option "-F" from anon-resolve: it hasn't done
       anything since 0.2.1.16-rc.
     - Avoid signed/unsigned comparisons by making SIZE_T_CEILING unsigned.
       None of the cases where we did this before were wrong, but by making
@@ -23976,7 +23976,7 @@ Changes in version 0.2.2.32 - 2011-08-27
       by Gisle Vanem.
 
   o Minor features (misc):
-    - The "torify" script now uses torsocks where available.
+    - The "anonify" script now uses torsocks where available.
     - Make Libevent log messages get delivered to controllers later,
       and not from inside the Libevent log handler. This prevents unsafe
       reentrant Libevent calls while still letting the log messages
@@ -24256,13 +24256,13 @@ Changes in version 0.2.2.32 - 2011-08-27
       mode from binary mode (namely, Windows). These files are:
       'buffer-stats', 'dirreq-stats', and 'entry-stats' on relays
       that collect those statistics; 'client_keys' and 'hostname' for
-      hidden services that use authentication; and (in the tor-gencert
+      hidden services that use authentication; and (in the anon-gencert
       utility) newly generated identity and signing keys. Previously,
       we wouldn't specify text mode or binary mode, leading to an
       assertion failure. Fixes bug 3607. Bugfix on 0.2.1.1-alpha (when
       the DirRecordUsageByCountry option which would have triggered
       the assertion failure was added), although this assertion failure
-      would have occurred in tor-gencert on Windows in 0.2.0.1-alpha.
+      would have occurred in anon-gencert on Windows in 0.2.0.1-alpha.
     - Selectively disable deprecation warnings on OS X because Lion
       started deprecating the shipped copy of openssl. Fixes bug 3643.
     - Use a wide type to hold sockets when built for 64-bit Windows.
@@ -24386,7 +24386,7 @@ Changes in version 0.2.2.32 - 2011-08-27
       on 0.2.0.x; reported by "rotator".
     - When Tor fails to parse a descriptor of any kind, dump it to disk.
       Might help diagnosing bug 1051.
-    - Make our 'torify' script more portable; if we have only one of
+    - Make our 'anonify' script more portable; if we have only one of
       'torsocks' or 'tsocks' installed, don't complain to the user;
       and explain our warning about tsocks better.
     - Fix some urls in the exit notice file and make it XHTML1.1 strict
@@ -24401,7 +24401,7 @@ Changes in version 0.2.2.32 - 2011-08-27
       to it, explaining how we use Git, how we make changelogs, and
       what should go in a patch.
     - Document the default socks host and port (127.0.0.1:9050) for
-      tor-resolve.
+      anon-resolve.
     - Removed some unnecessary files from the source distribution. The
       AUTHORS file has now been merged into the people page on the
       website. The roadmaps and design doc can now be found in the
@@ -24432,7 +24432,7 @@ Changes in version 0.2.2.32 - 2011-08-27
       do not request or use version 0 descriptors. However, the old hidden
       service authorities still accept and serve version 0 descriptors
       when contacted by older hidden services/clients.
-    - Remove undocumented option "-F" from tor-resolve: it hasn't done
+    - Remove undocumented option "-F" from anon-resolve: it hasn't done
       anything since 0.2.1.16-rc.
     - Remove everything related to building the expert bundle for OS X.
       It has confused many users, doesn't work right on OS X 10.6,
@@ -25286,12 +25286,12 @@ Changes in version 0.2.1.18 - 2009-07-24
     - Provide circuit purposes along with circuit events to the controller.
 
   o Minor features (tools):
-    - Do not have tor-resolve automatically refuse all .onion addresses;
+    - Do not have anon-resolve automatically refuse all .onion addresses;
       if AutomapHostsOnResolve is set in your anonrc, this will work fine.
-    - Add a -p option to tor-resolve for specifying the SOCKS port: some
+    - Add a -p option to anon-resolve for specifying the SOCKS port: some
       people find host:port too confusing.
     - Print the SOCKS5 error message string as well as the error code
-      when a tor-resolve request fails. Patch from Jacob.
+      when a anon-resolve request fails. Patch from Jacob.
 
   o Minor bugfixes (memory and resource management):
     - Clients no longer cache certificates for authorities they do not
@@ -25426,7 +25426,7 @@ Changes in version 0.2.1.18 - 2009-07-24
       on 0.2.0.10-alpha.
 
   o Minor bugfixes (tools):
-    - In the torify(1) manpage, mention that tsocks will leak your
+    - In the anonify(1) manpage, mention that tsocks will leak your
       DNS requests.
 
   o Minor bugfixes (controllers):
@@ -25820,7 +25820,7 @@ Changes in version 0.2.0.30 - 2008-07-15
       long-term identity key can be kept offline, and they periodically
       generate a new signing key. Clients fetch the "key certificates"
       to keep up to date on the right keys. Add a standalone tool
-      "tor-gencert" to generate key certificates. Implements proposal 103.
+      "anon-gencert" to generate key certificates. Implements proposal 103.
     - Add a new V3AuthUseLegacyKey config option to make it easier for
       v3 authorities to change their identity keys if another bug like
       Debian's OpenSSL RNG flaw appears.
@@ -25912,7 +25912,7 @@ Changes in version 0.2.0.30 - 2008-07-15
       allows DNSPort to work sensibly with hidden service users. By
       default, .exit and .onion addresses are remapped; the list of
       patterns can be reconfigured with AutomapHostsSuffixes.
-    - Add an "-F" option to tor-resolve to force a resolve for a .onion
+    - Add an "-F" option to anon-resolve to force a resolve for a .onion
       address. Thanks to the AutomapHostsOnResolve option, this is no
       longer a completely silly thing to do.
 
@@ -27249,7 +27249,7 @@ Changes in version 0.1.2.13 - 2007-04-24
       take arguments rather than require direct editing.
     - Prevent the contrib/exitlist script from printing the same
       result more than once.
-    - Add support to tor-resolve tool for reverse lookups and SOCKS5.
+    - Add support to anon-resolve tool for reverse lookups and SOCKS5.
     - In the hidden service example in anonrc.sample, stop recommending
       esoteric and discouraged hidden service options.
     - Patch from Michael Mohr to contrib/cross.sh, so it checks more
@@ -27744,14 +27744,14 @@ Changes in version 0.1.1.20 - 2006-05-23
       "-Wall -g -O2".
     - Make unit tests (and other invocations that aren't the real Tor)
       run without launching listeners, creating subdirectories, and so on.
-    - The OS X installer was adding a symlink for tor_resolve but
-      the binary was called tor-resolve (reported by Thomas Hardly).
+    - The OS X installer was adding a symlink for anon_resolve but
+      the binary was called anon-resolve (reported by Thomas Hardly).
     - Now we can target arch and OS in rpm builds (contributed by
       Phobos). Also make the resulting dist-rpm filename match the
       target arch.
     - Apply Matt Ghali's --with-syslog-facility patch to ./configure
       if you log to syslog and want something other than LOG_DAEMON.
-    - Fix the torify (tsocks) config file to not use Tor for localhost
+    - Fix the anonify (tsocks) config file to not use Tor for localhost
       connections.
     - Start shipping socks-extensions.txt, tor-doc-unix.html,
       tor-doc-server.html, and stylesheet.css in the tarball.
@@ -28598,7 +28598,7 @@ Changes in version 0.1.0.10 - 2005-06-14
     - Cache local dns resolves correctly even when they're .exit
       addresses.
     - If we're hibernating and we get a SIGINT, exit immediately.
-    - tor-resolve requests were ignoring .exit if there was a working circuit
+    - anon-resolve requests were ignoring .exit if there was a working circuit
       they could use instead.
     - Pay more attention to the ClientOnly config option.
     - Resolve OS X installer bugs: stop claiming to be 0.0.9.2 in certain
@@ -28713,7 +28713,7 @@ Changes in version 0.0.9.5 - 2005-02-22
       support is still not compiled into the executable by default.
     - Patch from Dmitri Bely so the Tor service runs better under
       the win32 SYSTEM account.
-    - Make tor-resolve actually work (?) on Win32.
+    - Make anon-resolve actually work (?) on Win32.
     - Fix a sign bug when getrlimit claims to have 4+ billion
       file descriptors available.
     - Stop refusing to start when bandwidthburst == bandwidthrate.
@@ -28797,7 +28797,7 @@ Changes in version 0.0.9.2 - 2005-01-04
       immediately. (This was already working for non-win32 Tors.)
     - Stop trying to parse $HOME on win32 when hunting for default
       DataDirectory.
-    - Make tor-resolve.c work on win32 by calling network_init().
+    - Make anon-resolve.c work on win32 by calling network_init().
 
   o Bugfixes on 0.0.9 (other):
     - Make 0.0.9.x build on Solaris again.
@@ -29074,7 +29074,7 @@ Changes in version 0.0.9 - 2004-12-12
       from each other, to hinder linkability.
     - Clients now generate a TLS cert too, in preparation for having
       them act more like real nodes.
-    - Add a pure-C tor-resolve implementation.
+    - Add a pure-C anon-resolve implementation.
     - Use getrlimit and friends to ensure we can reach MaxConn (currently
       1024) file descriptors.
     - Raise the max dns workers from 50 to 100.
@@ -29197,7 +29197,7 @@ Changes in version 0.0.8 - 2004-08-25
       rather than an is-in-the-list check.
     - New socks command 'resolve', to let us shim gethostbyname()
       locally.
-      - A 'tor_resolve' script to access the socks resolve functionality.
+      - A 'anon_resolve' script to access the socks resolve functionality.
       - A new socks-extensions.txt doc file to describe our
         interpretation and extensions to the socks protocols.
     - Add a ContactInfo option, which gets published in descriptor.
@@ -29526,7 +29526,7 @@ Changes in version 0.0.2pre22 - 2004-02-26
 Changes in version 0.0.2pre21 - 2004-02-18
   o New features:
     - There's a ChangeLog file that actually reflects the changelog.
-    - There's a 'torify' wrapper script, with an accompanying
+    - There's a 'anonify' wrapper script, with an accompanying
       tor-tsocks.conf, that simplifies the process of using tsocks for
       tor. It even has a man page.
     - The tor binary gets installed to sbin rather than bin now.
