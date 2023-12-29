@@ -106,11 +106,11 @@ core.*
 /doc/Makefile
 /doc/Makefile.in
 /doc/doxygen
-/doc/man/tor.1
-/doc/man/tor.1.in
-/doc/man/tor.html
-/doc/man/tor.html.in
-/doc/man/tor.1.xml
+/doc/man/anon.1
+/doc/man/anon.1.in
+/doc/man/anon.html
+/doc/man/anon.html.in
+/doc/man/anon.1.xml
 /doc/man/anon-gencert.1
 /doc/man/anon-gencert.1.in
 /doc/man/anon-gencert.html
@@ -160,10 +160,10 @@ scripts/maint/geoip/geoip6
 /src/ext/keccak-tiny/libkeccak-tiny.lib
 
 # /src/app
-/src/app/tor
-/src/app/tor.exe
-/src/app/tor-cov
-/src/app/tor-cov.exe
+/src/app/anon
+/src/app/anon.exe
+/src/app/anon-cov
+/src/app/anon-cov.exe
 
 # /src/test
 /src/test/Makefile
