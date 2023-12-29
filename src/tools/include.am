@@ -63,9 +63,9 @@ src_tools_tor_cov_gencert_LDADD = \
 endif
 endif
 
-if BUILD_LIBTORRUNNER
-noinst_LIBRARIES += src/tools/libtorrunner.a
-src_tools_libtorrunner_a_SOURCES = \
+if BUILD_LIBANONRUNNER
+noinst_LIBRARIES += src/tools/libanonrunner.a
+src_tools_libanonrunner_a_SOURCES = \
         src/tools/tor_runner.c \
         src/feature/api/tor_api.c
 endif

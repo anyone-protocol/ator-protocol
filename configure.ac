@@ -54,7 +54,7 @@ fi
 # License options
 
 AC_ARG_ENABLE(gpl,
-  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of tor and libtor covered by the GPL rather than its usual 3-clause BSD license]))
+  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of tor and libanon covered by the GPL rather than its usual 3-clause BSD license]))
 license_option=BSD
 AS_IF([test "x$enable_gpl" = xyes],
   [
@@ -643,7 +643,7 @@ AH_BOTTOM([
 
 AM_CONDITIONAL(WIN32, test "x$bwin32" = "xtrue")
 AM_CONDITIONAL(BUILD_NT_SERVICES, test "x$bwin32" = "xtrue")
-AM_CONDITIONAL(BUILD_LIBTORRUNNER, test "x$bwin32" != "xtrue")
+AM_CONDITIONAL(BUILD_LIBANONRUNNER, test "x$bwin32" != "xtrue")
 
 dnl Enable C99 when compiling with MIPSpro
 AC_MSG_CHECKING([for MIPSpro compiler])

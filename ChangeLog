@@ -3313,7 +3313,7 @@ Changes in version 0.4.5.2-alpha - 2020-11-23
       0.2.3.6-alpha. Patch by Neel Chauhan.
 
   o Minor bugfixes (compilation):
-    - Use the correct 'ranlib' program when building libtor.a.
+    - Use the correct 'ranlib' program when building libanon.a.
       Previously we used the default ranlib, which broke some kinds of
       cross-compilation. Fixes bug 40172; bugfix on 0.4.5.1-alpha.
     - Remove a duplicate typedef in metrics_store.c. Fixes bug 40177;
@@ -9533,7 +9533,7 @@ Changes in version 0.3.3.11 - 2019-01-07
       0.3.2.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (netflow padding, backport from 0.3.5.1-alpha):
@@ -9678,7 +9678,7 @@ Changes in version 0.3.4.10 - 2019-01-07
       on 0.3.3.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.3-alpha):
@@ -9934,7 +9934,7 @@ Changes in version 0.3.5.5-alpha - 2018-11-16
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (memory leaks):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (onion services):
@@ -11948,7 +11948,7 @@ Changes in version 0.3.4.3-alpha - 2018-06-26
     - Refrain from compiling unit testing related object files when
       --disable-unittests is set to configure script. Fixes bug 24891;
       bugfix on 0.2.5.1-alpha.
-    - When linking the libtor_testing.a library, only include the
+    - When linking the libanon_testing.a library, only include the
       dirauth object files once. Previously, they were getting added
       twice. Fixes bug 26402; bugfix on 0.3.4.1-alpha.
     - The --enable-fatal-warnings flag now affects Rust code as well.

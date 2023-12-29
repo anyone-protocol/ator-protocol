@@ -49,7 +49,7 @@ static void child(const tor_main_configuration_t *cfg)
 const char *
 tor_api_get_provider_version(void)
 {
-  return "libtorrunner " VERSION;
+  return "libanonrunner " VERSION;
 }
 
 int

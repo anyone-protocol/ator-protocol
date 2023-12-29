@@ -71,16 +71,16 @@ void tor_main_configuration_free(tor_main_configuration_t *cfg);
 
 /**
  * Return the name and version of the software implementing the tor_api
- * functionality.  Current implementors are "tor" and "libtorrunner".
+ * functionality.  Current implementors are "tor" and "libanonrunner".
  *
- * Note that if you're using libtorrunner, you'll see the version of
- * libtorrunner, not the version of Tor that it's invoking for you.
+ * Note that if you're using libanonrunner, you'll see the version of
+ * libanonrunner, not the version of Tor that it's invoking for you.
  *
  * Added in Tor 0.3.5.1-alpha.
  *
  * Example return values include "tor 0.3.5.1-alpha" when linked directly
- * against tor, and "libtorrunner 0.3.5.1-alpha" when linked against
- * libtorrunner while it is invoking an arbitrary version of Tor.  HOWEVER,
+ * against tor, and "libanonrunner 0.3.5.1-alpha" when linked against
+ * libanonrunner while it is invoking an arbitrary version of Tor.  HOWEVER,
  * the user MUST NOT depend on any particular format or contents of this
  * string: there may be other things that implement Tor in the future.
  **/

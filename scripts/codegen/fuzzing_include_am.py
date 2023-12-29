@@ -33,7 +33,7 @@ FUZZING_CFLAGS = \
 FUZZING_LDFLAG = \
 	@TOR_LDFLAGS_zlib@ $(TOR_LDFLAGS_CRYPTLIB) @TOR_LDFLAGS_libevent@
 FUZZING_LIBS = \
-	src/test/libtor-testing.a \
+	src/test/libanon-testing.a \
 	@TOR_ZLIB_LIBS@ @TOR_LIB_MATH@ \
 	@TOR_LIBEVENT_LIBS@ $(TOR_LIBS_CRYPTLIB) \
 	@TOR_LIB_WS32@ @TOR_LIB_IPHLPAPI@ @TOR_LIB_SHLWAPI@ @TOR_LIB_GDI@ @TOR_LIB_USERENV@ @CURVE25519_LIBS@ \
@@ -43,7 +43,7 @@ FUZZING_LIBS = \
 	@TOR_TRACE_LIBS@
 
 oss-fuzz-prereqs: \
-    src/test/libtor-testing.a
+    src/test/libanon-testing.a
 
 noinst_HEADERS += \
 	src/test/fuzz/fuzzing.h

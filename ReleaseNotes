@@ -8349,7 +8349,7 @@ Changes in version 0.3.3.11 - 2019-01-07
       0.3.2.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (netflow padding, backport from 0.3.5.1-alpha):
@@ -8494,7 +8494,7 @@ Changes in version 0.3.4.10 - 2019-01-07
       on 0.3.3.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.3-alpha):
@@ -9011,7 +9011,7 @@ Changes in version 0.3.5.7 - 2019-01-07
       bug 26882; bugfix on 0.2.4.10-alpha.
 
   o Minor bugfixes (memory leaks):
-    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
     - Fix a small memory leak when calling Tor with --dump-config. Fixes
       bug 27893; bugfix on 0.3.2.1-alpha.

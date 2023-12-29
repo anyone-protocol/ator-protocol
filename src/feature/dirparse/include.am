@@ -1,6 +1,6 @@
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_APP_A_SOURCES += 			\
+LIBANON_APP_A_SOURCES += 			\
 	src/feature/dirparse/authcert_parse.c	\
 	src/feature/dirparse/microdesc_parse.c	\
 	src/feature/dirparse/ns_parse.c		\

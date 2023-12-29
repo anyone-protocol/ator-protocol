@@ -38,79 +38,79 @@ endif
 
 # "Common" libraries used to link tor's utility code.
 TOR_UTIL_LIBS = \
-        src/lib/libtor-geoip.a \
-	src/lib/libtor-process.a \
-        src/lib/libtor-buf.a \
-	src/lib/libtor-confmgt.a \
-	src/lib/libtor-pubsub.a \
-	src/lib/libtor-dispatch.a \
-	src/lib/libtor-time.a \
-	src/lib/libtor-fs.a \
-	src/lib/libtor-encoding.a \
-	src/lib/libtor-sandbox.a \
-	src/lib/libtor-container.a \
-	src/lib/libtor-net.a \
-	src/lib/libtor-thread.a \
-	src/lib/libtor-memarea.a \
-	src/lib/libtor-math.a \
-	src/lib/libtor-meminfo.a \
-	src/lib/libtor-osinfo.a \
-	src/lib/libtor-log.a \
-	src/lib/libtor-lock.a \
-	src/lib/libtor-fdio.a \
-	src/lib/libtor-string.a \
-	src/lib/libtor-term.a \
-	src/lib/libtor-smartlist-core.a \
-	src/lib/libtor-malloc.a \
-	src/lib/libtor-wallclock.a \
-	src/lib/libtor-err.a \
-	src/lib/libtor-version.a \
-	src/lib/libtor-llharden.a \
-	src/lib/libtor-intmath.a \
-	src/lib/libtor-ctime.a \
-	src/lib/libtor-metrics.a
+        src/lib/libanon-geoip.a \
+	src/lib/libanon-process.a \
+        src/lib/libanon-buf.a \
+	src/lib/libanon-confmgt.a \
+	src/lib/libanon-pubsub.a \
+	src/lib/libanon-dispatch.a \
+	src/lib/libanon-time.a \
+	src/lib/libanon-fs.a \
+	src/lib/libanon-encoding.a \
+	src/lib/libanon-sandbox.a \
+	src/lib/libanon-container.a \
+	src/lib/libanon-net.a \
+	src/lib/libanon-thread.a \
+	src/lib/libanon-memarea.a \
+	src/lib/libanon-math.a \
+	src/lib/libanon-meminfo.a \
+	src/lib/libanon-osinfo.a \
+	src/lib/libanon-log.a \
+	src/lib/libanon-lock.a \
+	src/lib/libanon-fdio.a \
+	src/lib/libanon-string.a \
+	src/lib/libanon-term.a \
+	src/lib/libanon-smartlist-core.a \
+	src/lib/libanon-malloc.a \
+	src/lib/libanon-wallclock.a \
+	src/lib/libanon-err.a \
+	src/lib/libanon-version.a \
+	src/lib/libanon-llharden.a \
+	src/lib/libanon-intmath.a \
+	src/lib/libanon-ctime.a \
+	src/lib/libanon-metrics.a
 
 # Variants of the above for linking the testing variant of tor (for coverage
 # and tests)
 if UNITTESTS_ENABLED
 TOR_UTIL_TESTING_LIBS = \
-        src/lib/libtor-geoip-testing.a \
-	src/lib/libtor-process-testing.a \
-        src/lib/libtor-buf-testing.a \
-	src/lib/libtor-confmgt-testing.a \
-	src/lib/libtor-pubsub-testing.a \
-	src/lib/libtor-dispatch-testing.a \
-	src/lib/libtor-time-testing.a \
-	src/lib/libtor-fs-testing.a \
-	src/lib/libtor-encoding-testing.a \
-	src/lib/libtor-sandbox-testing.a \
-	src/lib/libtor-container-testing.a \
-	src/lib/libtor-net-testing.a \
-	src/lib/libtor-thread-testing.a \
-	src/lib/libtor-memarea-testing.a \
-	src/lib/libtor-math-testing.a \
-	src/lib/libtor-meminfo-testing.a \
-	src/lib/libtor-osinfo-testing.a \
-	src/lib/libtor-term-testing.a \
-	src/lib/libtor-log-testing.a \
-	src/lib/libtor-lock-testing.a \
-	src/lib/libtor-fdio-testing.a \
-	src/lib/libtor-string-testing.a \
-	src/lib/libtor-smartlist-core-testing.a \
-	src/lib/libtor-malloc-testing.a \
-	src/lib/libtor-wallclock-testing.a \
-	src/lib/libtor-err-testing.a \
-	src/lib/libtor-version-testing.a \
-	src/lib/libtor-llharden-testing.a \
-	src/lib/libtor-intmath.a \
-	src/lib/libtor-ctime-testing.a \
-	src/lib/libtor-metrics-testing.a
+        src/lib/libanon-geoip-testing.a \
+	src/lib/libanon-process-testing.a \
+        src/lib/libanon-buf-testing.a \
+	src/lib/libanon-confmgt-testing.a \
+	src/lib/libanon-pubsub-testing.a \
+	src/lib/libanon-dispatch-testing.a \
+	src/lib/libanon-time-testing.a \
+	src/lib/libanon-fs-testing.a \
+	src/lib/libanon-encoding-testing.a \
+	src/lib/libanon-sandbox-testing.a \
+	src/lib/libanon-container-testing.a \
+	src/lib/libanon-net-testing.a \
+	src/lib/libanon-thread-testing.a \
+	src/lib/libanon-memarea-testing.a \
+	src/lib/libanon-math-testing.a \
+	src/lib/libanon-meminfo-testing.a \
+	src/lib/libanon-osinfo-testing.a \
+	src/lib/libanon-term-testing.a \
+	src/lib/libanon-log-testing.a \
+	src/lib/libanon-lock-testing.a \
+	src/lib/libanon-fdio-testing.a \
+	src/lib/libanon-string-testing.a \
+	src/lib/libanon-smartlist-core-testing.a \
+	src/lib/libanon-malloc-testing.a \
+	src/lib/libanon-wallclock-testing.a \
+	src/lib/libanon-err-testing.a \
+	src/lib/libanon-version-testing.a \
+	src/lib/libanon-llharden-testing.a \
+	src/lib/libanon-intmath.a \
+	src/lib/libanon-ctime-testing.a \
+	src/lib/libanon-metrics-testing.a
 endif
 
 # Internal crypto libraries used in Tor
 TOR_CRYPTO_LIBS = \
-	src/lib/libtor-tls.a \
-	src/lib/libtor-crypt-ops.a \
+	src/lib/libanon-tls.a \
+	src/lib/libanon-crypt-ops.a \
 	$(LIBKECCAK_TINY) \
 	$(LIBDONNA)
 
@@ -122,8 +122,8 @@ endif
 # and tests)
 if UNITTESTS_ENABLED
 TOR_CRYPTO_TESTING_LIBS = \
-	src/lib/libtor-tls-testing.a \
-	src/lib/libtor-crypt-ops-testing.a \
+	src/lib/libanon-tls-testing.a \
+	src/lib/libanon-crypt-ops-testing.a \
 	$(LIBKECCAK_TINY) \
 	$(LIBDONNA) \
 	$(EQUIX_LIBS)
@@ -131,41 +131,41 @@ endif
 
 # All static libraries used to link tor.
 TOR_INTERNAL_LIBS = \
-	src/core/libtor-app.a \
-	src/lib/libtor-compress.a \
-	src/lib/libtor-evloop.a \
+	src/core/libanon-app.a \
+	src/lib/libanon-compress.a \
+	src/lib/libanon-evloop.a \
 	$(TOR_CRYPTO_LIBS) \
 	$(TOR_UTIL_LIBS) \
 	src/trunnel/libor-trunnel.a \
-	src/lib/libtor-trace.a
+	src/lib/libanon-trace.a
 
-libtor.a: $(TOR_INTERNAL_LIBS)
+libanon.a: $(TOR_INTERNAL_LIBS)
 	$(AM_V_AR) export AR="$(AR)"; \
 	export ARFLAGS="$(ARFLAGS)"; \
 	export RANLIB="$(RANLIB)"; \
-	$(top_srcdir)/scripts/build/combine_libs libtor.a $(TOR_INTERNAL_LIBS)
+	$(top_srcdir)/scripts/build/combine_libs libanon.a $(TOR_INTERNAL_LIBS)
 
-MOSTLYCLEANFILES += libtor.a
+MOSTLYCLEANFILES += libanon.a
 
 # Variants of the above for linking the testing variant of tor (for coverage
 # and tests)
 if UNITTESTS_ENABLED
 TOR_INTERNAL_TESTING_LIBS = \
-	src/core/libtor-app-testing.a \
-	src/lib/libtor-compress-testing.a \
-	src/lib/libtor-evloop-testing.a \
+	src/core/libanon-app-testing.a \
+	src/lib/libanon-compress-testing.a \
+	src/lib/libanon-evloop-testing.a \
 	$(TOR_CRYPTO_TESTING_LIBS) \
 	$(TOR_UTIL_TESTING_LIBS) \
 	src/trunnel/libor-trunnel-testing.a \
-	src/lib/libtor-trace.a
+	src/lib/libanon-trace.a
 
-src/test/libtor-testing.a: $(TOR_INTERNAL_TESTING_LIBS)
+src/test/libanon-testing.a: $(TOR_INTERNAL_TESTING_LIBS)
 	$(AM_V_AR) export AR="$(AR)"; \
 	export ARFLAGS="$(ARFLAGS)"; \
 	export RANLIB="$(RANLIB)"; \
-	$(top_srcdir)/scripts/build/combine_libs src/test/libtor-testing.a $(TOR_INTERNAL_TESTING_LIBS)
+	$(top_srcdir)/scripts/build/combine_libs src/test/libanon-testing.a $(TOR_INTERNAL_TESTING_LIBS)
 
-MOSTLYCLEANFILES += src/test/libtor-testing.a
+MOSTLYCLEANFILES += src/test/libanon-testing.a
 endif
 
 TOR_LDFLAGS_CRYPTLIB=@TOR_LDFLAGS_openssl@
@@ -666,10 +666,10 @@ show-distdir-core:
 	  file $(distdir)/_build/core; fi
 
 show-libs:
-	@echo libtor.a
+	@echo libanon.a
 
 show-testing-libs:
-	@echo src/test/libtor-testing.a
+	@echo src/test/libanon-testing.a
 
 # Note here that we hardcode this -j2 because if the user would pass too many
 # cores, bear actually chockes and dies :S. For this to work, a make clean

@@ -1,6 +1,6 @@
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_APP_A_SOURCES += 				\
+LIBANON_APP_A_SOURCES += 				\
 	src/feature/hs/hs_cache.c		\
 	src/feature/hs/hs_cell.c		\
 	src/feature/hs/hs_circuit.c		\
@@ -25,7 +25,7 @@ MODULE_POW_SOURCES =				\
 	src/feature/hs/hs_pow.c
 
 if BUILD_MODULE_POW
-LIBTOR_APP_A_SOURCES +=	$(MODULE_POW_SOURCES)
+LIBANON_APP_A_SOURCES +=	$(MODULE_POW_SOURCES)
 endif
 
 # ADD_C_FILE: INSERT HEADERS HERE.
