@@ -7,7 +7,7 @@ my %anonrcSampleOptions = ();
 my %manPageOptions = ();
 
 # Load the canonical list as actually accepted by Tor.
-open(F, "@abs_top_builddir@/src/app/tor --list-anonrc-options |") or die;
+open(F, "@abs_top_builddir@/src/app/anon --list-anonrc-options |") or die;
 while (<F>) {
     next if m!\[notice\] Tor v0\.!;
     if (m!^([A-Za-z0-9_]+)!) {
@@ -39,7 +39,7 @@ loadAnonrc("@abs_top_srcdir@/src/config/anonrc.sample.in", \%anonrcSampleOptions
 # Try to figure out what's in the man page.
 
 my $considerNextLine = 0;
-open(F, "@abs_top_srcdir@/doc/man/tor.1.txt") or die;
+open(F, "@abs_top_srcdir@/doc/man/anon.1.txt") or die;
 while (<F>) {
     if (m!^(?:\[\[([A-za-z0-9_]+)\]\] *)?\*\*([A-Za-z0-9_]+)\*\*! && $considerNextLine) {
         $manPageOptions{$2} = 1;

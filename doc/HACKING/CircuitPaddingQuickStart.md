@@ -44,7 +44,7 @@ liblzma-dev libzstd-dev` and ensure that tor has systemd support enabled:
 was forcefully restarted (SIGINT interrupt) by systemd every five minutes.
 
 If you want to install on your localsystem, run `make install`. For our case we
-just want the tor binary at `src/app/tor`.
+just want the tor binary at `src/app/anon`.
 
 ## Use tor in TB and at a relay
 

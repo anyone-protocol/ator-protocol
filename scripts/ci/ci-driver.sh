@@ -366,7 +366,7 @@ if [[ "$RUN_STAGE_BUILD" = "yes" ]] ; then
     if [[ "$DISTCHECK" = "no" ]]; then
         start_section "Build"
         runcmd make "${make_options[@]}" all
-        cp src/app/tor "${CI_SRCDIR}"/artifacts
+        cp src/app/anon "${CI_SRCDIR}"/artifacts
         end_section "Build"
     else
         export DISTCHECK_CONFIGURE_FLAGS="${configure_options[*]}"
@@ -466,7 +466,7 @@ if [[ "${STEM}" = "yes" ]]; then
         # shellcheck disable=SC2086
         if runcmd timelimit -p -t 520 -s USR1 -T 30 -S ABRT \
             python3 "${STEM_PATH}/run_tests.py" \
-            --tor src/app/tor \
+            --tor src/app/anon \
             --integ --test control.controller \
             $EXCLUDE_TESTS \
             --test control.base_controller \

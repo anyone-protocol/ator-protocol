@@ -12,7 +12,7 @@
 # part of the source distribution, so that people without asciidoc can
 # just use the .1 and .html files.
 
-all_mans = doc/man/tor doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify doc/man/anon-print-ed-signing-cert
+all_mans = doc/man/anon doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify doc/man/anon-print-ed-signing-cert
 
 if USE_ASCIIDOC
 txt_in = $(all_mans:=.1.txt)
@@ -75,13 +75,13 @@ $(html_in) :
 $(man_in) :
 	$(AM_V_GEN)$(top_srcdir)/doc/asciidoc-helper.sh man @A2X@ $(top_srcdir)/$@
 
-doc/man/tor.1.in: doc/man/tor.1.txt
+doc/man/anon.1.in: doc/man/anon.1.txt
 doc/man/anonify.1.in: doc/man/anonify.1.txt
 doc/man/anon-gencert.1.in: doc/man/anon-gencert.1.txt
 doc/man/anon-resolve.1.in: doc/man/anon-resolve.1.txt
 doc/man/anon-print-ed-signing-cert.1.in: doc/man/anon-print-ed-signing-cert.1.txt
 
-doc/man/tor.html.in: doc/man/tor.1.txt
+doc/man/anon.html.in: doc/man/anon.1.txt
 doc/man/anonify.html.in: doc/man/anonify.1.txt
 doc/man/anon-gencert.html.in: doc/man/anon-gencert.1.txt
 doc/man/anon-resolve.html.in: doc/man/anon-resolve.1.txt
@@ -96,13 +96,13 @@ $(asciidoc_product) :
 	fi
 	$(AM_V_at)$(top_builddir)/config.status -q --file=$@;
 
-doc/man/tor.html: doc/man/tor.html.in
+doc/man/anon.html: doc/man/anon.html.in
 doc/man/anon-gencert.html: doc/man/anon-gencert.html.in
 doc/man/anon-resolve.html: doc/man/anon-resolve.html.in
 doc/man/anon-print-ed-signing-cert.html: doc/man/anon-print-ed-signing-cert.html.in
 doc/man/anonify.html: doc/man/anonify.html.in
 
-doc/man/tor.1: doc/man/tor.1.in
+doc/man/anon.1: doc/man/anon.1.in
 doc/man/anon-gencert.1: doc/man/anon-gencert.1.in
 doc/man/anon-resolve.1: doc/man/anon-resolve.1.in
 doc/man/anon-print-ed-signing-cert.1: doc/man/anon-print-ed-signing-cert.1.in

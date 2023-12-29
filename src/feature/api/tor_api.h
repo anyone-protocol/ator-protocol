@@ -71,7 +71,7 @@ void tor_main_configuration_free(tor_main_configuration_t *cfg);
 
 /**
  * Return the name and version of the software implementing the tor_api
- * functionality.  Current implementors are "tor" and "libanonrunner".
+ * functionality.  Current implementors are "anon" and "libanonrunner".
  *
  * Note that if you're using libanonrunner, you'll see the version of
  * libanonrunner, not the version of Tor that it's invoking for you.

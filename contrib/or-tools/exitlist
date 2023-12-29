@@ -10,7 +10,7 @@
 
  example usage:
 
-    cat ~/.tor/cached-descriptors* | python exitlist 18.244.0.188:80
+    cat ~/.anon/cached-descriptors* | python exitlist 18.244.0.188:80
 
  You should look at the "FetchUselessDescriptors" and "FetchDirInfoEarly"
  config options in the man page.
@@ -226,7 +226,7 @@ def run():
             opts, pargs = getopt.getopt(sys.argv[1:], "vx")
         except getopt.GetoptError, e:
             print """
-usage: cat ~/.tor/cached-routers* | %s [-v] [-x] [host:port [host:port [...]]]
+usage: cat ~/.anon/cached-routers* | %s [-v] [-x] [host:port [host:port [...]]]
     -v  verbose output
     -x  invert results
 """ % sys.argv[0]

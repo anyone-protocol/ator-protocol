@@ -40,7 +40,7 @@ if [ $# -ge 1 ]; then
   TOR_BINARY="${1}"
   shift
 else
-  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/tor}"
+  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/anon}"
 fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
@@ -113,8 +113,8 @@ TOR="${TOR_BINARY} ${QUIETLY} --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort
 
 ##### SETUP
 #
-# Here we create three sets of keys: one using "tor", one using "tor
-# --keygen", and one using "tor --keygen" and encryption.  We'll be
+# Here we create three sets of keys: one using "anon", one using "anon
+# --keygen", and one using "anon --keygen" and encryption.  We'll be
 # copying them into different keys directories in order to simulate
 # different kinds of configuration problems/issues.
 

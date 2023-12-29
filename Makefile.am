@@ -31,12 +31,12 @@ AM_CFLAGS=					\
 SHELL=@SHELL@
 
 if COVERAGE_ENABLED
-TESTING_TOR_BINARY=$(top_builddir)/src/app/tor-cov$(EXEEXT)
+TESTING_TOR_BINARY=$(top_builddir)/src/app/anon-cov$(EXEEXT)
 else
-TESTING_TOR_BINARY=$(top_builddir)/src/app/tor$(EXEEXT)
+TESTING_TOR_BINARY=$(top_builddir)/src/app/anon$(EXEEXT)
 endif
 
-# "Common" libraries used to link tor's utility code.
+# "Common" libraries used to link anon's utility code.
 TOR_UTIL_LIBS = \
         src/lib/libanon-geoip.a \
 	src/lib/libanon-process.a \
@@ -259,7 +259,7 @@ TEST_NETWORK_ALL_LOG_DIR=$(top_builddir)/test_network_log
 TEST_NETWORK_ALL_DRIVER_FLAGS=--color-tests yes
 
 #install-data-local:
-#	$(INSTALL) -m 755 -d $(LOCALSTATEDIR)/lib/tor
+#	$(INSTALL) -m 755 -d $(LOCALSTATEDIR)/lib/anon
 
 # Allows to override rpmbuild with rpmbuild-md5 from fedora-packager so that
 # building for EL5 won't fail on https://bugzilla.redhat.com/show_bug.cgi?id=490613
@@ -268,10 +268,10 @@ RPMBUILD ?= rpmbuild
 # Use automake's dist-gzip target to build the tarball
 dist-rpm: dist-gzip
 	TIMESTAMP=$$(date +"%Y-%m-%d_%H.%M.%S"); 				\
-	RPM_BUILD_DIR=$$(mktemp -d "/tmp/tor-rpm-build-$$TIMESTAMP-XXXX");	\
-	mkdir -p "$$RPM_BUILD_DIR"/{BUILD,RPMS,SOURCES/"tor-$(VERSION)",SPECS,SRPMS}; \
+	RPM_BUILD_DIR=$$(mktemp -d "/tmp/anon-rpm-build-$$TIMESTAMP-XXXX");	\
+	mkdir -p "$$RPM_BUILD_DIR"/{BUILD,RPMS,SOURCES/"anon-$(VERSION)",SPECS,SRPMS}; \
 	cp -fa "$(distdir).tar.gz" "$$RPM_BUILD_DIR"/SOURCES/;			\
-	LIBS=-lrt $(RPMBUILD) -ba --define "_topdir $$RPM_BUILD_DIR" tor.spec; 	\
+	LIBS=-lrt $(RPMBUILD) -ba --define "_topdir $$RPM_BUILD_DIR" anon.spec; 	\
 	cp -fa "$$RPM_BUILD_DIR"/SRPMS/* .;                           		\
 	cp -fa "$$RPM_BUILD_DIR"/RPMS/* .;                            		\
 	rm -rf "$$RPM_BUILD_DIR";						\

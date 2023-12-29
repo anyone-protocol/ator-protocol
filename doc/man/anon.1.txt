@@ -2,22 +2,22 @@
 // See LICENSE for licensing information
 // This is an asciidoc file used to generate the manpage/html reference.
 // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
-:man source:   Tor
-:man manual:   Tor Manual
+:man source:   Anon
+:man manual:   Anon Manual
 // compat-mode tells Asciidoctor tools to process this as legacy AsciiDoc
 :compat-mode:
 // attribute to make it easier to write names containing double underscores
 :dbl_: __
-= TOR(1)
+= ANON(1)
 :toc:
 
 == NAME
 
-tor - The second-generation onion router
+anon - The second-generation onion router
 
 == SYNOPSIS
 
-**tor** [__OPTION__ __value__]...
+**anon** [__OPTION__ __value__]...
 
 == DESCRIPTION
 
@@ -35,7 +35,7 @@ observers, and even the relays themselves have difficulty tracking the
 source of the stream.
 
 [NOTE]
-By default, **tor** acts as a client only.  To help the network by
+By default, **anon** acts as a client only.  To help the network by
 providing bandwidth as a relay, change the **ORPort** configuration
 option as mentioned below.  Please also consult the documentation on
 the Tor Project's website.
@@ -43,7 +43,7 @@ the Tor Project's website.
 == COMMAND-LINE OPTIONS
 
 Tor has a powerful command-line interface. This section lists optional
-arguments you can specify at the command line using the **`tor`**
+arguments you can specify at the command line using the **`anon`**
 command.
 
 Configuration options can be specified on the command line in the
@@ -62,7 +62,7 @@ configuration files.  See **<<conf-format,THE CONFIGURATION FILE
 FORMAT>>** for more information.
 
 The following options in this section are only recognized on the
-**`tor`** command line, not in a configuration file.
+**`anon`** command line, not in a configuration file.
 
 [[opt-h]] **`-h`**, **`--help`**::
     Display a short help message and exit.
@@ -142,7 +142,7 @@ The following options in this section are only recognized on the
     Tor not to log to the console at all.
 
 [[opt-keygen]] **`--keygen`** [**`--newpass`**]::
-    Running **`tor --keygen`** creates a new ed25519 master identity key
+    Running **`anon --keygen`** creates a new ed25519 master identity key
     for a relay, or only a fresh temporary signing key and
     certificate, if you already have a master key.  Optionally, you
     can encrypt the master identity key with a passphrase.  When Tor
@@ -180,7 +180,7 @@ The following options in this section are only recognized on the
     the expiration of.  The only currently recognised __purpose__ is
     "sign". +
      +
-    Running **`tor --key-expiration sign`** will attempt to find your
+    Running **`anon --key-expiration sign`** will attempt to find your
     signing key certificate and will output, both in the logs as well
     as to stdout.  The optional **`--format`** argument lets you specify
     the time format.  Currently, **`iso8601`** and **`timestamp`** are
@@ -474,7 +474,7 @@ forward slash (/) in the configuration file and on the command line.
 
 [[DataDirectory]] **DataDirectory** __DIR__::
     Store working data in DIR. Can not be changed while tor is running.
-    (Default: ~/.tor if your home directory is not /; otherwise,
+    (Default: ~/.anon if your home directory is not /; otherwise,
     @LOCALSTATEDIR@/lib/tor.  On Windows, the default is
     your ApplicationData folder.)
 
@@ -2864,7 +2864,7 @@ details.)
     When this option is set, it takes an HTML file and publishes it as "/" on
     the DirPort. Now relay operators can provide a disclaimer without needing
     to set up a separate webserver. There's a sample disclaimer in
-    contrib/operator-tools/tor-exit-notice.html.
+    contrib/operator-tools/anon-exit-notice.html.
 
 [[MaxConsensusAgeForDiffs]] **MaxConsensusAgeForDiffs**  __N__ **minutes**|**hours**|**days**|**weeks**::
     When this option is nonzero, Tor caches will not try to generate
@@ -4018,7 +4018,7 @@ __KeyDirectory__/**`ed25519_master_id_secret_key`**::
     The private part of a relay's Ed25519 permanent identity key.  This key is
     used to sign the medium-term ed25519 signing key.  This file can be kept
     offline or encrypted. If so, Tor will not be able to generate new signing
-    keys automatically; you'll need to use `tor --keygen` to do so.
+    keys automatically; you'll need to use `anon --keygen` to do so.
 
 __KeyDirectory__/**`ed25519_signing_secret_key`**::
     The private and public components of a relay's medium-term Ed25519 signing
@@ -4153,5 +4153,5 @@ https://spec.torproject.org. See also **torsocks**(1) and **anonify**(1).
 
 == BUGS
 
-Because Tor is still under development, there may be plenty of bugs. Please
+Because Anon is still under development, there may be plenty of bugs. Please
 report them at https://bugs.torproject.org/.

@@ -26244,7 +26244,7 @@ Changes in version 0.2.0.30 - 2008-07-15
       lodger -- it has never actually worked, even though we added it
       in Oct 2004.)
     - If Tor is invoked from something that isn't a shell (e.g. Vidalia),
-      now we expand "-f ~/.tor/anonrc" correctly. Suggested by Matt Edman.
+      now we expand "-f ~/.anon/anonrc" correctly. Suggested by Matt Edman.
 
   o New config options:
     - New configuration options AuthDirMaxServersPerAddr and
@@ -28530,7 +28530,7 @@ Changes in version 0.1.0.10 - 2005-06-14
       smart" default value: low for servers and high for clients.
     - Some people were putting "Address  " in their anonrc, and they had
       a buggy resolver that resolved " " to 0.0.0.0. Oops.
-    - If DataDir is ~/.tor, and that expands to /.tor, then default to
+    - If DataDir is ~/.anon, and that expands to /.anon, then default to
       LOCALSTATEDIR/tor instead.
     - Implement --verify-config command-line option to check if your anonrc
       is valid without actually launching Tor.
@@ -29183,7 +29183,7 @@ Changes in version 0.0.8 - 2004-08-25
       connections) then exit. A second sigint causes immediate exit.
     - File and name management:
       - Look for .anonrc if no CONFDIR "anonrc" is found.
-      - If no datadir is defined, then choose, make, and secure ~/.tor
+      - If no datadir is defined, then choose, make, and secure ~/.anon
         as datadir.
       - If anonrc not found, exitpolicy reject *:*.
       - Expands ~/ in filenames to $HOME/ (but doesn't yet expand ~arma).

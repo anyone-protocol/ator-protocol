@@ -31,8 +31,8 @@
 #include "lib/log/win32err.h"
 
 #include <windows.h>
-#define GENSRV_SERVICENAME  "tor"
-#define GENSRV_DISPLAYNAME  "Tor Win32 Service"
+#define GENSRV_SERVICENAME  "anon"
+#define GENSRV_DISPLAYNAME  "Anon Win32 Service"
 #define GENSRV_DESCRIPTION  \
   "Provides an anonymous Internet communication system"
 #define GENSRV_USERACCT "NT AUTHORITY\\LocalService"

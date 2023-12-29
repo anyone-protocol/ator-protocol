@@ -1,6 +1,6 @@
 # Doxyfile 1.8.15
 
-# (Tor's Doxyfile is automatically generated from "Doxyfile.in". Don't
+# (Anon's Doxyfile is automatically generated from "Doxyfile.in". Don't
 # edit Doxyfile; edit Doxyfile.in.)
 
 # This file describes the settings to be used by the documentation system
@@ -35,7 +35,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = Tor
+PROJECT_NAME           = Anon
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version

@@ -405,7 +405,7 @@ DISABLE_GCC_WARNING("-Woverlength-strings")
 /* We allow huge string constants in the unit tests, but not in the code
  * at large. */
 #endif
-/* Taken at random from my ~/.tor/cached-microdescs file and then
+/* Taken at random from my ~/.anon/cached-microdescs file and then
  * hand-munged */
 static const char MD_PARSE_TEST_DATA[] =
   /* Good 0 */

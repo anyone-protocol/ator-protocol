@@ -1,0 +1,50 @@
+:man source:   Tor
+:man manual:   Tor Manual
+anon-instance-create(8)
+======================
+Peter Palfrader
+
+NAME
+----
+anon-instance-create - Set up a new anon instance
+
+SYNOPSIS
+--------
+**anon-instance-create** __instance_name__
+
+DESCRIPTION
+-----------
+The Tor Debian package supports running multiple instances of the Tor
+daemon.  This can be useful if you want to run multiple relays or bridge
+relays on a single system, of if you want to provide a hidden service in
+addition to running a relay.
+
+**anon-instance-create** is the tool that creates a new instance of Tor
+on a Debian system.  In particular, it creates a new UNIX user with a
+home directory and a mostly empty anon configuration file.
+
+The new user and group are named **_anon-**__instance_name__.  The user's
+home directory, which is also the DataDirectory of the new anon instance,
+is **/var/lib/anon-instances/**__instance_name__.  The configuration file
+for that instance is **/etc/anon/instances/**__instance_name__**/anonrc**.
+Logs go to syslog by default.
+
+To start this new service, use
+**systemctl start anon@**__instance_name__.  Stopping, restarting, and
+reloading the config works accordingly.  Stopping/Starting/.. the
+**anon** service should affect all instances.
+The "main" instance which lives in /var/lib/anon and has /etc/anon/anonrc
+as its configuration file is known to systemd as **anon@default**.
+
+There currently is no **anon-instance-remove** script.  To remove an
+instance, delete the user and its homedirectory once you are convinced
+there are no files or processes on your system still owned by that user.
+Then also remove the corresponding directory tree in /etc/anon/instances.
+
+SEE ALSO
+--------
+**anon**(1) +
+
+AUTHORS
+-------
+    Peter Palfrader

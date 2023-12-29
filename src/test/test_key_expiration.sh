@@ -40,7 +40,7 @@ if [ $# -ge 1 ]; then
   TOR_BINARY="${1}"
   shift
 else
-  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/tor}"
+  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/anon}"
 fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"

@@ -1,0 +1,15 @@
+/var/log/anon/*log {
+	daily
+	rotate 5
+	compress
+	delaycompress
+	missingok
+	notifempty
+	create 0640 debian-anon adm
+	sharedscripts
+	postrotate
+		if invoke-rc.d anon status > /dev/null; then
+			invoke-rc.d anon reload > /dev/null
+		fi
+	endscript
+}

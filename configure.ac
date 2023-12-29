@@ -2243,10 +2243,10 @@ AH_TEMPLATE([SRCDIR],[tor's sourcedir directory])
 AC_DEFINE_UNQUOTED(SRCDIR,"$SRCDIR")
 
 if test "x$CONFDIR" = "x"; then
-  CONFDIR=`eval echo $sysconfdir/tor`
+  CONFDIR=`eval echo $sysconfdir/anon`
 fi
 AC_SUBST(CONFDIR)
-AH_TEMPLATE([CONFDIR],[tor's configuration directory])
+AH_TEMPLATE([CONFDIR],[anon's configuration directory])
 AC_DEFINE_UNQUOTED(CONFDIR,"$CONFDIR")
 
 BINDIR=`eval echo $bindir`
@@ -2624,7 +2624,7 @@ AC_CONFIG_FILES([
 ])
 
 if test "x$asciidoc" = "xtrue" && test "$ASCIIDOC" = "none"; then
-  regular_mans="doc/man/tor doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify"
+  regular_mans="doc/man/anon doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify"
   for file in $regular_mans ; do
     if ! [[ -f "$srcdir/$file.1.in" ]] || ! [[ -f "$srcdir/$file.html.in" ]] ; then
       echo "==================================";

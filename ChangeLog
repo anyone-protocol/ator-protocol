@@ -36128,7 +36128,7 @@ Changes in version 0.2.0.1-alpha - 2007-06-01
       address. Thanks to the AutomapHostsOnResolve option, this is no
       longer a completely silly thing to do.
     - If Tor is invoked from something that isn't a shell (e.g. Vidalia),
-      now we expand "-f ~/.tor/anonrc" correctly. Suggested by Matt Edman.
+      now we expand "-f ~/.anon/anonrc" correctly. Suggested by Matt Edman.
     - Treat "2gb" when given in anonrc for a bandwidth as meaning 2gb,
       minus 1 byte: the actual maximum declared bandwidth.
 
@@ -38682,7 +38682,7 @@ Changes in version 0.1.0.6-rc - 2005-05-14
       when using the default exit policy.
     - Some people were putting "Address  " in their anonrc, and they had
       a buggy resolver that resolved " " to 0.0.0.0. Oops.
-    - If DataDir is ~/.tor, and that expands to /.tor, then default to
+    - If DataDir is ~/.anon, and that expands to /.anon, then default to
       LOCALSTATEDIR/tor instead.
     - Fix fragmented-message bug in TorControl.py.
     - Resolve a minor bug which would prevent unreachable dirports
@@ -39823,7 +39823,7 @@ Changes in version 0.0.8pre1 - 2004-07-23
       connections) then exit. A second sigint causes immediate exit.
     - File and name management:
       - Look for .anonrc if no CONFDIR "anonrc" is found.
-      - If no datadir is defined, then choose, make, and secure ~/.tor
+      - If no datadir is defined, then choose, make, and secure ~/.anon
         as datadir.
       - If anonrc not found, exitpolicy reject *:*.
       - Expands ~/ in filenames to $HOME/ (but doesn't yet expand ~arma).

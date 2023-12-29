@@ -1,6 +1,6 @@
-confdir = $(sysconfdir)/tor
+confdir = $(sysconfdir)/anon
 
-tordatadir = $(datadir)/tor
+tordatadir = $(datadir)/anon
 
 EXTRA_DIST+= \
 	src/config/geoip \

@@ -27,7 +27,7 @@
  *   <li>The option_vars_ array below in this module, which configures
  *       the names of the anonrc options, their types, their multiplicities,
  *       and their mappings to fields in or_options_t.
- *   <li>The manual in doc/man/tor.1.txt, to document what the new option
+ *   <li>The manual in doc/man/anon.1.txt, to document what the new option
  *       is, and how it works.
  * </ul>
  *
@@ -492,9 +492,9 @@ static const config_var_t option_vars_[] = {
   V(GeoIPv6File,                 FILENAME, "/data/local/tmp/geoip6"),
 #else
   V(GeoIPFile,                   FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip"),
   V(GeoIPv6File,                 FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip6"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip6"),
 #endif /* defined(_WIN32) */
   OBSOLETE("Group"),
   V(GuardLifetime,               INTERVAL, "0 minutes"),
@@ -2707,7 +2707,7 @@ print_usage(void)
 "Copyright (c) 2001-2004, Roger Dingledine\n"
 "Copyright (c) 2004-2006, Roger Dingledine, Nick Mathewson\n"
 "Copyright (c) 2007-2021, The Tor Project, Inc.\n\n"
-"tor -f <anonrc> [args]\n"
+"anon -f <anonrc> [args]\n"
 "See man page for options, or https://www.torproject.org/ for "
 "documentation.\n");
 }
@@ -4289,7 +4289,7 @@ get_windows_conf_root(void)
   if (!SUCCEEDED(result)) {
     return NULL;
   }
-  strlcat(path,"\\tor",MAX_PATH);
+  strlcat(path,"\\anon",MAX_PATH);
   is_set = 1;
   return path;
 }
@@ -6919,7 +6919,7 @@ get_data_directory(const char *val)
 #else /* !defined(_WIN32) */
   const char *d = val;
   if (!d)
-    d = "~/.tor";
+    d = "~/.anon";
 
   if (!strcmpstart(d, "~/")) {
     char *fn = expand_filename(d);
@@ -6927,16 +6927,16 @@ get_data_directory(const char *val)
       log_warn(LD_CONFIG,"Failed to expand filename \"%s\".", d);
       return NULL;
     }
-    if (!val && !strcmp(fn,"/.tor")) {
+    if (!val && !strcmp(fn,"/.anon")) {
       /* If our homedir is /, we probably don't want to use it. */
       /* Default to LOCALSTATEDIR/tor which is probably closer to what we
        * want. */
       log_warn(LD_CONFIG,
-               "Default DataDirectory is \"~/.tor\".  This expands to "
+               "Default DataDirectory is \"~/.anon\".  This expands to "
                "\"%s\", which is probably not what you want.  Using "
-               "\"%s"PATH_SEPARATOR"tor\" instead", fn, LOCALSTATEDIR);
+               "\"%s"PATH_SEPARATOR"anon\" instead", fn, LOCALSTATEDIR);
       tor_free(fn);
-      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "tor");
+      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "anon");
     }
     return fn;
   }
