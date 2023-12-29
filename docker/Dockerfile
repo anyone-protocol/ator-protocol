@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of ator-protocol to use.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ATOR_VER="b55c47b62daca5be4058f03a5599a124227bd4a3"
+ARG ATOR_VER="595ac6a54dde7cc500d66373acee72085fbf8f09"
 ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
 # Sets ator-protocol ports for build time
@@ -70,4 +70,4 @@ EXPOSE ${BUILD_TOR_ORPORT} ${BUILD_TOR_DIRPORT}
 
 ENTRYPOINT ["docker-entrypoint"]
 
-CMD ["tor", "-f", "/etc/tor/anonrc"]
+CMD ["anon", "-f", "/etc/tor/anonrc"]

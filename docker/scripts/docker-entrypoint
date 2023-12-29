@@ -45,7 +45,7 @@ fi
 
 # Display OS version, Tor version & anonrc in log
 echo -e "Debian Version: \c" && cat /etc/debian_version
-tor --version
+anon --version
 cat /etc/tor/anonrc
 
 # else default to run whatever the user wanted like "bash"
