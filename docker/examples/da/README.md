@@ -1,10 +1,10 @@
-## Private Ator network with ability to add new DA in production mode ##
+## Private Anon network with ability to add new DA in production mode ##
 
-This example provides ability to run private Ator network and change tha number and composition of directory authority list adding the new DA to the source code and rebuilding the image.
+This example provides ability to run private Anon network and change tha number and composition of directory authority list adding the new DA to the source code and rebuilding the image.
 
-Copy predefined DA state (keys, fingerprint and configs) to temp tor folder
+Copy predefined DA state (keys, fingerprint and configs) to temp anon folder
 ```
-cp -r state tor
+cp -r state anon
 ```
 
 Create special docker image:
@@ -29,34 +29,34 @@ Anonrc file for each participant also mounted to the corresponding subfolder.
 
 Go to da4 state folder:
 ```
-cd /tor/da4
+cd anon/da4
 ```
 Generate DA keys:
 ```
-docker run -i -w /var/lib/tor/keys \
-  -v ./anonrc:/etc/tor/anonrc \
-  -v ./tor-data:/var/lib/tor/ \
+docker run -i -w /var/lib/anon/keys \
+  -v ./anonrc:/etc/anon/anonrc \
+  -v ./anon-data:/var/lib/anon/ \
   svforte/ator-protocol:latest \
   anon-gencert --create-identity-key
-chmod -R 777 tor-data/
+chmod -R 777 anon-data/
 ```
 Generate Relay keys and fingerprint:
 ```
 ATOR_CONTAINER=$(docker create \
-  -v ./anonrc:/etc/tor/anonrc \
-  -v ./tor-data:/var/lib/tor/ \
+  -v ./anonrc:/etc/anon/anonrc \
+  -v ./anon-data:/var/lib/anon/ \
   svforte/ator-protocol:latest)
 docker start $ATOR_CONTAINER
 sleep 5
 docker stop $ATOR_CONTAINER
-chmod -R 777 tor-data/
+chmod -R 777 anon-data/
 ```
 
 Get fingerprints:
 
-`tor-data/keys/authority_certificate`  – contains DA identity fingerprint
+`anon-data/keys/authority_certificate`  – contains DA identity fingerprint
 
-`tor-data/fingerprint` – contains relay fingerprint
+`anon-data/fingerprint` – contains relay fingerprint
 
 Create Record in auth_dirs.inc (in examples/da dir) for new DA:
 
@@ -77,12 +77,12 @@ cd ../..
 
 Copy keys to tor mounted folder to be used in container
 ```
-cp -r tor/da4/tor-data/keys tor/da4/keys
+cp -r anon/da4/anon-data/keys tor/da4/keys
 ```
 
-Remove temporary tor-data directory
+Remove temporary anon-data directory
 ```
-rm -rf /tor/da4/tor-data
+rm -rf anon/da4/anon-data
 ```
 
 Rebuild docker image with new DA:
@@ -92,7 +92,7 @@ docker build . -t ator-protocol-local --no-cache
 
 Run new DA connecting to the existing compose network, specific port and volumes:
 ```
-docker run  --network=da_local --ip=172.0.0.14 -v ./tor/da4:/var/lib/tor/ -v ./tor/da4:/etc/tor ator-protocol-local
+docker run  --network=da_local --ip=172.0.0.14 -v ./anon/da4:/var/lib/anon/ -v ./anon/da4:/etc/anon ator-protocol-local
 ```
 
 (Optional) Wait until new DA will be listed as a relay in consensus

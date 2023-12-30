@@ -12,7 +12,7 @@ anonrc.minimal, anonrc.sample:
 anonrc.minimal.in:
 
     A very small anonrc, suitable for installation by default in
-    /etc/tor/anonrc.
+    /etc/anon/anonrc.
 
     We try to change anonrc.minimal.in as infrequently as possible,
     since doing so makes the users of many packages have to re-build

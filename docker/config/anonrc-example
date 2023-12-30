@@ -1,9 +1,9 @@
 ##=================== /etc/anonrc =====================##
-# see /usr/local/etc/tor/anonrc.sample and https://www.torproject.org/docs/tor-manual.html.en
+# see /usr/local/etc/anon/anonrc.sample and https://www.torproject.org/docs/tor-manual.html.en
 
 # Run Tor as a regular user (do not change this)
-User atord
-DataDirectory /var/lib/tor
+User anond
+DataDirectory /var/lib/anon
 
 # Server's public IP Address (usually automatic)
 #Address 10.10.10.10

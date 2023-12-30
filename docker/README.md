@@ -16,7 +16,7 @@ docker build -t ator-protocol .
 
 Build an image with a specific tag:
 ```sh
-docker build -t ator-protocol . --build-arg="ATOR_VER=${TAG}"
+docker build -t ator-protocol . --build-arg="ANON_VER=${TAG}"
 ```
 Both lightweight and annotated git tags are applicable.
 
@@ -55,7 +55,7 @@ Ensure that your container ports are accessible from outside and that the `Addre
 
 ### Secrets
 
-Secret keys should be mounted if you intend to use specific keys. They are located in the `/var/lib/tor/keys/` directory inside the container.
+Secret keys should be mounted if you intend to use specific keys. They are located in the `/var/lib/anon/keys/` directory inside the container.
 
 ### Start container
 

@@ -33,10 +33,10 @@
 ## We advise using "notice" in most cases, since anything more verbose
 ## may provide sensitive information to an attacker who obtains the logs.
 ##
-## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/tor/notices.log
-#Log notice file @LOCALSTATEDIR@/log/tor/notices.log
-## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
-#Log debug file @LOCALSTATEDIR@/log/tor/debug.log
+## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/anon/notices.log
+#Log notice file @LOCALSTATEDIR@/log/anon/notices.log
+## Send every possible message to @LOCALSTATEDIR@/log/anon/debug.log
+#Log debug file @LOCALSTATEDIR@/log/anon/debug.log
 ## Use the system log instead of Tor's logfiles
 #Log notice syslog
 ## To send all messages to stderr:
@@ -49,7 +49,7 @@
 
 ## The directory for keeping all the keys/etc. By default, we store
 ## things in $HOME/.anon on Unix, and in Application Data\tor on Windows.
-#DataDirectory @LOCALSTATEDIR@/lib/tor
+#DataDirectory @LOCALSTATEDIR@/lib/anon
 
 ## The port on which Tor will listen for local connections from Tor
 ## controller applications, as documented in control-spec.txt.
@@ -68,10 +68,10 @@
 ## HiddenServicePort x y:z says to redirect requests on port x to the
 ## address y:z.
 
-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/hidden_service/
+#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/hidden_service/
 #HiddenServicePort 80 127.0.0.1:80
 
-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/other_hidden_service/
+#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/other_hidden_service/
 #HiddenServicePort 80 127.0.0.1:80
 #HiddenServicePort 22 127.0.0.1:22
 

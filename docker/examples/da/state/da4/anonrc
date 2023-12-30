@@ -1,6 +1,6 @@
 # Run Tor as a regular user (do not change this)
 User atord
-DataDirectory /var/lib/tor
+DataDirectory /var/lib/anon
 
 # Make node a Directory Authority
 AuthoritativeDirectory 1

@@ -9,25 +9,25 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of ator-protocol to use.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ATOR_VER="595ac6a54dde7cc500d66373acee72085fbf8f09"
-ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_VER="a3a9a7461e1ab4fd76217e849977f04f80490dce"
+ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
 # Sets ator-protocol ports for build time
-ARG BUILD_TOR_ORPORT=9001
-ARG BUILD_TOR_DIRPORT=9030
+ARG BUILD_ANON_ORPORT=9001
+ARG BUILD_ANON_DIRPORT=9030
 
 # Allows to set ENV variables to override default ones.
 # Make sure you also change exposed ports when running docker containers
 # as they are evaluated at build time and cannot be changed using only ENV variables.
-ENV TOR_ORPORT=${BUILD_TOR_ORPORT}
-ENV TOR_DIRPORT=${BUILD_TOR_DIRPORT}
+ENV ANON_ORPORT=${BUILD_ANON_ORPORT}
+ENV ANON_DIRPORT=${BUILD_ANON_DIRPORT}
 
 # Sets a default nickname.
 # To set email field pass CONTACT_EMAIL env variable.
-ENV TOR_NICKNAME=ATORv4
+ENV ANON_NICKNAME=ATORv4
 
 # Sets a user which will be used running ator-protocol
-ENV TOR_USER=atord
+ENV ANON_USER=anond
 
 # Install build dependencies, compile ator-protocol binaries and cleanup temporary dependencies
 RUN apt-get update && \
@@ -36,7 +36,7 @@ RUN apt-get update && \
     apt_temps="build-essential automake git" && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
-    git clone ${ATOR_REPO} && cd ator-protocol && git fetch origin ${ATOR_VER} && git switch --detach ${ATOR_VER} && \
+    git clone ${ANON_REPO} && cd ator-protocol && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER} && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
@@ -46,28 +46,28 @@ RUN apt-get update && \
     rm -rf /src/*
 
 # Add ator user and create data directory with right permissions.
-# Volume for /var/lib/tor should be mounted to persist all node data.
+# Volume for /var/lib/anon should be mounted to persist all node data.
 RUN adduser --quiet \
         --system \
         --disabled-password \
-        --home /var/lib/tor \
+        --home /var/lib/anon \
         --no-create-home \
         --shell /bin/false \
         --group \
-        $TOR_USER && \
-        mkdir -p /var/lib/tor && \
-        chown $TOR_USER:$TOR_USER /var/lib/tor && \
-        chmod 02700 /var/lib/tor
+        $ANON_USER && \
+        mkdir -p /var/lib/anon && \
+        chown $ANON_USER:$ANON_USER /var/lib/anon && \
+        chmod 02700 /var/lib/anon
 
 # Copy Tor configuration file
-COPY ./config/anonrc-example /etc/tor/anonrc
+COPY ./config/anonrc-example /etc/anon/anonrc
 
 # Copy scripts including docker-entrypoint
 COPY ./scripts/ /usr/local/bin/
 
 # Expose ORPort, DirPort
-EXPOSE ${BUILD_TOR_ORPORT} ${BUILD_TOR_DIRPORT}
+EXPOSE ${BUILD_ANON_ORPORT} ${BUILD_ANON_DIRPORT}
 
 ENTRYPOINT ["docker-entrypoint"]
 
-CMD ["anon", "-f", "/etc/tor/anonrc"]
+CMD ["anon", "-f", "/etc/anon/anonrc"]

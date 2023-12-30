@@ -9,36 +9,36 @@ chmodd() { find $2 -type d -exec chmod -v $1 {} \;
 }
 
 # If DataDirectory, identity keys or anonrc is mounted here,
-# ownership needs to be changed to the TOR_USER user
-chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/tor
+# ownership needs to be changed to the ANON_USER user
+chown -Rv ${ANON_USER}:${ANON_USER} /var/lib/anon
 
 # Fix permissions
-chmodd 700 /var/lib/tor
-chmodf 600 /var/lib/tor
+chmodd 700 /var/lib/anon
+chmodf 600 /var/lib/anon
 
 if [ ! -e /tor-config-done ]; then
     # Run this only once
     touch /tor-config-done
 
     # Add Nickname from env variable or randomized, if none has been set
-    if ! grep -q '^Nickname ' /etc/tor/anonrc; then
-        if [ ${TOR_NICKNAME} == "ATORv4" ] || [ -z "${TOR_NICKNAME}" ]; then
+    if ! grep -q '^Nickname ' /etc/anon/anonrc; then
+        if [ ${ANON_NICKNAME} == "ATORv4" ] || [ -z "${ANON_NICKNAME}" ]; then
             # if user did not change the default nickname, genetrate a random pronounceable one
             RPW=$(pwgen -0A 8)
-            TOR_NICKNAME="ATORv4${RPW}"
-            echo "Setting random Nickname: ${TOR_NICKNAME}"
+            ANON_NICKNAME="ATORv4${RPW}"
+            echo "Setting random Nickname: ${ANON_NICKNAME}"
         else
-            echo "Setting chosen Nickname: ${TOR_NICKNAME}"
+            echo "Setting chosen Nickname: ${ANON_NICKNAME}"
         fi
-        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/anonrc
+        echo -e "\nNickname ${ANON_NICKNAME}" >> /etc/anon/anonrc
     fi
 
     # Add Contact_Email from env variable, if none has been set in anonrc
-    if ! grep -q '^ContactInfo ' /etc/tor/anonrc; then
+    if ! grep -q '^ContactInfo ' /etc/anon/anonrc; then
         # if CONTACT_EMAIL is not null
         if [ -n "${CONTACT_EMAIL}" ]; then
             echo "Setting Contact Email: ${CONTACT_EMAIL}"
-            echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/anonrc
+            echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/anon/anonrc
         fi
     fi
 fi
@@ -46,7 +46,7 @@ fi
 # Display OS version, Tor version & anonrc in log
 echo -e "Debian Version: \c" && cat /etc/debian_version
 anon --version
-cat /etc/tor/anonrc
+cat /etc/anon/anonrc
 
 # else default to run whatever the user wanted like "bash"
 exec "$@"

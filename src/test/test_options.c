@@ -1001,7 +1001,7 @@ test_options_validate__relay_with_hidden_services(void *ignored)
   options_test_data_t *tdata = get_options_test_data(
                                   "ORPort 127.0.0.1:5555\n"
                                   "HiddenServiceDir "
-                                  "/Library/Tor/var/lib/tor/hidden_service/\n"
+                                  "/Library/Tor/var/lib/anon/hidden_service/\n"
                                   "HiddenServicePort 80 127.0.0.1:8080\n"
                                                      );
 
@@ -2303,7 +2303,7 @@ test_options_validate__rend(void *ignored)
   free_options_test_data(tdata);
   tdata = get_options_test_data(
                  "UseEntryGuards 0\n"
-                 "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+                 "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
                  "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
@@ -2318,7 +2318,7 @@ test_options_validate__rend(void *ignored)
   free_options_test_data(tdata);
   tdata = get_options_test_data(
             "UseEntryGuards 1\n"
-            "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+            "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
             "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   mock_clean_saved_logs();
@@ -2422,7 +2422,7 @@ test_options_validate__single_onion(void *ignored)
   /* Test that a hidden service can't be run in non anonymous mode. */
   tdata = get_options_test_data(
                   "HiddenServiceNonAnonymousMode 1\n"
-                  "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+                  "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
                   "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
@@ -2445,7 +2445,7 @@ test_options_validate__single_onion(void *ignored)
   free_options_test_data(tdata);
 
   tdata = get_options_test_data(
-                  "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+                  "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
                   "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
@@ -2455,7 +2455,7 @@ test_options_validate__single_onion(void *ignored)
 
   tdata = get_options_test_data(
                   "HiddenServiceNonAnonymousMode 1\n"
-                  "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+                  "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
                   "HiddenServicePort 80 127.0.0.1:8080\n"
                   "HiddenServiceSingleHopMode 1\n"
                   "SOCKSPort 0\n"
@@ -2535,7 +2535,7 @@ test_options_validate__accounting(void *ignored)
            "BandwidthRate 76800\n"
            "BandwidthBurst 76800\n"
            "MaxAdvertisedBandwidth 38400\n"
-           "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+           "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
            "HiddenServicePort 80 127.0.0.1:8080\n"
            "AccountingMax 10\n"
                                 );
@@ -2551,7 +2551,7 @@ test_options_validate__accounting(void *ignored)
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(
-                "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+                "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
                 "HiddenServicePort 80 127.0.0.1:8080\n"
                 "AccountingMax 10\n"
                                 );
@@ -2567,9 +2567,9 @@ test_options_validate__accounting(void *ignored)
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(
-             "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
+             "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service/\n"
              "HiddenServicePort 80 127.0.0.1:8080\n"
-             "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service2/\n"
+             "HiddenServiceDir /Library/Tor/var/lib/anon/hidden_service2/\n"
              "HiddenServicePort 81 127.0.0.1:8081\n"
              "AccountingMax 10\n"
                                 );

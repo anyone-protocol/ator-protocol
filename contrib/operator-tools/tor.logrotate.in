@@ -1,4 +1,4 @@
-@LOCALSTATEDIR@/log/tor/*log {
+@LOCALSTATEDIR@/log/anon/*log {
 	daily
 	rotate 5
 	compress

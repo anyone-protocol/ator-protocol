@@ -475,7 +475,7 @@ forward slash (/) in the configuration file and on the command line.
 [[DataDirectory]] **DataDirectory** __DIR__::
     Store working data in DIR. Can not be changed while tor is running.
     (Default: ~/.anon if your home directory is not /; otherwise,
-    @LOCALSTATEDIR@/lib/tor.  On Windows, the default is
+    @LOCALSTATEDIR@/lib/anon.  On Windows, the default is
     your ApplicationData folder.)
 
 [[DataDirectoryGroupReadable]] **DataDirectoryGroupReadable** **0**|**1**::
@@ -2692,7 +2692,7 @@ is non-zero):
 [[ServerTransportOptions]] **ServerTransportOptions** __transport__ __k=v__ __k=v__ ...::
     When this option is set, Tor will pass the __k=v__ parameters to
     any pluggable transport proxy that tries to launch __transport__. +
-    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/tor/cache) (Default: none)
+    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/anon/cache) (Default: none)
 
 [[ServerTransportPlugin]] **ServerTransportPlugin** __transport__ exec __path-to-binary__ [options]::
     The Tor relay launches the pluggable transport proxy in __path-to-binary__
@@ -3911,7 +3911,7 @@ Tor catches the following signals:
 **`$HOME/.anonrc`**::
     Fallback location for anonrc, if @CONFDIR@/anonrc is not found.
 
-**`@LOCALSTATEDIR@/lib/tor/`**::
+**`@LOCALSTATEDIR@/lib/anon/`**::
     The tor process stores keys and other data here.
 
 __CacheDirectory__/**`cached-certs`**::

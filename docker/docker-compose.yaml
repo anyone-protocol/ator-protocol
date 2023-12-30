@@ -10,8 +10,5 @@ services:
     volumes:
       # mount and DataDirectory and custom `anonrc` here
       # please make sure that `anonrc` is present in the working directory: `cp config/anonrc-example anonrc`
-      - ./tor-data/:/var/lib/tor/
-      - ./anonrc:/etc/tor/anonrc
-      # alternatively mount previously saved identity keys here
-      # - ./tests/tor-data/keys/secret_id_key:/var/lib/tor/keys/secret_id_key
-      # - ./tests/tor-data/keys/ed25519_master_id_secret_key:/var/lib/tor/keys/secret_id_key
+      - ./anon-data/:/var/lib/anon/
+      - ./anonrc:/etc/anon/anonrc

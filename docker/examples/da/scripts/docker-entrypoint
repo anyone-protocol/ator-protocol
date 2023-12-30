@@ -10,34 +10,34 @@ chmodd() { find $2 -type d -exec chmod -v $1 {} \;
 
 # If DataDirectory, identity keys or anonrc is mounted here,
 # ownership needs to be changed to the TOR_USER user
-chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/tor
+chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/anon
 
 # Fix permissions
-chmodd 700 /var/lib/tor
-chmodf 600 /var/lib/tor
+chmodd 700 /var/lib/anon
+chmodf 600 /var/lib/anon
 
 if [ ! -e /tor-config-done ]; then
     # Run this only once
     touch /tor-config-done
 
-    if [ ! -f /etc/tor/anonrc ]; then
-        cp /etc/anonrc /etc/tor/
+    if [ ! -f /etc/anon/anonrc ]; then
+        cp /etc/anonrc /etc/anon/
 
         # Add Address from env variable
         echo "Setting Contact Email: ${IP_ADDRESS}"
-        echo -e "\nAddress ${IP_ADDRESS}" >> /etc/tor/anonrc
+        echo -e "\nAddress ${IP_ADDRESS}" >> /etc/anon/anonrc
 
         # Add Nickname from env variable
         echo "Setting chosen Nickname: ${TOR_NICKNAME}"
-        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/tor/anonrc
+        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/anon/anonrc
 
         # Add ContactInfo from env variable
         echo "Setting Contact Email: ${CONTACT_EMAIL}"
-        echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/tor/anonrc
+        echo -e "\nContactInfo ${CONTACT_EMAIL}" >> /etc/anon/anonrc
     fi
 
     # Generate keys
-    KEYPATH=/var/lib/tor/keys
+    KEYPATH=/var/lib/anon/keys
     if [ ! -f ${KEYPATH}/authority_identity_key ]; then
         mkdir -p ${KEYPATH}
         echo "password" | anon-gencert --create-identity-key \
@@ -52,7 +52,7 @@ fi
 # Display OS version, Tor version & anonrc in log
 echo -e "Debian Version: \c" && cat /etc/debian_version
 tor --version
-cat /etc/tor/anonrc
+cat /etc/anon/anonrc
 
 # else default to run whatever the user wanted like "bash"
 exec "$@"
