@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of anon to use.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ANON_VER="a3a9a7461e1ab4fd76217e849977f04f80490dce"
+ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
 # Sets anon ports for build time
@@ -36,7 +36,7 @@ RUN apt-get update && \
     apt_temps="build-essential automake git" && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
-    git clone ${ANON_REPO} && cd anon && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER} && \
+    git clone ${ANON_REPO} && cd ator-protocol && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER} && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
