@@ -11,6 +11,7 @@ on:
       - main
 
 env:
+  docker-base-repo: anon
   image-tag: ${{ github.ref == 'refs/heads/main' && 'latest' || (github.ref_type == 'tag' && github.ref_name || github.sha) }}
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-image: ${{ secrets.DOCKER_BASE_REPO }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
+          docker-image: ${{ env.docker-base-repo }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
 
@@ -48,5 +49,5 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO }}
+          docker-base-repo: ${{ env.docker-base-repo }}
           docker-tag: ${{ env.image-tag }}
