@@ -9,14 +9,14 @@ This directory contains configs to build and run ATOR protocol binaries using do
 
 Build an image:
 ```sh
-docker build -t ator-protocol .
+docker build -t anon .
 ```
 
 ## Building Docker Image with a specific tag (version of the protocol)
 
 Build an image with a specific tag:
 ```sh
-docker build -t ator-protocol . --build-arg="ANON_VER=${TAG}"
+docker build -t anon . --build-arg="ANON_VER=${TAG}"
 ```
 Both lightweight and annotated git tags are applicable.
 
@@ -31,13 +31,13 @@ docker buildx create --use
 
 Example for `linux/arm64`:
 ```sh
-ATOR_PLATFORMS=linux/arm64 \
+ANON_PLATFORMS=linux/arm64 \
     ./extract-multi-arch.sh
 ```
 
 Example for `linux/arm64` and `linux/amd64`:
 ```sh
-ATOR_PLATFORMS=linux/arm64,linux/amd64 \
+ANON_PLATFORMS=linux/arm64,linux/amd64 \
     ./extract-multi-arch.sh
 ```
 

@@ -9,8 +9,8 @@ chmodd() { find $2 -type d -exec chmod -v $1 {} \;
 }
 
 # If DataDirectory, identity keys or anonrc is mounted here,
-# ownership needs to be changed to the TOR_USER user
-chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/anon
+# ownership needs to be changed to the ANON_USER user
+chown -Rv ${ANON_USER}:${ANON_USER} /var/lib/anon
 
 # Fix permissions
 chmodd 700 /var/lib/anon
@@ -28,8 +28,8 @@ if [ ! -e /tor-config-done ]; then
         echo -e "\nAddress ${IP_ADDRESS}" >> /etc/anon/anonrc
 
         # Add Nickname from env variable
-        echo "Setting chosen Nickname: ${TOR_NICKNAME}"
-        echo -e "\nNickname ${TOR_NICKNAME}" >> /etc/anon/anonrc
+        echo "Setting chosen Nickname: ${ANON_NICKNAME}"
+        echo -e "\nNickname ${ANON_NICKNAME}" >> /etc/anon/anonrc
 
         # Add ContactInfo from env variable
         echo "Setting Contact Email: ${CONTACT_EMAIL}"

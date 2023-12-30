@@ -1,7 +1,7 @@
 version: '2.2'
 services:
   relay:
-    image: ator-protocol
+    image: anon
     init: true
     restart: always
     ports:

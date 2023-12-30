@@ -3,11 +3,11 @@ FROM debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG ANON_VER="8a729c50a87974b78822227c14c03f3fb6be514e"
-ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
-ENV TOR_NICKNAME=ATORv4
+ENV ANON_NICKNAME=ATORv4
 
-ENV TOR_USER=atord
+ENV ANON_USER=atord
 
 RUN apt-get update && \
     apt_build_deps="libssl-dev zlib1g-dev libevent-dev ca-certificates dh-apparmor libseccomp-dev debhelper" && \
@@ -15,13 +15,13 @@ RUN apt-get update && \
     apt_temps="build-essential automake git" && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
-    git clone ${ATOR_REPO} && cd ator-protocol && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER}
+    git clone ${ANON_REPO} && cd anon && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER}
 
 # Copy actual list of da to rebuild the image with correct one
-COPY /auth_dirs.inc /src/ator-protocol/src/app/config/auth_dirs.inc
-COPY /fallback_dirs.inc /src/ator-protocol/src/app/config/fallback_dirs.inc
+COPY /auth_dirs.inc /src/anon/src/app/config/auth_dirs.inc
+COPY /fallback_dirs.inc /src/anon/src/app/config/fallback_dirs.inc
 
-RUN cd /src/ator-protocol && \
+RUN cd /src/anon && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
@@ -37,9 +37,9 @@ RUN adduser --quiet \
         --no-create-home \
         --shell /bin/false \
         --group \
-        $TOR_USER && \
+        $ANON_USER && \
         mkdir -p /var/lib/anon && \
-        chown $TOR_USER:$TOR_USER /var/lib/anon && \
+        chown $ANON_USER:$ANON_USER /var/lib/anon && \
         chmod 02700 /var/lib/anon
 
 COPY ./anonrc-da /etc/anonrc

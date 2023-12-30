@@ -9,7 +9,7 @@ cp -r state anon
 
 Create special docker image:
 ```
-docker build . -t ator-protocol-local
+docker build . -t anon-local
 ```
 
 To run a network execute:
@@ -36,19 +36,19 @@ Generate DA keys:
 docker run -i -w /var/lib/anon/keys \
   -v ./anonrc:/etc/anon/anonrc \
   -v ./anon-data:/var/lib/anon/ \
-  svforte/ator-protocol:latest \
+  svforte/anon:latest \
   anon-gencert --create-identity-key
 chmod -R 777 anon-data/
 ```
 Generate Relay keys and fingerprint:
 ```
-ATOR_CONTAINER=$(docker create \
+ANON_CONTAINER=$(docker create \
   -v ./anonrc:/etc/anon/anonrc \
   -v ./anon-data:/var/lib/anon/ \
-  svforte/ator-protocol:latest)
-docker start $ATOR_CONTAINER
+  svforte/anon:latest)
+docker start $ANON_CONTAINER
 sleep 5
-docker stop $ATOR_CONTAINER
+docker stop $ANON_CONTAINER
 chmod -R 777 anon-data/
 ```
 
@@ -87,12 +87,12 @@ rm -rf anon/da4/anon-data
 
 Rebuild docker image with new DA:
 ```
-docker build . -t ator-protocol-local --no-cache
+docker build . -t anon-local --no-cache
 ```
 
 Run new DA connecting to the existing compose network, specific port and volumes:
 ```
-docker run  --network=da_local --ip=172.0.0.14 -v ./anon/da4:/var/lib/anon/ -v ./anon/da4:/etc/anon ator-protocol-local
+docker run  --network=da_local --ip=172.0.0.14 -v ./anon/da4:/var/lib/anon/ -v ./anon/da4:/etc/anon anon-local
 ```
 
 (Optional) Wait until new DA will be listed as a relay in consensus
