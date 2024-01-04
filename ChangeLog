@@ -303,7 +303,7 @@ Changes in version 0.4.8.1-alpha - 2023-06-01
     - Implement proposal 327 (Proof-Of-Work). This is aimed at thwarting
       introduction flooding DoS attacks by introducing a dynamic Proof-Of-Work
       protocol that occurs over introduction circuits. This introduces several
-      anonrc options prefixed with "HiddenServicePoW" in order to control this
+      torrc options prefixed with "HiddenServicePoW" in order to control this
       feature. By default, this is disabled. Closes ticket 40634.
 
   o Major features (conflux):
@@ -316,7 +316,7 @@ Changes in version 0.4.8.1-alpha - 2023-06-01
       client, it maximizes throughput, by fully utilizing both circuits
       in a multiplexed fashion. Alternatively, clients can request that
       the Exit optimize for latency when transmitting to them, by
-      setting the anonrc option 'ConfluxClientUX latency'. Onion services
+      setting the torrc option 'ConfluxClientUX latency'. Onion services
       are not currently supported, but will be in arti. Many other
       future optimizations will also be possible using this protocol.
       Closes ticket 40593.
@@ -668,14 +668,14 @@ Changes in version 0.4.7.11 - 2022-11-10
 
   o Minor feature (performance):
     - Bump the maximum amount of CPU that can be used from 16 to 128. Note
-      that NumCPUs anonrc option overrides this hardcoded maximum. Fixes bug
+      that NumCPUs torrc option overrides this hardcoded maximum. Fixes bug
       40703; bugfix on 0.3.5.1-alpha.
 
   o Minor feature (relay):
     - Make an hardcoded value for the maximum of per CPU tasks into a
       consensus parameter.
     - Two new consensus parameters are added to control the wait time in
-      queue of the onionskins. One of them is the anonrc
+      queue of the onionskins. One of them is the torrc
       MaxOnionQueueDelay options which supersedes the consensus
       parameter. Closes ticket 40704.
 
@@ -716,7 +716,7 @@ Changes in version 0.4.7.11 - 2022-11-10
       "MeasuredButAuthority" weight (not used by anything) so the
       bandwidth authority's opinion on this relay can be recorded for
       posterity. Lastly, remove the AuthDirDontVoteOnDirAuthBandwidth
-      anonrc option which never worked right. Fixes bugs 40698 and 40700;
+      torrc option which never worked right. Fixes bugs 40698 and 40700;
       bugfix on 0.4.7.2-alpha.
 
   o Minor bugfixes (onion service client):
@@ -819,15 +819,15 @@ Changes in version 0.4.7.9 - 2022-08-11
       on 0.4.7.1-alpha.
 
   o Minor features (dirauth):
-    - Add a anonrc option to control the Guard flag bandwidth threshold
+    - Add a torrc option to control the Guard flag bandwidth threshold
       percentile. Closes ticket 40652.
-    - Add an AuthDirVoteGuard anonrc option that can allow authorities to
+    - Add an AuthDirVoteGuard torrc option that can allow authorities to
       assign the Guard flag to the given fingerprints/country code/IPs.
       This is a needed feature mostly for defense purposes in case a DoS
       hits the network and relay start losing the Guard flags too fast.
     - Make UPTIME_TO_GUARANTEE_STABLE, MTBF_TO_GUARANTEE_STABLE,
       TIME_KNOWN_TO_GUARANTEE_FAMILIAR WFU_TO_GUARANTEE_GUARD tunable
-      from anonrc.
+      from torrc.
 
   o Minor features (fallbackdir):
     - Regenerate fallback directories generated on August 11, 2022.
@@ -2415,7 +2415,7 @@ Changes in version 0.4.6.2-alpha - 2021-04-15
       this reason. See ticket 2667 for details. Closes ticket 40271.
 
   o Minor features (command line):
-    - Add long format name "--anonrc-file" equivalent to the existing
+    - Add long format name "--torrc-file" equivalent to the existing
       command-line option "-f". Closes ticket 40324. Patch by
       Daniel Pinto.
 
@@ -2500,7 +2500,7 @@ Changes in version 0.4.6.1-alpha - 2021-03-18
   o Major features (metrics):
     - Relays now report how overloaded they are in their extrainfo
       documents. This information is controlled with the
-      OverloadStatistics anonrc option, and it will be used to improve
+      OverloadStatistics torrc option, and it will be used to improve
       decisions about the network's load balancing. Implements proposal
       328; closes ticket 40222.
 
@@ -2536,7 +2536,7 @@ Changes in version 0.4.6.1-alpha - 2021-03-18
       on 0.2.2.9-alpha.
 
   o Major bugfixes (signing key):
-    - In the anon-gencert utility, give an informative error message if
+    - In the tor-gencert utility, give an informative error message if
       the passphrase given in `--create-identity-key` is too short.
       Fixes bug 40189; bugfix on 0.2.0.1-alpha. Patch by Neel Chauhan.
 
@@ -2629,7 +2629,7 @@ Changes in version 0.4.6.1-alpha - 2021-03-18
       on 0.4.1.1-alpha. Patch by Neel Chauhan.
 
   o Minor bugfixes (key generation):
-    - Do not require a valid anonrc when using the `--keygen` argument to
+    - Do not require a valid torrc when using the `--keygen` argument to
       generate a signing key. This allows us to generate keys on systems
       or users which may not run Tor. Fixes bug 40235; bugfix on
       0.2.7.2-alpha. Patch by Neel Chauhan.
@@ -2905,7 +2905,7 @@ Changes in version 0.4.5.6 - 2021-02-15
   o Minor bugfixes (relay, config):
     - Fix a problem in the removal of duplicate ORPorts from the
       internal port list when loading the config file. We were removing
-      the wrong ports, breaking valid anonrc uses cases for multiple
+      the wrong ports, breaking valid torrc uses cases for multiple
       ORPorts of the same address family. Fixes bug 40289; bugfix
       on 0.4.5.1-alpha.
 
@@ -3246,7 +3246,7 @@ Changes in version 0.4.5.3-rc - 2021-01-12
       on 0.2.3.1-alpha.
 
   o Minor bugfixes (config, bridge):
-    - Really fix the case where anonrc has a missing ClientTransportPlugin
+    - Really fix the case where torrc has a missing ClientTransportPlugin
       but is configured with a Bridge line and UseBridges. Previously,
       we didn't look at the managed proxy list and thus would fail for
       the "exec" case. Fixes bug 40106; bugfix on 0.4.5.1-alpha.
@@ -3313,7 +3313,7 @@ Changes in version 0.4.5.2-alpha - 2020-11-23
       0.2.3.6-alpha. Patch by Neel Chauhan.
 
   o Minor bugfixes (compilation):
-    - Use the correct 'ranlib' program when building libanon.a.
+    - Use the correct 'ranlib' program when building libtor.a.
       Previously we used the default ranlib, which broke some kinds of
       cross-compilation. Fixes bug 40172; bugfix on 0.4.5.1-alpha.
     - Remove a duplicate typedef in metrics_store.c. Fixes bug 40177;
@@ -3400,10 +3400,10 @@ Changes in version 0.4.4.6 - 2020-11-12
       clients using 0.2.9 or later will continue to work (even though
       they are not supported), whereas only relays running 0.3.5 or
       later will meet the requirements. Closes ticket 40162.
-    - Make it possible to specify multiple ConsensusParams anonrc lines.
+    - Make it possible to specify multiple ConsensusParams torrc lines.
       Now directory authority operators can for example put the main
-      ConsensusParams config in one anonrc file and then add to it from a
-      different anonrc file. Closes ticket 40164.
+      ConsensusParams config in one torrc file and then add to it from a
+      different torrc file. Closes ticket 40164.
 
   o Minor features (subprotocol versions, backport from 0.4.5.1-alpha):
     - Tor no longer allows subprotocol versions larger than 63.
@@ -3692,7 +3692,7 @@ Changes in version 0.4.5.1-alpha - 2020-11-01
       model. Closes ticket 40063. See the manual page for more
       information and security considerations.
   o Major features (relay, IPv6):
-    - The anonrc option Address now supports IPv6. This unifies our
+    - The torrc option Address now supports IPv6. This unifies our
       address discovery interface to support IPv4, IPv6, and hostnames.
       Closes ticket 33233.
     - Launch IPv4 and IPv6 ORPort self-test circuits on relays and
@@ -3796,10 +3796,10 @@ Changes in version 0.4.5.1-alpha - 2020-11-01
     - Directory authorities now reject descriptors from relays running
       Tor versions from the obsolete 0.4.1 series. Resolves ticket
       34357. Patch by Neel Chauhan.
-    - Make it possible to specify multiple ConsensusParams anonrc lines.
+    - Make it possible to specify multiple ConsensusParams torrc lines.
       Now directory authority operators can for example put the main
-      ConsensusParams config in one anonrc file and then add to it from a
-      different anonrc file. Closes ticket 40164.
+      ConsensusParams config in one torrc file and then add to it from a
+      different torrc file. Closes ticket 40164.
     - The AssumeReachable option no longer stops directory authorities
       from checking whether other relays are running. A new
       AuthDirTestReachability option can be used to disable these
@@ -3869,7 +3869,7 @@ Changes in version 0.4.5.1-alpha - 2020-11-01
       Closes ticket 34137.
 
   o Minor features (relay, address discovery):
-    - If Address option is not found in anonrc, attempt to learn our
+    - If Address option is not found in torrc, attempt to learn our
       address with the configured ORPort address if any. Closes
       ticket 33236.
 
@@ -4038,7 +4038,7 @@ Changes in version 0.4.5.1-alpha - 2020-11-01
       guaranteed to return the ports that have been advertised. Closes
       ticket 40055.
     - Split implementation of several command line options from
-      options_init_from_anonrc into smaller isolated functions. Patch by
+      options_init_from_torrc into smaller isolated functions. Patch by
       Daniel Pinto. Closes ticket 40102.
     - When an extend cell is missing an IPv4 or IPv6 address, fill in
       the address from the extend info. This is similar to what was done
@@ -4064,7 +4064,7 @@ Changes in version 0.4.5.1-alpha - 2020-11-01
       versions of Android can use the syslog API instead. Closes
       ticket 32181.
     - The "optimistic data" feature is now always on; there is no longer
-      an option to disable it from the anonrc file or from the consensus
+      an option to disable it from the torrc file or from the consensus
       directory. Closes part of 40139.
     - The "usecreatefast" network parameter is now removed; there is no
       longer an option for authorities to turn it off. Closes part
@@ -4187,7 +4187,7 @@ Changes in version 0.4.4.3-alpha - 2020-07-27
       bugfix on 0.3.5.11.
     - Makes the seccomp sandbox allow the correct syscall for opendir
       according to the running glibc version. This fixes crashes when
-      reloading anonrc with sandbox enabled when running on glibc 2.15 to
+      reloading torrc with sandbox enabled when running on glibc 2.15 to
       2.21 and 2.26. Patch from Daniel Pinto. Fixes bug 40020; bugfix
       on 0.3.5.11.
 
@@ -4628,7 +4628,7 @@ Changes in version 0.4.4.1-alpha - 2020-06-16
 
   o Major features (v3 onion services):
     - Allow v3 onion services to act as OnionBalance backend instances,
-      by using the HiddenServiceOnionBalanceInstance anonrc option.
+      by using the HiddenServiceOnionBalanceInstance torrc option.
       Closes ticket 32709.
 
   o Minor feature (developer tools):
@@ -4899,7 +4899,7 @@ Changes in version 0.4.4.1-alpha - 2020-06-16
       Network Options sections of the tor(1) manual page. Closes ticket
       33275. Work by Swati Thacker as part of Google Season of Docs.
     - Refrain from mentioning nicknames in manpage section for MyFamily
-      anonrc option. Resolves issue 33417.
+      torrc option. Resolves issue 33417.
     - Updated the options set by TestingTorNetwork in the manual page.
       Closes ticket 33778.
 
@@ -5129,7 +5129,7 @@ Changes in version 0.4.3.3-alpha - 2020-03-18
       manpage. Also split Statistics options into their own section of
       the manpage. Closes ticket 33188. Work by Swati Thacker as part of
       Google Season of Docs.
-    - Document the __OwningControllerProcess anonrc option and specify
+    - Document the __OwningControllerProcess torrc option and specify
       its polling interval. Resolves issue 32971.
 
   o Testing (Travis CI):
@@ -5605,7 +5605,7 @@ Changes in version 0.4.3.1-alpha - 2020-01-22
   o Major features (proxy):
     - In addition to its current supported proxy types (HTTP CONNECT,
       SOCKS4, and SOCKS5), Tor can now make its OR connections through a
-      HAProxy server. A new anonrc option was added to specify the
+      HAProxy server. A new torrc option was added to specify the
       address/port of the server: TCPProxy <protocol> <host>:<port>.
       Currently the only supported protocol for the option is haproxy.
       Closes ticket 31518. Patch done by Suphanat Chunhapanya (haxxpop).
@@ -6089,8 +6089,8 @@ Changes in version 0.4.1.7 - 2019-12-09
       continue, meaning that relays could have exceeded their configured
       AccountingMax. Fixes bug 32108; bugfix on 0.4.0.1-alpha.
 
-  o Major bugfixes (anonrc parsing, backport from 0.4.2.2-alpha):
-    - Stop ignoring anonrc options after an %include directive, when the
+  o Major bugfixes (torrc parsing, backport from 0.4.2.2-alpha):
+    - Stop ignoring torrc options after an %include directive, when the
       included directory ends with a file that does not contain any
       config options (but does contain comments or whitespace). Fixes
       bug 31408; bugfix on 0.3.1.1-alpha.
@@ -6287,8 +6287,8 @@ Changes in version 0.4.0.6 - 2019-12-09
       continue, meaning that relays could have exceeded their configured
       AccountingMax. Fixes bug 32108; bugfix on 0.4.0.1-alpha.
 
-  o Major bugfixes (anonrc parsing, backport from 0.4.2.2-alpha):
-    - Stop ignoring anonrc options after an %include directive, when the
+  o Major bugfixes (torrc parsing, backport from 0.4.2.2-alpha):
+    - Stop ignoring torrc options after an %include directive, when the
       included directory ends with a file that does not contain any
       config options (but does contain comments or whitespace). Fixes
       bug 31408; bugfix on 0.3.1.1-alpha.
@@ -6543,8 +6543,8 @@ Changes in version 0.4.0.6 - 2019-12-09
       themselves. Closes ticket 31089.
 
   o Testing (backport from 0.4.1.2-alpha):
-    - Specify anonrc paths (with empty files) when launching tor in
-      integration tests; refrain from reading user and system anonrcs.
+    - Specify torrc paths (with empty files) when launching tor in
+      integration tests; refrain from reading user and system torrcs.
       Resolves issue 29702.
 
   o Testing (continuous integration, backport from 0.4.1.1-alpha):
@@ -6637,8 +6637,8 @@ Changes in version 0.3.5.9 - 2019-12-09
       client behavior. Fixes another part of bug 30454; bugfix
       on 0.3.0.1-alpha.
 
-  o Major bugfixes (anonrc parsing, backport from 0.4.2.2-alpha):
-    - Stop ignoring anonrc options after an %include directive, when the
+  o Major bugfixes (torrc parsing, backport from 0.4.2.2-alpha):
+    - Stop ignoring torrc options after an %include directive, when the
       included directory ends with a file that does not contain any
       config options (but does contain comments or whitespace). Fixes
       bug 31408; bugfix on 0.3.1.1-alpha.
@@ -7015,8 +7015,8 @@ Changes in version 0.3.5.9 - 2019-12-09
       themselves. Closes ticket 31089.
 
   o Testing (backport from 0.4.1.2-alpha):
-    - Specify anonrc paths (with empty files) when launching tor in
-      integration tests; refrain from reading user and system anonrcs.
+    - Specify torrc paths (with empty files) when launching tor in
+      integration tests; refrain from reading user and system torrcs.
       Resolves issue 29702.
 
   o Testing (continuous integration, backport from 0.4.1.1-alpha):
@@ -7238,8 +7238,8 @@ Changes in version 0.4.2.2-alpha - 2019-10-07
       enabling a different set of publish/subscribe messages. Fixes bug
       31898; bugfix on 0.4.1.1-alpha.
 
-  o Major bugfixes (anonrc parsing):
-    - Stop ignoring anonrc options after an %include directive, when the
+  o Major bugfixes (torrc parsing):
+    - Stop ignoring torrc options after an %include directive, when the
       included directory ends with a file that does not contain any
       config options (but does contain comments or whitespace). Fixes
       bug 31408; bugfix on 0.3.1.1-alpha.
@@ -7495,7 +7495,7 @@ Changes in version 0.4.2.1-alpha - 2019-09-17
 
   o Minor features (continuous integration):
     - When running CI builds on Travis, put some random data in
-      ~/.anonrc, to make sure no tests are reading the Tor configuration
+      ~/.torrc, to make sure no tests are reading the Tor configuration
       file from its default location. Resolves issue 30102.
 
   o Minor features (debugging):
@@ -7720,7 +7720,7 @@ Changes in version 0.4.2.1-alpha - 2019-09-17
       bug 31490; bugfix on 0.3.2.1-alpha. Patch by Neel Chauhan.
 
   o Minor bugfixes (operator tools):
-    - Make anon-print-ed-signing-cert(1) print certificate expiration
+    - Make tor-print-ed-signing-cert(1) print certificate expiration
       date in RFC 1123 and UNIX timestamp formats, to make output
       machine readable. Fixes bug 31012; bugfix on 0.3.5.1-alpha.
 
@@ -7774,7 +7774,7 @@ Changes in version 0.4.2.1-alpha - 2019-09-17
   o Documentation:
     - Improve documentation in circuit padding subsystem. Patch by
       Tobias Pulls. Closes ticket 31113.
-    - Include an example usage for IPv6 ORPort in our sample anonrc.
+    - Include an example usage for IPv6 ORPort in our sample torrc.
       Closes ticket 31320; patch from Ali Raheem.
     - Use RFC 2397 data URL scheme to embed an image into tor-exit-
       notice.html so that operators no longer have to host it
@@ -7782,7 +7782,7 @@ Changes in version 0.4.2.1-alpha - 2019-09-17
 
   o Removed features:
     - No longer include recommended package digests in votes as detailed
-      in proposal 301. The RecommendedPackages anonrc option is
+      in proposal 301. The RecommendedPackages torrc option is
       deprecated and will no longer have any effect. "package" lines
       will still be considered when computing consensuses for consensus
       methods that include them. (This change has no effect on the list
@@ -7837,7 +7837,7 @@ Changes in version 0.4.2.1-alpha - 2019-09-17
 
   o Documentation (hard-coded directories):
     - Improve the documentation for the DirAuthority and FallbackDir
-      anonrc options. Closes ticket 30955.
+      torrc options. Closes ticket 30955.
 
   o Documentation (tor.1 man page):
     - Fix typo in tor.1 man page: the option is "--help", not "-help".
@@ -8131,8 +8131,8 @@ Changes in version 0.4.1.2-alpha - 2019-06-06
       bug 30150; bugfix on 0.3.5.1-alpha and various other Tor versions.
 
   o Testing:
-    - Specify anonrc paths (with empty files) when launching tor in
-      integration tests; refrain from reading user and system anonrcs.
+    - Specify torrc paths (with empty files) when launching tor in
+      integration tests; refrain from reading user and system torrcs.
       Resolves issue 29702.
 
 
@@ -8305,10 +8305,10 @@ Changes in version 0.4.1.1-alpha - 2019-05-22
       bugfix on 0.3.1.1-alpha.
 
   o Minor bugfixes (circuit padding):
-    - Add a "CircuitPadding" anonrc option to disable circuit padding.
+    - Add a "CircuitPadding" torrc option to disable circuit padding.
       Fixes bug 28693; bugfix on 0.4.0.1-alpha.
     - Allow circuit padding machines to specify that they do not
-      contribute much overhead, and provide consensus flags and anonrc
+      contribute much overhead, and provide consensus flags and torrc
       options to force clients to only use these low overhead machines.
       Fixes bug 29203; bugfix on 0.4.0.1-alpha.
     - Provide a consensus parameter to fully disable circuit padding, to
@@ -8433,9 +8433,9 @@ Changes in version 0.4.1.1-alpha - 2019-05-22
       failure, and fixes Coverity warnings CID 1444117 and CID 1444118.
       Fixes bug 29823; bugfix on 0.2.9.1-alpha.
 
-  o Minor bugfixes (anon-resolve):
-    - Fix a memory leak in anon-resolve that could happen if Tor gave it
-      a malformed SOCKS response. (Memory leaks in anon-resolve don't
+  o Minor bugfixes (tor-resolve):
+    - Fix a memory leak in tor-resolve that could happen if Tor gave it
+      a malformed SOCKS response. (Memory leaks in tor-resolve don't
       actually matter, but it's good to fix them anyway.) Fixes bug
       30151; bugfix on 0.4.0.1-alpha.
 
@@ -8494,7 +8494,7 @@ Changes in version 0.4.1.1-alpha - 2019-05-22
       These include autogen.sh (ticket 26069), test_keygen.sh (ticket
       29062), test_switch_id.sh (ticket 29065), test_rebind.sh (ticket
       29063), src/test/fuzz/minimize.sh (ticket 30079), test_rust.sh
-      (ticket 29064), anonify (ticket 29070), asciidoc-helper.sh (29926),
+      (ticket 29064), torify (ticket 29070), asciidoc-helper.sh (29926),
       fuzz_multi.sh (30077), fuzz_static_testcases.sh (ticket 29059),
       nagios-check-tor-authority-cert (ticket 29071),
       src/test/fuzz/fixup_filenames.sh (ticket 30078), test-network.sh
@@ -9091,7 +9091,7 @@ Changes in version 0.4.0.2-alpha - 2019-02-21
       on 0.2.7.3-rc.
 
   o Documentation:
-    - In the manpage entry describing MapAddress anonrc setting, use
+    - In the manpage entry describing MapAddress torrc setting, use
       example IP addresses from ranges specified for use in documentation
       by RFC 5737. Resolves issue 28623.
 
@@ -9533,7 +9533,7 @@ Changes in version 0.3.3.11 - 2019-01-07
       0.3.2.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (netflow padding, backport from 0.3.5.1-alpha):
@@ -9678,7 +9678,7 @@ Changes in version 0.3.4.10 - 2019-01-07
       on 0.3.3.1-alpha.
 
   o Minor bugfixes (memory leaks, backport from 0.3.5.5-alpha):
-    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.3-alpha):
@@ -9934,7 +9934,7 @@ Changes in version 0.3.5.5-alpha - 2018-11-16
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (memory leaks):
-    - Fix a harmless memory leak in libanonrunner.a. Fixes bug 28419;
+    - Fix a harmless memory leak in libtorrunner.a. Fixes bug 28419;
       bugfix on 0.3.3.1-alpha. Patch from Martin Kepplinger.
 
   o Minor bugfixes (onion services):
@@ -10366,7 +10366,7 @@ Changes in version 0.3.5.3-alpha - 2018-10-17
       help with future modularization. Closes ticket 27864.
 
   o Documentation:
-    - In the anon-resolve(1) manpage, fix the reference to socks-
+    - In the tor-resolve(1) manpage, fix the reference to socks-
       extensions.txt by adding a web URL. Resolves ticket 27853.
     - Mention that we require Python to be 2.7 or newer for some
       integration tests that we ship with Tor. Resolves ticket 27677.
@@ -10455,7 +10455,7 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
       Previously in this case, we allowed exit traffic and logged a
       warning message. Closes ticket 21530. Patch by Neel Chauhan.
     - Tor now validates that the ContactInfo config option is valid UTF-
-      8 when parsing anonrc. Closes ticket 27428.
+      8 when parsing torrc. Closes ticket 27428.
 
   o Major features (bootstrap):
     - Don't report directory progress until after a connection to a
@@ -10479,7 +10479,7 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
   o Major features (onion services v3):
     - Implement onion service client authorization at the descriptor
       level: only authorized clients can decrypt a service's descriptor
-      to find out how to contact it. A new anonrc option was added to
+      to find out how to contact it. A new torrc option was added to
       control this client side: ClientOnionAuthDir <path>. On the
       service side, if the "authorized_clients/" directory exists in the
       onion service directory path, client configurations are read from
@@ -10547,7 +10547,7 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
       Alex Xu.
 
   o Minor features (config):
-    - The "auto" keyword in anonrc is now case-insensitive. Closes
+    - The "auto" keyword in torrc is now case-insensitive. Closes
       ticket 26663.
 
   o Minor features (continuous integration):
@@ -10633,8 +10633,8 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
     - Add scripts/test/chutney-git-bisect.sh, for bisecting using
       chutney. Implements ticket 27211.
 
-  o Minor features (anon-resolve):
-    - The anon-resolve utility can now be used with IPv6 SOCKS proxies.
+  o Minor features (tor-resolve):
+    - The tor-resolve utility can now be used with IPv6 SOCKS proxies.
       Side-effect of the refactoring for ticket 26526.
 
   o Minor features (UI):
@@ -10827,7 +10827,7 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
       CONTRIBUTING to new CODE_OF_CONDUCT file. Resolves ticket 26638.
     - Remove old instructions from INSTALL document. Closes ticket 26588.
     - Warn users that they should not include MyFamily line(s) in their
-      anonrc when running Tor bridge. Closes ticket 26908.
+      torrc when running Tor bridge. Closes ticket 26908.
 
   o Removed features:
     - Tor no longer supports building with the dmalloc library. For
@@ -11874,7 +11874,7 @@ Changes in version 0.3.3.8 - 2018-07-09
     - Don't count path selection failures as circuit build failures.
       This change should eliminate cases where Tor blames its guard or
       the network for situations like insufficient microdescriptors
-      and/or overly restrictive anonrc settings. Fixes bug 25705; bugfix
+      and/or overly restrictive torrc settings. Fixes bug 25705; bugfix
       on 0.3.3.1-alpha.
 
   o Minor bugfixes (compilation, backport from 0.3.4.4-rc):
@@ -11948,7 +11948,7 @@ Changes in version 0.3.4.3-alpha - 2018-06-26
     - Refrain from compiling unit testing related object files when
       --disable-unittests is set to configure script. Fixes bug 24891;
       bugfix on 0.2.5.1-alpha.
-    - When linking the libanon_testing.a library, only include the
+    - When linking the libtor_testing.a library, only include the
       dirauth object files once. Previously, they were getting added
       twice. Fixes bug 26402; bugfix on 0.3.4.1-alpha.
     - The --enable-fatal-warnings flag now affects Rust code as well.
@@ -12342,7 +12342,7 @@ Changes in version 0.3.4.1-alpha - 2018-05-17
       to come first. Closes ticket 26004.
 
   o Minor features (entry guards):
-    - Introduce a new anonrc option NumPrimaryGuards for controlling the
+    - Introduce a new torrc option NumPrimaryGuards for controlling the
       number of primary guards. Closes ticket 25843.
 
   o Minor features (geoip):
@@ -12391,7 +12391,7 @@ Changes in version 0.3.4.1-alpha - 2018-05-17
     - Don't count path selection failures as circuit build failures.
       This change should eliminate cases where Tor blames its guard or
       the network for situations like insufficient microdescriptors
-      and/or overly restrictive anonrc settings. Fixes bug 25705; bugfix
+      and/or overly restrictive torrc settings. Fixes bug 25705; bugfix
       on 0.3.3.1-alpha.
 
   o Minor bugfixes (client):
@@ -12865,7 +12865,7 @@ Changes in version 0.3.1.10 - 2018-03-03
       connections open (3), refuse new create cells for the next while
       (1-2 hours). Third: if a client asks to establish a rendezvous
       point to you directly, ignore the request. These defenses can be
-      manually controlled by new anonrc options, but relays will also
+      manually controlled by new torrc options, but relays will also
       take guidance from consensus parameters, so there's no need to
       configure anything manually. Implements ticket 24902.
 
@@ -13089,7 +13089,7 @@ Changes in version 0.2.9.15 - 2018-03-03
       connections open (3), refuse new create cells for the next while
       (1-2 hours). Third: if a client asks to establish a rendezvous
       point to you directly, ignore the request. These defenses can be
-      manually controlled by new anonrc options, but relays will also
+      manually controlled by new torrc options, but relays will also
       take guidance from consensus parameters, so there's no need to
       configure anything manually. Implements ticket 24902.
 
@@ -13281,7 +13281,7 @@ Changes in version 0.3.2.10 - 2018-03-03
       connections open (3), refuse new create cells for the next while
       (1-2 hours). Third: if a client asks to establish a rendezvous
       point to you directly, ignore the request. These defenses can be
-      manually controlled by new anonrc options, but relays will also
+      manually controlled by new torrc options, but relays will also
       take guidance from consensus parameters, so there's no need to
       configure anything manually. Implements ticket 24902.
 
@@ -13509,7 +13509,7 @@ Changes in version 0.3.3.2-alpha - 2018-02-10
       connections open (3), refuse new create cells for the next while
       (1-2 hours). Third: if a client asks to establish a rendezvous
       point to you directly, ignore the request. These defenses can be
-      manually controlled by new anonrc options, but relays will also
+      manually controlled by new torrc options, but relays will also
       take guidance from consensus parameters, so there's no need to
       configure anything manually. Implements ticket 24902.
 
@@ -13582,7 +13582,7 @@ Changes in version 0.3.3.2-alpha - 2018-02-10
       it can happen normally when we are out of disk space. Fixes bug
       24859; bugfix on 0.3.1.1-alpha.
     - Fix a (mostly harmless) race condition when invoking
-      LOG_PROTOCOL_WARN message from a subthread while the anonrc options
+      LOG_PROTOCOL_WARN message from a subthread while the torrc options
       are changing. Fixes bug 23954; bugfix on 0.1.1.9-alpha.
 
   o Minor bugfixes (onion services):
@@ -13638,7 +13638,7 @@ Changes in version 0.3.3.2-alpha - 2018-02-10
       ticket 25163.
 
   o Documentation (man page):
-    - The HiddenServiceVersion anonrc option accepts only one number:
+    - The HiddenServiceVersion torrc option accepts only one number:
       either version 2 or 3. Closes ticket 25026; bugfix
       on 0.3.2.2-alpha.
 
@@ -13684,7 +13684,7 @@ Changes in version 0.3.3.1-alpha - 2018-01-25
       ticket 20699; implements proposal 284.
 
   o Major features (onion services):
-    - Provide anonrc options to pin the second and third hops of onion
+    - Provide torrc options to pin the second and third hops of onion
       service circuits to a list of nodes. The option HSLayer2Guards
       pins the second hop, and the option HSLayer3Guards pins the third
       hop. These options are for use in conjunction with experiments
@@ -13946,7 +13946,7 @@ Changes in version 0.3.3.1-alpha - 2018-01-25
       event_base_once() function. (This function tends to leak memory if
       the event_base is closed before the event fires.) Fixes bug 24584;
       bugfix on 0.2.8.1-alpha.
-    - Fix a harmless memory leak in anon-resolve. Fixes bug 24582; bugfix
+    - Fix a harmless memory leak in tor-resolve. Fixes bug 24582; bugfix
       on 0.2.1.1-alpha.
 
   o Minor bugfixes (OSX):
@@ -15460,7 +15460,7 @@ Changes in version 0.3.2.1-alpha - 2017-09-18
       Legacy ("v2") onion services will still work for the foreseeable
       future, and will remain the default until this new codebase gets
       tested and hardened. Service operators who want to experiment with
-      the new system can use the 'HiddenServiceVersion 3' anonrc
+      the new system can use the 'HiddenServiceVersion 3' torrc
       directive along with the regular onion service configuration
       options. We will publish a blog post about this new feature
       soon! Enjoy!
@@ -16538,8 +16538,8 @@ Changes in version 0.3.1.3-alpha - 2017-06-08
       before we sent the CERTS cell. Fixes a case of bug 22460; bugfix
       on 0.3.0.1-alpha.
 
-  o Major bugfixes (anonrc, crash):
-    - Fix a crash bug when using %include in anonrc. Fixes bug 22417;
+  o Major bugfixes (torrc, crash):
+    - Fix a crash bug when using %include in torrc. Fixes bug 22417;
       bugfix on 0.3.1.1-alpha. Patch by Daniel Pinto.
 
   o Minor features (code style):
@@ -16581,7 +16581,7 @@ Changes in version 0.3.1.3-alpha - 2017-06-08
       on 0.0.9pre2.
 
   o Documentation:
-    - Clarify the manpage for the (deprecated) anonify script. Closes
+    - Clarify the manpage for the (deprecated) torify script. Closes
       ticket 6892.
 
 Changes in version 0.3.0.8 - 2017-06-08
@@ -16921,13 +16921,13 @@ Changes in version 0.3.1.1-alpha - 2017-05-22
       Padding is negotiated using Tor's link protocol, so both relays
       and clients must upgrade for this to take effect. Clients may
       still send padding despite the relay's version by setting
-      ConnectionPadding 1 in anonrc, and may disable padding by setting
-      ConnectionPadding 0 in anonrc. Padding may be minimized for mobile
-      users with the anonrc option ReducedConnectionPadding. Implements
+      ConnectionPadding 1 in torrc, and may disable padding by setting
+      ConnectionPadding 0 in torrc. Padding may be minimized for mobile
+      users with the torrc option ReducedConnectionPadding. Implements
       Proposal 251 and Section 2 of Proposal 254; closes ticket 16861.
     - Relays will publish 24 hour totals of padding and non-padding cell
       counts to their extra-info descriptors, unless PaddingStatistics 0
-      is set in anonrc. These 24 hour totals are also rounded to
+      is set in torrc. These 24 hour totals are also rounded to
       multiples of 10000.
 
   o Major bugfixes (connection usage):
@@ -16963,12 +16963,12 @@ Changes in version 0.3.1.1-alpha - 2017-05-22
       affect us, but shouldn't do any harm. Closes ticket 21953.
 
   o Minor features (config options):
-    - Allow "%include" directives in anonrc configuration files. These
+    - Allow "%include" directives in torrc configuration files. These
       directives import the settings from other files, or from all the
       files in a directory. Closes ticket 1922. Code by Daniel Pinto.
-    - Make SAVECONF return an error when overwriting a anonrc that has
+    - Make SAVECONF return an error when overwriting a torrc that has
       includes. Using SAVECONF with the FORCE option will allow it to
-      overwrite anonrc even if includes are used. Related to ticket 1922.
+      overwrite torrc even if includes are used. Related to ticket 1922.
     - Add "GETINFO config-can-saveconf" to tell controllers if SAVECONF
       will work without the FORCE option. Related to ticket 1922.
 
@@ -17199,7 +17199,7 @@ Changes in version 0.3.1.1-alpha - 2017-05-22
       NumDirectoryGuards correctly. Fixes bug 21715; bugfix
       on 0.3.0.1-alpha.
     - Document key=value pluggable transport arguments for Bridge lines
-      in anonrc. Fixes bug 20341; bugfix on 0.2.5.1-alpha.
+      in torrc. Fixes bug 20341; bugfix on 0.2.5.1-alpha.
     - Note that bandwidth-limiting options don't affect TCP headers or
       DNS. Closes ticket 17170.
 
@@ -17987,8 +17987,8 @@ Changes in version 0.2.9.10 - 2017-03-01
     - Repair a couple of (unreachable or harmless) cases of the risky
       comparison-by-subtraction pattern that caused bug 21278.
 
-  o Minor bugfixes (anon-resolve, backport from 0.3.0.3-alpha):
-    - The anon-resolve command line tool now rejects hostnames over 255
+  o Minor bugfixes (tor-resolve, backport from 0.3.0.3-alpha):
+    - The tor-resolve command line tool now rejects hostnames over 255
       characters in length. Previously, it would silently truncate them,
       which could lead to bugs. Fixes bug 21280; bugfix on 0.0.9pre5.
       Patch by "junglefowl".
@@ -18049,7 +18049,7 @@ Changes in version 0.3.0.3-alpha - 2017-02-03
   o Minor features (controller, configuration):
     - Each of the *Port options, such as SocksPort, ORPort, ControlPort,
       and so on, now comes with a __*Port variant that will not be saved
-      to the anonrc file by the controller's SAVECONF command. This
+      to the torrc file by the controller's SAVECONF command. This
       change allows TorBrowser to set up a single-use domain socket for
       each time it launches Tor. Closes ticket 20956.
     - The GETCONF command can now query options that may only be
@@ -18112,7 +18112,7 @@ Changes in version 0.3.0.3-alpha - 2017-02-03
       circuits. It was causing, rarely, a service with some expiring
       introduction points to not open enough additional introduction
       points. Fixes part of bug 21302; bugfix on 0.2.7.2-alpha.
-    - Stop setting the anonrc option HiddenServiceStatistics to "0" just
+    - Stop setting the torrc option HiddenServiceStatistics to "0" just
       because we're not a bridge or relay. Instead, we preserve whatever
       value the user set (or didn't set). Fixes bug 21150; bugfix
       on 0.2.6.2-alpha.
@@ -18130,8 +18130,8 @@ Changes in version 0.3.0.3-alpha - 2017-02-03
       systems with large file support and files which are larger than 4
       GB. Fixes bug 21134; bugfix on 0.3.0.1-alpha.
 
-  o Minor bugfixes (anon-resolve):
-    - The anon-resolve command line tool now rejects hostnames over 255
+  o Minor bugfixes (tor-resolve):
+    - The tor-resolve command line tool now rejects hostnames over 255
       characters in length. Previously, it would silently truncate them,
       which could lead to bugs. Fixes bug 21280; bugfix on 0.0.9pre5.
       Patch by "junglefowl".
@@ -18610,7 +18610,7 @@ Changes in version 0.3.0.1-alpha - 2016-12-19
       limit for relays running on a single IP applies to authority IP
       addresses as well as to non-authority IP addresses. Closes
       ticket 20960.
-    - The UseDirectoryGuards anonrc option no longer exists: all users
+    - The UseDirectoryGuards torrc option no longer exists: all users
       that use entry guards will also use directory guards. Related to
       proposal 271; implements part of ticket 20831.
 
@@ -18850,8 +18850,8 @@ Changes in version 0.2.9.6-rc - 2016-12-02
       Neel Chauhan.
 
   o Documentation:
-    - Correct the minimum bandwidth value in anonrc.sample, and queue a
-      corresponding change for anonrc.minimal. Closes ticket 20085.
+    - Correct the minimum bandwidth value in torrc.sample, and queue a
+      corresponding change for torrc.minimal. Closes ticket 20085.
 
 
 Changes in version 0.2.9.5-alpha - 2016-11-08
@@ -19072,7 +19072,7 @@ Changes in version 0.2.9.4-alpha - 2016-10-17
       19904; bugfix on 0.2.2.24-alpha. Patch from Rubiate.
 
   o Minor bugfixes (configuration):
-    - When parsing quoted configuration values from the anonrc file,
+    - When parsing quoted configuration values from the torrc file,
       handle windows line endings correctly. Fixes bug 19167; bugfix on
       0.2.0.16-alpha. Patch from "Pingl".
 
@@ -19430,7 +19430,7 @@ Changes in version 0.2.9.2-alpha - 2016-08-24
       Fixes bug 17758; bugfix on 0.2.2.8-alpha. Patch from Daniel Pinto.
 
   o Minor bugfixes (memory leak):
-    - Fix a series of slow memory leaks related to parsing anonrc files
+    - Fix a series of slow memory leaks related to parsing torrc files
       and options. Fixes bug 19466; bugfix on 0.2.1.6-alpha.
 
   o Deprecated features:
@@ -19457,7 +19457,7 @@ Changes in version 0.2.9.2-alpha - 2016-08-24
 
   o Documentation:
     - Correct the IPv6 syntax in our documentation for the
-      VirtualAddrNetworkIPv6 anonrc option. Closes ticket 19743.
+      VirtualAddrNetworkIPv6 torrc option. Closes ticket 19743.
 
   o Removed code:
     - We no longer include the (dead, deprecated) bufferevent code in
@@ -19695,7 +19695,7 @@ Changes in version 0.2.9.1-alpha - 2016-08-08
     - Document the --passphrase-fd option in the tor manpage. Fixes bug
       19504; bugfix on 0.2.7.3-rc.
     - Fix the description of the --passphrase-fd option in the
-      anon-gencert manpage. The option is used to pass the number of a
+      tor-gencert manpage. The option is used to pass the number of a
       file descriptor to read the passphrase from, not to read the file
       descriptor from. Fixes bug 19505; bugfix on 0.2.0.20-alpha.
 
@@ -20025,7 +20025,7 @@ Changes in version 0.2.8.3-alpha - 2016-05-26
       on 0.2.6.1-alpha.
 
   o Minor bugfixes (client):
-    - Turn all TestingClientBootstrap* into non-testing anonrc options.
+    - Turn all TestingClientBootstrap* into non-testing torrc options.
       This changes simply renames them by removing "Testing" in front of
       them and they do not require TestingTorNetwork to be enabled
       anymore. Fixes bug 18481; bugfix on 0.2.8.1-alpha.
@@ -20362,7 +20362,7 @@ Changes in version 0.2.8.2-alpha - 2016-03-28
     - Correctly duplicate addresses in get_interface_address6_list().
       Fixes bug 18454; bugfix on 0.2.8.1-alpha. Reported by toralf,
       patch by "cypherpunks".
-    - Fix a memory leak in anon-gencert. Fixes part of bug 18672; bugfix
+    - Fix a memory leak in tor-gencert. Fixes part of bug 18672; bugfix
       on 0.2.0.1-alpha.
     - Fix a memory leak in "tor --list-fingerprint". Fixes part of bug
       18672; bugfix on 0.2.5.1-alpha.
@@ -20389,7 +20389,7 @@ Changes in version 0.2.8.2-alpha - 2016-03-28
       on platforms with 32-bit time_t. Fixes bug 18479; bugfix on
       0.0.2pre14. Patch by teor.
 
-  o Minor bugfixes (anon-gencert):
+  o Minor bugfixes (tor-gencert):
     - Correctly handle the case where an authority operator enters a
       passphrase but sends an EOF before sending a newline. Fixes bug
       17443; bugfix on 0.2.0.20-rc. Found by junglefowl.
@@ -20554,7 +20554,7 @@ Changes in version 0.2.8.1-alpha - 2016-02-04
 
   o Minor features (IPv6):
     - Add an argument 'ipv6=address:orport' to the DirAuthority and
-      FallbackDir anonrc options, to specify an IPv6 address for an
+      FallbackDir torrc options, to specify an IPv6 address for an
       authority or fallback directory. Add hard-coded ipv6 addresses for
       directory authorities that have them. Closes ticket 17327; patch
       from Nick Mathewson and "teor".
@@ -20908,7 +20908,7 @@ Changes in version 0.2.7.4-rc - 2015-10-21
       Marcin Cieślak.
 
   o Documentation:
-    - Fix capitalization of SOCKS in sample anonrc. Closes ticket 15609.
+    - Fix capitalization of SOCKS in sample torrc. Closes ticket 15609.
     - Note that HiddenServicePorts can take a unix domain socket. Closes
       ticket 17364.
 
@@ -21000,7 +21000,7 @@ Changes in version 0.2.7.3-rc - 2015-09-25
       is being written, we'll go from 2745 HSDirs down to 2342, a ~14%
       drop. This change should make some attacks against the hidden
       service directory system harder. Fixes ticket 15963.
-    - Turn on hidden service statistics collection by setting the anonrc
+    - Turn on hidden service statistics collection by setting the torrc
       option HiddenServiceStatistics to "1" by default. (This keeps
       track only of the fraction of traffic used by hidden services, and
       the total number of hidden services in existence.) Closes
@@ -21021,18 +21021,18 @@ Changes in version 0.2.7.3-rc - 2015-09-25
       addresses on any local interfaces. ticket 17027. Patch by "teor".
       Fixes bug 17027; bugfix on 0.2.0.11-alpha.
 
-  o Minor bug fixes (anonrc exit policies):
-    - In anonrc, "accept6 *" and "reject6 *" ExitPolicy lines now only
+  o Minor bug fixes (torrc exit policies):
+    - In torrc, "accept6 *" and "reject6 *" ExitPolicy lines now only
       produce IPv6 wildcard addresses. Previously they would produce
       both IPv4 and IPv6 wildcard addresses. Patch by "teor". Fixes part
       of bug 16069; bugfix on 0.2.4.7-alpha.
-    - When parsing anonrc ExitPolicies, we now warn for a number of cases
+    - When parsing torrc ExitPolicies, we now warn for a number of cases
       where the user's intent is likely to differ from Tor's actual
       behavior. These include: using an IPv4 address with an accept6 or
       reject6 line; using "private" on an accept6 or reject6 line; and
       including any ExitPolicy lines after accept *:* or reject *:*.
       Related to ticket 16069.
-    - When parsing anonrc ExitPolicies, we now issue an info-level
+    - When parsing torrc ExitPolicies, we now issue an info-level
       message when expanding an "accept/reject *" line to include both
       IPv4 and IPv6 wildcard addresses. Related to ticket 16069.
     - In each instance above, usage advice is provided to avoid the
@@ -21062,8 +21062,8 @@ Changes in version 0.2.7.3-rc - 2015-09-25
 
   o Minor bugfixes (documentation):
     - Advise users on how to configure separate IPv4 and IPv6 exit
-      policies in the manpage and sample anonrcs. Related to ticket 16069.
-    - Fix the usage message of anon-resolve(1) so that it no longer lists
+      policies in the manpage and sample torrcs. Related to ticket 16069.
+    - Fix the usage message of tor-resolve(1) so that it no longer lists
       the removed -F option. Fixes bug 16913; bugfix on 0.2.2.28-beta.
     - Fix an error in the manual page and comments for
       TestingDirAuthVoteHSDir[IsStrict], which suggested that a HSDir
@@ -21140,7 +21140,7 @@ Changes in version 0.2.7.3-rc - 2015-09-25
     - Remove the unused "nulterminate" argument from buf_pullup().
 
   o Documentation:
-    - Recommend a 40 GB example AccountingMax in anonrc.sample rather
+    - Recommend a 40 GB example AccountingMax in torrc.sample rather
       than a 4 GB max. Closes ticket 16742.
     - Include the TUNING document in our source tarball. It is referred
       to in the ChangeLog and an error message. Fixes bug 16929; bugfix
@@ -21222,7 +21222,7 @@ Changes in version 0.2.7.2-alpha - 2015-07-27
       key). Closes ticket 13642.
 
   o Major features (Hidden services):
-    - Add the anonrc option HiddenServiceNumIntroductionPoints, to
+    - Add the torrc option HiddenServiceNumIntroductionPoints, to
       specify a fixed number of introduction points. Its maximum value
       is 10 and default is 3. Using this option can increase a hidden
       service's reliability under load, at the cost of making it more
@@ -21426,8 +21426,8 @@ Changes in version 0.2.7.2-alpha - 2015-07-27
 
   o Documentation:
     - Include a specific and (hopefully) accurate documentation of the
-      anonrc file's meta-format in doc/anonrc_format.txt. This is mainly
-      of interest to people writing programs to parse or generate anonrc
+      torrc file's meta-format in doc/torrc_format.txt. This is mainly
+      of interest to people writing programs to parse or generate torrc
       files. This document is not a commitment to long-term
       compatibility; some aspects of the current format are a bit
       ridiculous. Closes ticket 2325.
@@ -21613,7 +21613,7 @@ Changes in version 0.2.7.1-alpha - 2015-05-12
     - Make --hash-password imply --hush to prevent unnecessary noise.
       Closes ticket 15542. Patch from "cypherpunks".
     - Print a warning whenever we find a relative file path being used
-      as anonrc option. Resolves issue 14018.
+      as torrc option. Resolves issue 14018.
 
   o Minor features (controller):
     - Add DirAuthority lines for default directory authorities to the
@@ -21733,7 +21733,7 @@ Changes in version 0.2.7.1-alpha - 2015-05-12
       unsuitable for public communications.
 
   o Minor bugfixes (statistics):
-    - Disregard the ConnDirectionStatistics anonrc options when Tor is
+    - Disregard the ConnDirectionStatistics torrc options when Tor is
       not a relay since in that mode of operation no sensible data is
       being collected and because Tor might run into measurement hiccups
       when running as a client for some time, then becoming a relay.
@@ -21769,7 +21769,7 @@ Changes in version 0.2.7.1-alpha - 2015-05-12
       control over the output. Part of ticket 15652.
 
   o Documentation:
-    - Improve the descriptions of statistics-related anonrc options in
+    - Improve the descriptions of statistics-related torrc options in
       the manpage to describe rationale and possible uses cases. Fixes
       issue 15550.
     - Improve the layout and formatting of ./configure --help messages.
@@ -21974,7 +21974,7 @@ Changes in version 0.2.5.11 - 2015-03-17
       Country database.
 
   o Minor bugfixes (client, automapping):
-    - Avoid crashing on anonrc lines for VirtualAddrNetworkIPv[4|6] when
+    - Avoid crashing on torrc lines for VirtualAddrNetworkIPv[4|6] when
       no value follows the option. Fixes bug 14142; bugfix on
       0.2.4.7-alpha. Patch by "teor".
     - Fix a memory leak when using AutomapHostsOnResolve. Fixes bug
@@ -22112,7 +22112,7 @@ Changes in version 0.2.6.4-rc - 2015-03-09
       python binary. Fixes bug 15037; bugfix on 0.2.6.3-alpha. Patch
       from "cypherpunks".
     - When running the zero-length-keys tests, do not use the default
-      anonrc file. Fixes bug 15033; bugfix on 0.2.6.3-alpha. Reported
+      torrc file. Fixes bug 15033; bugfix on 0.2.6.3-alpha. Reported
       by "reezer".
 
   o Directory authority IP change:
@@ -22209,8 +22209,8 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
       0.2.1.1-alpha. Reported by "skruffy".
 
   o Minor features (build):
-    - New --disable-system-anonrc compile-time option to prevent Tor from
-      looking for the system-wide anonrc or anonrc-defaults files.
+    - New --disable-system-torrc compile-time option to prevent Tor from
+      looking for the system-wide torrc or torrc-defaults files.
       Resolves ticket 13037.
 
   o Minor features (controller):
@@ -22255,8 +22255,8 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
       RELAY_DONE cell is sent. Closes ticket 14084.
 
   o Minor features (interface):
-    - Implement "-f -" command-line option to read anonrc configuration
-      from standard input, if you don't want to store the anonrc file in
+    - Implement "-f -" command-line option to read torrc configuration
+      from standard input, if you don't want to store the torrc file in
       the file system. Implements feature 13865.
 
   o Minor features (logging):
@@ -22308,7 +22308,7 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
       bug 14259; bugfix on 0.2.0.1-alpha.
 
   o Minor bugfixes (client, automapping):
-    - Avoid crashing on anonrc lines for VirtualAddrNetworkIPv[4|6] when
+    - Avoid crashing on torrc lines for VirtualAddrNetworkIPv[4|6] when
       no value follows the option. Fixes bug 14142; bugfix on
       0.2.4.7-alpha. Patch by "teor".
     - Fix a memory leak when using AutomapHostsOnResolve. Fixes bug
@@ -22384,7 +22384,7 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
     - Avoid overwriting .old key files with empty key files.
     - Skip loading zero-length extrainfo store, router store, stats,
       state, and key files.
-    - Avoid crashing when trying to reload a anonrc specified as a
+    - Avoid crashing when trying to reload a torrc specified as a
       relative path with RunAsDaemon turned on. Fixes bug 13397; bugfix
       on 0.2.3.11-alpha.
 
@@ -22494,9 +22494,9 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
   o Documentation:
     - Adding section on OpenBSD to our TUNING document. Thanks to mmcc
       for writing the OpenBSD-specific tips. Resolves ticket 13702.
-    - Make the anon-resolve documentation match its help string and its
+    - Make the tor-resolve documentation match its help string and its
       options. Resolves part of ticket 14325.
-    - Log a more useful error message from anon-resolve when failing to
+    - Log a more useful error message from tor-resolve when failing to
       look up a hidden service address. Resolves part of ticket 14325.
 
   o Downgraded warnings:
@@ -22693,7 +22693,7 @@ Changes in version 0.2.6.2-alpha - 2014-12-31
     - Make transparent proxy support work along with the seccomp2
       sandbox. Fixes part of bug 13808; bugfix on 0.2.5.1-alpha. Patch
       by Francisco Blas Izquierdo Riera.
-    - Fix a memory leak in anon-resolve when running with the sandbox
+    - Fix a memory leak in tor-resolve when running with the sandbox
       enabled. Fixes bug 14050; bugfix on 0.2.5.9-rc.
 
   o Minor bugfixes (logging):
@@ -22855,13 +22855,13 @@ Changes in version 0.2.6.1-alpha - 2014-10-30
       Previously, when we got a descriptor we didn't like, we would keep
       trying to download it over and over. Closes ticket 11243.
 
-  o Major features (sample anonrc):
-    - Add a new, infrequently-changed "anonrc.minimal". This file is
-      similar to anonrc.sample, but it will change as infrequently as
+  o Major features (sample torrc):
+    - Add a new, infrequently-changed "torrc.minimal". This file is
+      similar to torrc.sample, but it will change as infrequently as
       possible, for the benefit of users whose systems prompt them for
       intervention whenever a default configuration file is changed.
-      Making this change allows us to update anonrc.sample to be a more
-      generally useful "sample anonrc".
+      Making this change allows us to update torrc.sample to be a more
+      generally useful "sample torrc".
 
   o Major bugfixes (directory authorities):
     - Do not assign the HSDir flag to relays if they are not Valid, or
@@ -22899,7 +22899,7 @@ Changes in version 0.2.6.1-alpha - 2014-10-30
   o Minor features (directory authorities):
     - Don't list relays with a bandwidth estimate of 0 in the consensus.
       Implements a feature proposed during discussion of bug 13000.
-    - In anon-gencert, report an error if the user provides the same
+    - In tor-gencert, report an error if the user provides the same
       argument more than once.
     - If a directory authority can't find a best consensus method in the
       votes that it holds, it now falls back to its favorite consensus
@@ -22988,10 +22988,10 @@ Changes in version 0.2.6.1-alpha - 2014-10-30
       responding with the appropriate error message before closing the
       connection. Fixes bugs 12971 and 13314; bugfix on 0.0.2pre13.
 
-  o Minor bugfixes (client, anonrc):
-    - Stop modifying the value of our DirReqStatistics anonrc option just
+  o Minor bugfixes (client, torrc):
+    - Stop modifying the value of our DirReqStatistics torrc option just
       because we're not a bridge or relay. This bug was causing Tor
-      Browser users to write "DirReqStatistics 0" in their anonrc files
+      Browser users to write "DirReqStatistics 0" in their torrc files
       as if they had chosen to change the config. Fixes bug 4244; bugfix
       on 0.2.3.1-alpha.
     - When GeoIPExcludeUnknown is enabled, do not incorrectly decide
@@ -23213,9 +23213,9 @@ Changes in version 0.2.5.9-rc - 2014-10-20
       13471. This is a workaround for an OpenSSL bug.
 
   o Minor bugfixes:
-    - Disable the sandbox name resolver cache when running anon-resolve:
-      anon-resolve doesn't use the sandbox code, and turning it on was
-      breaking attempts to do anon-resolve on a non-default server on
+    - Disable the sandbox name resolver cache when running tor-resolve:
+      tor-resolve doesn't use the sandbox code, and turning it on was
+      breaking attempts to do tor-resolve on a non-default server on
       Linux. Fixes bug 13295; bugfix on 0.2.5.3-alpha.
 
   o Compilation fixes:
@@ -23313,7 +23313,7 @@ Changes in version 0.2.5.7-rc - 2014-09-11
       for bug 4647 accidentally removed our hack from bug 586 that
       rewrote HashedControlPassword to __HashedControlSessionPassword
       when it appears on the commandline (which allowed the user to set
-      her own HashedControlPassword in the anonrc file while the
+      her own HashedControlPassword in the torrc file while the
       controller generates a fresh session password for each run). Fixes
       bug 12948; bugfix on 0.2.5.1-alpha.
     - Warn about attempts to run hidden services and relays in the same
@@ -23340,7 +23340,7 @@ Changes in version 0.2.5.7-rc - 2014-09-11
     - Reduce the log severity of the "Pluggable transport proxy does not
       provide any needed transports and will not be launched." message,
       since Tor Browser includes several ClientTransportPlugin lines in
-      its anonrc-defaults file, leading every Tor Browser user who looks
+      its torrc-defaults file, leading every Tor Browser user who looks
       at her logs to see these notices and wonder if they're dangerous.
       Resolves bug 13124; bugfix on 0.2.5.3-alpha.
     - Downgrade "Unexpected onionskin length after decryption" warning
@@ -23384,9 +23384,9 @@ Changes in version 0.2.5.7-rc - 2014-09-11
     - Explicitly disable RunAsDaemon in the systemd unit file. Our
       current systemd unit uses "Type = simple", so systemd does not
       expect tor to fork. If the user has "RunAsDaemon 1" in their
-      anonrc, then things won't work as expected. This is e.g. the case
-      on Debian (and derivatives), since there we pass "--defaults-anonrc
-      /usr/share/tor/tor-service-defaults-anonrc" (that contains
+      torrc, then things won't work as expected. This is e.g. the case
+      on Debian (and derivatives), since there we pass "--defaults-torrc
+      /usr/share/tor/tor-service-defaults-torrc" (that contains
       "RunAsDaemon 1") by default. Patch by intrigeri; resolves
       ticket 12731.
 
@@ -23901,8 +23901,8 @@ Changes in version 0.2.4.22 - 2014-05-16
       users. Fixes bug 9686; bugfix on 0.2.4.14-alpha.
 
   o Documentation (backport from 0.2.5.4-alpha):
-    - Correctly document that we search for a system anonrc file before
-      looking in ~/.anonrc. Fixes documentation side of 9213; bugfix on
+    - Correctly document that we search for a system torrc file before
+      looking in ~/.torrc. Fixes documentation side of 9213; bugfix on
       0.2.3.18-rc.
 
 
@@ -24119,7 +24119,7 @@ Changes in version 0.2.5.4-alpha - 2014-04-25
       replace them with another. Fixes bug 11726; bugfix on
       0.2.5.3-alpha.
     - Resolve some memory leaks found by coverity in the unit tests, on
-      exit in anon-gencert, and on a failure to compute digests for our
+      exit in tor-gencert, and on a failure to compute digests for our
       own keys when generating a v3 networkstatus vote. These leaks
       should never have affected anyone in practice.
 
@@ -24153,14 +24153,14 @@ Changes in version 0.2.5.4-alpha - 2014-04-25
       many tor versions.
 
   o Documentation:
-    - Build the anonify.1 manpage again. Previously, we were only trying
+    - Build the torify.1 manpage again. Previously, we were only trying
       to build it when also building tor-fw-helper. That's why we didn't
       notice that we'd broken the ability to build it. Fixes bug 11321;
       bugfix on 0.2.5.1-alpha.
     - Fix the layout of the SOCKSPort flags in the manpage. Fixes bug
       11061; bugfix on 0.2.4.7-alpha.
-    - Correctly document that we search for a system anonrc file before
-      looking in ~/.anonrc. Fixes documentation side of 9213; bugfix on
+    - Correctly document that we search for a system torrc file before
+      looking in ~/.torrc. Fixes documentation side of 9213; bugfix on
       0.2.3.18-rc.
     - Resolve warnings from Doxygen.
 
@@ -24502,7 +24502,7 @@ Changes in version 0.2.5.2-alpha - 2014-02-13
       Florent Daignière.
 
   o Minor features (config options and command line):
-    - Add an --allow-missing-anonrc commandline option that tells Tor to
+    - Add an --allow-missing-torrc commandline option that tells Tor to
       run even if the configuration file specified by -f is not available.
       Implements ticket 10060.
     - Add support for the TPROXY transparent proxying facility on Linux.
@@ -24695,7 +24695,7 @@ Changes in version 0.2.5.2-alpha - 2014-02-13
     - Remove all code that existed to support the v2 directory system,
       since there are no longer any v2 directory authorities. Resolves
       ticket 10758.
-    - Remove the HSAuthoritativeDir and AlternateHSAuthority anonrc
+    - Remove the HSAuthoritativeDir and AlternateHSAuthority torrc
       options, which were used for designating authorities as "Hidden
       service authorities". There has been no use of hidden service
       authorities since 0.2.2.1-alpha, when we stopped uploading or
@@ -24722,7 +24722,7 @@ Changes in version 0.2.5.2-alpha - 2014-02-13
       flag set. Fixes bug 10470; bugfix on 0.2.3.3-alpha / 0.2.3.16-alpha.
 
   o Documentation fixes (new since 0.2.5.1-alpha, also in 0.2.4.18-rc):
-    - Clarify the usage and risks of setting the ContactInfo anonrc line
+    - Clarify the usage and risks of setting the ContactInfo torrc line
       for your relay or bridge. Resolves ticket 9854.
     - Add anchors to the manpage so we can link to the html version of
       the documentation for specific options. Resolves ticket 9866.
@@ -24730,7 +24730,7 @@ Changes in version 0.2.5.2-alpha - 2014-02-13
       log entries. Resolves ticket 10124.
 
   o Tool changes:
-    - Make the "anon-gencert" tool used by directory authority operators
+    - Make the "tor-gencert" tool used by directory authority operators
       create 2048-bit signing keys by default (rather than 1024-bit, since
       1024-bit is uncomfortably small these days). Addresses ticket 10324.
 
@@ -24738,7 +24738,7 @@ Changes in version 0.2.5.2-alpha - 2014-02-13
 Changes in version 0.2.4.20 - 2013-12-22
   Tor 0.2.4.20 fixes potentially poor random number generation for users
   who 1) use OpenSSL 1.0.0 or later, 2) set "HardwareAccel 1" in their
-  anonrc file, 3) have "Sandy Bridge" or "Ivy Bridge" Intel processors,
+  torrc file, 3) have "Sandy Bridge" or "Ivy Bridge" Intel processors,
   and 4) have no state file in their DataDirectory (as would happen on
   first start). Users who generated relay or hidden service identity
   keys in such a situation should discard them and generate new ones.
@@ -24883,7 +24883,7 @@ Changes in version 0.2.4.18-rc - 2013-11-16
     - Update to the October 2 2013 Maxmind GeoLite Country database.
 
   o Documentation fixes:
-    - Clarify the usage and risks of setting the ContactInfo anonrc line
+    - Clarify the usage and risks of setting the ContactInfo torrc line
       for your relay or bridge. Resolves ticket 9854.
     - Add anchors to the manpage so we can link to the html version of
       the documentation for specific options. Resolves ticket 9866.
@@ -24906,7 +24906,7 @@ Changes in version 0.2.5.1-alpha - 2013-10-02
     - Use the seccomp2 syscall filtering facility on Linux to limit
       which system calls Tor can invoke. This is an experimental,
       Linux-only feature to provide defense-in-depth against unknown
-      attacks. To try turning it on, set "Sandbox 1" in your anonrc
+      attacks. To try turning it on, set "Sandbox 1" in your torrc
       file. Please be ready to report bugs. We hope to add support
       for better sandboxing in the future, including more fine-grained
       filters, better division of responsibility, and support for more
@@ -24988,7 +24988,7 @@ Changes in version 0.2.5.1-alpha - 2013-10-02
       Implements part of proposal 222.
 
   o Minor features (config options):
-    - Config (anonrc) lines now handle fingerprints which are missing
+    - Config (torrc) lines now handle fingerprints which are missing
       their initial '$'. Resolves ticket 4341; improvement over 0.0.9pre5.
     - Support a --dump-config option to print some or all of the
       configured options. Mainly useful for debugging the command-line
@@ -24999,10 +24999,10 @@ Changes in version 0.2.5.1-alpha - 2013-10-02
     - Add a new configuration option TestingV3AuthVotingStartOffset
       that bootstraps a network faster by changing the timing for
       consensus votes. Addresses ticket 8532.
-    - Add a new anonrc option "ServerTransportOptions" that allows
+    - Add a new torrc option "ServerTransportOptions" that allows
       bridge operators to pass configuration parameters to their
       pluggable transports. Resolves ticket 8929.
-    - The config (anonrc) file now accepts bandwidth and space limits in
+    - The config (torrc) file now accepts bandwidth and space limits in
       bits as well as bytes. (Anywhere that you can say "2 Kilobytes",
       you can now say "16 kilobits", and so on.) Resolves ticket 9214.
       Patch by CharlieB.
@@ -25052,16 +25052,16 @@ Changes in version 0.2.5.1-alpha - 2013-10-02
       bugfix on 0.2.3.16-alpha.
 
   o Minor bugfixes (command line):
-    - Use a single command-line parser for parsing anonrc options on the
+    - Use a single command-line parser for parsing torrc options on the
       command line and for finding special command-line options to avoid
-      inconsistent behavior for anonrc option arguments that have the same
+      inconsistent behavior for torrc option arguments that have the same
       names as command-line options. Fixes bugs 4647 and 9578; bugfix on
       0.0.9pre5.
     - No longer allow 'tor --hash-password' with no arguments. Fixes bug
       9573; bugfix on 0.0.9pre5.
 
   o Minor fixes (build, auxiliary programs):
-    - Stop preprocessing the "anonify" script with autoconf, since
+    - Stop preprocessing the "torify" script with autoconf, since
       it no longer refers to LOCALSTATEDIR. Fixes bug 5505; patch
       from Guilhem.
     - The tor-fw-helper program now follows the standard convention and
@@ -25341,7 +25341,7 @@ Changes in version 0.2.4.12-alpha - 2013-04-18
       "1-2 months" to "2-3 months", as suggested by Tariq Elahi's WPES
       2012 paper. (We would make it even longer, but we need better client
       load balancing first.) Also, make the guard lifetime controllable
-      via a new GuardLifetime anonrc option and a GuardLifetime consensus
+      via a new GuardLifetime torrc option and a GuardLifetime consensus
       parameter. Start of a fix for bug 8240; bugfix on 0.1.1.11-alpha.
     - Directory authorities now prefer using measured bandwidths to
       advertised ones when computing flags and thresholds. Resolves
@@ -25487,7 +25487,7 @@ Changes in version 0.2.4.12-alpha - 2013-04-18
       the Fast threshold. Otherwise they can't bootstrap until they've
       observed more traffic. Fixes bug 8508; bugfix on 0.2.4.10-alpha.
     - Fix some logic errors when the user manually overrides the
-      PathsNeededToBuildCircuits option in anonrc. Fixes bug 8599; bugfix
+      PathsNeededToBuildCircuits option in torrc. Fixes bug 8599; bugfix
       on 0.2.4.10-alpha.
 
   o Minor bugfixes (log messages to help diagnose bugs):
@@ -25545,7 +25545,7 @@ Changes in version 0.2.4.12-alpha - 2013-04-18
   o Documentation fixes:
     - Update tor-fw-helper.1.txt and tor-fw-helper.c to make option
       names match. Fixes bug 7768.
-    - Make the anonify manpage no longer refer to tsocks; anonify hasn't
+    - Make the torify manpage no longer refer to tsocks; torify hasn't
       supported tsocks since 0.2.3.14-alpha.
     - Make the tor manpage no longer reference tsocks.
     - Fix the GeoIPExcludeUnknown documentation to refer to
@@ -25947,11 +25947,11 @@ Changes in version 0.2.4.8-alpha - 2013-01-14
     - Alter the Path Bias log messages to be more descriptive in terms
       of reporting timeouts and other statistics.
     - Create three levels of Path Bias log messages, as opposed to just
-      two. These are configurable via consensus as well as via the anonrc
+      two. These are configurable via consensus as well as via the torrc
       options PathBiasNoticeRate, PathBiasWarnRate, PathBiasExtremeRate.
       The default values are 0.70, 0.50, and 0.30 respectively.
     - Separate the log message levels from the decision to drop guards,
-      which also is available via anonrc option PathBiasDropGuards.
+      which also is available via torrc option PathBiasDropGuards.
       PathBiasDropGuards still defaults to 0 (off).
     - Deprecate PathBiasDisableRate in favor of PathBiasDropGuards
       in combination with PathBiasExtremeRate.
@@ -25961,7 +25961,7 @@ Changes in version 0.2.4.8-alpha - 2013-01-14
       built circuit but fail for any reason, it counts as path bias.
       Certain classes of circuits where the adversary gets to pick your
       destination node are exempt from this accounting. Usage accounting
-      can be specifically disabled via consensus parameter or anonrc.
+      can be specifically disabled via consensus parameter or torrc.
     - Convert all internal path bias state to double-precision floating
       point, to avoid roundoff error and other issues.
     - Only record path bias information for circuits that have completed
@@ -26000,7 +26000,7 @@ Changes in version 0.2.4.7-alpha - 2012-12-24
   and fixes a variety of other issues.
 
   o Major features (client resilience):
-    - Add a new "FallbackDir" anonrc option to use when we can't use
+    - Add a new "FallbackDir" torrc option to use when we can't use
       a directory mirror from the consensus (either because we lack a
       consensus, or because they're all down). Currently, all authorities
       are fallbacks by default, and there are no other default fallbacks,
@@ -26072,7 +26072,7 @@ Changes in version 0.2.4.7-alpha - 2012-12-24
       7655; bugfix on 0.2.4.6-alpha.
 
   o Minor features:
-    - Add a new anonrc option "ServerTransportListenAddr" to let bridge
+    - Add a new torrc option "ServerTransportListenAddr" to let bridge
       operators select the address where their pluggable transports will
       listen for connections. Resolves ticket 7013.
     - Allow an optional $ before the node identity digest in the
@@ -26542,7 +26542,7 @@ Changes in version 0.2.4.3-alpha - 2012-09-22
 
   o Code simplification and refactoring:
     - Move the generic "config" code into a new file, and have "config.c"
-      hold only anonrc- and state-related code. Resolves ticket 6823.
+      hold only torrc- and state-related code. Resolves ticket 6823.
     - Move the core of our "choose a weighted element at random" logic
       into its own function, and give it unit tests. Now the logic is
       testable, and a little less fragile too.
@@ -26551,7 +26551,7 @@ Changes in version 0.2.4.3-alpha - 2012-09-22
 
   o Documentation fixes:
     - Clarify that hidden services are TCP only. Fixes bug 6024.
-    - Resolve a typo in anonrc.sample.in. Fixes bug 6819; bugfix on
+    - Resolve a typo in torrc.sample.in. Fixes bug 6819; bugfix on
       0.2.3.14-alpha.
 
 
@@ -27037,7 +27037,7 @@ Changes in version 0.2.3.18-rc - 2012-06-28
     - Add a unit test for the environment_variable_names_equal function.
 
   o Documentation:
-    - Document the --defaults-anonrc option, and the new (in 0.2.3)
+    - Document the --defaults-torrc option, and the new (in 0.2.3)
       semantics for overriding, extending, and clearing lists of
       options. Closes bug 4748.
 
@@ -27121,7 +27121,7 @@ Changes in version 0.2.3.17-beta - 2012-06-15
       all of Tor's traffic over the HTTPProxy -- it sends unencrypted
       directory traffic only. Resolves ticket 4663.
     - Issue a notice if a guard completes less than 40% of your circuits.
-      Threshold is configurable by anonrc option PathBiasNoticeRate and
+      Threshold is configurable by torrc option PathBiasNoticeRate and
       consensus parameter pb_noticepct. There is additional, off-by-
       default code to disable guards which fail too many circuits.
       Addresses ticket 5458.
@@ -27317,7 +27317,7 @@ Changes in version 0.2.3.16-alpha - 2012-06-05
       during its v2 handshake renegotiation, allow the renegotiation to
       continue nevertheless (i.e. send all the required certificates).
       Fixes bug 4591; bugfix on 0.2.0.20-rc.
-    - When we receive a SIGHUP and the controller __ReloadAnonrcOnSIGHUP
+    - When we receive a SIGHUP and the controller __ReloadTorrcOnSIGHUP
       option is set to 0 (which Vidalia version 0.2.16 now does when
       a SAVECONF attempt fails), perform other actions that SIGHUP
       usually causes (like reopening the logs). Fixes bug 5095; bugfix
@@ -27385,8 +27385,8 @@ Changes in version 0.2.3.16-alpha - 2012-06-05
       therefore deprecated). Resolves ticket 5597.
 
   o Removed files:
-    - Remove the anonrc.bridge file: we don't use it for anything, and
-      it had become badly desynchronized from anonrc.sample. Resolves
+    - Remove the torrc.bridge file: we don't use it for anything, and
+      it had become badly desynchronized from torrc.sample. Resolves
       bug 5622.
 
 
@@ -27480,7 +27480,7 @@ Changes in version 0.2.2.36 - 2012-05-24
       bugfix on 0.2.0.14-alpha.
     - Detect and reject certain misformed escape sequences in
       configuration values. Previously, these values would cause us
-      to crash if received in a anonrc file or over an authenticated
+      to crash if received in a torrc file or over an authenticated
       control port. Bug found by Esteban Manchado Velázquez, and
       independently by Robert Connolly from Matta Consulting who further
       noted that it allows a post-authentication heap overflow. Patch
@@ -27666,17 +27666,17 @@ Changes in version 0.2.3.14-alpha - 2012-04-23
     - Begin a doc/state-contents.txt file to explain the contents of
       the Tor state file. Fixes bug 2987.
 
-  o Default anonrc changes:
-    - Stop listing "socksport 9050" in anonrc.sample. We open a socks
+  o Default torrc changes:
+    - Stop listing "socksport 9050" in torrc.sample. We open a socks
       port on 9050 by default anyway, so this should not change anything
       in practice.
     - Stop mentioning the deprecated *ListenAddress options in
-      anonrc.sample. Fixes bug 5438.
-    - Document unit of bandwidth related options in sample anonrc.
+      torrc.sample. Fixes bug 5438.
+    - Document unit of bandwidth related options in sample torrc.
       Fixes bug 5621.
 
   o Removed features:
-    - The "anonify" script no longer supports the "tsocks" socksifier
+    - The "torify" script no longer supports the "tsocks" socksifier
       tool, since tsocks doesn't support DNS and UDP right for Tor.
       Everyone should be using torsocks instead. Fixes bugs 3530 and
       5180. Based on a patch by "ugh".
@@ -27726,7 +27726,7 @@ Changes in version 0.2.3.13-alpha - 2012-03-26
     - Stop discarding command-line arguments when TestingTorNetwork
       is set. Discovered by Kevin Bauer. Fixes bug 5373; bugfix on
       0.2.3.9-alpha, where task 4552 added support for two layers of
-      anonrc files.
+      torrc files.
     - Resume allowing the unit tests to run in gdb. This was accidentally
       made impossible when the DisableDebuggerAttachment option was
       introduced. Fixes bug 5448; bugfix on 0.2.3.9-alpha.
@@ -27740,7 +27740,7 @@ Changes in version 0.2.3.13-alpha - 2012-03-26
       0.1.0.1-rc which introduced cannibalization.
     - Detect and reject certain misformed escape sequences in
       configuration values. Previously, these values would cause us
-      to crash if received in a anonrc file or over an authenticated
+      to crash if received in a torrc file or over an authenticated
       control port. Bug found by Esteban Manchado Velázquez, and
       independently by Robert Connolly from Matta Consulting who further
       noted that it allows a post-authentication heap overflow. Patch
@@ -27807,7 +27807,7 @@ Changes in version 0.2.3.12-alpha - 2012-02-13
     - Use the dead_strip option when building Tor on OS X. This reduces
       binary size by almost 19% when linking openssl and libevent
       statically, which we do for Tor Browser Bundle.
-    - Fix broken URLs in the sample anonrc file, and tell readers about
+    - Fix broken URLs in the sample torrc file, and tell readers about
       the OutboundBindAddress, ExitPolicyRejectPrivate, and
       PublishServerDescriptor options. Addresses bug 4652.
     - Update to the February 7 2012 Maxmind GeoLite Country database.
@@ -27896,8 +27896,8 @@ Changes in version 0.2.3.11-alpha - 2012-01-22
       on 0.2.3.9-alpha. Found by Pascal.
 
   o Minor features (controller):
-    - Use absolute path names when reporting the anonrc filename in the
-      control protocol, so a controller can more easily find the anonrc
+    - Use absolute path names when reporting the torrc filename in the
+      control protocol, so a controller can more easily find the torrc
       file. Resolves bug 1101.
     - Extend the control protocol to report flags that control a circuit's
       path selection in CIRC events and in replies to 'GETINFO
@@ -28342,9 +28342,9 @@ Changes in version 0.2.3.9-alpha - 2011-12-08
       Implements issue 933.
     - Slightly change behavior of "list" options (that is, config
       options that can appear more than once) when they appear both in
-      anonrc and on the command line. Previously, the command-line options
-      would be appended to the ones from anonrc. Now, the command-line
-      options override the anonrc options entirely. This new behavior
+      torrc and on the command line. Previously, the command-line options
+      would be appended to the ones from torrc. Now, the command-line
+      options override the torrc options entirely. This new behavior
       allows the user to override list options (like exit policies and
       ports to listen on) from the command line, rather than simply
       appending to the list.
@@ -28353,9 +28353,9 @@ Changes in version 0.2.3.9-alpha - 2011-12-08
     - You can remove all the values for a "list" option from the command
       line without adding any new ones by prefixing the option name
       with a "/".
-    - Add experimental support for a "defaults" anonrc file to be parsed
-      before the regular anonrc. Anonrc options override the defaults file's
-      options in the same way that the command line overrides the anonrc.
+    - Add experimental support for a "defaults" torrc file to be parsed
+      before the regular torrc. Torrc options override the defaults file's
+      options in the same way that the command line overrides the torrc.
       The SAVECONF controller command saves only those options which
       differ between the current configuration and the defaults file. HUP
       reloads both files. (Note: This is an experimental feature; its
@@ -28384,7 +28384,7 @@ Changes in version 0.2.3.9-alpha - 2011-12-08
     - Resolve an integer overflow bug in smartlist_ensure_capacity().
       Fixes bug 4230; bugfix on Tor 0.1.0.1-rc. Based on a patch by
       Mansour Moufid.
-    - Fix a minor formatting issue in one of anon-gencert's error messages.
+    - Fix a minor formatting issue in one of tor-gencert's error messages.
       Fixes bug 4574.
     - Prevent a false positive from the check-spaces script, by disabling
       the "whitespace between function name and (" check for functions
@@ -28921,7 +28921,7 @@ Changes in version 0.2.1.31 - 2011-10-26
       fixes bug 1172.
     - Build correctly on OSX with zlib 1.2.4 and higher with all warnings
       enabled. Fixes bug 1526.
-    - Remove undocumented option "-F" from anon-resolve: it hasn't done
+    - Remove undocumented option "-F" from tor-resolve: it hasn't done
       anything since 0.2.1.16-rc.
     - Avoid signed/unsigned comparisons by making SIZE_T_CEILING unsigned.
       None of the cases where we did this before were wrong, but by making
@@ -29198,7 +29198,7 @@ Changes in version 0.2.3.3-alpha - 2011-09-01
     - Enable microdescriptor fetching by default for clients. This allows
       clients to download a much smaller amount of directory information.
       To disable it (and go back to the old-style consensus and
-      descriptors), set "UseMicrodescriptors 0" in your anonrc file.
+      descriptors), set "UseMicrodescriptors 0" in your torrc file.
     - Tor's firewall-helper feature, introduced in 0.2.3.1-alpha (see the
       "PortForwarding" config option), now supports Windows.
     - When using an exit relay running 0.2.3.x, clients can now
@@ -29207,7 +29207,7 @@ Changes in version 0.2.3.3-alpha - 2011-09-01
       connections where the client speaks first (such as web browsing).
       This behavior is controlled by a consensus parameter (currently
       disabled). To turn it on or off manually, use the "OptimisticData"
-      anonrc option. Implements proposal 181; code by Ian Goldberg.
+      torrc option. Implements proposal 181; code by Ian Goldberg.
 
   o Major bugfixes (bufferevents, fixes on 0.2.3.1-alpha):
     - When using IOCP on Windows, we need to enable Libevent windows
@@ -29283,13 +29283,13 @@ Changes in version 0.2.3.3-alpha - 2011-09-01
       mode from binary mode (namely, Windows). These files are:
       'buffer-stats', 'dirreq-stats', and 'entry-stats' on relays
       that collect those statistics; 'client_keys' and 'hostname' for
-      hidden services that use authentication; and (in the anon-gencert
+      hidden services that use authentication; and (in the tor-gencert
       utility) newly generated identity and signing keys. Previously,
       we wouldn't specify text mode or binary mode, leading to an
       assertion failure. Fixes bug 3607. Bugfix on 0.2.1.1-alpha (when
       the DirRecordUsageByCountry option which would have triggered
       the assertion failure was added), although this assertion failure
-      would have occurred in anon-gencert on Windows in 0.2.0.1-alpha.
+      would have occurred in tor-gencert on Windows in 0.2.0.1-alpha.
     - Selectively disable deprecation warnings on OS X because Lion
       started deprecating the shipped copy of openssl. Fixes bug 3643.
     - Remove an extra pair of quotation marks around the error
@@ -29358,13 +29358,13 @@ Changes in version 0.2.2.31-rc - 2011-08-17
       mode from binary mode (namely, Windows). These files are:
       'buffer-stats', 'dirreq-stats', and 'entry-stats' on relays
       that collect those statistics; 'client_keys' and 'hostname' for
-      hidden services that use authentication; and (in the anon-gencert
+      hidden services that use authentication; and (in the tor-gencert
       utility) newly generated identity and signing keys. Previously,
       we wouldn't specify text mode or binary mode, leading to an
       assertion failure. Fixes bug 3607. Bugfix on 0.2.1.1-alpha (when
       the DirRecordUsageByCountry option which would have triggered
       the assertion failure was added), although this assertion failure
-      would have occurred in anon-gencert on Windows in 0.2.0.1-alpha.
+      would have occurred in tor-gencert on Windows in 0.2.0.1-alpha.
     - Selectively disable deprecation warnings on OS X because Lion
       started deprecating the shipped copy of openssl. Fixes bug 3643.
     - When unable to format an address as a string, report its value
@@ -29520,15 +29520,15 @@ Changes in version 0.2.2.30-rc - 2011-07-07
 
 Changes in version 0.2.2.29-beta - 2011-06-20
   Tor 0.2.2.29-beta reverts an accidental behavior change for users who
-  have bridge lines in their anonrc but don't want to use them; gets
+  have bridge lines in their torrc but don't want to use them; gets
   us closer to having the control socket feature working on Debian;
   and fixes a variety of smaller bugs.
 
   o Major bugfixes:
     - Revert the UseBridges option to its behavior before 0.2.2.28-beta.
       When we changed the default behavior to "use bridges if any
-      are listed in the anonrc", we surprised users who had bridges
-      in their anonrc files but who didn't actually want to use them.
+      are listed in the torrc", we surprised users who had bridges
+      in their torrc files but who didn't actually want to use them.
       Partial resolution for bug 3354.
 
   o Privacy fixes:
@@ -29672,7 +29672,7 @@ Changes in version 0.2.2.28-beta - 2011-06-04
       state because of SIGNAL NEWNYM.
 
   o Removed options:
-    - Remove undocumented option "-F" from anon-resolve: it hasn't done
+    - Remove undocumented option "-F" from tor-resolve: it hasn't done
       anything since 0.2.1.16-rc.
 
 
@@ -29774,7 +29774,7 @@ Changes in version 0.2.2.26-beta - 2011-05-17
       cache on Windows. (We would try to replace the file while still
       holding it open. That's fine on Unix, but Windows doesn't let us
       do that.) Bugfix on 0.2.2.6-alpha; bug found by wanoskarnet.
-    - Add missing explanations for the authority-related anonrc options
+    - Add missing explanations for the authority-related torrc options
       RephistTrackTime, BridgePassword, and V3AuthUseLegacyKey in the
       man page. Resolves issue 2379.
     - As an authority, do not upload our own vote or signature set to
@@ -29858,7 +29858,7 @@ Changes in version 0.2.3.1-alpha - 2011-05-05
       performance than the select-based backend we've used in the past. To
       try this feature, you must build Tor with Libevent 2, configure Tor
       with the "bufferevents" buffered IO backend, and add "DisableIOCP 0" to
-      your anonrc. There are known bugs here: only try this if you can help
+      your torrc. There are known bugs here: only try this if you can help
       debug it as it breaks.
     - The EntryNodes option can now include country codes like {de} or IP
       addresses or network masks. Previously we had disallowed these options
@@ -29889,7 +29889,7 @@ Changes in version 0.2.3.1-alpha - 2011-05-05
     - Make logging resolution configurable with a new LogTimeGranularity
       option, and change the default from 1 millisecond to 1 second.
       Implements enhancement 1668.
-    - We log which anonrc file we're using on startup. Implements ticket
+    - We log which torrc file we're using on startup. Implements ticket
       2444.
     - Ordinarily, Tor does not count traffic from private addresses (like
       127.0.0.1 or 10.0.0.1) when calculating rate limits or accounting.
@@ -29965,7 +29965,7 @@ Changes in version 0.2.3.1-alpha - 2011-05-05
       Now, we have a new "node_t" abstraction that presents a consistent
       interface to a client's view of a Tor node, and holds (nearly) all
       of the mutable state formerly in routerinfo_t and routerstatus_t.
-    - The helper programs anon-gencert, anon-resolve, and tor-checkkey
+    - The helper programs tor-gencert, tor-resolve, and tor-checkkey
       no longer link against Libevent: they never used it, but
       our library structure used to force them to link it.
 
@@ -29976,7 +29976,7 @@ Changes in version 0.2.3.1-alpha - 2011-05-05
 
   o Documentation fixes:
     - Correct a broken faq link in the INSTALL file. Fixes bug 2307.
-    - Add missing documentation for the authority-related anonrc options
+    - Add missing documentation for the authority-related torrc options
       RephistTrackTime, BridgePassword, and V3AuthUseLegacyKey. Resolves
       issue 2379.
 
@@ -30279,7 +30279,7 @@ Changes in version 0.2.2.23-alpha - 2011-03-08
       potentially using more bandwidth than expected. Bugfix on
       0.2.0.1-alpha. Reported by Paul Wouters. Fixes bug 2470.
     - Ignore and warn if the user mistakenly sets "PublishServerDescriptor
-      hidserv" in her anonrc. The 'hidserv' argument never controlled
+      hidserv" in her torrc. The 'hidserv' argument never controlled
       publication of hidden service descriptors. Bugfix on 0.2.0.1-alpha.
 
   o Major features:
@@ -30369,7 +30369,7 @@ Changes in version 0.2.2.23-alpha - 2011-03-08
       ill-defined, generally prevented by exit policies, and usually
       in error. This will also help to detect loops in transparent
       proxy configurations. You can disable this feature by setting
-      "ClientRejectInternalAddresses 0" in your anonrc.
+      "ClientRejectInternalAddresses 0" in your torrc.
     - Always treat failure to allocate an RSA key as an unrecoverable
       allocation error.
     - Update to the March 1 2011 Maxmind GeoLite Country database.
@@ -30414,7 +30414,7 @@ Changes in version 0.2.1.30 - 2011-02-23
       potentially using more bandwidth than expected. Bugfix on
       0.2.0.1-alpha. Reported by Paul Wouters. Fixes bug 2470.
     - Ignore and warn if the user mistakenly sets "PublishServerDescriptor
-      hidserv" in her anonrc. The 'hidserv' argument never controlled
+      hidserv" in her torrc. The 'hidserv' argument never controlled
       publication of hidden service descriptors. Bugfix on 0.2.0.1-alpha.
 
   o Minor features:
@@ -30580,7 +30580,7 @@ Changes in version 0.2.2.21-alpha - 2011-01-15
 
   o Documentation, new in 0.2.2.21-alpha:
     - Document the default socks host and port (127.0.0.1:9050) for
-      anon-resolve.
+      tor-resolve.
 
 
 Changes in version 0.2.1.29 - 2011-01-15
@@ -30905,7 +30905,7 @@ Changes in version 0.2.2.18-alpha - 2010-11-16
     - Some options used different conventions for uppercasing of acronyms
       when comparing manpage and source. Fix those in favor of the
       manpage, as it makes sense to capitalize acronyms.
-    - Remove the anonrc.complete file. It hasn't been kept up to date
+    - Remove the torrc.complete file. It hasn't been kept up to date
       and users will have better luck checking out the manpage.
     - Remove the obsolete "NoPublish" option; it has been flagged
       as obsolete and has produced a warning since 0.1.1.18-rc.
@@ -30929,7 +30929,7 @@ Changes in version 0.2.2.17-alpha - 2010-09-30
       relays, to make it harder for people to use them as one-hop proxies
       a la tortunnel. Controlled by the refuseunknownexits consensus
       parameter (currently enabled), or you can override it on your
-      relay with the RefuseUnknownExits anonrc option. Resolves bug 1751.
+      relay with the RefuseUnknownExits torrc option. Resolves bug 1751.
 
   o Major bugfixes (0.2.1.x and earlier):
     - Fix a bug in bandwidth accounting that could make us use twice
@@ -31004,7 +31004,7 @@ Changes in version 0.2.2.17-alpha - 2010-09-30
     - Add some more defensive programming for architectures that can't
       handle unaligned integer accesses. We don't know of any actual bugs
       right now, but that's the best time to fix them. Fixes bug 1943.
-    - Support line continuations in the anonrc config file. If a line
+    - Support line continuations in the torrc config file. If a line
       ends with a single backslash character, the newline is ignored, and
       the configuration value is treated as continuing on the next line.
       Resolves bug 1929.
@@ -31068,7 +31068,7 @@ Changes in version 0.2.2.16-alpha - 2010-09-17
     - When logging a rate-limited warning, we now mention how many messages
       got suppressed since the last warning.
     - Add new "perconnbwrate" and "perconnbwburst" consensus params to
-      do individual connection-level rate limiting of clients. The anonrc
+      do individual connection-level rate limiting of clients. The torrc
       config options with the same names trump the consensus params, if
       both are present. Replaces the old "bwconnrate" and "bwconnburst"
       consensus params which were broken from 0.2.2.7-alpha through
@@ -31184,12 +31184,12 @@ Changes in version 0.2.2.15-alpha - 2010-08-18
     - Update to the August 1 2010 Maxmind GeoLite Country database.
     - Have the controller interface give a more useful message than
       "Internal Error" in response to failed GETINFO requests.
-    - Warn when the same option is provided more than once in a anonrc
+    - Warn when the same option is provided more than once in a torrc
       file, on the command line, or in a single SETCONF statement, and
       the option is one that only accepts a single line. Closes bug 1384.
     - Build correctly on mingw with more recent versions of OpenSSL 0.9.8.
       Patch from mingw-san.
-    - Add support for the country code "{??}" in anonrc options like
+    - Add support for the country code "{??}" in torrc options like
       ExcludeNodes, to indicate all routers of unknown country. Closes
       bug 1094.
     - Relays report the number of bytes spent on answering directory
@@ -31515,7 +31515,7 @@ Changes in version 0.2.2.11-alpha - 2010-04-15
   o Minor features:
     - Experiment with a more aggressive approach to preventing clients
       from making one-hop exit streams. Exit relays who want to try it
-      out can set "RefuseUnknownExits 1" in their anonrc, and then look
+      out can set "RefuseUnknownExits 1" in their torrc, and then look
       for "Attempt by %s to open a stream" log messages. Let us know
       how it goes!
     - Add support for statically linking zlib by specifying
@@ -31558,7 +31558,7 @@ Changes in version 0.2.2.10-alpha - 2010-03-07
   o Major bugfixes:
     - Fix a regression from our patch for bug 1244 that caused relays
       to guess their IP address incorrectly if they didn't set Address
-      in their anonrc and/or their address fails to resolve. Bugfix on
+      in their torrc and/or their address fails to resolve. Bugfix on
       0.2.2.9-alpha; fixes bug 1269.
 
   o Major features (performance):
@@ -31700,7 +31700,7 @@ Changes in version 0.2.1.25 - 2010-03-16
   o Major bugfixes:
     - Fix a regression from our patch for bug 1244 that caused relays
       to guess their IP address incorrectly if they didn't set Address
-      in their anonrc and/or their address fails to resolve. Bugfix on
+      in their torrc and/or their address fails to resolve. Bugfix on
       0.2.1.23; fixes bug 1269.
     - When freeing a session key, zero it out completely. We only zeroed
       the first ptrsize bytes. Bugfix on 0.0.2pre8. Discovered and
@@ -32232,7 +32232,7 @@ Changes in version 0.2.2.2-alpha - 2009-09-21
     - Work around a small memory leak in some versions of OpenSSL that
       stopped the memory used by the hostname TLS extension from being
       freed.
-    - Make our 'anonify' script more portable; if we have only one of
+    - Make our 'torify' script more portable; if we have only one of
       'torsocks' or 'tsocks' installed, don't complain to the user;
       and explain our warning about tsocks better.
 
@@ -32254,7 +32254,7 @@ Changes in version 0.2.2.1-alpha - 2009-08-26
   o Security fixes:
     - Start the process of disabling ".exit" address notation, since it
       can be used for a variety of esoteric application-level attacks
-      on users. To reenable it, set "AllowDotExit 1" in your anonrc. Fix
+      on users. To reenable it, set "AllowDotExit 1" in your torrc. Fix
       on 0.0.9rc5.
 
   o New directory authorities:
@@ -32299,7 +32299,7 @@ Changes in version 0.2.2.1-alpha - 2009-08-26
   o Minor features:
     - New --digests command-line switch to output the digests of the
       source files Tor was built with.
-    - The "anonify" script now uses torsocks where available.
+    - The "torify" script now uses torsocks where available.
     - The memarea code now uses a sentinel value at the end of each area
       to make sure nothing writes beyond the end of an area. This might
       help debug some conceivable causes of bug 930.
@@ -32500,8 +32500,8 @@ Changes in version 0.2.1.16-rc - 2009-06-20
 
   o Minor features:
     - Update to the "June 3 2009" ip-to-country file.
-    - Do not have anon-resolve automatically refuse all .onion addresses;
-      if AutomapHostsOnResolve is set in your anonrc, this will work fine.
+    - Do not have tor-resolve automatically refuse all .onion addresses;
+      if AutomapHostsOnResolve is set in your torrc, this will work fine.
 
   o Minor bugfixes (on 0.2.0.x):
     - Log correct error messages for DNS-related network errors on
@@ -32617,7 +32617,7 @@ Changes in version 0.2.1.14-rc - 2009-04-12
     - Avoid trying to print raw memory to the logs when we decide to
       give up on downloading a given relay descriptor. Bugfix on
       0.2.1.9-alpha.
-    - In anon-resolve, when the Tor client to use is specified by
+    - In tor-resolve, when the Tor client to use is specified by
       <hostname>:<port>, actually use the specified port rather than
       defaulting to 9050. Bugfix on 0.2.1.6-alpha.
     - Make directory usage recording work again. Bugfix on 0.2.1.6-alpha.
@@ -32944,7 +32944,7 @@ Changes in version 0.2.1.11-alpha - 2009-01-20
       cell back), avoid using that OR connection anymore, and also
       tell all the one-hop directory requests waiting for it that they
       should fail. Bugfix on 0.2.1.3-alpha.
-    - In the anonify(1) manpage, mention that tsocks will leak your
+    - In the torify(1) manpage, mention that tsocks will leak your
       DNS requests.
 
 
@@ -33114,7 +33114,7 @@ Changes in version 0.2.1.9-alpha - 2008-12-25
     - When we realize that another process has modified our cached
       descriptors file, print out a more useful error message rather
       than triggering an assertion. Fixes bug 885. Patch from Karsten.
-    - Add an internal-use-only __ReloadAnonrcOnSIGHUP option for
+    - Add an internal-use-only __ReloadTorrcOnSIGHUP option for
       controllers to prevent SIGHUP from reloading the
       configuration. Fixes bug 856.
 
@@ -33449,7 +33449,7 @@ Changes in version 0.2.1.6-alpha - 2008-09-30
       single-hop circuits, and clients to use those servers to build
       single-hop circuits when using a specialized controller. Patch
       from Josh Albrecht. Resolves feature request 768.
-    - Add a -p option to anon-resolve for specifying the SOCKS port: some
+    - Add a -p option to tor-resolve for specifying the SOCKS port: some
       people find host:port too confusing.
     - Make TrackHostExit mappings expire a while after their last use, not
       after their creation. Patch from Robert Hogan.
@@ -33616,7 +33616,7 @@ Changes in version 0.2.1.5-alpha - 2008-08-31
     - Resist DNS poisoning a little better by making sure that names in
       answer sections match.
     - Print the SOCKS5 error message string as well as the error code
-      when a anon-resolve request fails. Patch from Jacob.
+      when a tor-resolve request fails. Patch from Jacob.
 
 
 Changes in version 0.2.1.4-alpha - 2008-08-04
@@ -33921,7 +33921,7 @@ Changes in version 0.2.1.1-alpha - 2008-06-13
       it. Otherwise a 404 error is sent back. Clients use this
       new scheme when the server supports it (meaning it's running
       0.2.1.1-alpha or later). Implements proposal 134.
-    - New configure/anonrc options (--enable-geoip-stats,
+    - New configure/torrc options (--enable-geoip-stats,
       DirRecordUsageByCountry) to record how many IPs we've served
       directory info to in each country code, how many status documents
       total we've sent to each country code, and what share of the total
@@ -33967,7 +33967,7 @@ Changes in version 0.2.0.28-rc - 2008-06-13
       0.2.0.27-rc.
     - Only warn when we fail to load the geoip file if we were planning to
       include geoip stats in our extrainfo document. Bugfix on 0.2.0.27-rc.
-    - If we change our MaxAdvertisedBandwidth and then reload anonrc,
+    - If we change our MaxAdvertisedBandwidth and then reload torrc,
       Tor won't realize it should publish a new relay descriptor. Fixes
       bug 688, reported by mfr. Bugfix on 0.1.2.x.
     - When we haven't had any application requests lately, don't bother
@@ -34255,7 +34255,7 @@ Changes in version 0.2.0.20-rc - 2008-02-24
     - Add a new __HashedControlSessionPassword option for controllers
       to use for one-off session password hashes that shouldn't get
       saved to disk by SAVECONF --- Vidalia users were accumulating a
-      pile of HashedControlPassword lines in their anonrc files, one for
+      pile of HashedControlPassword lines in their torrc files, one for
       each time they had restarted Tor and then clicked Save. Make Tor
       automatically convert "HashedControlPassword" to this new option but
       only when it's given on the command line. Partial fix for bug 586.
@@ -34279,7 +34279,7 @@ Changes in version 0.2.0.20-rc - 2008-02-24
       errors.
     - When building with --enable-gcc-warnings, check for whether Apple's
       warning "-Wshorten-64-to-32" is available.
-    - Add a --passphrase-fd argument to the anon-gencert command for
+    - Add a --passphrase-fd argument to the tor-gencert command for
       scriptability.
 
   o Minor bugfixes (memory leaks and code problems):
@@ -34474,7 +34474,7 @@ Changes in version 0.2.0.17-alpha - 2008-01-17
   Tor 0.2.0.17-alpha makes the tarball build cleanly again (whoops).
 
   o Compile fixes:
-    - Make the anon-gencert man page get included correctly in the tarball.
+    - Make the tor-gencert man page get included correctly in the tarball.
 
 
 Changes in version 0.2.0.16-alpha - 2008-01-17
@@ -34557,15 +34557,15 @@ Changes in version 0.2.0.16-alpha - 2008-01-17
   o Minor features (controller):
     - Get NS events working again. Patch from tup.
     - The GETCONF command now escapes and quotes configuration values
-      that don't otherwise fit into the anonrc file.
+      that don't otherwise fit into the torrc file.
     - The SETCONF command now handles quoted values correctly.
 
   o Minor features (directory authorities):
     - New configuration options to override default maximum number of
       servers allowed on a single IP address. This is important for
       running a test network on a single host.
-    - Actually implement the -s option to anon-gencert.
-    - Add a manual page for anon-gencert.
+    - Actually implement the -s option to tor-gencert.
+    - Add a manual page for tor-gencert.
 
   o Minor features (bridges):
     - Bridge authorities no longer serve bridge descriptors over
@@ -34678,7 +34678,7 @@ Changes in version 0.2.0.14-alpha - 2007-12-23
       on subsequent requests we'd be using garbage memory. Fixed by
       Karsten Loesing. Bugfix on 0.2.0.13-alpha.
     - Fix a crash when we load a bridge descriptor from disk but we don't
-      currently have a Bridge line for it in our anonrc. Bugfix on
+      currently have a Bridge line for it in our torrc. Bugfix on
       0.2.0.13-alpha.
 
   o Major features:
@@ -35162,7 +35162,7 @@ Changes in version 0.2.0.9-alpha - 2007-10-24
       matching the latest router. Bugfix on 0.2.0.1-alpha.
 
   o Minor features (v3 directory protocol):
-    - Allow anon-gencert to generate a new certificate without replacing
+    - Allow tor-gencert to generate a new certificate without replacing
       the signing key.
     - Allow certificates to include an address.
     - When we change our directory-cache settings, reschedule all voting
@@ -35444,7 +35444,7 @@ Changes in version 0.2.0.7-alpha - 2007-09-21
       attempts to fetch their server descriptor. This caused Tor servers
       to take many minutes to establish reachability for their DirPort,
       and it totally crippled bridges. Bugfix on 0.2.0.5-alpha.
-    - Make "UpdateBridgesFromAuthority" anonrc option work: when bridge
+    - Make "UpdateBridgesFromAuthority" torrc option work: when bridge
       users configure that and specify a bridge with an identity
       fingerprint, now they will lookup the bridge descriptor at the
       default bridge authority via a one-hop tunnel, but once circuits
@@ -35737,7 +35737,7 @@ Changes in version 0.2.0.5-alpha - 2007-08-19
     - When we have our clock set far in the future and generate an
       onion key, then re-set our clock to be correct, we should not stop
       the onion key from getting rotated.
-    - Clean up anonrc sample config file.
+    - Clean up torrc sample config file.
     - Do not automatically run configure from autogen.sh. This
       non-standard behavior tended to annoy people who have built other
       programs.
@@ -35754,7 +35754,7 @@ Changes in version 0.2.0.5-alpha - 2007-08-19
 
 Changes in version 0.1.2.16 - 2007-08-01
   Tor 0.1.2.16 fixes a critical security vulnerability that allows a
-  remote attacker in certain situations to rewrite the user's anonrc
+  remote attacker in certain situations to rewrite the user's torrc
   configuration file. This can completely compromise anonymity of users
   in most configurations, including those running the Vidalia bundles,
   TorK, etc. Or worse.
@@ -35860,7 +35860,7 @@ Changes in version 0.2.0.3-alpha - 2007-07-29
   o Minor features (misc):
     - Merge in some (as-yet-unused) IPv6 address manipulation code. (Patch
       from croup.)
-    - The anon-gencert tool for v3 directory authorities now creates all
+    - The tor-gencert tool for v3 directory authorities now creates all
       files as readable to the file creator only, and write-protects
       the authority identity key.
     - When dumping memory usage, list bytes used in buffer memory
@@ -36124,12 +36124,12 @@ Changes in version 0.2.0.1-alpha - 2007-06-01
       allows DNSPort to work sensibly with hidden service users. By
       default, .exit and .onion addresses are remapped; the list of
       patterns can be reconfigured with AutomapHostsSuffixes.
-    - Add an "-F" option to anon-resolve to force a resolve for a .onion
+    - Add an "-F" option to tor-resolve to force a resolve for a .onion
       address. Thanks to the AutomapHostsOnResolve option, this is no
       longer a completely silly thing to do.
     - If Tor is invoked from something that isn't a shell (e.g. Vidalia),
-      now we expand "-f ~/.anon/anonrc" correctly. Suggested by Matt Edman.
-    - Treat "2gb" when given in anonrc for a bandwidth as meaning 2gb,
+      now we expand "-f ~/.tor/torrc" correctly. Suggested by Matt Edman.
+    - Treat "2gb" when given in torrc for a bandwidth as meaning 2gb,
       minus 1 byte: the actual maximum declared bandwidth.
 
   o Removed features:
@@ -36573,9 +36573,9 @@ Changes in version 0.1.2.7-alpha - 2007-02-06
       create_fast cell if we don't know anything about a router.
     - Allow exit nodes to use nameservers running on ports other than 53.
     - Servers now cache reverse DNS replies.
-    - Add an --ignore-missing-anonrc command-line option so that we can
+    - Add an --ignore-missing-torrc command-line option so that we can
       get the "use sensible defaults if the configuration file doesn't
-      exist" behavior even when specifying a anonrc location on the command
+      exist" behavior even when specifying a torrc location on the command
       line.
 
   o Minor features (controller):
@@ -36647,8 +36647,8 @@ Changes in version 0.1.2.5-alpha - 2007-01-06
     - Include TLS overhead when counting bandwidth usage; previously, we
       would count only the bytes sent over TLS, but not the bytes used
       to send them.
-    - Support running the Tor service with a anonrc not in the same
-      directory as tor.exe and default to using the anonrc located in
+    - Support running the Tor service with a torrc not in the same
+      directory as tor.exe and default to using the torrc located in
       the %appdata%\Tor\ of the user who installed the service. Patch
       from Matt Edman.
     - Servers now check for the case when common DNS requests are going to
@@ -36687,7 +36687,7 @@ Changes in version 0.1.2.5-alpha - 2007-01-06
     - Ongoing work on eventdns infrastructure: now it has dns server
       and ipv6 support. One day Tor will make use of it.
     - Add client-side caching for reverse DNS lookups.
-    - Add support to anon-resolve tool for reverse lookups and SOCKS5.
+    - Add support to tor-resolve tool for reverse lookups and SOCKS5.
     - When we change nameservers or IP addresses, reset and re-launch
       our tests for DNS hijacking.
 
@@ -36945,7 +36945,7 @@ Changes in version 0.1.2.3-alpha - 2006-10-29
       build with MinGW without breaking Tor for Windows 98 users.
     - Do DirPort reachability tests less often, since a single test
       chews through many circuits before giving up.
-    - In the hidden service example in anonrc.sample, stop recommending
+    - In the hidden service example in torrc.sample, stop recommending
       esoteric and discouraged hidden service options.
     - When stopping an NT service, wait up to 10 sec for it to actually
       stop. Patch from Matt Edman; resolves bug 295.
@@ -37212,7 +37212,7 @@ Changes in version 0.1.2.1-alpha - 2006-08-27
       files, so we don't need to keep the whole thing in memory too.
     - Automatically avoid picking more than one node from the same
       /16 network when constructing a circuit.
-    - Revise and clean up the anonrc.sample that we ship with; add
+    - Revise and clean up the torrc.sample that we ship with; add
       a section for BandwidthRate and BandwidthBurst.
 
   o Minor features:
@@ -37388,8 +37388,8 @@ Changes in version 0.1.1.21 - 2006-06-10
       log about it unless ProtocolWarnings is set, i.e., we want to hear
       about protocol violations by others.
     - Fix spelling of VirtualAddrNetwork in man page.
-    - Add a better explanation at the top of the autogenerated anonrc file
-      about what happened to our old anonrc.
+    - Add a better explanation at the top of the autogenerated torrc file
+      about what happened to our old torrc.
 
 
 Changes in version 0.1.1.20 - 2006-05-23
@@ -37533,7 +37533,7 @@ Changes in version 0.1.1.16-rc - 2006-03-18
       to a particular circuit too. This will let Blossom specify
       "moria2.exit" without having to learn what moria2's IP address is.
     - Make the "tor --verify-config" command-line work again, so people
-      can automatically check if their anonrc will parse.
+      can automatically check if their torrc will parse.
     - Authoritative dirservers no longer require an open connection from
       a server to consider him "reachable". We need this change because
       when we add new auth dirservers, old servers won't know not to
@@ -37591,7 +37591,7 @@ Changes in version 0.1.1.15-rc - 2006-03-11
     - Fix a seg fault in the controller's "getinfo orconn-status"
       command while listing status on incoming handshaking connections.
       Introduce a status name "NEW" for these connections.
-    - If we get a linelist or linelist_s config option from the anonrc
+    - If we get a linelist or linelist_s config option from the torrc
       (e.g. ExitPolicy) and it has no value, warn and skip rather than
       silently resetting it to its default.
     - Don't abandon entry guards until they've been down or gone for
@@ -37648,7 +37648,7 @@ Changes in version 0.1.1.14-alpha - 2006-02-20
       be forward-compatible.
     - Generate 18.0.0.0/8 address policy format in descs when we can;
       warn when the mask is not reducible to a bit-prefix.
-    - Let the user set ControlListenAddress in the anonrc. This can be
+    - Let the user set ControlListenAddress in the torrc. This can be
       dangerous, but there are some cases (like a secured LAN) where it
       makes sense.
     - Split ReachableAddresses into ReachableDirAddresses and
@@ -37800,10 +37800,10 @@ Changes in version 0.1.1.11-alpha - 2006-01-10
       assert/crash if you don't give them enough arguments.
     - Fix an assert error when we're out of space in the connection_list
       and we try to post a hidden service descriptor (reported by weasel).
-    - If you specify a relative anonrc path and you set RunAsDaemon in
-      your anonrc, then it chdir()'s to the new directory. If you HUP,
-      it tries to load the new anonrc location, fails, and exits.
-      The fix: no longer allow a relative path to anonrc using -f.
+    - If you specify a relative torrc path and you set RunAsDaemon in
+      your torrc, then it chdir()'s to the new directory. If you HUP,
+      it tries to load the new torrc location, fails, and exits.
+      The fix: no longer allow a relative path to torrc using -f.
 
   o Major features:
     - Implement "entry guards": automatically choose a handful of entry
@@ -37859,7 +37859,7 @@ Changes in version 0.1.1.11-alpha - 2006-01-10
       circuits until they had nodes with high uptime. Be more tolerant.
     - We were marking servers down when they could not answer every piece
       of the directory request we sent them. This was far too harsh.
-    - Fix the anonify (tsocks) config file to not use Tor for localhost
+    - Fix the torify (tsocks) config file to not use Tor for localhost
       connections.
     - Directory authorities now go to the proper authority when asking for
       a networkstatus, even when they want a compressed one.
@@ -37868,8 +37868,8 @@ Changes in version 0.1.1.11-alpha - 2006-01-10
     - Authorities were treating their own descriptor changes as cosmetic,
       meaning the descriptor available in the network-status and the
       descriptor that clients downloaded were different.
-    - The OS X installer was adding a symlink for anon_resolve but
-      the binary was called anon-resolve (reported by Thomas Hardly).
+    - The OS X installer was adding a symlink for tor_resolve but
+      the binary was called tor-resolve (reported by Thomas Hardly).
     - Workaround a problem with some http proxies where they refuse GET
       requests that specify "Content-Length: 0" (reported by Adrian).
     - Fix wrong log message when you add a "HiddenServiceNodes" config
@@ -38176,8 +38176,8 @@ Changes in version 0.1.1.8-alpha - 2005-10-07
       useful since currently we automatically list servers as running
       and usable even if we know they're jerks.
     - Provide dire warnings to any users who set DirServer; move it out
-      of anonrc.sample and into anonrc.complete.
-    - Add MyFamily to anonrc.sample in the server section.
+      of torrc.sample and into torrc.complete.
+    - Add MyFamily to torrc.sample in the server section.
     - Add nicknames to the DirServer line, so we can refer to them
       without requiring all our users to memorize their IP addresses.
     - When we get an EOF or a timeout on a directory connection, note
@@ -38304,13 +38304,13 @@ Changes in version 0.1.1.6-alpha - 2005-09-09
   o New controller features/fixes:
     - Add a "RESETCONF" command so you can set config options like
       AllowUnverifiedNodes and LongLivedPorts to "". Also, if you give
-      a config option in the anonrc with no value, then it clears it
+      a config option in the torrc with no value, then it clears it
       entirely (rather than setting it to its default).
-    - Add a "GETINFO config-file" to tell us where anonrc is.
+    - Add a "GETINFO config-file" to tell us where torrc is.
     - Avoid sending blank lines when GETINFO replies should be empty.
     - Add a QUIT command for the controller (for using it manually).
     - Fix a bug in SAVECONF that was adding default dirservers and
-      other redundant entries to the anonrc file.
+      other redundant entries to the torrc file.
 
   o Start on the new directory design:
     - Generate, publish, cache, serve new network-status format.
@@ -38399,7 +38399,7 @@ Changes in version 0.1.1.6-alpha - 2005-09-09
       testing for reachability.
     - Put quotes around user-supplied strings when logging so users are
       more likely to realize if they add bad characters (like quotes)
-      to the anonrc.
+      to the torrc.
     - Let auth dir servers start without specifying an Address config
       option.
     - Make unit tests (and other invocations that aren't the real Tor)
@@ -38411,7 +38411,7 @@ Changes in version 0.1.1.5-alpha - 2005-08-08
 
   o Bugfixes on 0.1.0.x:
     - If you write "HiddenServicePort 6667 127.0.0.1 6668" in your
-      anonrc rather than "HiddenServicePort 6667 127.0.0.1:6668",
+      torrc rather than "HiddenServicePort 6667 127.0.0.1:6668",
       it would silently using ignore the 6668.
 
 
@@ -38680,9 +38680,9 @@ Changes in version 0.1.0.6-rc - 2005-05-14
     - Append default exit policy before checking for implicit internal
       addresses. Now we don't log a bunch of complaints on startup
       when using the default exit policy.
-    - Some people were putting "Address  " in their anonrc, and they had
+    - Some people were putting "Address  " in their torrc, and they had
       a buggy resolver that resolved " " to 0.0.0.0. Oops.
-    - If DataDir is ~/.anon, and that expands to /.anon, then default to
+    - If DataDir is ~/.tor, and that expands to /.tor, then default to
       LOCALSTATEDIR/tor instead.
     - Fix fragmented-message bug in TorControl.py.
     - Resolve a minor bug which would prevent unreachable dirports
@@ -38708,7 +38708,7 @@ Changes in version 0.1.0.6-rc - 2005-05-14
     - Call tor_free_all instead of connections_free_all after forking, to
       save memory on systems that need to fork.
     - Whine at you if you're a server and you don't set your contactinfo.
-    - Implement --verify-config command-line option to check if your anonrc
+    - Implement --verify-config command-line option to check if your torrc
       is valid without actually launching Tor.
     - Rewrite address "serifos.exit" to "localhost.serifos.exit"
       rather than just rejecting it.
@@ -38795,7 +38795,7 @@ Changes in version 0.1.0.3-rc - 2005-04-08
     - Only warn once per nickname from add_nickname_list_to_smartlist
       per failure, so an entrynode or exitnode choice that's down won't
       yell so much.
-    - Put a note in the anonrc about abuse potential with the default
+    - Put a note in the torrc about abuse potential with the default
       exit policy.
     - Revise control spec and implementation to allow all log messages to
       be sent to controller with their severities intact (suggested by
@@ -38879,8 +38879,8 @@ Changes in version 0.1.0.2-rc - 2005-04-01
       features hasn't been released yet). Add code to suppress spurious
       libevent log msgs.
     - Prevent possible segfault in connection_close_unattached_ap().
-    - Fix newlines on anonrc in win32.
-    - Improve error msgs when anon-resolve fails.
+    - Fix newlines on torrc in win32.
+    - Improve error msgs when tor-resolve fails.
 
   o Improvements on 0.0.9.x:
     - New experimental script tor/contrib/ExerciseServer.py (needs more
@@ -39018,7 +39018,7 @@ Changes in version 0.1.0.1-rc - 2005-03-28
     - Reject odd-looking addresses at the client (e.g. addresses that
       contain a colon), rather than having the server drop them because
       they're malformed.
-    - anon-resolve requests were ignoring .exit if there was a working circuit
+    - tor-resolve requests were ignoring .exit if there was a working circuit
       they could use instead.
     - REUSEADDR on normal platforms means you can rebind to the port
       right after somebody else has let it go. But REUSEADDR on win32
@@ -39094,7 +39094,7 @@ Changes in version 0.0.9.6 - 2005-03-24
       because all the directories it gets are too far in the future;
       yet the Tor server never logs any complaints about clock skew.
     - Mac packaging magic: make man pages useable, and do not overwrite
-      existing anonrc files.
+      existing torrc files.
     - Make OS X log happily to /var/log/tor/tor.log
 
 
@@ -39106,7 +39106,7 @@ Changes in version 0.0.9.5 - 2005-02-22
       support is still not compiled into the executable by default.
     - Patch from Dmitri Bely so the Tor service runs better under
       the win32 SYSTEM account.
-    - Make anon-resolve actually work (?) on Win32.
+    - Make tor-resolve actually work (?) on Win32.
     - Fix a sign bug when getrlimit claims to have 4+ billion
       file descriptors available.
     - Stop refusing to start when bandwidthburst == bandwidthrate.
@@ -39190,7 +39190,7 @@ Changes in version 0.0.9.2 - 2005-01-04
       immediately. (This was already working for non-win32 Tors.)
     - Stop trying to parse $HOME on win32 when hunting for default
       DataDirectory.
-    - Make anon-resolve.c work on win32 by calling network_init().
+    - Make tor-resolve.c work on win32 by calling network_init().
 
   o Bugfixes on 0.0.9 (other):
     - Make 0.0.9.x build on Solaris again.
@@ -39224,7 +39224,7 @@ Changes in version 0.0.9.1 - 2004-12-15
 
 Changes in version 0.0.9 - 2004-12-12
   o Cleanups:
-    - Clean up manpage and anonrc.sample file.
+    - Clean up manpage and torrc.sample file.
     - Clean up severities and text of log warnings.
   o Mistakes:
     - Make servers trigger an assert when they enter hibernation.
@@ -39324,8 +39324,8 @@ Changes in version 0.0.9rc3 - 2004-11-25
       so we don't see those messages days later.
 
   o Bugfixes on 0.0.9rc1:
-    - Make anon-resolve work again.
-    - Avoid infinite loop in anon-resolve if tor hangs up on it.
+    - Make tor-resolve work again.
+    - Avoid infinite loop in tor-resolve if tor hangs up on it.
     - Fix an assert trigger for clients/servers handling resolves.
 
 
@@ -39411,14 +39411,14 @@ Changes in version 0.0.9pre6 - 2004-11-15
     - Commit a tor.spec for making RPM files, with help from jbash.
     - Add contrib/torctl.in contributed by Glenn Fink.
     - Implement the control-spec's SAVECONF command, to write your
-      configuration to anonrc.
+      configuration to torrc.
     - Get cookie authentication for the controller closer to working.
     - Include control-spec.txt in the tarball.
     - When set_conf changes our server descriptor, upload a new copy.
       But don't upload it too often if there are frequent changes.
     - Document authentication config in man page, and document signals
       we catch.
-    - Clean up confusing parts of man page and anonrc.sample.
+    - Clean up confusing parts of man page and torrc.sample.
     - Make expand_filename handle ~ and ~username.
     - Use autoconf to enable largefile support where necessary. Use
       ftello where available, since ftell can fail at 2GB.
@@ -39496,7 +39496,7 @@ Changes in version 0.0.9pre5 - 2004-11-09
       nickname to its identity key.
     - Deprecate unofficial config option abbreviations, and abbreviations
       not on the command line.
-    - Add a pure-C anon-resolve implementation.
+    - Add a pure-C tor-resolve implementation.
     - Use getrlimit and friends to ensure we can reach MaxConn (currently
       1024) file descriptors.
 
@@ -39532,7 +39532,7 @@ Changes in version 0.0.9pre4 - 2004-10-17
 
 Changes in version 0.0.9pre3 - 2004-10-13
   o Bugfixes on 0.0.8.1:
-    - Better anonrc example lines for dirbindaddress and orbindaddress.
+    - Better torrc example lines for dirbindaddress and orbindaddress.
     - Improved bounds checking on parsed ints (e.g. config options and
       the ones we find in directories.)
     - Better handling of size_t vs int, so we're more robust on 64
@@ -39689,7 +39689,7 @@ Changes in version 0.0.8rc1 - 2004-08-18
   o Patches to 0.0.8preX:
     - Bugfixes:
       - Patches to compile and run on win32 again (maybe)?
-      - Fix crash when looking for ~/.anonrc with no $HOME set.
+      - Fix crash when looking for ~/.torrc with no $HOME set.
       - Fix a race bug in the unit tests.
       - Handle verified/unverified name collisions better when new
         routerinfo's arrive in a directory.
@@ -39701,7 +39701,7 @@ Changes in version 0.0.8rc1 - 2004-08-18
       - AllowUnverifiedNodes config option to let circuits choose no-name
         routers in entry,middle,exit,introduction,rendezvous positions.
         Allow middle and rendezvous positions by default.
-      - Add a man page for anon-resolve.
+      - Add a man page for tor-resolve.
 
 
 Changes in version 0.0.7.3 - 2004-08-12
@@ -39736,7 +39736,7 @@ Changes in version 0.0.8pre3 - 2004-08-09
     - Fix an assert error that was making SocksPolicy not work.
     - Be willing to expire routers that have an open dirport -- it's
       just the authoritative dirservers we want to not forget.
-    - Reject anon-resolve requests for .onion addresses early, so we
+    - Reject tor-resolve requests for .onion addresses early, so we
       don't build a whole rendezvous circuit and then fail.
     - When you're warning a server that he's unverified, don't cry
       wolf unpredictably.
@@ -39822,10 +39822,10 @@ Changes in version 0.0.8pre1 - 2004-07-23
     - When servers get a sigint, they delay 30 seconds (refusing new
       connections) then exit. A second sigint causes immediate exit.
     - File and name management:
-      - Look for .anonrc if no CONFDIR "anonrc" is found.
-      - If no datadir is defined, then choose, make, and secure ~/.anon
+      - Look for .torrc if no CONFDIR "torrc" is found.
+      - If no datadir is defined, then choose, make, and secure ~/.tor
         as datadir.
-      - If anonrc not found, exitpolicy reject *:*.
+      - If torrc not found, exitpolicy reject *:*.
       - Expands ~/ in filenames to $HOME/ (but doesn't yet expand ~arma).
       - If no nickname is defined, derive default from hostname.
       - Rename secret key files, e.g. identity.key -> secret_id_key,
@@ -39839,7 +39839,7 @@ Changes in version 0.0.8pre1 - 2004-07-23
       rather than an is-in-the-list check.
     - New socks command 'resolve', to let us shim gethostbyname()
       locally.
-      - A 'anon_resolve' script to access the socks resolve functionality.
+      - A 'tor_resolve' script to access the socks resolve functionality.
       - A new socks-extensions.txt doc file to describe our
         interpretation and extensions to the socks protocols.
     - Add a ContactInfo option, which gets published in descriptor.
@@ -40085,8 +40085,8 @@ Changes in version 0.0.5 - 2004-03-30
 
 
 Changes in version 0.0.5rc3 - 2004-03-29
-  o Install anonrc as anonrc.sample -- we no longer clobber your
-    anonrc. (Woo!)
+  o Install torrc as torrc.sample -- we no longer clobber your
+    torrc. (Woo!)
   o Re-enable recommendedversion checking (we broke it in rc2, oops)
   o Add in a 'notice' log level for things the operator should hear
     but that aren't warnings
@@ -40159,7 +40159,7 @@ Changes in version 0.0.2pre26 - 2004-03-14
     - Inform unapproved servers when we reject their descriptors.
     - Make tor build on Windows again. It works as a client, who knows
       about as a server.
-    - Clearer instructions in the anonrc for how to set up a server.
+    - Clearer instructions in the torrc for how to set up a server.
     - Be more efficient about reading fd's when our global token bucket
       (used for rate limiting) becomes empty.
   o Bugfixes:
@@ -40232,7 +40232,7 @@ Changes in version 0.0.2pre22 - 2004-02-26
     - Servers publish less revealing uname information in descriptors.
     - More memory tracking and assertions, to crash more usefully when
       errors happen.
-    - If the default anonrc isn't there, just use some default defaults.
+    - If the default torrc isn't there, just use some default defaults.
       Plus provide an internal dirservers file if they don't have one.
     - When the user tries to use Tor as an http proxy, give them an http
       501 failure explaining that we're a socks proxy.
@@ -40255,14 +40255,14 @@ Changes in version 0.0.2pre22 - 2004-02-26
 Changes in version 0.0.2pre21 - 2004-02-18
   o New features:
     - There's a ChangeLog file that actually reflects the changelog.
-    - There's a 'anonify' wrapper script, with an accompanying
+    - There's a 'torify' wrapper script, with an accompanying
       tor-tsocks.conf, that simplifies the process of using tsocks for
       tor. It even has a man page.
     - The tor binary gets installed to sbin rather than bin now.
     - Retry streams where the connected cell hasn't arrived in 15 seconds
-    - Clean up exit policy handling -- get the default out of the anonrc,
+    - Clean up exit policy handling -- get the default out of the torrc,
       so we can update it without forcing each server operator to fix
-      his/her anonrc.
+      his/her torrc.
     - Allow imaps and pop3s in default exit policy
   o Bugfixes:
     - Prevent picking middleman nodes as the last node in the circuit
@@ -40384,7 +40384,7 @@ Changes in version 0.0.2pre15 - 2003-12-03
     - Make PidFile default to null rather than littering in your CWD.
     - OnionRouter config option is now obsolete. Instead it just checks
       ORPort>0.
-    - Moved to a single unified anonrc file for both clients and servers.
+    - Moved to a single unified torrc file for both clients and servers.
 
 
 Changes in version 0.0.2pre14 - 2003-11-29
@@ -40454,7 +40454,7 @@ Changes in version 0.0.2pre13 - 2003-10-19
     - Make install now works
     - create var/lib/tor on make install
     - autocreate a tor.sh initscript to help distribs
-    - autocreate the anonrc and sample-server-anonrc with correct paths
+    - autocreate the torrc and sample-server-torrc with correct paths
 
   o Log files and Daemonizing now work:
     - If --DebugLogFile is specified, log to it at -l debug
