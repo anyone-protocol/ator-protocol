@@ -2,10 +2,10 @@ FROM debian:bookworm
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG ANON_VER="8a729c50a87974b78822227c14c03f3fb6be514e"
+ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
-ENV ANON_NICKNAME=ATORv4
+ENV ANON_NICKNAME=ANONv4
 
 ENV ANON_USER=atord
 

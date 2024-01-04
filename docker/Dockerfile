@@ -24,7 +24,7 @@ ENV ANON_DIRPORT=${BUILD_ANON_DIRPORT}
 
 # Sets a default nickname.
 # To set email field pass CONTACT_EMAIL env variable.
-ENV ANON_NICKNAME=ATORv4
+ENV ANON_NICKNAME=ANONv4
 
 # Sets a user which will be used running anon
 ENV ANON_USER=anond

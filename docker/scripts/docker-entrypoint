@@ -22,10 +22,10 @@ if [ ! -e /tor-config-done ]; then
 
     # Add Nickname from env variable or randomized, if none has been set
     if ! grep -q '^Nickname ' /etc/anon/anonrc; then
-        if [ ${ANON_NICKNAME} == "ATORv4" ] || [ -z "${ANON_NICKNAME}" ]; then
+        if [ ${ANON_NICKNAME} == "ANONv4" ] || [ -z "${ANON_NICKNAME}" ]; then
             # if user did not change the default nickname, genetrate a random pronounceable one
             RPW=$(pwgen -0A 8)
-            ANON_NICKNAME="ATORv4${RPW}"
+            ANON_NICKNAME="ANONv4${RPW}"
             echo "Setting random Nickname: ${ANON_NICKNAME}"
         else
             echo "Setting chosen Nickname: ${ANON_NICKNAME}"
