@@ -89,8 +89,8 @@ typedef struct scheduler_t {
   void (*on_channel_free)(const channel_t *);
 
   /* (Optional) To be called whenever Tor is reloading configuration options.
-   * For example: SIGHUP was issued and Tor is rereading its anonrc. A
-   * scheduler should use this as an opportunity to parse and cache anonrc
+   * For example: SIGHUP was issued and Tor is rereading its torrc. A
+   * scheduler should use this as an opportunity to parse and cache torrc
    * options so that it doesn't have to call get_options() all the time. */
   void (*on_new_options)(void);
 } scheduler_t;

@@ -221,7 +221,7 @@ int port_cfg_line_extract_addrport(const char *line,
                                    int *is_unix_out,
                                    const char **rest_out);
 
-/** Represents the information stored in a anonrc Bridge line. */
+/** Represents the information stored in a torrc Bridge line. */
 typedef struct bridge_line_t {
   tor_addr_t addr; /* The IP address of the bridge. */
   uint16_t port; /* The TCP port of the bridge. */

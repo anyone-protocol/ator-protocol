@@ -480,12 +480,12 @@ MOCK_DECL(int,num_bridges_usable,(int use_maybe_reachable));
 #define DFLT_NONPRIMARY_GUARD_IDLE_TIMEOUT (10*60)
 /**
  * If our configuration retains fewer than this fraction of guards from the
- * anonrc, we are in a restricted setting.
+ * torrc, we are in a restricted setting.
  */
 #define DFLT_MEANINGFUL_RESTRICTION_PERCENT 20
 /**
  * If our configuration retains fewer than this fraction of guards from the
- * anonrc, we are in an extremely restricted setting, and should warn.
+ * torrc, we are in an extremely restricted setting, and should warn.
  */
 #define DFLT_EXTREME_RESTRICTION_PERCENT 1
 /**@}*/

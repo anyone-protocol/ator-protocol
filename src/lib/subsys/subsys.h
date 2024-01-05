@@ -135,11 +135,11 @@ typedef struct subsys_fns_t {
   void (*shutdown)(void);
 
   /**
-   * A config_format_t describing all of the anonrc fields owned by this
+   * A config_format_t describing all of the torrc fields owned by this
    * subsystem.
    *
    * This object, if present, is registered in a confmgr_t for Tor's options,
-   * and used to parse option fields from the command line and anonrc file.
+   * and used to parse option fields from the command line and torrc file.
    **/
   const struct config_format_t *options_format;
 

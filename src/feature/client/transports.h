@@ -108,7 +108,7 @@ typedef struct {
   /** Boolean: We got a SIGHUP while this proxy was running. We use
    * this flag to signify that this proxy might need to be restarted
    * so that it can listen for other transports according to the new
-   * anonrc. */
+   * torrc. */
   unsigned int was_around_before_config_read : 1;
 
   /* transports to-be-launched by this proxy */

@@ -921,7 +921,7 @@ typedef enum {
   /** We're remapping this address because of an AutomapHostsOnResolve
    * configuration. */
   ADDRMAPSRC_AUTOMAP,
-  /** We're remapping this address because our configuration (via anonrc, the
+  /** We're remapping this address because our configuration (via torrc, the
    * command line, or a SETCONF command) told us to. */
   ADDRMAPSRC_TORRC,
   /** We're remapping this address because we have TrackHostExit configured,
