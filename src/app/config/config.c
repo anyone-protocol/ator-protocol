@@ -8,8 +8,8 @@
  * \file config.c
  * \brief Code to interpret the user's configuration of Tor.
  *
- * This module handles anonrc configuration file, including parsing it,
- * combining it with anonrc.defaults and the command line, allowing
+ * This module handles torrc configuration file, including parsing it,
+ * combining it with torrc.defaults and the command line, allowing
  * user changes to it (via editing and SIGHUP or via the control port),
  * writing it back to disk (because of SAVECONF from the control port),
  * and -- most importantly, acting on it.
@@ -20,12 +20,12 @@
  *
  * <h3>How to add new options</h3>
  *
- * To add new items to the anonrc, there are a minimum of three places to edit:
+ * To add new items to the torrc, there are a minimum of three places to edit:
  * <ul>
  *   <li>The or_options_t structure in or_options_st.h, where the options are
  *       stored.
  *   <li>The option_vars_ array below in this module, which configures
- *       the names of the anonrc options, their types, their multiplicities,
+ *       the names of the torrc options, their types, their multiplicities,
  *       and their mappings to fields in or_options_t.
  *   <li>The manual in doc/man/anon.1.txt, to document what the new option
  *       is, and how it works.
@@ -716,7 +716,7 @@ static const config_var_t option_vars_[] = {
   V(WarnPlaintextPorts,          CSV,      "23,109,110,143"),
   OBSOLETE("UseFilteringSSLBufferevents"),
   OBSOLETE("__UseFilteringSSLBufferevents"),
-  VAR_NODUMP("__ReloadAnonrcOnSIGHUP",   BOOL,  ReloadAnonrcOnSIGHUP,      "1"),
+  VAR_NODUMP("__ReloadTorrcOnSIGHUP",   BOOL,  ReloadTorrcOnSIGHUP,      "1"),
   VAR_NODUMP("__AllDirActionsPrivate",  BOOL,  AllDirActionsPrivate,     "0"),
   VAR_NODUMP("__DisablePredictedCircuits",BOOL,DisablePredictedCircuits, "0"),
   VAR_NODUMP_IMMUTABLE("__DisableSignalHandlers", BOOL,
@@ -894,12 +894,12 @@ static const config_format_t options_format = {
 /** Command-line and config-file options. */
 static or_options_t *global_options = NULL;
 /** The fallback options_t object; this is where we look for options not
- * in anonrc before we fall back to Tor's defaults. */
+ * in torrc before we fall back to Tor's defaults. */
 static or_options_t *global_default_options = NULL;
-/** Name of most recently read anonrc file. */
-static char *anonrc_fname = NULL;
-/** Name of the most recently read anonrc-defaults file.*/
-static char *anonrc_defaults_fname = NULL;
+/** Name of most recently read torrc file. */
+static char *torrc_fname = NULL;
+/** Name of the most recently read torrc-defaults file.*/
+static char *torrc_defaults_fname = NULL;
 /** Result of parsing the command line. */
 static parsed_cmdline_t *global_cmdline = NULL;
 /** List of port_cfg_t for all configured ports. */
@@ -913,7 +913,7 @@ static bool have_set_startup_options = false;
 /* A global configuration manager to handle all configuration objects. */
 static config_mgr_t *options_mgr = NULL;
 
-/** Return the global configuration manager object for anonrc options. */
+/** Return the global configuration manager object for torrc options. */
 STATIC const config_mgr_t *
 get_options_mgr(void)
 {
@@ -1078,8 +1078,8 @@ config_free_all(void)
     configured_ports = NULL;
   }
 
-  tor_free(anonrc_fname);
-  tor_free(anonrc_defaults_fname);
+  tor_free(torrc_fname);
+  tor_free(torrc_defaults_fname);
 
   cleanup_protocol_warning_severity_level();
 
@@ -1459,7 +1459,7 @@ options_act_once_on_startup(char **msg_out)
 
   /*
    * Initialize the scheduler - this has to come after
-   * options_init_from_anonrc() sets up libevent - why yes, that seems
+   * options_init_from_torrc() sets up libevent - why yes, that seems
    * completely sensible to hide the libevent setup in the option parsing
    * code!  It also needs to happen before init_keys(), so it needs to
    * happen here too.  How yucky. */
@@ -2456,7 +2456,7 @@ typedef enum {
 } takes_argument_t;
 
 /** Table describing arguments that Tor accepts on the command line,
- * other than those that are the same as in anonrc. */
+ * other than those that are the same as in torrc. */
 static const struct {
   /** The string that the user has to provide. */
   const char *name;
@@ -2712,9 +2712,9 @@ print_usage(void)
 "documentation.\n");
 }
 
-/** Print all non-obsolete anonrc options. */
+/** Print all non-obsolete torrc options. */
 static void
-list_anonrc_options(void)
+list_torrc_options(void)
 {
   smartlist_t *vars = config_mgr_list_vars(get_options_mgr());
   SMARTLIST_FOREACH_BEGIN(vars, const config_var_t *, var) {
@@ -2730,7 +2730,7 @@ list_anonrc_options(void)
   smartlist_free(vars);
 }
 
-/** Print all deprecated but non-obsolete anonrc options. */
+/** Print all deprecated but non-obsolete torrc options. */
 static void
 list_deprecated_options(void)
 {
@@ -4295,8 +4295,8 @@ get_windows_conf_root(void)
 }
 #endif /* defined(_WIN32) */
 
-/** Return the default location for our anonrc file (if <b>defaults_file</b> is
- * false), or for the anonrc-defaults file (if <b>defaults_file</b> is true). */
+/** Return the default location for our torrc file (if <b>defaults_file</b> is
+ * false), or for the torrc-defaults file (if <b>defaults_file</b> is true). */
 static const char *
 get_default_conf_file(int defaults_file)
 {
@@ -4322,19 +4322,19 @@ get_default_conf_file(int defaults_file)
 
 /** Learn config file name from command line arguments, or use the default.
  *
- * If <b>defaults_file</b> is true, we're looking for anonrc-defaults;
- * otherwise, we're looking for the regular anonrc_file.
+ * If <b>defaults_file</b> is true, we're looking for torrc-defaults;
+ * otherwise, we're looking for the regular torrc_file.
  *
  * Set *<b>using_default_fname</b> to true if we're using the default
  * configuration file name; or false if we've set it from the command line.
  *
- * Set *<b>ignore_missing_anonrc</b> to true if we should ignore the resulting
+ * Set *<b>ignore_missing_torrc</b> to true if we should ignore the resulting
  * filename if it doesn't exist.
  */
 static char *
-find_anonrc_filename(const config_line_t *cmd_arg,
+find_torrc_filename(const config_line_t *cmd_arg,
                     int defaults_file,
-                    int *using_default_fname, int *ignore_missing_anonrc)
+                    int *using_default_fname, int *ignore_missing_torrc)
 {
   char *fname=NULL;
   const config_line_t *p_index;
@@ -4345,10 +4345,10 @@ find_anonrc_filename(const config_line_t *cmd_arg,
   const char *keygen_opt = "--keygen";
 
   if (defaults_file)
-    *ignore_missing_anonrc = 1;
+    *ignore_missing_torrc = 1;
 
   for (p_index = cmd_arg; p_index; p_index = p_index->next) {
-    // options_init_from_anonrc ensures only the short or long name is present
+    // options_init_from_torrc ensures only the short or long name is present
     if (!strcmp(p_index->key, fname_opt) ||
         !strcmp(p_index->key, fname_long_opt)) {
       if (fname) {
@@ -4368,7 +4368,7 @@ find_anonrc_filename(const config_line_t *cmd_arg,
       *using_default_fname = 0;
     } else if ((ignore_opt && !strcmp(p_index->key, ignore_opt)) ||
                (keygen_opt && !strcmp(p_index->key, keygen_opt))) {
-      *ignore_missing_anonrc = 1;
+      *ignore_missing_torrc = 1;
     }
   }
 
@@ -4403,36 +4403,36 @@ find_anonrc_filename(const config_line_t *cmd_arg,
   return fname;
 }
 
-/** Read the anonrc from standard input and return it as a string.
+/** Read the torrc from standard input and return it as a string.
  * Upon failure, return NULL.
  */
 static char *
-load_anonrc_from_stdin(void)
+load_torrc_from_stdin(void)
 {
    size_t sz_out;
 
    return read_file_to_str_until_eof(STDIN_FILENO,SIZE_MAX,&sz_out);
 }
 
-/** Load a configuration file from disk, setting anonrc_fname or
- * anonrc_defaults_fname if successful.
+/** Load a configuration file from disk, setting torrc_fname or
+ * torrc_defaults_fname if successful.
  *
- * If <b>defaults_file</b> is true, load anonrc-defaults; otherwise load anonrc.
+ * If <b>defaults_file</b> is true, load torrc-defaults; otherwise load torrc.
  *
  * Return the contents of the file on success, and NULL on failure.
  */
 static char *
-load_anonrc_from_disk(const config_line_t *cmd_arg, int defaults_file)
+load_torrc_from_disk(const config_line_t *cmd_arg, int defaults_file)
 {
   char *fname=NULL;
   char *cf = NULL;
-  int using_default_anonrc = 1;
-  int ignore_missing_anonrc = 0;
-  char **fname_var = defaults_file ? &anonrc_defaults_fname : &anonrc_fname;
+  int using_default_torrc = 1;
+  int ignore_missing_torrc = 0;
+  char **fname_var = defaults_file ? &torrc_defaults_fname : &torrc_fname;
 
   if (*fname_var == NULL) {
-    fname = find_anonrc_filename(cmd_arg, defaults_file,
-                                &using_default_anonrc, &ignore_missing_anonrc);
+    fname = find_torrc_filename(cmd_arg, defaults_file,
+                                &using_default_torrc, &ignore_missing_torrc);
     tor_free(*fname_var);
     *fname_var = fname;
   } else {
@@ -4445,7 +4445,7 @@ load_anonrc_from_disk(const config_line_t *cmd_arg, int defaults_file)
   if (fname == NULL ||
       !(st == FN_FILE || st == FN_EMPTY) ||
       !(cf = read_file_to_str(fname,0,NULL))) {
-    if (using_default_anonrc == 1 || ignore_missing_anonrc) {
+    if (using_default_torrc == 1 || ignore_missing_torrc) {
       if (!defaults_file)
         log_notice(LD_CONFIG, "Configuration file \"%s\" not present, "
             "using reasonable defaults.", fname);
@@ -4474,7 +4474,7 @@ load_anonrc_from_disk(const config_line_t *cmd_arg, int defaults_file)
  * Return 0 if success, -1 if failure, and 1 if we succeeded but should exit
  * anyway. */
 int
-options_init_from_anonrc(int argc, char **argv)
+options_init_from_torrc(int argc, char **argv)
 {
   char *cf=NULL, *cf_defaults=NULL;
   int retval = -1;
@@ -4499,7 +4499,7 @@ options_init_from_anonrc(int argc, char **argv)
   }
   if (config_line_find(cmdline_only_options, "--list-anonrc-options")) {
     /* For validating whether we've documented everything. */
-    list_anonrc_options();
+    list_torrc_options();
     return 1;
   }
   if (config_line_find(cmdline_only_options, "--list-deprecated-options")) {
@@ -4559,7 +4559,7 @@ options_init_from_anonrc(int argc, char **argv)
     cf_defaults = tor_strdup("");
     cf = tor_strdup("");
   } else {
-    cf_defaults = load_anonrc_from_disk(cmdline_only_options, 1);
+    cf_defaults = load_torrc_from_disk(cmdline_only_options, 1);
     const config_line_t *f_line = config_line_find(cmdline_only_options, "-f");
     const config_line_t *f_line_long = config_line_find(cmdline_only_options,
                                                         "--anonrc-file");
@@ -4571,13 +4571,13 @@ options_init_from_anonrc(int argc, char **argv)
       f_line = f_line_long;
     }
 
-    const int read_anonrc_from_stdin =
+    const int read_torrc_from_stdin =
     (f_line != NULL && strcmp(f_line->value, "-") == 0);
 
-    if (read_anonrc_from_stdin) {
-      cf = load_anonrc_from_stdin();
+    if (read_torrc_from_stdin) {
+      cf = load_torrc_from_stdin();
     } else {
-      cf = load_anonrc_from_disk(cmdline_only_options, 0);
+      cf = load_torrc_from_disk(cmdline_only_options, 0);
     }
 
     if (!cf) {
@@ -4768,9 +4768,9 @@ options_init_from_string(const char *cf_defaults, const char *cf,
 /** Return the location for our configuration file.  May return NULL.
  */
 const char *
-get_anonrc_fname(int defaults_fname)
+get_torrc_fname(int defaults_fname)
 {
-  const char *fname = defaults_fname ? anonrc_defaults_fname : anonrc_fname;
+  const char *fname = defaults_fname ? torrc_defaults_fname : torrc_fname;
 
   if (fname)
     return fname;
@@ -6984,7 +6984,7 @@ validate_data_directories(or_options_t *options)
 }
 
 /** This string must remain the same forevermore. It is how we
- * recognize that the anonrc file doesn't need to be backed up. */
+ * recognize that the torrc file doesn't need to be backed up. */
 #define GENERATED_FILE_PREFIX "# This file was generated by Tor; " \
   "if you edit it, comments will not be preserved"
 /** This string can change; it tries to give the reader an idea
@@ -7080,7 +7080,7 @@ options_save_current(void)
    * If we try falling back to datadirectory or something, we have a better
    * chance of saving the configuration, but a better chance of doing
    * something the user never expected. */
-  return write_configuration_file(get_anonrc_fname(0), get_options());
+  return write_configuration_file(get_torrc_fname(0), get_options());
 }
 
 /** Return the number of cpus configured in <b>options</b>.  If we are

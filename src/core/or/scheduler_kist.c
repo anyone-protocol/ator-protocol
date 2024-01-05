@@ -795,11 +795,11 @@ get_kist_scheduler(void)
   return &kist_scheduler;
 }
 
-/* Check the anonrc (and maybe consensus) for the configured KIST scheduler run
+/* Check the torrc (and maybe consensus) for the configured KIST scheduler run
  * interval.
- * - If anonrc > 0, then return the positive anonrc value (should use KIST, and
+ * - If torrc > 0, then return the positive torrc value (should use KIST, and
  *   should use the set value)
- * - If anonrc == 0, then look in the consensus for what the value should be.
+ * - If torrc == 0, then look in the consensus for what the value should be.
  *   - If == 0, then return 0 (don't use KIST)
  *   - If > 0, then return the positive consensus value
  *   - If consensus doesn't say anything, return 10 milliseconds, default.

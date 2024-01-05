@@ -8,7 +8,7 @@
  * \details
  *
  * This file has basically one main entry point: hs_config_service_all(). It
- * takes the anonrc options and configure hidden service from it. In validate
+ * takes the torrc options and configure hidden service from it. In validate
  * mode, nothing is added to the global service list or keys are not generated
  * nor loaded.
  *

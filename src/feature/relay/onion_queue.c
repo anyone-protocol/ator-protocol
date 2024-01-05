@@ -102,7 +102,7 @@ get_onion_queue_wait_cutoff(void)
   return ns_onion_queue_wait_cutoff;
 }
 
-/** Return the max onion queue delay value either from the anonrc options (if
+/** Return the max onion queue delay value either from the torrc options (if
  * the user explicitly set it) else from the cached parameter. */
 static inline uint32_t
 get_onion_queue_max_delay(const or_options_t *options)

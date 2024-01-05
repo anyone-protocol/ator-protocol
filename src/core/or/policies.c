@@ -1964,7 +1964,7 @@ policies_log_first_redundant_entry(const smartlist_t *policy)
  *
  * Return -1 if we can't parse cfg, else return 0.
  *
- * This function is used to parse the exit policy from our anonrc. For
+ * This function is used to parse the exit policy from our torrc. For
  * the functions used to parse the exit policy from a router descriptor,
  * see router_add_exit_policy.
  */

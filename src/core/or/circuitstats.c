@@ -108,7 +108,7 @@ get_circuit_build_timeout_ms(void)
  * true if one or more of the following conditions are met:
  *
  *  1. If the cbtdisabled consensus parameter is set.
- *  2. If the anonrc option LearnCircuitBuildTimeout is false.
+ *  2. If the torrc option LearnCircuitBuildTimeout is false.
  *  3. If we are a directory authority
  *  4. If we fail to write circuit build time history to our state file.
  *  5. If we are configured in Single Onion mode

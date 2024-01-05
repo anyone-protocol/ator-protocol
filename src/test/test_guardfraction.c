@@ -345,7 +345,7 @@ test_parse_guardfraction_consensus(void *arg)
 }
 
 /** Make sure that we use GuardFraction information when we should,
- * according to the anonrc option and consensus parameter. */
+ * according to the torrc option and consensus parameter. */
 static void
 test_should_apply_guardfraction(void *arg)
 {
@@ -374,28 +374,28 @@ test_should_apply_guardfraction(void *arg)
                            "leon=trout", NULL, 0, 0);
   }
 
-  /* If anonrc option is set to yes, we should always use
+  /* If torrc option is set to yes, we should always use
    * guardfraction.*/
   options->UseGuardFraction = 1;
   tt_int_op(should_apply_guardfraction(&vote_disabled), OP_EQ, 1);
 
-  /* If anonrc option is set to no, we should never use
+  /* If torrc option is set to no, we should never use
    * guardfraction.*/
   options->UseGuardFraction = 0;
   tt_int_op(should_apply_guardfraction(&vote_enabled), OP_EQ, 0);
 
-  /* Now let's test anonrc option set to auto. */
+  /* Now let's test torrc option set to auto. */
   options->UseGuardFraction = -1;
 
-  /* If anonrc option is set to auto, and consensus parameter is set to
+  /* If torrc option is set to auto, and consensus parameter is set to
    * yes, we should use guardfraction. */
   tt_int_op(should_apply_guardfraction(&vote_enabled), OP_EQ, 1);
 
-  /* If anonrc option is set to auto, and consensus parameter is set to
+  /* If torrc option is set to auto, and consensus parameter is set to
    * no, we should use guardfraction. */
   tt_int_op(should_apply_guardfraction(&vote_disabled), OP_EQ, 0);
 
-  /* If anonrc option is set to auto, and consensus parameter is not
+  /* If torrc option is set to auto, and consensus parameter is not
    * set, we should fallback to "no". */
   tt_int_op(should_apply_guardfraction(&vote_missing), OP_EQ, 0);
 

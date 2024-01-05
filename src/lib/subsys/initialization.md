@@ -21,7 +21,7 @@ Conceptually, there are several stages in running Tor.
 2. Second, we parse the command line and our configuration, and configure
    systems that depend on our configuration or state.  This configuration
    happens midway through tor_init(), which invokes
-   options_init_from_anonrc().  We then initialize more systems from the
+   options_init_from_torrc().  We then initialize more systems from the
    second half of tor_init().
 
 3. At this point we may exit early if we have been asked to do something

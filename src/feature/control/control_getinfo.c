@@ -90,11 +90,11 @@ getinfo_helper_misc(control_connection_t *conn, const char *question,
   } else if (!strcmp(question, "bw-event-cache")) {
     *answer = get_bw_samples();
   } else if (!strcmp(question, "config-file")) {
-    const char *a = get_anonrc_fname(0);
+    const char *a = get_torrc_fname(0);
     if (a)
       *answer = tor_strdup(a);
   } else if (!strcmp(question, "config-defaults-file")) {
-    const char *a = get_anonrc_fname(1);
+    const char *a = get_torrc_fname(1);
     if (a)
       *answer = tor_strdup(a);
   } else if (!strcmp(question, "config-text")) {

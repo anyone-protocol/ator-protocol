@@ -95,10 +95,10 @@ if not os.path.exists(sys.argv[2]):
 tor_path = sys.argv[1]
 data_dir = sys.argv[2]
 
-empty_anonrc_path = os.path.join(data_dir, 'empty_anonrc')
-open(empty_anonrc_path, 'w').close()
-empty_defaults_anonrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
-open(empty_defaults_anonrc_path, 'w').close()
+empty_torrc_path = os.path.join(data_dir, 'empty_anonrc')
+open(empty_torrc_path, 'w').close()
+empty_defaults_torrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
+open(empty_defaults_torrc_path, 'w').close()
 
 tor_process = subprocess.Popen([tor_path,
                                '-DataDirectory', data_dir,
@@ -107,8 +107,8 @@ tor_process = subprocess.Popen([tor_path,
                                '-Log', 'debug stdout',
                                '-LogTimeGranularity', '1',
                                '-FetchServerDescriptors', '0',
-                               '-f', empty_anonrc_path,
-                               '--defaults-anonrc', empty_defaults_anonrc_path,
+                               '-f', empty_torrc_path,
+                               '--defaults-anonrc', empty_defaults_torrc_path,
                                ],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)

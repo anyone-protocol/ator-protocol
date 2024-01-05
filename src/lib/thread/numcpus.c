@@ -73,7 +73,7 @@ compute_num_cpus_impl(void)
 /** This is an arbitrary number but at this point in time, it is not that
  * uncommon to see servers up to that amount of CPUs. Most servers will likely
  * be around 16 to 32 cores now. Lets take advantage of large machines! The
- * "NumCPUs" anonrc option overrides this maximum. */
+ * "NumCPUs" torrc option overrides this maximum. */
 #define MAX_DETECTABLE_CPUS 128
 
 /** Return how many CPUs we are running with.  We assume that nobody is

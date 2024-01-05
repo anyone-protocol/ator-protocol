@@ -311,7 +311,7 @@ congestion_control_init_params(congestion_control_t *cc,
         CWND_MIN_MIN,
         CWND_MIN_MAX);
 
-  /* If the consensus says to use OG sendme, but anonrc has
+  /* If the consensus says to use OG sendme, but torrc has
    * always-enabled, use the default "always" alg (vegas),
    * else use cached conensus alg. */
   if (cc_alg == CC_ALG_SENDME && opts->AlwaysCongestionControl) {

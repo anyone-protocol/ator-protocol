@@ -1203,7 +1203,7 @@ router_add_exit_policy(routerinfo_t *router, directory_token_t *tok)
 
   /* Ensure that in descriptors, accept/reject fields are followed by
    * IPv4 addresses, and accept6/reject6 fields are followed by
-   * IPv6 addresses. Unlike anonrcs, descriptor exit policies do not permit
+   * IPv6 addresses. Unlike torrcs, descriptor exit policies do not permit
    * accept/reject followed by IPv6. */
   if (((tok->tp == K_ACCEPT6 || tok->tp == K_REJECT6) &&
        tor_addr_family(&newe->addr) == AF_INET)

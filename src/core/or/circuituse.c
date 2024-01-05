@@ -1771,7 +1771,7 @@ circuit_build_failed(origin_circuit_t *circ)
    *
    * Path selection failures can happen spuriously for a number
    * of reasons (such as aggressive/invalid user-specified path
-   * restrictions in the anonrc, insufficient microdescriptors, and
+   * restrictions in the torrc, insufficient microdescriptors, and
    * non-user reasons like exitpolicy issues), and so should not be
    * counted as failures below.
    */
@@ -2004,7 +2004,7 @@ circuit_is_hs_v3(const circuit_t *circ)
  * or pinned Layer2 or Layer3 guards.
  *
  * This function takes both the circuit purpose and the
- * anonrc options for pinned middles/vanguards into account
+ * torrc options for pinned middles/vanguards into account
  * (ie: the circuit must be a hidden service circuit and
  * vanguards/pinned middles must be enabled for it to return
  * true).

@@ -1902,7 +1902,7 @@ channel_do_open_actions(channel_t *chan)
   /* Disable or reduce padding according to user prefs. */
   if (chan->padding_enabled || get_options()->ConnectionPadding == 1) {
     if (!get_options()->ConnectionPadding) {
-      /* Disable if anonrc disabled */
+      /* Disable if torrc disabled */
       channelpadding_disable_padding_on_channel(chan);
     } else if (hs_service_allow_non_anonymous_connection(get_options()) &&
                !networkstatus_get_param(NULL,

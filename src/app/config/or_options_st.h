@@ -868,7 +868,7 @@ struct or_options_t {
 
   /** If true, SIGHUP should reload the anonrc.  Sometimes controllers want
    * to make this false. */
-  int ReloadAnonrcOnSIGHUP;
+  int ReloadTorrcOnSIGHUP;
 
   /** The main parameter for picking circuits within a connection.
    *

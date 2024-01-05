@@ -326,7 +326,7 @@ parse_config_line_from_str_verbose(const char *line, char **key_out,
                                    const char **err_out)
 {
   /*
-    See anonrc_format.txt for a description of the (silly) format this parses.
+    See torrc_format.txt for a description of the (silly) format this parses.
    */
   const char *key, *val, *cp;
   int continuation = 0;

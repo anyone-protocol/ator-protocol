@@ -642,7 +642,7 @@ build_establish_intro_extensions(const hs_service_config_t *service_config,
   trn_extension_set_num(extensions, 0);
 
   /* If the defense has been enabled service side (by the operator with a
-   * anonrc option) and the intro point does support it. */
+   * torrc option) and the intro point does support it. */
   if (service_config->has_dos_defense_enabled &&
       ip->support_intro2_dos_defense) {
     /* This function takes care to increment the number of extensions. */

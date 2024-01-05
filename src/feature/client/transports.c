@@ -29,11 +29,11 @@
  *
  * <b>In a little more detail:</b>
  *
- * While we are serially parsing anonrc, we store all the transports
+ * While we are serially parsing torrc, we store all the transports
  * that a proxy should spawn in its <em>transports_to_launch</em>
  * element.
  *
- * When we finish reading the anonrc, we spawn the managed proxy and
+ * When we finish reading the torrc, we spawn the managed proxy and
  * expect {S,C}METHOD lines from its output. We add transports
  * described by METHOD lines to its <em>transports</em> element, as
  * transport_t structs.
@@ -59,17 +59,17 @@
  * read happens immediately after tor is launched.).
  *
  * We mark all managed proxies and transports to signify that they
- * must be removed if they don't contribute by the new anonrc
+ * must be removed if they don't contribute by the new torrc
  * (we mark using the <b>marked_for_removal</b> element).
  * We also mark all managed proxies to signify that they might need to
  * be restarted so that they end up supporting all the transports the
- * new anonrc wants them to support
+ * new torrc wants them to support
  * (we mark using the <b>was_around_before_config_read</b> element).
  * We also clear their <b>transports_to_launch</b> list so that we can
  * put there the transports we need to launch according to the new
- * anonrc.
+ * torrc.
  *
- * We then start parsing anonrc again.
+ * We then start parsing torrc again.
  *
  * Every time we encounter a transport line using a managed proxy that
  * was around before the config read, we cleanse that proxy from the
@@ -81,8 +81,8 @@
  * one, it means that no changes were introduced to this proxy during
  * the config read and no restart has to take place.
  *
- * During the post-config-read anonrc parsing, we unmark all transports
- * spawned by managed proxies that we find in our anonrc.
+ * During the post-config-read torrc parsing, we unmark all transports
+ * spawned by managed proxies that we find in our torrc.
  * We do that so that if we don't need to restart a managed proxy, we
  * can continue using its old transports normally.
  * If we end up restarting the proxy, we destroy and unregister all
@@ -139,7 +139,7 @@ static void parse_method_error(const char *line, int is_server_method);
     protocol version. */
 #define PROTO_VERSION_ONE 1
 
-/** A list of pluggable transports found in anonrc. */
+/** A list of pluggable transports found in torrc. */
 static smartlist_t *transport_list = NULL;
 
 /** Returns a transport_t struct for a transport proxy supporting the
@@ -259,7 +259,7 @@ transport_resolve_conflicts(const transport_t *t)
   /* This is how we resolve transport conflicts:
 
      If there is already a transport with the same name and addrport,
-     we either have duplicate anonrc lines OR we are here post-HUP and
+     we either have duplicate torrc lines OR we are here post-HUP and
      this transport was here pre-HUP as well. In any case, mark the
      old transport so that it doesn't get removed and ignore the new
      one. Our caller has to free the new transport so we return '1' to
@@ -268,11 +268,11 @@ transport_resolve_conflicts(const transport_t *t)
      If there is already a transport with the same name but different
      addrport:
      * if it's marked for removal, it means that it either has a lower
-     priority than 't' in anonrc (otherwise the mark would have been
+     priority than 't' in torrc (otherwise the mark would have been
      cleared by the paragraph above), or it doesn't exist at all in
-     the post-HUP anonrc. We destroy the old transport and register 't'.
+     the post-HUP torrc. We destroy the old transport and register 't'.
      * if it's *not* marked for removal, it means that it was newly
-     added in the post-HUP anonrc or that it's of higher priority, in
+     added in the post-HUP torrc or that it's of higher priority, in
      this case we ignore 't'. */
   transport_t *t_tmp = transport_get_by_name(t->name);
   if (t_tmp) { /* same name */
@@ -467,7 +467,7 @@ add_transport_to_proxy(const char *transport, managed_proxy_t *mp)
 
 /** Called when a SIGHUP occurs. Returns true if managed proxy
  *  <b>mp</b> needs to be restarted after the SIGHUP, based on the new
- *  anonrc. */
+ *  torrc. */
 static int
 proxy_needs_restart(const managed_proxy_t *mp)
 {

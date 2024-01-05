@@ -105,10 +105,10 @@ tor_path = sys.argv[1]
 data_dir = sys.argv[2]
 anonrc_dir = sys.argv[3]
 
-empty_anonrc_path = os.path.join(data_dir, 'empty_anonrc')
-open(empty_anonrc_path, 'w').close()
-empty_defaults_anonrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
-open(empty_defaults_anonrc_path, 'w').close()
+empty_torrc_path = os.path.join(data_dir, 'empty_anonrc')
+open(empty_torrc_path, 'w').close()
+empty_defaults_torrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
+open(empty_defaults_torrc_path, 'w').close()
 anonrc = os.path.join(anonrc_dir, 'anonrc')
 
 tor_process = subprocess.Popen([tor_path,
@@ -119,7 +119,7 @@ tor_process = subprocess.Popen([tor_path,
                                '-FetchServerDescriptors', '0',
                                '-DisableNetwork', '1',
                                '-f', anonrc,
-                               '--defaults-anonrc', empty_defaults_anonrc_path,
+                               '--defaults-anonrc', empty_defaults_torrc_path,
                                ],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)

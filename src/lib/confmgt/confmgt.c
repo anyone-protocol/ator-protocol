@@ -8,9 +8,9 @@
  * \file confmgt.c
  *
  * \brief Back-end for parsing and generating key-value files, used to
- *   implement the anonrc file format and the state file.
+ *   implement the torrc file format and the state file.
  *
- * This module is used by config.c to parse and encode anonrc
+ * This module is used by config.c to parse and encode torrc
  * configuration files, and by statefile.c to parse and encode the
  * $DATADIR/state file.
  *
@@ -756,7 +756,7 @@ config_assign_line(const config_mgr_t *mgr, void *options,
     if (!clear_first) {
       if (! config_var_is_replaced_on_set(cvar) &&
           c->command != CONFIG_LINE_CLEAR) {
-        /* We got an empty linelist from the anonrc or command line.
+        /* We got an empty linelist from the torrc or command line.
            As a special case, call this an error. Warn and ignore. */
         log_warn(LD_CONFIG,
                  "Linelist option '%s' has no value. Skipping.", c->key);
@@ -888,9 +888,9 @@ config_get_assigned_option(const config_mgr_t *mgr, const void *options,
  * clearing, or make the value 0 or NULL.
  *
  * Here are the use cases:
- * 1. A non-empty AllowInvalid line in your anonrc. Appends to current
+ * 1. A non-empty AllowInvalid line in your torrc. Appends to current
  *    if linelist, replaces current if csv.
- * 2. An empty AllowInvalid line in your anonrc. Should clear it.
+ * 2. An empty AllowInvalid line in your torrc. Should clear it.
  * 3. "RESETCONF AllowInvalid" sets it to default.
  * 4. "SETCONF AllowInvalid" makes it NULL.
  * 5. "SETCONF AllowInvalid=foo" clears it and sets it to "foo".
@@ -909,8 +909,8 @@ config_get_assigned_option(const config_mgr_t *mgr, const void *options,
 /*
 There are three call cases for config_assign() currently.
 
-Case one: Anonrc entry
-options_init_from_anonrc() calls config_assign(0, 0)
+Case one: Torrc entry
+options_init_from_torrc() calls config_assign(0, 0)
   calls config_assign_line(0, 0).
     if value is empty, calls config_reset(0) and returns.
     calls config_assign_value(), appends.
