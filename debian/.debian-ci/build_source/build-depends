@@ -1,0 +1,17 @@
+asciidoc
+autoconf
+automake
+dctrl-tools
+devscripts
+docbook-xml
+docbook-xsl
+git
+libcap-dev
+libevent-dev
+liblzma-dev
+libssl-dev
+libzstd-dev
+pkg-config
+quilt
+xmlto
+zlib1g-dev

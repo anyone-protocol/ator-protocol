@@ -1,0 +1,1 @@
+debian/tor.runscript name=tor,logscript,since=0.3.5.8-1+runit

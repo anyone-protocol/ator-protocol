@@ -1,0 +1,154 @@
+#!/bin/bash
+
+# Add a "backport" debian changelog entry with the right version
+
+# Copyright 2011,2013,2014,2015,2016,2017 Peter Palfrader
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -u
+set -e
+
+get_bp_info() {
+	local target="$1"; shift
+	local key="$1"; shift
+
+	local result=$(awk '$1 == "'"$target"'" {print}' << 'EOF'
+#arg		versiontag	#tilde	changelogdist
+lenny		d5.lenny	1
+squeeze		d6.squeeze	1
+wheezy		d7.wheezy	1
+jessie		d8.jessie	1
+stretch		d9.stretch	1
+buster		d10.buster	1
+bullseye	d11.bullseye	1
+bookworm	d12.bookworm	1
+trixie		d13.trixie	1
+
+lenny-bpo	bpo5		1	lenny-backports
+squeeze-bpo	bpo6		1	squeeze-backports
+wheezy-bpo	bpo7		1	wheezy-backports
+jessie-bpo	bpo8		1	jessie-backports
+stretch-bpo	bpo9		1	stretch-backports
+buster-bpo	bpo10		1	buster-backports
+bullseye-bpo	bpo11		1	bullseye-backports
+bookworm-bpo	bpo12		1	bookworm-backports
+trixie-bpo	bpo13		1	trixie-backports
+
+dapper		dapper		1
+edgy		edgy		1
+feisty		feisty		1
+gutsy		gutsy		1
+hardy		hardy		1
+intrepid	intrepid	1
+jaunty		jaunty		1
+karmic		karmic		1
+lucid		lucid		1
+maverick	maverick	1
+natty		natty		1
+oneiric		oneiric		1
+precise		precise		1
+quantal		quantal		1
+raring		raring		1
+saucy		saucy		1
+trusty		trusty		1
+utopic		utopic		1
+vivid		vivid		1
+wily		wily		1
+xenial		xenial		1
+yakkety		yakkety		1
+zesty		zesty		1
+artful		artful		1
+bionic		bionic		1
+cosmic		cosmic		1
+disco		disco		1
+eoan		eoan		1
+focal		focal		1
+groovy		groovy		1
+hirsute		hirsute		1
+impish		impish		1
+jammy		jammy		1
+kinetic		kinetic		1
+lunar		lunar		1
+mantic		mantic		1
+EOF
+)
+	if [ -z "$result" ] ; then
+		echo >&2 "Do not now about target '$target'."
+		exit 1
+	fi
+	set "nothing" $result
+	shift
+	if [ "$#" != "3" ] && [ "$#" != "4" ]; then
+		echo >&2 "Bad result line for '$target': '$result'."
+		exit 1
+	fi
+	shift
+	case "$key" in
+		versiontag) echo "$1" ;;
+		tilde) echo "$2" ;;
+		changelogdist) echo "${3:-}" ;;
+		*)
+			echo >&2 "Invalid key '$key'"
+			exit 1
+	esac
+	return 0
+}
+
+if [ "$#" != "1" ]; then
+	echo >&2 "Usage: $0 <backporttarget>"
+	exit 1
+fi
+
+target="$1"
+
+versiontag=$(get_bp_info "$target" versiontag)
+tildenum=$(get_bp_info "$target" tilde)
+tildes=""
+while [ "$tildenum" -gt 0 ]; do
+	tildes="$tildes~"
+	tildenum=$((tildenum-1))
+done
+cldist=$(get_bp_info "$target" changelogdist)
+
+
+currentdist=$(dpkg-parsechangelog | grep-dctrl -n -s Distribution '')
+if [ -z "$currentdist" ]; then
+	echo >&2 "Cannot figure out current distribution"
+	exit 1
+fi
+currentver=$(dpkg-parsechangelog | grep-dctrl -n -s Version '')
+#currentupstream="${currentver%-*}"
+#currentdebian="${currentver##*-}"
+newver="$currentver$tildes$versiontag+1"
+if [ -z "$cldist" ]; then
+	if [ "$currentdist" = "experimental" ]; then
+		cldist="experimental-$target-backport"
+	elif [ "$currentdist" = "unstable" ]; then
+		cldist="$target-backport"
+	else
+		cldist="$currentdist-$target"
+	fi
+fi
+
+dch \
+	--newversion "$newver" --allow-lower-version . \
+	--distribution "$cldist" --force-distribution \
+	"Build for $cldist."

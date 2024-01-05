@@ -1,6 +1,7 @@
 job "ator-dir-auth-dev" {
   datacenters = ["ator-fin"]
   type = "service" 
+  namespace = "ator-network"
 
   group "dir-auth-dev-group" {
     count = 3
@@ -45,7 +46,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "svforte/ator-protocol:432db9df31a30338039738ee4d6da7ccc74001d7"
+        image = "svforte/ator-protocol:c4dec3a888efced555f451ca8632ea14607fe58b"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
@@ -113,53 +114,53 @@ job "ator-dir-auth-dev" {
       template {
         change_mode = "noop"
         data = <<EOH
-          ##=================== /etc/torrc =====================##
-          # see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
+##=================== /etc/torrc =====================##
+# see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
 
-          # Run Tor as a regular user (do not change this)
-          User atord
-          DataDirectory /var/lib/tor
+# Run Tor as a regular user (do not change this)
+User atord
+DataDirectory /var/lib/tor
 
-          AuthoritativeDirectory 1
-          V3AuthoritativeDirectory 1
+AuthoritativeDirectory 1
+V3AuthoritativeDirectory 1
 
-          # Server's public IP Address (usually automatic)
-          Address {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/public_ipv4") }}
+# Server's public IP Address (usually automatic)
+Address {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/public_ipv4") }}
 
-          # Port to advertise for incoming Tor connections.
-          ORPort 9001                  # common ports are 9001, 443
-          #ORPort 1.1.1.1:9001
+# Port to advertise for incoming Tor connections.
+ORPort 9001                  # common ports are 9001, 443
+#ORPort 1.1.1.1:9001
 
-          # Mirror directory information for others (optional, not used on bridge)
-          DirPort 9030                 # common ports are 9030, 80
+# Mirror directory information for others (optional, not used on bridge)
+DirPort 9030                 # common ports are 9030, 80
 
-          # Run Tor only as a server (no local applications)
-          SocksPort 0
-          ControlSocket 0
+# Run Tor only as a server (no local applications)
+SocksPort 0
+ControlSocket 0
 
-          # Run as a relay only (change policy to enable exit node)
-          ExitPolicy reject *:*        # no exits allowed
-          ExitPolicy reject6 *:*
-          ExitRelay 0
-          IPv6Exit 0
+# Run as a relay only (change policy to enable exit node)
+ExitPolicy reject *:*        # no exits allowed
+ExitPolicy reject6 *:*
+ExitRelay 0
+IPv6Exit 0
+
+# Set limits
+#AccountingMax 999 GB
+#RelayBandwidthRate 512 KB   # Throttle traffic to
+#RelayBandwidthBurst 1024 KB # But allow bursts up to
+#MaxMemInQueues 512 MB       # Limit Memory usage to
+
+## Run Tor as obfuscated bridge
+# https://trac.torproject.org/projects/tor/wiki/doc/PluggableTransports/obfs4proxy
+#ServerTransportPlugin obfs4 exec /usr/local/bin/obfs4proxy
+#ServerTransportListenAddr obfs4  0.0.0.0:54444
+#ExtORPort auto
+#BridgeRelay 1
           
-          # Set limits
-          #AccountingMax 999 GB
-          #RelayBandwidthRate 512 KB   # Throttle traffic to
-          #RelayBandwidthBurst 1024 KB # But allow bursts up to
-          #MaxMemInQueues 512 MB       # Limit Memory usage to
-          
-          ## Run Tor as obfuscated bridge
-          # https://trac.torproject.org/projects/tor/wiki/doc/PluggableTransports/obfs4proxy
-          #ServerTransportPlugin obfs4 exec /usr/local/bin/obfs4proxy
-          #ServerTransportListenAddr obfs4  0.0.0.0:54444
-          #ExtORPort auto
-          #BridgeRelay 1
-          
-          ## If no Nickname or ContactInfo is set, docker-entrypoint will use
-          ## the environment variables to add Nickname/ContactInfo below
-          Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
-          ContactInfo atorv4@example.org
+## If no Nickname or ContactInfo is set, docker-entrypoint will use
+## the environment variables to add Nickname/ContactInfo below
+Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
+ContactInfo atorv4@example.org
         EOH
         destination = "local/torrc"
       }
