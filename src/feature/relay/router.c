@@ -135,7 +135,7 @@ static authority_cert_t *legacy_key_certificate = NULL;
 
 /* (Note that v3 authorities also have a separate "authority identity key",
  * but this key is never actually loaded by the Tor process.  Instead, it's
- * used by anon-gencert to sign new signing keys and make new key
+ * used by tor-gencert to sign new signing keys and make new key
  * certificates. */
 
 /** Indicate if the IPv6 address should be omitted from the descriptor when

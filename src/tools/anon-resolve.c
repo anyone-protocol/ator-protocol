@@ -556,7 +556,7 @@ usage(void)
   exit(1);
 }
 
-/** Entry point to anon-resolve */
+/** Entry point to tor-resolve */
 int
 main(int argc, char **argv)
 {

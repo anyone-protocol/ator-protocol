@@ -382,7 +382,7 @@ HT_GENERATE2(getaddrinfo_cache, cached_getaddrinfo_item_t, node,
 static int sandbox_getaddrinfo_cache_disabled = 0;
 
 /** Tell the sandbox layer not to try to cache getaddrinfo results. Used as in
- * anon-resolve, when we have no intention of initializing crypto or of
+ * tor-resolve, when we have no intention of initializing crypto or of
  * installing the sandbox.*/
 void
 sandbox_disable_getaddrinfo_cache(void)

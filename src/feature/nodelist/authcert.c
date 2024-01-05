@@ -13,7 +13,7 @@
  * fetch them when we find a consensus or a vote that has been signed
  * with a signing key we don't recognize.  We cache them on disk and
  * load them on startup.  Authority operators generate them with the
- * "anon-gencert" utility.
+ * "tor-gencert" utility.
  */
 
 #include "core/or/or.h"

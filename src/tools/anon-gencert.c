@@ -71,7 +71,7 @@ static size_t passphrase_len = 0;
 static EVP_PKEY *identity_key = NULL;
 static EVP_PKEY *signing_key = NULL;
 
-/** Write a usage message for anon-gencert to stderr. */
+/** Write a usage message for tor-gencert to stderr. */
 static void
 show_help(void)
 {
@@ -542,7 +542,7 @@ generate_certificate(void)
   return 0;
 }
 
-/** Entry point to anon-gencert */
+/** Entry point to tor-gencert */
 int
 main(int argc, char **argv)
 {

@@ -10,7 +10,7 @@
 
 /* NOTE: it probably isn't necessary to put this header in lib/net, but
  * we need it in _some_ lower-level layer for now, since it is used by
- * tools/anon-resolve.c.
+ * tools/tor-resolve.c.
  */
 
 #ifndef TOR_SOCKS5_STATUS_H

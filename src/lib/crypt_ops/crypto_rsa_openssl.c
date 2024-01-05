@@ -72,7 +72,7 @@ crypto_new_pk_from_openssl_rsa_(RSA *rsa)
   return env;
 }
 
-/** Helper, used by anon-gencert.c.  Return a copy of the private RSA from a
+/** Helper, used by tor-gencert.c.  Return a copy of the private RSA from a
  * crypto_pk_t. */
 RSA *
 crypto_pk_get_openssl_rsa_(crypto_pk_t *env)
