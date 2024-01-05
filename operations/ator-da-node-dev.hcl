@@ -144,6 +144,12 @@ ExitPolicy reject6 *:*
 ExitRelay 0
 IPv6Exit 0
 
+V3AuthVotingInterval 20 minutes
+V3AuthVoteDelay 2 minutes
+V3AuthDistDelay 2 minutes
+
+AuthDirMaxServersPerAddr 8
+
 # Set limits
 #AccountingMax 999 GB
 #RelayBandwidthRate 512 KB   # Throttle traffic to
