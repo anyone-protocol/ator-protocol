@@ -99,7 +99,7 @@ DUMMY_TYPECHECK_INSTANCE(or_state_t);
 #define V(member,conftype,initvalue)            \
   VAR(#member, conftype, member, initvalue)
 
-/** Array of "state" variables saved to the ~/.tor/state file. */
+/** Array of "state" variables saved to the ~/.anon/state file. */
 // clang-format off
 static const config_var_t state_vars_[] = {
   /* Remember to document these in state-contents.txt ! */

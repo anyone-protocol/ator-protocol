@@ -281,7 +281,7 @@ switch_id(const char *user, const unsigned flags)
       log_warn(LD_GENERAL, "Tor is already running as %s.  You do not need "
                "the \"User\" option if you are already running as the user "
                "you want to be.  (If you did not set the User option in your "
-               "torrc, check whether it was specified on the command line "
+               "anonrc, check whether it was specified on the command line "
                "by a startup script.)", user);
     } else {
       log_warn(LD_GENERAL, "If you set the \"User\" option, you must start Tor"

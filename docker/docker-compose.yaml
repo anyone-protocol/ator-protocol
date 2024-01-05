@@ -1,17 +1,14 @@
 version: '2.2'
 services:
   relay:
-    image: ator-protocol
+    image: anon
     init: true
     restart: always
     ports:
       - "9001:9001"
       - "9030:9030"
     volumes:
-      # mount and DataDirectory and custom `torrc` here
-      # please make sure that `torrc` is present in the working directory: `cp config/torrc-example torrc`
-      - ./tor-data/:/var/lib/tor/
-      - ./torrc:/etc/tor/torrc
-      # alternatively mount previously saved identity keys here
-      # - ./tests/tor-data/keys/secret_id_key:/var/lib/tor/keys/secret_id_key
-      # - ./tests/tor-data/keys/ed25519_master_id_secret_key:/var/lib/tor/keys/secret_id_key
+      # mount and DataDirectory and custom `anonrc` here
+      # please make sure that `anonrc` is present in the working directory: `cp config/anonrc-example anonrc`
+      - ./anon-data/:/var/lib/anon/
+      - ./anonrc:/etc/anon/anonrc

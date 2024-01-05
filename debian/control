@@ -1,21 +1,21 @@
-Source: tor
+Source: anon
 Section: net
 Priority: optional
 Maintainer: Peter Palfrader <weasel@debian.org>
 Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>= 1.1), asciidoc (>= 8.2), docbook-xml, docbook-xsl, xmlto, dh-apparmor, libseccomp-dev [amd64 i386], libsystemd-dev [linux-any], pkg-config [linux-any], libcap-dev [linux-any], dh-autoreconf, liblzma-dev, libzstd-dev, dh-runit (>= 2.8.8)
 Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
 Standards-Version: 4.4.0
-Homepage: https://www.torproject.org/
-Vcs-Git: https://git.torproject.org/debian/tor.git
-Vcs-Browser: https://gitweb.torproject.org/debian/tor.git
+Homepage: https://ator.io/
+Vcs-Git: https://github.com/ATOR-Development/ator-protocol.git
+Vcs-Browser: https://github.com/ATOR-Development/ator-protocol
 
-Package: tor
+Package: anon
 Architecture: any
 Depends: ${shlibs:Depends}, adduser, ${misc:Depends}, lsb-base
 Pre-Depends: ${misc:Pre-Depends}
 Conflicts: libssl0.9.8 (<< 0.9.8g-9)
 Breaks: ${runit:Breaks}
-Recommends: logrotate, tor-geoipdb, torsocks
+Recommends: logrotate, anon-geoipdb, torsocks
 Suggests: mixmaster, torbrowser-launcher, socat, apparmor-utils, nyx, obfs4proxy
 Description: anonymizing overlay network for TCP
  Tor is a connection-based low-latency anonymous communication system.
@@ -48,12 +48,12 @@ Description: anonymizing overlay network for TCP
  builds of Tor, Torbutton, and a modified Firefox that is patched to fix
  a variety of privacy bugs.
 
-Package: tor-geoipdb
+Package: anon-geoipdb
 Architecture: all
 Priority: optional
-Depends: tor (>= ${source:Version}), ${misc:Depends}
-Replaces: tor (<< 0.2.4.8)
-Breaks: tor (<< 0.2.4.8)
+Depends: anon (>= ${source:Version}), ${misc:Depends}
+Replaces: anon (<< 0.2.4.8)
+Breaks: anon (<< 0.2.4.8)
 Description: GeoIP database for Tor
  This package provides a GeoIP database for Tor, i.e. it maps IPv4 addresses
  to countries.

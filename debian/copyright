@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Note however that since we build tor with --enable-gpl this may and will allow
 the inclusion of GPL-licensed code from libraries, building a version of tor
-and libtor covered by the GPL rather than its usual 3-clause BSD license.
+and libanon covered by the GPL rather than its usual 3-clause BSD license.
 
 ===============================================================================
 strlcat and strlcpy by Todd C. Miller are licensed under the following license:

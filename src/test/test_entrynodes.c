@@ -2810,7 +2810,7 @@ test_entry_guard_should_expire_waiting(void *arg)
   tor_free(fake_state);
 }
 
-/** Test that the number of primary guards can be controlled using torrc */
+/** Test that the number of primary guards can be controlled using anonrc */
 static void
 test_entry_guard_number_of_primaries(void *arg)
 {
@@ -2819,7 +2819,7 @@ test_entry_guard_number_of_primaries(void *arg)
   /* Get default value */
   tt_int_op(get_n_primary_guards(), OP_EQ, DFLT_N_PRIMARY_GUARDS);
 
-  /* Set number of primaries using torrc */
+  /* Set number of primaries using anonrc */
   get_options_mutable()->NumPrimaryGuards = 42;
   tt_int_op(get_n_primary_guards(), OP_EQ, 42);
 

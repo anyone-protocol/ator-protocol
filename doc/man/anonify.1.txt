@@ -1,0 +1,37 @@
+// Copyright (c) The Tor Project, Inc.
+// See LICENSE for licensing information
+// This is an asciidoc file used to generate the manpage/html reference.
+// Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+:man source:   Anon
+:man manual:   Anon Manual
+anonify(1)
+=========
+Anon
+
+NAME
+----
+anonify - wrapper for torsocks and anon
+
+SYNOPSIS
+--------
+**anonify** __application__ [__application's__ __arguments__]
+
+DESCRIPTION
+-----------
+**anonify** is a simple wrapper that calls torsocks with a anon-specific
+configuration file.
+
+It is provided for backward compatibility; instead you should use torsocks.
+
+WARNING
+-------
+When used with torsocks, anonify should not leak DNS requests or UDP data.
+
+anonify can leak ICMP data.
+
+anonify will not ensure that different requests are processed on
+different circuits.
+
+SEE ALSO
+--------
+**anon**(1), **torsocks**(1)

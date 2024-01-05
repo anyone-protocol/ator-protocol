@@ -5317,7 +5317,7 @@ test_config_include_limit(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
   char torrc_contents[1000];
   tor_snprintf(torrc_contents, sizeof(torrc_contents), "%%include %s",
                torrc_path);
@@ -5495,7 +5495,7 @@ test_config_include_recursion_before_after(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5560,7 +5560,7 @@ test_config_include_recursion_after_only(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5627,7 +5627,7 @@ test_config_include_folder_order(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -5717,7 +5717,7 @@ test_config_include_blank_file_last(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -6394,7 +6394,7 @@ test_config_include_opened_file_list(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -6462,7 +6462,7 @@ test_config_include_opened_file_list(void *data)
 #endif
   tt_int_op(smartlist_contains_string(opened_files, torrcd), OP_EQ, 1);
   tt_int_op(smartlist_contains_string(opened_files, subfolder), OP_EQ, 1);
-  // * will match the subfolder inside torrc.d, so it will be included
+  // * will match the subfolder inside anonrc.d, so it will be included
   tt_int_op(smartlist_contains_string(opened_files, in_subfolder), OP_EQ, 1);
   tt_int_op(smartlist_contains_string(opened_files, empty), OP_EQ, 1);
   tt_int_op(smartlist_contains_string(opened_files, file), OP_EQ, 1);

@@ -45,11 +45,11 @@ The changes to the build system are pretty straightforward.
 
 3. In the `src/core/include.am` file, locate the `MODULE_RELAY_SOURCES`
    value.  You need to create your own `_SOURCES` variable for your module
-   and then conditionally add the it to `LIBTOR_A_SOURCES` if you should
+   and then conditionally add the it to `LIBANON_A_SOURCES` if you should
    build the module.
 
    It is then **very** important to add your SOURCES variable to
-   `src_or_libtor_testing_a_SOURCES` so the tests can build it.
+   `src_or_libanon_testing_a_SOURCES` so the tests can build it.
 
 Finally, your module will automatically be included in the
 `TOR_MODULES_ALL_ENABLED` variable which is used to build the unit tests.

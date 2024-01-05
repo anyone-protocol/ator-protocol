@@ -1,12 +1,12 @@
 
-noinst_LIBRARIES += src/lib/libtor-evloop.a
+noinst_LIBRARIES += src/lib/libanon-evloop.a
 
 if UNITTESTS_ENABLED
-noinst_LIBRARIES += src/lib/libtor-evloop-testing.a
+noinst_LIBRARIES += src/lib/libanon-evloop-testing.a
 endif
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-src_lib_libtor_evloop_a_SOURCES =			\
+src_lib_libanon_evloop_a_SOURCES =			\
 	src/lib/evloop/compat_libevent.c		\
 	src/lib/evloop/evloop_sys.c			\
 	src/lib/evloop/procmon.c			\
@@ -14,10 +14,10 @@ src_lib_libtor_evloop_a_SOURCES =			\
 	src/lib/evloop/token_bucket.c			\
 	src/lib/evloop/workqueue.c
 
-src_lib_libtor_evloop_testing_a_SOURCES = \
-	$(src_lib_libtor_evloop_a_SOURCES)
-src_lib_libtor_evloop_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
-src_lib_libtor_evloop_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
+src_lib_libanon_evloop_testing_a_SOURCES = \
+	$(src_lib_libanon_evloop_a_SOURCES)
+src_lib_libanon_evloop_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
+src_lib_libanon_evloop_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
 
 # ADD_C_FILE: INSERT HEADERS HERE.
 noinst_HEADERS +=					\

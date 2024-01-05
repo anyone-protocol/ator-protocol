@@ -1,0 +1,15 @@
+DataDirectory /var/lib/anon
+PidFile /run/anon/anon.pid
+RunAsDaemon 1
+User debian-anon
+
+ControlSocket /run/anon/control GroupWritable RelaxDirModeCheck
+ControlSocketsGroupWritable 1
+SocksPort unix:/run/anon/socks WorldWritable
+SocksPort 9050
+
+CookieAuthentication 1
+CookieAuthFileGroupReadable 1
+CookieAuthFile /run/anon/control.authcookie
+
+Log notice syslog

@@ -1,41 +1,41 @@
-This is the Debian package for Tor, The Onion Router.
+This is the Debian package for Anon.
 
 # Startup and Configuration
 
-If Tor is started by init, it loads the configuration snippets from
-/usr/share/tor/tor-service-defaults-torrc before consulting /etc/tor/torrc.
+If Anon is started by init, it loads the configuration snippets from
+/usr/share/anon/anon-service-defaults-anonrc before consulting /etc/anon/anonrc.
 
-The tor-service-defaults-torrc file tells Tor to run as daemon, create
+The anon-service-defaults-anonrc file tells Anon to run as daemon, create
 pidfile, sets its data directory and configures cookie authentication.
 
-If Tor is started not from the init script, then it will behave like
-upstream's Tor.
+If Anon is started not from the init script, then it will behave like
+upstream's Anon.
 
 # Multiple instances
 
-As of 0.2.7.4, the package supports running multiple instances of Tor
-under systemd.  Please consult the tor-instance-create(8) manpage
+As of 0.2.7.4, the package supports running multiple instances of Anon
+under systemd.  Please consult the anon-instance-create(8) manpage
 for details.
 
 # Logging
 
-As of the 0.3.0.x tree, the Debian packages for Tor by
+As of the 0.3.0.x tree, the Debian packages for Anon by
 default log to syslog.
 
 You can restore the previous behavior by adding something
-like "Log notice file /var/log/tor/log" to your torrc.
+like "Log notice file /var/log/anon/log" to your anonrc.
 
-# Filesystem access by the Tor service
+# Filesystem access by the Anon service
 
 Note that due to systemd and apparmor protections, the places on the
-filesystem which the tor process can access is limited.  (See the
+filesystem which the anon process can access is limited.  (See the
 service files [1] for details.)  As such, hidden service directories
-should be created in subdirectories below Tor's DataDirectory [2].
+should be created in subdirectories below Anon's DataDirectory [2].
 
 ## Onion services using UNIX domain sockets
 
-Tor's onion services can access their backends not only via TCP but also
-via UNIX domain sockets (see also the tor(1) manpage).
+Anon's onion services can access their backends not only via TCP but also
+via UNIX domain sockets (see also the anon(1) manpage).
 
 UNIX domain sockets are not currently covered by filesystem restrictions
 from systemd and apparmor.  As such, they can be put anywhere as long as
@@ -44,27 +44,27 @@ does not work by default, but anything under /var should.
 
 It is suggested that sockets be placed in a special directory under
 /var/lib [3].  Note that while systemd and apparmor do not currently
-limit access to sockets, you still need to ensure that the Tor
+limit access to sockets, you still need to ensure that the Anon
 process may access them according to the default UNIX file and directory
 permissions.
 
-Example: The backend is run by user webfu.  The default Tor instance
+Example: The backend is run by user webfu.  The default Anon instance
   should be able to access the socket.
   .
-  The admin creates the directory /var/lib/tor-onion-sockets/default/webfu/
-  and makes it mode 02750 owned by webfu:debian-tor.  Then she configures
+  The admin creates the directory /var/lib/anon-onion-sockets/default/webfu/
+  and makes it mode 02750 owned by webfu:debian-anon.  Then she configures
   the backend service to create the socket in this directory and
-  configures Tor to use that socket.  The socket should be read and
-  writable by the tor process as well, so it should be either g+rw when
-  its group can be debian-tor, or a+rw when not.
+  configures Anon to use that socket.  The socket should be read and
+  writable by the anon process as well, so it should be either g+rw when
+  its group can be debian-anon, or a+rw when not.
 
 
-1: /lib/systemd/system/tor@default.service and
-   /lib/systemd/system/tor@.service
-2: /var/lib/tor and
-   /var/lib/tor-instances/<instancename>
-3: /var/lib/tor-onion-sockets/default and
-   /var/lib/tor-onion-sockets/<instancename>
+1: /lib/systemd/system/anon@default.service and
+   /lib/systemd/system/anon@.service
+2: /var/lib/anon and
+   /var/lib/anon-instances/<instancename>
+3: /var/lib/anon-onion-sockets/default and
+   /var/lib/anon-onion-sockets/<instancename>
 4: https://bugs.debian.org/846275
 
 -- 

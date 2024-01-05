@@ -2,12 +2,12 @@ FROM debian:bookworm
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG ATOR_VER="8a729c50a87974b78822227c14c03f3fb6be514e"
-ARG ATOR_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
+ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 
-ENV TOR_NICKNAME=ATORv4
+ENV ANON_NICKNAME=ANONv4
 
-ENV TOR_USER=atord
+ENV ANON_USER=atord
 
 RUN apt-get update && \
     apt_build_deps="libssl-dev zlib1g-dev libevent-dev ca-certificates dh-apparmor libseccomp-dev debhelper" && \
@@ -15,13 +15,13 @@ RUN apt-get update && \
     apt_temps="build-essential automake git" && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
-    git clone ${ATOR_REPO} && cd ator-protocol && git fetch origin ${ATOR_VER} && git switch --detach ${ATOR_VER}
+    git clone ${ANON_REPO} && cd anon && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER}
 
 # Copy actual list of da to rebuild the image with correct one
-COPY /auth_dirs.inc /src/ator-protocol/src/app/config/auth_dirs.inc
-COPY /fallback_dirs.inc /src/ator-protocol/src/app/config/fallback_dirs.inc
+COPY /auth_dirs.inc /src/anon/src/app/config/auth_dirs.inc
+COPY /fallback_dirs.inc /src/anon/src/app/config/fallback_dirs.inc
 
-RUN cd /src/ator-protocol && \
+RUN cd /src/anon && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
@@ -33,16 +33,16 @@ RUN cd /src/ator-protocol && \
 RUN adduser --quiet \
         --system \
         --disabled-password \
-        --home /var/lib/tor \
+        --home /var/lib/anon \
         --no-create-home \
         --shell /bin/false \
         --group \
-        $TOR_USER && \
-        mkdir -p /var/lib/tor && \
-        chown $TOR_USER:$TOR_USER /var/lib/tor && \
-        chmod 02700 /var/lib/tor
+        $ANON_USER && \
+        mkdir -p /var/lib/anon && \
+        chown $ANON_USER:$ANON_USER /var/lib/anon && \
+        chmod 02700 /var/lib/anon
 
-COPY ./torrc-da /etc/torrc
+COPY ./anonrc-da /etc/anonrc
 
 COPY ./scripts/ /usr/local/bin/
 
@@ -50,4 +50,4 @@ EXPOSE 9001 9030
 
 ENTRYPOINT ["docker-entrypoint"]
 
-CMD ["tor", "-f", "/etc/tor/torrc"]
+CMD ["tor", "-f", "/etc/anon/anonrc"]

@@ -92,7 +92,7 @@ compute_num_cpus(void)
       /* LCOV_EXCL_START */
       log_notice(LD_GENERAL, "Wow!  I detected that you have %d CPUs. I "
                  "will not autodetect any more than %d, though.  If you "
-                 "want to configure more, set NumCPUs in your torrc",
+                 "want to configure more, set NumCPUs in your anonrc",
                  num_cpus, MAX_DETECTABLE_CPUS);
       num_cpus = MAX_DETECTABLE_CPUS;
       /* LCOV_EXCL_STOP */

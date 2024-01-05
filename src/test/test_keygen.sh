@@ -40,7 +40,7 @@ if [ $# -ge 1 ]; then
   TOR_BINARY="${1}"
   shift
 else
-  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/tor}"
+  TOR_BINARY="${TESTING_TOR_BINARY:-./src/app/anon}"
 fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
@@ -104,17 +104,17 @@ trap 'rm -rf "$DATA_DIR"' 0
 # Use an absolute path for this or Tor will complain
 DATA_DIR=$(cd "${DATA_DIR}" && pwd)
 
-touch "${DATA_DIR}/empty_torrc"
-touch "${DATA_DIR}/empty_defaults_torrc"
+touch "${DATA_DIR}/empty_anonrc"
+touch "${DATA_DIR}/empty_defaults_anonrc"
 
 QUIETLY="--hush"
 SILENTLY="--quiet"
-TOR="${TOR_BINARY} ${QUIETLY} --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f ${DATA_DIR}/empty_torrc --defaults-torrc ${DATA_DIR}/empty_defaults_torrc"
+TOR="${TOR_BINARY} ${QUIETLY} --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f ${DATA_DIR}/empty_anonrc --defaults-anonrc ${DATA_DIR}/empty_defaults_anonrc"
 
 ##### SETUP
 #
-# Here we create three sets of keys: one using "tor", one using "tor
-# --keygen", and one using "tor --keygen" and encryption.  We'll be
+# Here we create three sets of keys: one using "anon", one using "anon
+# --keygen", and one using "anon --keygen" and encryption.  We'll be
 # copying them into different keys directories in order to simulate
 # different kinds of configuration problems/issues.
 

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# given upstream tor and the debian-tor repos in src/tor and src/debian-tor, build a debian
-# source package.
-
+# Build a debian source package
 
 # Copyright 2007--2021 Peter Palfrader
 #
@@ -51,7 +49,7 @@ fudge_upstream_version() {
   fi
 }
 
-pkg=tor
+pkg=anon
 
 pkggitdir="$(readlink -f .)"
 debgitdir="$(readlink -f .)"
@@ -142,7 +140,7 @@ echo "Creating backported debian source packages"
 echo "===================="
 PATH="$debgitdir/debian/misc:$PATH"
 
-. "$(which build-tor-sources)"
+. "$(which build-anon-sources)"
 set -x
 set +e
 backport_all "$pkg" "$ddir" "$origtar" "$debian_version"

@@ -1,6 +1,6 @@
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_APP_A_SOURCES += 				\
+LIBANON_APP_A_SOURCES += 				\
 	src/core/or/address_set.c		\
 	src/core/or/channel.c			\
 	src/core/or/channelpadding.c		\
@@ -125,7 +125,7 @@ noinst_HEADERS +=					\
 	src/core/or/versions.h
 
 if USE_TRACING_INSTRUMENTATION_LTTNG
-LIBTOR_APP_A_SOURCES += \
+LIBANON_APP_A_SOURCES += \
 	src/core/or/trace_probes_cc.c				\
 	src/core/or/trace_probes_circuit.c
 noinst_HEADERS += \

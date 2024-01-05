@@ -4,8 +4,8 @@ dnl Copyright (c) 2007-2019, The Tor Project, Inc.
 dnl See LICENSE for licensing information
 
 AC_PREREQ([2.63])
-AC_INIT([tor],[0.4.9.0-alpha-dev])
-AC_CONFIG_SRCDIR([src/app/main/tor_main.c])
+AC_INIT([anon],[0.4.9.0-alpha-dev])
+AC_CONFIG_SRCDIR([src/app/main/anon_main.c])
 AC_CONFIG_MACRO_DIR([m4])
 
 configure_flags="$*"
@@ -54,7 +54,7 @@ fi
 # License options
 
 AC_ARG_ENABLE(gpl,
-  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of tor and libtor covered by the GPL rather than its usual 3-clause BSD license]))
+  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of tor and libanon covered by the GPL rather than its usual 3-clause BSD license]))
 license_option=BSD
 AS_IF([test "x$enable_gpl" = xyes],
   [
@@ -80,8 +80,8 @@ AC_ARG_ENABLE(coverage,
    AS_HELP_STRING(--enable-coverage, [enable coverage support in the unit-test build]))
 AC_ARG_ENABLE(asserts-in-tests,
    AS_HELP_STRING(--disable-asserts-in-tests, [disable tor_assert() calls in the unit tests, for branch coverage]))
-AC_ARG_ENABLE(system-torrc,
-   AS_HELP_STRING(--disable-system-torrc, [don't look for a system-wide torrc file]))
+AC_ARG_ENABLE(system-anonrc,
+   AS_HELP_STRING(--disable-system-anonrc, [don't look for a system-wide anonrc file]))
 AC_ARG_ENABLE(libfuzzer,
    AS_HELP_STRING(--enable-libfuzzer, [build extra fuzzers based on 'libfuzzer']))
 AC_ARG_ENABLE(oss-fuzz,
@@ -148,9 +148,9 @@ if test "$enable_static_tor" = "yes"; then
 fi
 AC_SUBST(TOR_STATIC_LDFLAGS)
 
-if test "$enable_system_torrc" = "no"; then
-  AC_DEFINE(DISABLE_SYSTEM_TORRC, 1,
-            [Defined if we're not going to look for a torrc in SYSCONF])
+if test "$enable_system_anonrc" = "no"; then
+  AC_DEFINE(DISABLE_SYSTEM_ANONRC, 1,
+            [Defined if we're not going to look for a anonrc in SYSCONF])
 fi
 
 if test "$enable_memory_sentinels" = "no"; then
@@ -643,7 +643,7 @@ AH_BOTTOM([
 
 AM_CONDITIONAL(WIN32, test "x$bwin32" = "xtrue")
 AM_CONDITIONAL(BUILD_NT_SERVICES, test "x$bwin32" = "xtrue")
-AM_CONDITIONAL(BUILD_LIBTORRUNNER, test "x$bwin32" != "xtrue")
+AM_CONDITIONAL(BUILD_LIBANONRUNNER, test "x$bwin32" != "xtrue")
 
 dnl Enable C99 when compiling with MIPSpro
 AC_MSG_CHECKING([for MIPSpro compiler])
@@ -2243,10 +2243,10 @@ AH_TEMPLATE([SRCDIR],[tor's sourcedir directory])
 AC_DEFINE_UNQUOTED(SRCDIR,"$SRCDIR")
 
 if test "x$CONFDIR" = "x"; then
-  CONFDIR=`eval echo $sysconfdir/tor`
+  CONFDIR=`eval echo $sysconfdir/anon`
 fi
 AC_SUBST(CONFDIR)
-AH_TEMPLATE([CONFDIR],[tor's configuration directory])
+AH_TEMPLATE([CONFDIR],[anon's configuration directory])
 AC_DEFINE_UNQUOTED(CONFDIR,"$CONFDIR")
 
 BINDIR=`eval echo $bindir`
@@ -2617,14 +2617,14 @@ AC_CONFIG_FILES([
 	Doxyfile
 	Makefile
 	contrib/operator-tools/tor.logrotate
-	src/config/torrc.sample
-	src/config/torrc.minimal
+	src/config/anonrc.sample
+	src/config/anonrc.minimal
 	scripts/maint/checkOptionDocs.pl
         warning_flags
 ])
 
 if test "x$asciidoc" = "xtrue" && test "$ASCIIDOC" = "none"; then
-  regular_mans="doc/man/tor doc/man/tor-gencert doc/man/tor-resolve doc/man/torify"
+  regular_mans="doc/man/anon doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify"
   for file in $regular_mans ; do
     if ! [[ -f "$srcdir/$file.1.in" ]] || ! [[ -f "$srcdir/$file.html.in" ]] ; then
       echo "==================================";

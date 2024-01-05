@@ -27,7 +27,7 @@ a good review!  Just make it clear what you checked for and what you didn't.
 - Do all the functions, global variables, types, and structure members with
   modified behavior have modified documentation?
 
-- Do all the new torrc options have documentation?
+- Do all the new anonrc options have documentation?
 
 - If this changes Tor's behavior on the wire, is there a design proposal?
 

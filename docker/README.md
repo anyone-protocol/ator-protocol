@@ -9,14 +9,14 @@ This directory contains configs to build and run ATOR protocol binaries using do
 
 Build an image:
 ```sh
-docker build -t ator-protocol .
+docker build -t anon .
 ```
 
 ## Building Docker Image with a specific tag (version of the protocol)
 
 Build an image with a specific tag:
 ```sh
-docker build -t ator-protocol . --build-arg="ATOR_VER=${TAG}"
+docker build -t anon . --build-arg="ANON_VER=${TAG}"
 ```
 Both lightweight and annotated git tags are applicable.
 
@@ -31,13 +31,13 @@ docker buildx create --use
 
 Example for `linux/arm64`:
 ```sh
-ATOR_PLATFORMS=linux/arm64 \
+ANON_PLATFORMS=linux/arm64 \
     ./extract-multi-arch.sh
 ```
 
 Example for `linux/arm64` and `linux/amd64`:
 ```sh
-ATOR_PLATFORMS=linux/arm64,linux/amd64 \
+ANON_PLATFORMS=linux/arm64,linux/amd64 \
     ./extract-multi-arch.sh
 ```
 
@@ -47,15 +47,15 @@ Resulting binaries will be available in `build/` directory.
 
 ### Configuration File
 
-Before running the container, make sure you copy `./config/torrc-example` to `./torrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
+Before running the container, make sure you copy `./config/anonrc-example` to `./anonrc` and set all the required variables depending on the mode in which you want to run your node (relay, directory authority, etc.). Docker-compose will use it to mount it inside a docker container.
 
 ### External IP
 
-Ensure that your container ports are accessible from outside and that the `Address` parameter in `torrc` corresponds to your external IP address. Otherwise, other nodes will not be able to use your node as a Relay or Directory Authority.
+Ensure that your container ports are accessible from outside and that the `Address` parameter in `anonrc` corresponds to your external IP address. Otherwise, other nodes will not be able to use your node as a Relay or Directory Authority.
 
 ### Secrets
 
-Secret keys should be mounted if you intend to use specific keys. They are located in the `/var/lib/tor/keys/` directory inside the container.
+Secret keys should be mounted if you intend to use specific keys. They are located in the `/var/lib/anon/keys/` directory inside the container.
 
 ### Start container
 

@@ -2,7 +2,7 @@
 Contents of the Tor state file
 ==============================
 
-The state file is structured with more or less the same rules as torrc.
+The state file is structured with more or less the same rules as anonrc.
 Recognized fields are:
 
   TorVersion

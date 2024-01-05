@@ -33,7 +33,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-image: ${{ secrets.DOCKER_BASE_REPO }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
+          docker-image: ${{ secrets.DOCKER_BASE_REPO_DEV }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
 
@@ -48,5 +48,5 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO }}
+          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}
           docker-tag: ${{ env.image-tag }}

@@ -27,7 +27,7 @@
  *   <li>The option_vars_ array below in this module, which configures
  *       the names of the torrc options, their types, their multiplicities,
  *       and their mappings to fields in or_options_t.
- *   <li>The manual in doc/man/tor.1.txt, to document what the new option
+ *   <li>The manual in doc/man/anon.1.txt, to document what the new option
  *       is, and how it works.
  * </ul>
  *
@@ -492,9 +492,9 @@ static const config_var_t option_vars_[] = {
   V(GeoIPv6File,                 FILENAME, "/data/local/tmp/geoip6"),
 #else
   V(GeoIPFile,                   FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip"),
   V(GeoIPv6File,                 FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip6"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip6"),
 #endif /* defined(_WIN32) */
   OBSOLETE("Group"),
   V(GuardLifetime,               INTERVAL, "0 minutes"),
@@ -2469,11 +2469,11 @@ static const struct {
   /** If nonzero, set the quiet level to this. 1 is "hush", 2 is "quiet" */
   int quiet;
 } CMDLINE_ONLY_OPTIONS[] = {
-  { .name="--torrc-file",
+  { .name="--anonrc-file",
     .short_name="-f",
     .takes_argument=ARGUMENT_NECESSARY },
-  { .name="--allow-missing-torrc" },
-  { .name="--defaults-torrc",
+  { .name="--allow-missing-anonrc" },
+  { .name="--defaults-anonrc",
     .takes_argument=ARGUMENT_NECESSARY },
   { .name="--hash-password",
     .takes_argument=ARGUMENT_NECESSARY,
@@ -2499,7 +2499,7 @@ static const struct {
     .takes_argument=ARGUMENT_NECESSARY },
   { .name="--verify-config",
     .command=CMD_VERIFY_CONFIG },
-  { .name="--ignore-missing-torrc" },
+  { .name="--ignore-missing-anonrc" },
   { .name="--quiet",
     .quiet=QUIET_SILENT },
   { .name="--hush",
@@ -2517,7 +2517,7 @@ static const struct {
     .short_name="-h",
     .command=CMD_IMMEDIATE,
     .quiet=QUIET_HUSH  },
-  { .name="--list-torrc-options",
+  { .name="--list-anonrc-options",
     .command=CMD_IMMEDIATE,
     .quiet=QUIET_HUSH },
   { .name="--list-deprecated-options",
@@ -2707,7 +2707,7 @@ print_usage(void)
 "Copyright (c) 2001-2004, Roger Dingledine\n"
 "Copyright (c) 2004-2006, Roger Dingledine, Nick Mathewson\n"
 "Copyright (c) 2007-2021, The Tor Project, Inc.\n\n"
-"tor -f <torrc> [args]\n"
+"anon -f <anonrc> [args]\n"
 "See man page for options, or https://www.torproject.org/ for "
 "documentation.\n");
 }
@@ -4289,7 +4289,7 @@ get_windows_conf_root(void)
   if (!SUCCEEDED(result)) {
     return NULL;
   }
-  strlcat(path,"\\tor",MAX_PATH);
+  strlcat(path,"\\anon",MAX_PATH);
   is_set = 1;
   return path;
 }
@@ -4306,17 +4306,17 @@ get_default_conf_file(int defaults_file)
 #elif defined(_WIN32)
   if (defaults_file) {
     static char defaults_path[MAX_PATH+1];
-    tor_snprintf(defaults_path, MAX_PATH, "%s\\torrc-defaults",
+    tor_snprintf(defaults_path, MAX_PATH, "%s\\anonrc-defaults",
                  get_windows_conf_root());
     return defaults_path;
   } else {
     static char path[MAX_PATH+1];
-    tor_snprintf(path, MAX_PATH, "%s\\torrc",
+    tor_snprintf(path, MAX_PATH, "%s\\anonrc",
                  get_windows_conf_root());
     return path;
   }
 #else
-  return defaults_file ? CONFDIR "/torrc-defaults" : CONFDIR "/torrc";
+  return defaults_file ? CONFDIR "/anonrc-defaults" : CONFDIR "/anonrc";
 #endif /* defined(DISABLE_SYSTEM_TORRC) || ... */
 }
 
@@ -4338,10 +4338,10 @@ find_torrc_filename(const config_line_t *cmd_arg,
 {
   char *fname=NULL;
   const config_line_t *p_index;
-  const char *fname_opt = defaults_file ? "--defaults-torrc" : "-f";
-  const char *fname_long_opt = defaults_file ? "--defaults-torrc" :
-                                               "--torrc-file";
-  const char *ignore_opt = defaults_file ? NULL : "--ignore-missing-torrc";
+  const char *fname_opt = defaults_file ? "--defaults-anonrc" : "-f";
+  const char *fname_long_opt = defaults_file ? "--defaults-anonrc" :
+                                               "--anonrc-file";
+  const char *ignore_opt = defaults_file ? NULL : "--ignore-missing-anonrc";
   const char *keygen_opt = "--keygen";
 
   if (defaults_file)
@@ -4382,7 +4382,7 @@ find_torrc_filename(const config_line_t *cmd_arg,
 #ifndef _WIN32
       char *fn = NULL;
       if (!defaults_file) {
-        fn = expand_filename("~/.torrc");
+        fn = expand_filename("~/.anonrc");
       }
       if (fn) {
         file_status_t hmst = file_status(fn);
@@ -4497,7 +4497,7 @@ options_init_from_torrc(int argc, char **argv)
     print_usage();
     return 1;
   }
-  if (config_line_find(cmdline_only_options, "--list-torrc-options")) {
+  if (config_line_find(cmdline_only_options, "--list-anonrc-options")) {
     /* For validating whether we've documented everything. */
     list_torrc_options();
     return 1;
@@ -4562,9 +4562,9 @@ options_init_from_torrc(int argc, char **argv)
     cf_defaults = load_torrc_from_disk(cmdline_only_options, 1);
     const config_line_t *f_line = config_line_find(cmdline_only_options, "-f");
     const config_line_t *f_line_long = config_line_find(cmdline_only_options,
-                                                        "--torrc-file");
+                                                        "--anonrc-file");
     if (f_line && f_line_long) {
-      log_err(LD_CONFIG, "-f and --torrc-file cannot be used together.");
+      log_err(LD_CONFIG, "-f and --anonrc-file cannot be used together.");
       retval = -1;
       goto err;
     } else if (f_line_long) {
@@ -4581,7 +4581,7 @@ options_init_from_torrc(int argc, char **argv)
     }
 
     if (!cf) {
-      if (config_line_find(cmdline_only_options, "--allow-missing-torrc")) {
+      if (config_line_find(cmdline_only_options, "--allow-missing-anonrc")) {
         cf = tor_strdup("");
       } else {
         goto err;
@@ -6919,7 +6919,7 @@ get_data_directory(const char *val)
 #else /* !defined(_WIN32) */
   const char *d = val;
   if (!d)
-    d = "~/.tor";
+    d = "~/.anon";
 
   if (!strcmpstart(d, "~/")) {
     char *fn = expand_filename(d);
@@ -6927,16 +6927,16 @@ get_data_directory(const char *val)
       log_warn(LD_CONFIG,"Failed to expand filename \"%s\".", d);
       return NULL;
     }
-    if (!val && !strcmp(fn,"/.tor")) {
+    if (!val && !strcmp(fn,"/.anon")) {
       /* If our homedir is /, we probably don't want to use it. */
       /* Default to LOCALSTATEDIR/tor which is probably closer to what we
        * want. */
       log_warn(LD_CONFIG,
-               "Default DataDirectory is \"~/.tor\".  This expands to "
+               "Default DataDirectory is \"~/.anon\".  This expands to "
                "\"%s\", which is probably not what you want.  Using "
-               "\"%s"PATH_SEPARATOR"tor\" instead", fn, LOCALSTATEDIR);
+               "\"%s"PATH_SEPARATOR"anon\" instead", fn, LOCALSTATEDIR);
       tor_free(fn);
-      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "tor");
+      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "anon");
     }
     return fn;
   }
@@ -6989,8 +6989,8 @@ validate_data_directories(or_options_t *options)
   "if you edit it, comments will not be preserved"
 /** This string can change; it tries to give the reader an idea
  * that editing this file by hand is not a good plan. */
-#define GENERATED_FILE_COMMENT "# The old torrc file was renamed " \
-  "to torrc.orig.1, and Tor will ignore it"
+#define GENERATED_FILE_COMMENT "# The old anonrc file was renamed " \
+  "to anonrc.orig.1, and Tor will ignore it"
 
 /** Save a configuration file for the configuration in <b>options</b>
  * into the file <b>fname</b>.  If the file already exists, and

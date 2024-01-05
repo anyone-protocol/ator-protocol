@@ -810,7 +810,7 @@ kist_scheduler_run_interval(void)
   int run_interval = get_options()->KISTSchedRunInterval;
 
   if (run_interval != 0) {
-    log_debug(LD_SCHED, "Found KISTSchedRunInterval=%" PRId32 " in torrc. "
+    log_debug(LD_SCHED, "Found KISTSchedRunInterval=%" PRId32 " in anonrc. "
                         "Using that.", run_interval);
     return run_interval;
   }

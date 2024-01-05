@@ -32,4 +32,4 @@ runs:
         tags: ${{ inputs.docker-image }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
-          ATOR_VER=${{ inputs.version }}
+          ANON_VER=${{ inputs.version }}

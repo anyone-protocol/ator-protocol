@@ -1,38 +1,38 @@
 version: '3'
 services:
  da1:
-  image: ator-protocol-local
+  image: anon-local
   environment:
-    TOR_NICKNAME: da1
+    ANON_NICKNAME: da1
     IP_ADDRESS: 172.0.0.11
     CONTACT_EMAIL: da1@ator.io
   volumes:
-    - ./tor/da1:/var/lib/tor/
-    - ./tor/da1:/etc/tor
+    - ./tor/da1:/var/lib/anon/
+    - ./tor/da1:/etc/anon
   networks:
     local:
       ipv4_address: 172.0.0.11  
  da2:
-  image: ator-protocol-local
+  image: anon-local
   environment:
-    TOR_NICKNAME: da2
+    ANON_NICKNAME: da2
     IP_ADDRESS: 172.0.0.12
     CONTACT_EMAIL: da2@ator.io
   volumes:
-    - ./tor/da2:/var/lib/tor/
-    - ./tor/da2:/etc/tor
+    - ./tor/da2:/var/lib/anon/
+    - ./tor/da2:/etc/anon
   networks:
     local:
       ipv4_address: 172.0.0.12      
  da3:
-  image: ator-protocol-local
+  image: anon-local
   environment:
-    TOR_NICKNAME: da3
+    ANON_NICKNAME: da3
     IP_ADDRESS: 172.0.0.13
     CONTACT_EMAIL: da3@ator.io
   volumes:
-    - ./tor/da3:/var/lib/tor/
-    - ./tor/da3:/etc/tor
+    - ./tor/da3:/var/lib/anon/
+    - ./tor/da3:/etc/anon
   networks:
     local:
       ipv4_address: 172.0.0.13   

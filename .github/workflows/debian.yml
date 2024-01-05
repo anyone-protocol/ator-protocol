@@ -102,12 +102,13 @@ jobs:
           path: source-packages/
       - name: Build Package
         run: |
+          set -x
           find source-packages
           upstream_version="$(head -n1 source-packages/version.txt)"
           if [ -z "$upstream_version" ]; then echo >&2 "Did not get package version from artifact."; exit 1; fi
           echo $upstream_version
 
-          srcchanges="$(ls -1 source-packages/tor_"$upstream_version"*${{ matrix.build.suite }}+*_src.changes)"
+          srcchanges="$(ls -1 source-packages/anon_"$upstream_version"*${{ matrix.build.suite }}+*_src.changes)"
           echo "srcchanges: $srcchanges"
           if [ "$(echo "$srcchanges" | wc -l)" != 1 ] || [ -z "$srcchanges" ] ; then echo >&2 "Weird number of changes files found."; exit 1; fi
 
@@ -125,7 +126,7 @@ jobs:
           mkdir build-tree
           cd build-tree
           dpkg-source -x ../${dsc}
-          cd tor-${upstream_version}
+          cd anon-${upstream_version}
           apt-get -y build-dep .
           debuild -rfakeroot -uc -us "$build_selector"
           cd ..
@@ -140,5 +141,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ator-protocol-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+          name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
           path: binary-packages/

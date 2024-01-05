@@ -995,7 +995,7 @@ init_keys(void)
     if (init_v3_authority_keys()<0) {
       log_err(LD_GENERAL, "We're configured as a V3 authority, but we "
               "were unable to load our v3 authority keys and certificate! "
-              "Use tor-gencert to generate them. Dying.");
+              "Use anon-gencert to generate them. Dying.");
       return -1;
     }
     cert = get_my_v3_authority_cert();

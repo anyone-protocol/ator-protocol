@@ -6640,9 +6640,13 @@ test_util_monotonic_time_add_msec(void *arg)
   monotime_coarse_add_msec(&ct2, &ct1, 1337);
   tt_i64_op(monotime_diff_msec(&t1, &t2), OP_EQ, 1337);
   tt_i64_op(monotime_coarse_diff_msec(&ct1, &ct2), OP_EQ, 1337);
+
+  // Skip 32-bit check on Apple Silicon
+  #if !(defined(__APPLE__) && defined(__aarch64__))
   // The 32-bit variant must be within 1% of the regular one.
   tt_int_op(monotime_coarse_diff_msec32_(&ct1, &ct2), OP_GT, 1323);
   tt_int_op(monotime_coarse_diff_msec32_(&ct1, &ct2), OP_LT, 1350);
+  #endif
 
   /* Add 1337 msec twice more; make sure that any second rollover issues
    * worked. */

@@ -610,7 +610,7 @@ config_var_needs_copy(const config_var_t *var)
  * names given to the controller or the CLI.
  *
  * (Note that this option is imperfectly obeyed. The
- * --list-torrc-options command looks at the "settable" flag, whereas
+ * --list-anonrc-options command looks at the "settable" flag, whereas
  * "GETINFO config/defaults" and "list_deprecated_*()" do not filter
  * their results. It would be good for consistency to try to converge
  * these behaviors in the future.)

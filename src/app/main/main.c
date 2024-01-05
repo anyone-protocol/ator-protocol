@@ -539,7 +539,7 @@ tor_init(int argc, char *argv[])
   time_of_process_start = time(NULL);
   tor_init_connection_lists();
   /* Have the log set up with our application name. */
-  tor_snprintf(progname, sizeof(progname), "Tor %s", get_version());
+  tor_snprintf(progname, sizeof(progname), "Anon %s", get_version());
   log_set_application_name(progname);
 
   /* Initialize the history structures. */
@@ -571,7 +571,7 @@ tor_init(int argc, char *argv[])
   {
     const char *version = get_version();
 
-    log_notice(LD_GENERAL, "Tor %s running on %s with Libevent %s, "
+    log_notice(LD_GENERAL, "Anon %s running on %s with Libevent %s, "
                "%s %s, Zlib %s, Liblzma %s, Libzstd %s and %s %s as libc.",
                version,
                get_uname(),
@@ -588,16 +588,16 @@ tor_init(int argc, char *argv[])
                  tor_libc_get_name() : "Unknown",
                tor_libc_get_version_str());
 
-    log_notice(LD_GENERAL, "Tor can't help you if you use it wrong! "
+    log_notice(LD_GENERAL, "Anon can't help you if you use it wrong! "
                "Learn how to be safe at "
                "https://support.torproject.org/faq/staying-anonymous/");
 
     if (strstr(version, "alpha") || strstr(version, "beta"))
-      log_notice(LD_GENERAL, "This version is not a stable Tor release. "
+      log_notice(LD_GENERAL, "This version is not a stable Anon release. "
                  "Expect more bugs than usual.");
 
     if (strlen(risky_option_list) && running_tor) {
-      log_warn(LD_GENERAL, "This build of Tor has been compiled with one "
+      log_warn(LD_GENERAL, "This build of Anon has been compiled with one "
                "or more options that might make it less reliable or secure! "
                "They are:%s", risky_option_list);
     }
@@ -637,7 +637,7 @@ tor_init(int argc, char *argv[])
 
 #ifndef _WIN32
   if (geteuid()==0)
-    log_warn(LD_GENERAL,"You are running Tor as root. You don't need to, "
+    log_warn(LD_GENERAL,"You are running Anon as root. You don't need to, "
              "and you probably shouldn't.");
 #endif
 
@@ -670,7 +670,7 @@ try_locking(const or_options_t *options, int err_if_locked)
     if (!lf) {
       if (err_if_locked && already_locked) {
         int r;
-        log_warn(LD_GENERAL, "It looks like another Tor process is running "
+        log_warn(LD_GENERAL, "It looks like another Anon process is running "
                  "with the same data directory.  Waiting 5 seconds to see "
                  "if it goes away.");
 #ifndef _WIN32
@@ -1346,7 +1346,7 @@ tor_run_main(const tor_main_configuration_t *tor_cfg)
 
   if (get_options()->Sandbox && get_options()->command == CMD_RUN_TOR) {
 #ifdef ENABLE_FRAGILE_HARDENING
-    log_warn(LD_CONFIG, "Sandbox is enabled but this Tor was built using "
+    log_warn(LD_CONFIG, "Sandbox is enabled but this Anon was built using "
              "fragile compiler hardening. The sandbox may be unable to filter "
              "requests to open files and directories and its overall "
              "effectiveness will be reduced.");

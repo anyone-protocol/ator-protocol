@@ -50,26 +50,26 @@ override_dh_clean:
 		echo "\"`git rev-parse --short=16 HEAD`\"" > "debian/micro-revision.i" ; \
 	fi
 
-	rm -f debian/tor-instance-create.8
+	rm -f debian/anon-instance-create.8
 
 	dh_clean
 
 override_dh_auto_build:
 	dh_auto_build
-	a2x -f manpage debian/tor-instance-create.8.txt
-	chmod +x debian/systemd/tor-generator
+	a2x -f manpage debian/anon-instance-create.8.txt
+	chmod +x debian/systemd/anon-generator
 
 override_dh_install-arch:
 	dh_install --fail-missing
 
-	rm debian/tor/etc/tor/torrc.sample
-	cp build/src/config/torrc.minimal debian/tor/etc/tor/torrc
+	rm debian/anon/etc/anon/anonrc.sample
+	cp build/src/config/anonrc.minimal debian/anon/etc/anon/anonrc
 
-	cp debian/tor.apparmor-profile             debian/tor/etc/apparmor.d/system_tor
-	cp debian/tor.apparmor-profile.abstraction debian/tor/etc/apparmor.d/abstractions/tor
-	dh_apparmor --profile-name=system_tor -ptor
+	cp debian/anon.apparmor-profile             debian/anon/etc/apparmor.d/system_anon
+	cp debian/anon.apparmor-profile.abstraction debian/anon/etc/apparmor.d/abstractions/anon
+	dh_apparmor --profile-name=system_anon -panon
 
 override_dh_strip:
-	dh_strip --dbgsym-migration='tor-dbg (<< 0.3.1.5-alpha)'
+	dh_strip --dbgsym-migration='anon-dbg (<< 0.3.1.5-alpha)'
 override_dh_installinit:
-	dh_installinit --error-handler=tor_error_init
+	dh_installinit --error-handler=anon_error_init

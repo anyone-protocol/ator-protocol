@@ -320,9 +320,9 @@ problem function-size /src/lib/string/scanf.c:tor_vsscanf() 112
 problem function-size /src/lib/tls/tortls_nss.c:tor_tls_context_new() 152
 problem function-size /src/lib/tls/tortls_openssl.c:tor_tls_context_new() 170
 problem function-size /src/lib/tls/x509_nss.c:tor_tls_create_certificate_internal() 121
-problem function-size /src/tools/tor-gencert.c:parse_commandline() 111
-problem function-size /src/tools/tor-resolve.c:build_socks5_resolve_request() 102
-problem function-size /src/tools/tor-resolve.c:do_resolve() 171
-problem function-size /src/tools/tor-resolve.c:main() 112
+problem function-size /src/tools/anon-gencert.c:parse_commandline() 111
+problem function-size /src/tools/anon-resolve.c:build_socks5_resolve_request() 102
+problem function-size /src/tools/anon-resolve.c:do_resolve() 171
+problem function-size /src/tools/anon-resolve.c:main() 112
 problem dependency-violation /src/core/or/trace_probes_circuit.c 1
 problem dependency-violation /src/core/or/trace_probes_circuit.h 1
