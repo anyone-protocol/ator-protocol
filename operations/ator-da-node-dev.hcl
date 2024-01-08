@@ -144,9 +144,9 @@ ExitPolicy reject6 *:*
 ExitRelay 0
 IPv6Exit 0
 
-V3AuthVotingInterval 20 minutes
-V3AuthVoteDelay 2 minutes
-V3AuthDistDelay 2 minutes
+V3AuthVotingInterval 5 minutes
+V3AuthVoteDelay 1 minutes
+V3AuthDistDelay 1 minutes
 
 AuthDirMaxServersPerAddr 8
 
