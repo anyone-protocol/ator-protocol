@@ -5,13 +5,13 @@ on:
     tags:
       - '*'
     branches:
-      - main
+      - development
   pull_request:
     branches:
-      - main
+      - development
 
 env:
-  image-tag: ${{ github.ref == 'refs/heads/main' && 'latest' || (github.ref_type == 'tag' && github.ref_name || github.sha) }}
+  image-tag: ${{ github.ref == 'refs/heads/development' && 'latest' || (github.ref_type == 'tag' && github.ref_name || github.sha) }}
 
 jobs:
   build-and-push:
@@ -36,6 +36,7 @@ jobs:
           docker-image: ${{ secrets.DOCKER_BASE_REPO_DEV }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
+          push: ${{ github.ref == 'refs/heads/development' && true || false }}
 
   multiarch-push:
     runs-on: arm64

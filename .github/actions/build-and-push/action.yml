@@ -10,6 +10,9 @@ inputs:
     required: true
   version:
     required: true
+  push:
+    required: false  
+    default: true  
 
 runs:
   using: "composite"
@@ -28,7 +31,7 @@ runs:
       with:
         context: ./docker/
         file: ./docker/Dockerfile
-        push: true
+        push: ${{ inputs.push }}
         tags: ${{ inputs.docker-image }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
