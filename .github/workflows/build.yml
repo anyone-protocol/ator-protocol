@@ -36,11 +36,12 @@ jobs:
           docker-image: ${{ secrets.DOCKER_BASE_REPO_DEV }}-${{ matrix.platform.image-suffix }}:${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
-          push: ${{ github.ref == 'refs/heads/development' && true || false }}
+          push: ${{ github.ref == 'refs/heads/development' }}
 
   multiarch-push:
     runs-on: arm64
     needs: build-and-push
+    if: github.ref == 'refs/heads/development'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
