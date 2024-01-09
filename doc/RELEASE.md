@@ -2,9 +2,7 @@
 
 ## Installing Debian/Ubuntu Package
 
-Replace `<version>` with the Anon version and `<package_name>` with the name of the package that corresponds to your OS and CPU architecture.
-
-1. Download package. You can find full link to any of the desired packages in the release assets section below.
+1. Download package. Package name depends on your system OS and CPU architecture. You can find full link to desired package in the release assets section below. 
 ```sh
 curl -o anon.deb https://github.com/ATOR-Development/ator-protocol/releases/download/<version>/<package_name>
 ```
