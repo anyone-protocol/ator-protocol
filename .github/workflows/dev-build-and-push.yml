@@ -1,9 +1,10 @@
-name:  Build and Push Docker Images Dev
+name:  Dev Build and Push Docker Images
 
 on:
   push:
     branches:
       - development
+      - ator-26-cicd
   workflow_dispatch:
     
 env:

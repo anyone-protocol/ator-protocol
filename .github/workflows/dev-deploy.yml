@@ -1,16 +1,16 @@
-name: Deploy New Version
+name: Dev Deploy
 
 on:
   workflow_run:
     workflows:
-      - build-and-push    
+      - dev-build-and-push    
     types:
       - completed      
   workflow_dispatch:
 
 env:
   image-name: ${{ secrets.DOCKER_BASE_REPO_DEV }}
-  image-tag: ${{ github.event_name == 'workflow_run' && 'latest' || 'latest-manual' }}
+  image-tag: ${{ github.event_name == 'workflow_run' && 'latest' || github.sha }}
 
 jobs:
   push:
