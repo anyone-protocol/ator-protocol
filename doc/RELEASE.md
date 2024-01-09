@@ -1,6 +1,6 @@
 # Anon Release
 
-## Installing Debian Package
+## Installing Debian/Ubuntu Package
 
 Replace `<version>` with the Anon version and `<package_name>` with the name of the package that corresponds to your OS and CPU architecture.
 
