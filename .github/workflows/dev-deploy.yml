@@ -2,8 +2,7 @@ name: Dev Deploy
 
 on:
   workflow_run:
-    workflows:
-      - dev-build-and-push    
+    workflows: [Dev Build and Push Docker Images]
     types:
       - completed      
   workflow_dispatch:
