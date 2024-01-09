@@ -46,7 +46,7 @@ job "ator-dir-auth-dev" {
       } 
           
       config {
-        image = "svforte/ator-protocol:c4dec3a888efced555f451ca8632ea14607fe58b"
+        image = "svforte/anon-dev:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/torrc:/etc/tor/torrc",
