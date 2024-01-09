@@ -214,6 +214,10 @@ Changes in version 0.4.8.4 - 2023-08-23
       wouldn't have any middle nodes left to choose from so we would fail to
       make onion-related circuits. Fixes bug 40805; bugfix on 0.4.7.1-alpha.
 
+  o Minor features (bridge):
+    - warn when a bridge is also configure to be an exit relay.
+      Closes ticket 40819.
+
   o Minor features (geoip data):
     - Update the geoip files to match the IPFire Location Database, as
       retrieved on 2023/08/23.
