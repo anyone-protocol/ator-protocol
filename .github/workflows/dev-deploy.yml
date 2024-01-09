@@ -4,6 +4,7 @@ on:
   push:
     branches:   
       - development
+      - ator-26-cicd
   workflow_run:
     workflows: [Dev Build and Push Docker Images]
     types:
