@@ -58,35 +58,35 @@ jobs:
             arch: arm64
             runner: arm64
 
-          # Debian Bullseye
-          - os: debian
-            suite: bullseye
-            arch: amd64
-            runner: ubuntu-latest
-          - os: debian
-            suite: bullseye
-            arch: arm64
-            runner: arm64
+          # # Debian Bullseye
+          # - os: debian
+          #   suite: bullseye
+          #   arch: amd64
+          #   runner: ubuntu-latest
+          # - os: debian
+          #   suite: bullseye
+          #   arch: arm64
+          #   runner: arm64
 
-          # Ubuntu Jammy
-          - os: ubuntu
-            suite: jammy
-            arch: amd64
-            runner: ubuntu-latest
-          - os: ubuntu
-            suite: jammy
-            arch: arm64
-            runner: arm64
+          # # Ubuntu Jammy
+          # - os: ubuntu
+          #   suite: jammy
+          #   arch: amd64
+          #   runner: ubuntu-latest
+          # - os: ubuntu
+          #   suite: jammy
+          #   arch: arm64
+          #   runner: arm64
 
-          # Ubuntu Focal
-          - os: ubuntu
-            suite: focal
-            arch: amd64
-            runner: ubuntu-latest
-          - os: ubuntu
-            suite: focal
-            arch: arm64
-            runner: arm64
+          # # Ubuntu Focal
+          # - os: ubuntu
+          #   suite: focal
+          #   arch: amd64
+          #   runner: ubuntu-latest
+          # - os: ubuntu
+          #   suite: focal
+          #   arch: arm64
+          #   runner: arm64
 
     needs: build-source
     container:
@@ -149,9 +149,14 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     needs: build-binary
+    if: startsWith(github.ref, 'refs/tags/')
     container:
       image: debian:bookworm
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       # Bookworm
       - uses: actions/download-artifact@v4
@@ -163,35 +168,40 @@ jobs:
           name: anon-debian-bookworm-arm64
           path: binary-packages/
 
-      # Bullseye
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-debian-bullseye-amd64
-          path: binary-packages/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-debian-bullseye-arm64
-          path: binary-packages/
+      # # Bullseye
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-debian-bullseye-amd64
+      #     path: binary-packages/
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-debian-bullseye-arm64
+      #     path: binary-packages/
 
-      # Jammy
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-ubuntu-jammy-amd64
-          path: binary-packages/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-ubuntu-jammy-arm64
-          path: binary-packages/
+      # # Jammy
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-ubuntu-jammy-amd64
+      #     path: binary-packages/
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-ubuntu-jammy-arm64
+      #     path: binary-packages/
 
-      # Focal
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-ubuntu-focal-amd64
-          path: binary-packages/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-ubuntu-focal-arm64
-          path: binary-packages/
+      # # Focal
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-ubuntu-focal-amd64
+      #     path: binary-packages/
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: anon-ubuntu-focal-arm64
+      #     path: binary-packages/
 
       - run: |
-          ls binary-packages/anon_*.deb
+          ls binary-packages/
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "binary-packages/anon_*.deb"
+          bodyFile: "doc/RELEASE.md"
