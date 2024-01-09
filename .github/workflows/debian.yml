@@ -58,35 +58,35 @@ jobs:
             arch: arm64
             runner: arm64
 
-          # # Debian Bullseye
-          # - os: debian
-          #   suite: bullseye
-          #   arch: amd64
-          #   runner: ubuntu-latest
-          # - os: debian
-          #   suite: bullseye
-          #   arch: arm64
-          #   runner: arm64
+          # Debian Bullseye
+          - os: debian
+            suite: bullseye
+            arch: amd64
+            runner: ubuntu-latest
+          - os: debian
+            suite: bullseye
+            arch: arm64
+            runner: arm64
 
-          # # Ubuntu Jammy
-          # - os: ubuntu
-          #   suite: jammy
-          #   arch: amd64
-          #   runner: ubuntu-latest
-          # - os: ubuntu
-          #   suite: jammy
-          #   arch: arm64
-          #   runner: arm64
+          # Ubuntu Jammy
+          - os: ubuntu
+            suite: jammy
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: jammy
+            arch: arm64
+            runner: arm64
 
-          # # Ubuntu Focal
-          # - os: ubuntu
-          #   suite: focal
-          #   arch: amd64
-          #   runner: ubuntu-latest
-          # - os: ubuntu
-          #   suite: focal
-          #   arch: arm64
-          #   runner: arm64
+          # Ubuntu Focal
+          - os: ubuntu
+            suite: focal
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: focal
+            arch: arm64
+            runner: arm64
 
     needs: build-source
     container:
@@ -168,46 +168,46 @@ jobs:
           name: anon-debian-bookworm-arm64
           path: anon-debian-bookworm-arm64/
 
-      # # Bullseye
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-debian-bullseye-amd64
-      #     path: anon-debian-bullseye-amd64/
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-debian-bullseye-arm64
-      #     path: anon-debian-bullseye-arm64/
+      # Bullseye
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-debian-bullseye-amd64
+          path: anon-debian-bullseye-amd64/
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-debian-bullseye-arm64
+          path: anon-debian-bullseye-arm64/
 
-      # # Jammy
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-ubuntu-jammy-amd64
-      #     path: anon-ubuntu-jammy-amd64/
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-ubuntu-jammy-arm64
-      #     path: anon-ubuntu-jammy-arm64/
+      # Jammy
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-ubuntu-jammy-amd64
+          path: anon-ubuntu-jammy-amd64/
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-ubuntu-jammy-arm64
+          path: anon-ubuntu-jammy-arm64/
 
-      # # Focal
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-ubuntu-focal-amd64
-      #     path: anon-ubuntu-focal-amd64/
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: anon-ubuntu-focal-arm64
-      #     path: anon-ubuntu-focal-arm64/
+      # Focal
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-ubuntu-focal-amd64
+          path: anon-ubuntu-focal-amd64/
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-ubuntu-focal-arm64
+          path: anon-ubuntu-focal-arm64/
 
       - run: |
           mkdir -p release-artifacts/
           cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
           cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
-      #     cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
-      #     cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
-      #     cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
-      #     cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
-      #     cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
-      #     cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
+          cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
+          cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
 
       - run: |
           ls -la release-artifacts/
