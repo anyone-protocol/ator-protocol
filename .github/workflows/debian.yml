@@ -202,12 +202,12 @@ jobs:
           mkdir -p release-artifacts/
           cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
           cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
+      #     cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
+      #     cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
+      #     cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
+      #     cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
+      #     cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
+      #     cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
 
       - run: |
           ls -la release-artifacts/
