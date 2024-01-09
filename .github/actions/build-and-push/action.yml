@@ -4,7 +4,9 @@ inputs:
     required: true
   docker-password:
     required: true
-  docker-image:
+  docker-base-repo:
+    required: true
+  docker-tag:
     required: true
   docker-platform:
     required: true
@@ -32,7 +34,7 @@ runs:
         context: ./docker/
         file: ./docker/Dockerfile
         push: ${{ inputs.push }}
-        tags: ${{ inputs.docker-image }}
+        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ github.sha }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
           ANON_VER=${{ inputs.version }}
