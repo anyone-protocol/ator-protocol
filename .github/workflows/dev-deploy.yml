@@ -41,7 +41,9 @@ jobs:
           #[[ -n $(grep "dev" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-dev.hcl
           #[[ -n $(grep "stage" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-stage.hcl
           #[[ -z $(grep "stage" deploy-vars.json) && -z $(grep "dev" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-live.hcl
-          
+
+          sed -i 's/PLACEIMAGETAGHERE/${{ env.image-tag }}/g' operations/ator-da-node-dev.hcl
+
           curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
           unzip nomad.zip
           ./nomad job run operations/ator-da-node-dev.hcl 
