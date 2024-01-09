@@ -139,12 +139,12 @@ jobs:
           mkdir RESULT
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mkdir binary-packages
-          mv -v --no-target-directory RESULT binary-packages/"${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}"
+          mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
-          path: binary-packages/
+          path: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
 
   create-release:
     runs-on: ubuntu-latest
@@ -162,46 +162,57 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: anon-debian-bookworm-amd64
-          path: binary-packages/
+          path: anon-debian-bookworm-amd64/
       - uses: actions/download-artifact@v4
         with:
           name: anon-debian-bookworm-arm64
-          path: binary-packages/
+          path: anon-debian-bookworm-arm64/
 
       # # Bullseye
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-debian-bullseye-amd64
-      #     path: binary-packages/
+      #     path: anon-debian-bullseye-amd64/
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-debian-bullseye-arm64
-      #     path: binary-packages/
+      #     path: anon-debian-bullseye-arm64/
 
       # # Jammy
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-ubuntu-jammy-amd64
-      #     path: binary-packages/
+      #     path: anon-ubuntu-jammy-amd64/
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-ubuntu-jammy-arm64
-      #     path: binary-packages/
+      #     path: anon-ubuntu-jammy-arm64/
 
       # # Focal
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-ubuntu-focal-amd64
-      #     path: binary-packages/
+      #     path: anon-ubuntu-focal-amd64/
       # - uses: actions/download-artifact@v4
       #   with:
       #     name: anon-ubuntu-focal-arm64
-      #     path: binary-packages/
+      #     path: anon-ubuntu-focal-arm64/
 
       - run: |
-          ls binary-packages/
+          mkdir -p release-artifacts/
+          cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
+          cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
+          cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
+          cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
+          cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
+
+      - run: |
+          ls -la release-artifacts/
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "binary-packages/anon_*.deb"
+          artifacts: "release-artifacts/anon_*.deb"
           bodyFile: "doc/RELEASE.md"
