@@ -19,9 +19,9 @@ jobs:
           - name: linux/amd64
             image-suffix: amd64
             runs-on: ubuntu-latest
-          - name: linux/arm64
-            image-suffix: arm64
-            runs-on: arm64
+          #- name: linux/arm64
+          #  image-suffix: arm64
+          #  runs-on: arm64
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
