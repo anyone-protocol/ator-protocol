@@ -41,7 +41,7 @@ job "ator-dir-auth-dev" {
     
       volume_mount {
         volume      = "dir-auth-dev"
-        destination = "/var/lib/tor/"
+        destination = "/var/lib/anon/"
         read_only   = false
       } 
           
@@ -49,8 +49,8 @@ job "ator-dir-auth-dev" {
         image = "svforte/anon-dev:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
-          "local/torrc:/etc/tor/torrc",
-          "secrets/tor/keys:/var/lib/tor/keys"
+          "local/anonrc:/etc/anon/anonrc",
+          "secrets/anon/keys:/var/lib/anon/keys"
         ]
       }
 
@@ -66,60 +66,57 @@ job "ator-dir-auth-dev" {
       template {
         change_mode = "noop"
         data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/authority_certificate`) }}"
-        destination = "secrets/tor/keys/authority_certificate"
+        destination = "secrets/anon/keys/authority_certificate"
       }
       
       template {
         change_mode = "noop"
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
-        destination = "secrets/tor/keys/authority_identity_key"
+        destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
-        destination = "secrets/tor/keys/authority_signing_key"
+        destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
-        destination = "secrets/tor/keys/ed25519_master_id_secret_key"
+        destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
-        destination = "secrets/tor/keys/ed25519_signing_secret_key"
+        destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
-        destination = "secrets/tor/keys/secret_id_key"
+        destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
-        destination = "secrets/tor/keys/secret_onion_key"
+        destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
         data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
-        destination = "secrets/tor/keys/secret_onion_key_ntor"
+        destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
       template {
         change_mode = "noop"
         data = <<EOH
-##=================== /etc/torrc =====================##
-# see /usr/local/etc/tor/torrc.sample and https://www.torproject.org/docs/tor-manual.html.en
-
 # Run Tor as a regular user (do not change this)
 User atord
-DataDirectory /var/lib/tor
+DataDirectory /var/lib/anon
 
 AuthoritativeDirectory 1
 V3AuthoritativeDirectory 1
@@ -155,20 +152,13 @@ AuthDirMaxServersPerAddr 8
 #RelayBandwidthRate 512 KB   # Throttle traffic to
 #RelayBandwidthBurst 1024 KB # But allow bursts up to
 #MaxMemInQueues 512 MB       # Limit Memory usage to
-
-## Run Tor as obfuscated bridge
-# https://trac.torproject.org/projects/tor/wiki/doc/PluggableTransports/obfs4proxy
-#ServerTransportPlugin obfs4 exec /usr/local/bin/obfs4proxy
-#ServerTransportListenAddr obfs4  0.0.0.0:54444
-#ExtORPort auto
-#BridgeRelay 1
           
 ## If no Nickname or ContactInfo is set, docker-entrypoint will use
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
 ContactInfo atorv4@example.org
         EOH
-        destination = "local/torrc"
+        destination = "local/anonrc"
       }
 
       service {
