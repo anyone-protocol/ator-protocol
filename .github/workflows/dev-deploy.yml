@@ -1,11 +1,8 @@
 name: Dev Deploy
 
 on:
-  workflow_run:
-    workflows: [Dev Build and Push Docker Images]
-    types:
-      - completed
   workflow_dispatch:
+  workflow_call:
 
 env:
   image-name: ${{ secrets.DOCKER_BASE_REPO_DEV }}

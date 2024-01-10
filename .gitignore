@@ -216,3 +216,4 @@ scripts/maint/geoip/geoip6
 # /src/win32/
 /src/win32/Makefile
 /src/win32/Makefile.in
+/.vs
