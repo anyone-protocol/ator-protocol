@@ -45,6 +45,9 @@ core.*
 *.ccls
 # clangd uses that for LSP caching.
 /.cache
+# visual studio settings
+/.vs
+/.vscode
 
 # /
 /Makefile
