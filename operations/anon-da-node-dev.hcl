@@ -115,7 +115,7 @@ job "ator-dir-auth-dev" {
         change_mode = "noop"
         data = <<EOH
 # Run Tor as a regular user (do not change this)
-User atord
+User anond
 DataDirectory /var/lib/anon
 
 AuthoritativeDirectory 1
