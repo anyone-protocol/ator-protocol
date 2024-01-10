@@ -45,6 +45,9 @@ core.*
 *.ccls
 # clangd uses that for LSP caching.
 /.cache
+# visual studio settings
+/.vs
+/.vscode
 
 # /
 /Makefile
@@ -216,4 +219,3 @@ scripts/maint/geoip/geoip6
 # /src/win32/
 /src/win32/Makefile
 /src/win32/Makefile.in
-/.vs
