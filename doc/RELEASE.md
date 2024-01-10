@@ -6,7 +6,13 @@
 ```sh
 wget https://github.com/ATOR-Development/ator-protocol/releases/download/<version>/<package_name>
 ```
-2. Install package using apt
+
+2. Update repository information
+```sh
+apt-get -y update
+```
+
+3. Install package using apt
 ```sh
 apt-get -y install ./anon_*.deb
 ```
