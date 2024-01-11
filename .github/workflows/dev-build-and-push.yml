@@ -50,3 +50,4 @@ jobs:
   deploy:
     needs: multiarch-push
     uses: ./.github/workflows/dev-deploy.yml 
+    secrets: inherit
