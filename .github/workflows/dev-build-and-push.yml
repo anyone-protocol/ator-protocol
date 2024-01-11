@@ -48,4 +48,4 @@ jobs:
           docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}
           docker-tag: ${{ env.image-tag }}
   deploy:
-    uses: ./.github/workflows/dev-deploy.yml@development  
+    uses: ./.github/workflows/dev-deploy.yml 
