@@ -6,7 +6,7 @@ on:
 
 env:
   image-name: ${{ secrets.DOCKER_BASE_REPO_DEV }}
-  image-tag: ${{ github.event_name == 'workflow_run' && 'latest' || github.sha }}
+  image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
 
 jobs:
   push:
