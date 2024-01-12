@@ -1,10 +1,6 @@
 name: Dev Deploy
 
 on:
-  workflow_run:
-    workflows: [Dev Build and Push Docker Images]
-    types:
-      - completed
   workflow_dispatch:
 
 env:
