@@ -49,7 +49,7 @@ jobs:
           docker-tag: ${{ env.image-tag }}
   deploy:
     needs: multiarch-push
-    runs-on: arm64
+    runs-on: ubuntu-latest
     steps:
       - name: Invoke workflow without inputs
         uses: benc-uk/workflow-dispatch@v1
