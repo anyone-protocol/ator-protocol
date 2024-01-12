@@ -50,8 +50,6 @@ jobs:
   deploy:
     needs: multiarch-push
     runs-on: arm64
-    #uses: ./.github/workflows/dev-deploy.yml 
-    #secrets: inherit
     steps:
       - name: Invoke workflow without inputs
         uses: benc-uk/workflow-dispatch@v1
