@@ -49,11 +49,12 @@ jobs:
           docker-tag: ${{ env.image-tag }}
   deploy:
     needs: multiarch-push
+    runs-on: arm64
     #uses: ./.github/workflows/dev-deploy.yml 
     #secrets: inherit
     steps:
-    - name: Invoke workflow without inputs
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: Dev Deploy
-        ref: refs/heads/development
+      - name: Invoke workflow without inputs
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Dev Deploy
+          ref: refs/heads/development
