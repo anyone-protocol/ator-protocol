@@ -1,3 +1,6 @@
+#arguments working-dir ip nickname
+
+
 mkdir -p $1 && cd $1
 
 cat > torrc << EOL
