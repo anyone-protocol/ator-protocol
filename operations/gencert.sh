@@ -56,4 +56,4 @@ sleep 5
 docker stop $ATOR_CONTAINER
 
 chmod 777 tor-data
-chmod 777 tor-data\keys
+chmod 777 tor-data/keys
