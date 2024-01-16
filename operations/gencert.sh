@@ -1,5 +1,4 @@
-docker pull svforte/ator-protocol
-mkdir -p ~/$1 && cd ~/$1
+mkdir -p $1 && cd $1
 
 cat > torrc << EOL
 # Run Tor as a regular user (do not change this)
@@ -7,7 +6,7 @@ User atord
 DataDirectory /var/lib/tor
 
 # Server's public IP Address (usually automatic)
-Address $ip3
+Address $2
 
 # Port to advertise for incoming Tor connections.
 ORPort 9001                  # common ports are 9001, 443
@@ -56,5 +55,5 @@ docker start $ATOR_CONTAINER
 sleep 5 
 docker stop $ATOR_CONTAINER
 
-sudo chmod 777 tor-data
-sudo chmod 777 tor-data\keys
+chmod 777 tor-data
+chmod 777 tor-data\keys
