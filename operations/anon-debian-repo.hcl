@@ -15,6 +15,74 @@ job "anon-debian-repo" {
       port "reprepro-ssh" {
         static = 22
       }
+      port "nginx-http" {
+        static = 80
+      }
+    }
+
+    task "anon-debian-repo-nginx-task" {
+      driver = "docker"
+
+      config {
+        image = "nginx:stable"
+        ports = ["nginx-http"]
+        volumes = [
+          "local/debian:/usr/share/nginx/html:ro",
+          "local/default.conf:/etc/nginx/conf.d/default.conf:ro",
+        ]
+      }
+
+      resources {
+        cpu = 256
+        memory = 256
+      }
+
+      service {
+        name = "anon-debian-repo-nginx"
+        port = "nginx-http"
+        check {
+          name     = "nginx http server alive"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "10s"
+          check_restart {
+            limit = 10
+            grace = "30s"
+          }
+        }
+      }
+
+      template {
+        change_mode = "noop"
+        data = <<EOH
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    location /db/ {
+        deny all;
+        return 403;
+    }
+
+    location /conf/ {
+        deny all;
+        return 403;
+    }
+
+    location /incoming/ {
+        deny all;
+        return 403;
+    }
+
+    location / {
+        root   /usr/share/nginx/html;
+        autoindex on;
+    }
+}
+        EOH
+        destination = "local/default.conf"
+      }
     }
 
     task "anon-debian-repo-task" {
@@ -25,14 +93,10 @@ job "anon-debian-repo" {
         ports = ["reprepro-ssh"]
         volumes = [
           "local/debian:/data/debian",
-          "local/distributions:/data/debian/conf/distributions",
-          "local/incoming:/data/debian/conf/incoming",
+          "local/distributions:/data/debian/conf/distributions:ro",
+          "local/incoming:/data/debian/conf/incoming:ro",
           "secrets/config:/config:ro"
         ]
-      }
-
-      vault {
-        policies = ["ator-network-read"]
       }
 
       resources {
