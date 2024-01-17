@@ -56,21 +56,21 @@ job "anon-debian-repo" {
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .repreproPub  }}"
+        data = "{{ base64Decode [[.repreproPub]] }}"
         destination = "secrets/config/reprepro-pub.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .repreproSec  }}"
+        data = "{{ base64Decode [[.repreproSec]] }}"
         destination = "secrets/config/reprepro-sec.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .authorizedKeys }}"
+        data = "{{ base64Decode [[.authorizedKeys]] }}"
         destination = "secrets/config/reprepro-authorized_keys"
       }
 
