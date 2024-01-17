@@ -43,4 +43,4 @@ jobs:
 
           curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
           unzip nomad.zip
-          ./nomad job run operations/anon-debian-repo.hcl
+          ./nomad job run deploy.hcl
