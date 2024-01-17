@@ -207,7 +207,7 @@ jobs:
           name: anon-ubuntu-focal-arm64
           path: anon-ubuntu-focal-arm64/
 
-      - name: Copy artifacts
+      - name: Copy release artifacts
         run: |
           mkdir -p release-artifacts/
           cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
@@ -219,11 +219,11 @@ jobs:
           cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
           cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
 
-      - name: List artifacts
+      - name: List release artifacts
         run: |
           ls -la release-artifacts/
 
-      - name: Put artifacts to GitHub releases
+      - name: Publish release artifacts to GitHub releases
         uses: ncipollo/release-action@v1
         with:
           artifacts: "release-artifacts/anon_*.deb"
