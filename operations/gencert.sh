@@ -58,5 +58,6 @@ docker start $ATOR_CONTAINER
 sleep 5 
 docker stop $ATOR_CONTAINER
 
-chmod 777 tor-data
-chmod 777 tor-data/keys
+chown -R root:root .
+
+cd ..
