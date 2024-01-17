@@ -3,6 +3,18 @@ job "anon-debian-repo" {
   type = "service"
   namespace = "ator-network"
 
+  variable "reprepro_pub" {
+    type = string
+  }
+
+  variable "reprepro_sec" {
+    type = string
+  }
+
+  variable "authorized_keys" {
+    type = string
+  }
+
   group "anon-debian-repo-group" {
     count = 1
 
@@ -56,21 +68,21 @@ job "anon-debian-repo" {
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode [[.repreproPub]] }}"
+        data = "{{ base64Decode var.reprepro_pub }}"
         destination = "secrets/config/reprepro-pub.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode [[.repreproSec]] }}"
+        data = "{{ base64Decode var.reprepro_sec }}"
         destination = "secrets/config/reprepro-sec.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode [[.authorizedKeys]] }}"
+        data = "{{ base64Decode var.authorized_keys }}"
         destination = "secrets/config/reprepro-authorized_keys"
       }
 
