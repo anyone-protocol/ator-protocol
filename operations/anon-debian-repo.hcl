@@ -24,6 +24,7 @@ job "anon-debian-repo" {
         image = "svforte/reprepro:v0.0.4"
         ports = ["reprepro-ssh"]
         volumes = [
+          "local/debian:/data/debian",
           "local/distributions:/data/debian/conf/distributions",
           "local/incoming:/data/debian/conf/incoming",
           "secrets/config:/config:ro"
