@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - development
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -140,6 +141,14 @@ jobs:
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mkdir binary-packages
           mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+      - name: Sign Package
+        run: |
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
+
+          pushd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
+          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes
+          popd
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -198,7 +207,8 @@ jobs:
           name: anon-ubuntu-focal-arm64
           path: anon-ubuntu-focal-arm64/
 
-      - run: |
+      - name: Copy artifacts
+        run: |
           mkdir -p release-artifacts/
           cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
           cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
@@ -209,10 +219,12 @@ jobs:
           cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
           cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
 
-      - run: |
+      - name: List artifacts
+        run: |
           ls -la release-artifacts/
 
-      - uses: ncipollo/release-action@v1
+      - name: Put artifacts to GitHub releases
+        uses: ncipollo/release-action@v1
         with:
           artifacts: "release-artifacts/anon_*.deb"
           bodyFile: "doc/RELEASE.md"
