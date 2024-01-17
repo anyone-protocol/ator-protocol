@@ -1,19 +1,19 @@
+variable "reprepro_pub" {
+  type = string
+}
+
+variable "reprepro_sec" {
+  type = string
+}
+
+variable "authorized_keys" {
+  type = string
+}
+
 job "anon-debian-repo" {
   datacenters = ["ator-fin"]
   type = "service"
   namespace = "ator-network"
-
-  variable "reprepro_pub" {
-    type = string
-  }
-
-  variable "reprepro_sec" {
-    type = string
-  }
-
-  variable "authorized_keys" {
-    type = string
-  }
 
   group "anon-debian-repo-group" {
     count = 1
