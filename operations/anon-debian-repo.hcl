@@ -17,28 +17,16 @@ job "anon-debian-repo" {
       }
     }
 
-    volume "anon-debian-repo-data" {
-      type      = "host"
-      read_only = false
-      source    = "anon-debian-repo-data"
-    }
-
     task "anon-debian-repo-task" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "anon-debian-repo-data"
-        destination = "/data/debian"
-        read_only   = false
-      }
-
       config {
-        image = "svforte/reprepro:v0.0.3"
+        image = "svforte/reprepro:v0.0.4"
         ports = ["reprepro-ssh"]
         volumes = [
           "local/distributions:/data/debian/conf/distributions",
           "local/incoming:/data/debian/conf/incoming",
-          "secrets/config:/config"
+          "secrets/config:/config:ro"
         ]
       }
 
@@ -70,12 +58,14 @@ job "anon-debian-repo" {
         change_mode = "noop"
         data = "{{ base64Decode('[[.repreproPub]]') }}"
         destination = "secrets/config/reprepro-pub.gpg"
+        perms = "0600"
       }
 
       template {
         change_mode = "noop"
         data = "{{ base64Decode('[[.repreproSec]]') }}"
         destination = "secrets/config/reprepro-sec.gpg"
+        perms = "0600"
       }
 
       template {
