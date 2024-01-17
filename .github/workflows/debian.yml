@@ -9,7 +9,7 @@ on:
   pull_request:
     branches:
       - main
-      - development
+      # - development
 
 env:
   DEBIAN_FRONTEND: noninteractive
