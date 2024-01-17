@@ -9,7 +9,8 @@ on:
 jobs:
   push:
     runs-on: ubuntu-latest
-
+    container:
+      image: debian:bookworm
     steps:
       - name: Install Dependencies
         run: |
