@@ -57,16 +57,7 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<EOH
-{{ base64Decode "[[.repreproPub]]" }}
-        EOH
-        destination = "secrets/config/reprepro-pub.gpg"
-        perms = "0600"
-      }
-
-      template {
-        change_mode = "noop"
-        data = <<EOH
-{{ base64Decode "[[.repreproSec]]" }}
+{{ base64Decode "[[.reprepro_sec]]" }}
         EOH
         destination = "secrets/config/reprepro-sec.gpg"
         perms = "0600"
@@ -75,7 +66,16 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<EOH
-{{ base64Decode "[[.authorizedKeys]]" }}
+{{ base64Decode "[[.reprepro_pub]]" }}
+        EOH
+        destination = "secrets/config/reprepro-pub.gpg"
+        perms = "0600"
+      }
+
+      template {
+        change_mode = "noop"
+        data = <<EOH
+{{ base64Decode "[[.authorized_keys]]" }}
         EOH
         destination = "secrets/config/reprepro-authorized_keys"
       }
