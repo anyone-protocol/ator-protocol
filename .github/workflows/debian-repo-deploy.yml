@@ -32,10 +32,15 @@ jobs:
           CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
           CONSUL_ADDR: ${{ secrets.CONSUL_DEPLOY_ADDR }}
         run: |
+          curl -L https://releases.hashicorp.com/levant/0.3.3/levant_0.3.3_linux_amd64.zip -o levant.zip
+          unzip levant.zip
+          ./levant render \
+            -var="repreproSec=${{ secrets.DEBIAN_PRIVATE_KEY }}" \
+            -var="repreproPub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
+            -var="authorizedKeys=${{ secrets.DEBIAN_AUTHORIZED_KEYS }}" \
+            -out="deploy.hcl" \
+            operations/anon-debian-repo.hcl
+
           curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
           unzip nomad.zip
-          ./nomad job run \
-            -var="reprepro_sec=${{ secrets.DEBIAN_PRIVATE_KEY }}" \
-            -var="reprepro_pub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
-            -var="authorized_keys=${{ secrets.DEBIAN_AUTHORIZED_KEYS }}" \
-            operations/anon-debian-repo.hcl
+          ./nomad job run deploy.hcl

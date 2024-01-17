@@ -1,15 +1,3 @@
-variable "reprepro_pub" {
-  type = string
-}
-
-variable "reprepro_sec" {
-  type = string
-}
-
-variable "authorized_keys" {
-  type = string
-}
-
 job "anon-debian-repo" {
   datacenters = ["ator-fin"]
   type = "service"
@@ -68,21 +56,27 @@ job "anon-debian-repo" {
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .var.reprepro_pub }}"
+        data = <<EOH
+{{ base64Decode "[[.repreproPub]]" }}
+        EOH
         destination = "secrets/config/reprepro-pub.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .var.reprepro_sec }}"
+        data = <<EOH
+{{ base64Decode "[[.repreproSec]]" }}
+        EOH
         destination = "secrets/config/reprepro-sec.gpg"
         perms = "0600"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ base64Decode .var.authorized_keys }}"
+        data = <<EOH
+{{ base64Decode "[[.authorizedKeys]]" }}
+        EOH
         destination = "secrets/config/reprepro-authorized_keys"
       }
 
