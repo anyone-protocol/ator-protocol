@@ -36,6 +36,6 @@ jobs:
           unzip nomad.zip
           ./nomad job run \
             -var="reprepro_sec=${{ secrets.DEBIAN_PRIVATE_KEY }}" \
-            -var="reprepro_sub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
+            -var="reprepro_pub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
             -var="authorized_keys=${{ secrets.DEBIAN_AUTHORIZED_KEYS }}" \
             operations/anon-debian-repo.hcl
