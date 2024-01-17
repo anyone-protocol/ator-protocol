@@ -32,7 +32,7 @@ jobs:
           CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
           CONSUL_ADDR: ${{ secrets.CONSUL_DEPLOY_ADDR }}
         run: |
-          curl -L https://releases.hashicorp.com/levant/0.3.3/levant_0.3.3_linux_arm64.zip -o levant.zip
+          curl -L https://releases.hashicorp.com/levant/0.3.3/levant_0.3.3_linux_amd64.zip -o levant.zip
           unzip levant.zip
           ./levant render \
             -var="repreproSec=${{ secrets.DEBIAN_PRIVATE_KEY }}" \
