@@ -124,7 +124,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: .*
+Allow: anon-nightly-main-bookworm anon-nightly-main-bullseye anon-nightly-main-jammy anon-nightly-main-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
