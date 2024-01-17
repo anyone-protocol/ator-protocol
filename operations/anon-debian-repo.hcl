@@ -88,8 +88,32 @@ Label: Anon
 Codename: anon-nightly-main-bookworm
 Architectures: amd64 arm64 source
 Components: main
-Description: Anon debian repository
-SignWith: DC73B31AA1F797B180A87CBC7571AA42A0CBEFE9
+Description: Anon Debian Boookworm repository
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-nightly-main-bullseye
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Bullseye repository
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-nightly-main-jammy
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Ubuntu Jammy repository
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-nightly-main-focal
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Ubuntu Focal repository
+SignWith: YES
         EOH
         destination = "local/distributions"
       }
@@ -100,7 +124,7 @@ SignWith: DC73B31AA1F797B180A87CBC7571AA42A0CBEFE9
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-nightly-main-bookworm
+Allow: anon-.* > *
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
