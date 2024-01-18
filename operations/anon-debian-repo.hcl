@@ -20,6 +20,11 @@ job "anon-debian-repo" {
       }
     }
 
+    ephemeral_disk {
+      migrate = true
+      sticky  = true
+    }
+
     task "anon-debian-repo-nginx-task" {
       driver = "docker"
 
@@ -27,7 +32,7 @@ job "anon-debian-repo" {
         image = "nginx:stable"
         ports = ["nginx-http"]
         volumes = [
-          "local/debian:/data/debian",
+          "alloc/data/:/data/debian",
           "local/default.conf:/etc/nginx/conf.d/default.conf:ro",
         ]
       }
@@ -92,7 +97,7 @@ server {
         image = "svforte/reprepro:v0.0.4"
         ports = ["reprepro-ssh"]
         volumes = [
-          "local/debian:/data/debian",
+          "alloc/data/:/data/debian",
           "local/distributions:/data/debian/conf/distributions:ro",
           "local/incoming:/data/debian/conf/incoming:ro",
           "secrets/config:/config:ro"
