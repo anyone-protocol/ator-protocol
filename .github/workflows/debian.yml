@@ -33,6 +33,9 @@ jobs:
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/*
 
+          echo "/etc/ssh/ssh_config"
+          cat /etc/ssh/ssh_config
+
           echo "which ssh"
           which ssh
 
