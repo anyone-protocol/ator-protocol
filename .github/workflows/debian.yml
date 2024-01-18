@@ -52,7 +52,9 @@ jobs:
           echo
 
           echo "test ssh"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
+          ssh -i ~/.ssh/id_rsa reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
+
+          fail
       - name: Install Dependencies
         run: |
           apt-get -y update
