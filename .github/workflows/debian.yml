@@ -141,19 +141,16 @@ jobs:
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mkdir binary-packages
           mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+      - name: Sign Package
+        run: |
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
+          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon-*/anon_*.changes
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
           path: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
-      - name: Sign Package
-        run: |
-          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
-          gpg --allow-secret-key-import --import debian-private.gpg
-
-          cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
-          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes
-          cd ..
 
   create-release:
     runs-on: ubuntu-latest
@@ -207,6 +204,18 @@ jobs:
           name: anon-ubuntu-focal-arm64
           path: anon-ubuntu-focal-arm64/
 
+      - name: Copy release artifacts
+        run: |
+          mkdir -p release-artifacts/
+          cp anon-*/anon_*.deb release-artifacts/
+          ls -la release-artifacts/
+
+      - name: Publish release artifacts to GitHub releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release-artifacts/anon_*.deb"
+          bodyFile: "doc/RELEASE.md"
+
       - name: Distribute Packages
         run: |
           mkdir -p /root/.ssh
@@ -229,25 +238,3 @@ jobs:
 
           echo "Processing incoming packages"
           ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
-
-      - name: Copy release artifacts
-        run: |
-          mkdir -p release-artifacts/
-          cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
-          cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
-
-      - name: List release artifacts
-        run: |
-          ls -la release-artifacts/
-
-      - name: Publish release artifacts to GitHub releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release-artifacts/anon_*.deb"
-          bodyFile: "doc/RELEASE.md"
