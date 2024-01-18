@@ -33,6 +33,12 @@ jobs:
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/*
 
+          echo "show public"
+          ssh-keygen -y ~/.ssh/id_rsa
+
+          echo "show public in file"
+          cat ~/.ssh/id_rsa.pub
+
           echo "test copy id"
           ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
       - name: Install Dependencies
