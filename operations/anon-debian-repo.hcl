@@ -8,7 +8,13 @@ job "anon-debian-repo" {
 
     constraint {
       attribute = "${node.unique.id}"
-      value     = "067a42a8-d8fe-8b19-5851-43079e0eabb4"
+      value     = "c8e55509-a756-0aa7-563b-9665aa4915ab"
+    }
+
+    volume "deb-repo" {
+      type      = "host"
+      read_only = false
+      source    = "deb-repo"
     }
 
     network  {
@@ -28,11 +34,16 @@ job "anon-debian-repo" {
     task "anon-debian-repo-nginx-task" {
       driver = "docker"
 
+      volume_mount {
+        volume      = "deb-repo"
+        destination = "/data/debian"
+        read_only   = false
+      }
+
       config {
         image = "nginx:stable"
         ports = ["nginx-http"]
         volumes = [
-          "/alloc/data/debian:/data/debian",
           "local/default.conf:/etc/nginx/conf.d/default.conf:ro",
         ]
       }
@@ -99,6 +110,12 @@ server {
 
     task "anon-debian-repo-task" {
       driver = "docker"
+
+      volume_mount {
+        volume      = "deb-repo"
+        destination = "/data/debian"
+        read_only   = false
+      }
 
       config {
         image = "svforte/reprepro:v0.0.4"
