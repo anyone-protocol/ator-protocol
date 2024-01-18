@@ -61,10 +61,11 @@ rm -f *.tar.gz
 echo "Preparing upstream directory"
 echo "========================================"
 
+dir_env="${DIR_ENV:-dev}"
 upstream_branch=$GITHUB_SHA
 rev_upstream_branch="$(git rev-parse --short=16 "$upstream_branch")"
 pkgrev="${rev_upstream_branch}"
-distribution="${pkg}-nightly-main"
+distribution="${pkg}-${dir_env}"
 fudge_upstream_version "${pkggitdir}"
 
 debianrev=$(cd "$debgitdir" && git rev-parse --short HEAD)
