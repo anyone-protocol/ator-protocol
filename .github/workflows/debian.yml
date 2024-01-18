@@ -182,7 +182,7 @@ jobs:
           cat ~/.dput.cf
 
           cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
-          dput anon anon_*.changes
+          dput -d anon anon_*.changes
           cd ..
 
   create-release:
