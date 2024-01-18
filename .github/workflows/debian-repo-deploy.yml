@@ -39,6 +39,7 @@ jobs:
             -var="reprepro_pub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
             -var="authorized_keys=${{ secrets.DEBIAN_AUTHORIZED_KEYS }}" \
             -out="deploy.hcl" \
+            -log-level="warn" \
             operations/anon-debian-repo.hcl
 
           curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
