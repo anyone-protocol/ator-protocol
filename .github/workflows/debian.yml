@@ -167,6 +167,9 @@ jobs:
           EOF
           chmod 400 ~/.ssh/config
 
+          echo "ssh configs location"
+          readlink -f ~/.ssh/
+
           echo "test copy id"
           ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
 
