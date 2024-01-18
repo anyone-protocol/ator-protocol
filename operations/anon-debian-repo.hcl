@@ -118,7 +118,7 @@ server {
       }
 
       config {
-        image = "svforte/reprepro:v0.0.4"
+        image = "svforte/reprepro:v0.0.5"
         ports = ["reprepro-ssh"]
         volumes = [
           "local/distributions:/data/debian/conf/distributions:ro",
