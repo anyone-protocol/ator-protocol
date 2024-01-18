@@ -27,7 +27,7 @@ job "anon-debian-repo" {
         image = "nginx:stable"
         ports = ["nginx-http"]
         volumes = [
-          "local/debian:/usr/share/nginx/html:ro",
+          "local/debian:/data/debian",
           "local/default.conf:/etc/nginx/conf.d/default.conf:ro",
         ]
       }
@@ -76,7 +76,7 @@ server {
     }
 
     location / {
-        root   /usr/share/nginx/html;
+        root   /data/debian;
         autoindex on;
     }
 }
@@ -153,7 +153,7 @@ Label: Anon
 Codename: anon-nightly-main-bookworm
 Architectures: amd64 arm64 source
 Components: main
-Description: Anon Debian Boookworm repository
+Description: Anon Debian Boookworm Dev
 SignWith: YES
 
 Origin: Anon
@@ -161,7 +161,7 @@ Label: Anon
 Codename: anon-nightly-main-bullseye
 Architectures: amd64 arm64 source
 Components: main
-Description: Anon Debian Bullseye repository
+Description: Anon Debian Bullseye Dev
 SignWith: YES
 
 Origin: Anon
@@ -169,7 +169,7 @@ Label: Anon
 Codename: anon-nightly-main-jammy
 Architectures: amd64 arm64 source
 Components: main
-Description: Anon Ubuntu Jammy repository
+Description: Anon Ubuntu Jammy Dev
 SignWith: YES
 
 Origin: Anon
@@ -177,7 +177,7 @@ Label: Anon
 Codename: anon-nightly-main-focal
 Architectures: amd64 arm64 source
 Components: main
-Description: Anon Ubuntu Focal repository
+Description: Anon Ubuntu Focal Dev
 SignWith: YES
         EOH
         destination = "local/distributions"
