@@ -157,12 +157,16 @@ jobs:
       - name: Distribute Package
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.DEBIAN_HOST }} >> ~/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/
 
-          cat << EOF >> ~/.dput.cf
+          cat << EOF > ~/.ssh/config
+          Host ${{ secrets.DEBIAN_HOST }}
+            StrictHostKeyChecking no
+          EOF
+
+          cat << EOF > ~/.dput.cf
           [anon]
           fqdn = ${{ secrets.DEBIAN_HOST }}
           incoming = /data/debian/incoming
@@ -182,6 +186,7 @@ jobs:
           cat ~/.dput.cf
 
           cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
+          ls -lah
           dput -d anon anon_*.changes
           cd ..
 
