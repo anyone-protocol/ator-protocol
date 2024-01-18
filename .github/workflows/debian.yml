@@ -48,6 +48,9 @@ jobs:
           echo "User"
           echo $USER
 
+          echo "Whoami"
+          whoami
+
           echo "known_hosts"
           cat ~/.ssh/known_hosts
           echo
