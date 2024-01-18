@@ -33,6 +33,12 @@ jobs:
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/*
 
+          echo "Home"
+          echo $HOME
+
+          echo "User"
+          echo $USER
+
           echo "known_hosts"
           cat ~/.ssh/known_hosts
           echo
