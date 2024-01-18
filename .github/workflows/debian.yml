@@ -167,6 +167,9 @@ jobs:
           EOF
           chmod 400 ~/.ssh/config
 
+          echo "test copy id"
+          ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
+
           cat << EOF > ~/.dput.cf
           [anon]
           fqdn = ${{ secrets.DEBIAN_HOST }}
