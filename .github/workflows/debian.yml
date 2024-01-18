@@ -157,7 +157,7 @@ jobs:
       - name: Distribute Package
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.DEBIAN_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEBIAN_HOST }} >> ~/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/
