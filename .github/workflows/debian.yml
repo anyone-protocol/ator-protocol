@@ -165,6 +165,7 @@ jobs:
           Host ${{ secrets.DEBIAN_HOST }}
             StrictHostKeyChecking no
           EOF
+          chmod 400 ~/.ssh/config
 
           cat << EOF > ~/.dput.cf
           [anon]
