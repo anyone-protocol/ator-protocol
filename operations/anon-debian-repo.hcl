@@ -22,7 +22,7 @@ job "anon-debian-repo" {
         static = 22
       }
       port "nginx-http" {
-        static = 80
+        static = 8001
       }
     }
 
@@ -79,8 +79,8 @@ job "anon-debian-repo" {
         change_mode = "noop"
         data = <<EOH
 server {
-    listen       80;
-    listen  [::]:80;
+    listen       8001;
+    listen  [::]:8001;
     server_name  localhost;
 
     location /db/ {
