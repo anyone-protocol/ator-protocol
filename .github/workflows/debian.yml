@@ -159,14 +159,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
-          chmod -R 600 ~/.ssh/
-
           cat << EOF > ~/.ssh/config
           Host ${{ secrets.DEBIAN_HOST }}
             StrictHostKeyChecking no
           EOF
-          chmod 400 ~/.ssh/config
 
+          chmod -R 600 ~/.ssh/*
+
+          ssh-keygen -R ${{ secrets.DEBIAN_HOST }}
           echo "ssh configs location"
           readlink -f ~/.ssh/
 
