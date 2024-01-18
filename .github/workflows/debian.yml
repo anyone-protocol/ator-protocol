@@ -162,7 +162,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install devscripts dput openssh-client
+          apt-get -y install devscripts gpg dput openssh-client
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -228,6 +228,9 @@ jobs:
           ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
           chmod 600 /root/.ssh/id_rsa
+
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
 
           cat << EOF > ~/.dput.cf
           [anon]
