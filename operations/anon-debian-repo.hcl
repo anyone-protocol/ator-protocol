@@ -178,7 +178,7 @@ server {
         data = <<EOH
 Origin: Anon
 Label: Anon
-Codename: anon-nightly-main-bookworm
+Codename: anon-dev-bookworm
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Boookworm Dev
@@ -186,7 +186,7 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
-Codename: anon-nightly-main-bullseye
+Codename: anon-dev-bullseye
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Bullseye Dev
@@ -194,7 +194,7 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
-Codename: anon-nightly-main-jammy
+Codename: anon-dev-jammy
 Architectures: amd64 arm64 source
 Components: main
 DDebComponents: main
@@ -203,7 +203,7 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
-Codename: anon-nightly-main-focal
+Codename: anon-dev-focal
 Architectures: amd64 arm64 source
 Components: main
 DDebComponents: main
@@ -219,7 +219,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-nightly-main-bookworm anon-nightly-main-bullseye anon-nightly-main-jammy anon-nightly-main-focal
+Allow: anon-dev-bookworm anon-dev-bullseye anon-dev-jammy anon-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
