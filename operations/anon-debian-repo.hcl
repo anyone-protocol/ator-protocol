@@ -45,6 +45,13 @@ job "anon-debian-repo" {
       service {
         name = "anon-debian-repo-nginx"
         port = "nginx-http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.deb-repo.entrypoints=https",
+          "traefik.http.routers.deb-repo.rule=Host(deb.dmz.ator.dev)",
+          "traefik.http.routers.deb-repo.tls=true",
+          "traefik.http.routers.deb-repo.tls.certresolver=atorresolver",
+        ]
         check {
           name     = "nginx http server alive"
           type     = "tcp"
