@@ -45,8 +45,8 @@ jobs:
           cat ~/.ssh/id_rsa.pub
           echo
 
-          echo "test copy id"
-          ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
+          echo "test ssh"
+          ssh reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
       - name: Install Dependencies
         run: |
           apt-get -y update
