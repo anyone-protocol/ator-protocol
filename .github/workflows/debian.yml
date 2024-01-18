@@ -33,11 +33,17 @@ jobs:
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
           chmod -R 600 ~/.ssh/*
 
+          echo "known_hosts"
+          cat ~/.ssh/known_hosts
+          echo
+
           echo "show public"
           ssh-keygen -y -f ~/.ssh/id_rsa
+          echo
 
           echo "show public in file"
           cat ~/.ssh/id_rsa.pub
+          echo
 
           echo "test copy id"
           ssh-copy-id -vvv reprepro@${{ secrets.DEBIAN_HOST }}
