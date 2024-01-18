@@ -177,15 +177,6 @@ jobs:
           post_upload_command = ssh %(login)s@%(fqdn)s reprepro processincoming incoming
           EOF
 
-          echo "~/.ssh/known_hosts:"
-          cat ~/.ssh/known_hosts
-
-          echo "~/.ssh/id_rsa.pub:"
-          cat ~/.ssh/id_rsa.pub
-
-          echo "~/.dput.cf:"
-          cat ~/.dput.cf
-
           cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
           ls -lah
           dput -d anon anon_*.changes
