@@ -97,7 +97,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install build-essential devscripts reprepro fakeroot
+          apt-get -y install build-essential devscripts reprepro dput fakeroot openssh-client
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
@@ -141,19 +141,39 @@ jobs:
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mkdir binary-packages
           mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+          path: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
       - name: Sign Package
         run: |
           echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
           gpg --allow-secret-key-import --import debian-private.gpg
 
           cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
-          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes &&
+          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes
           cd ..
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
-          path: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+      - name: Distribute Package
+        run: |
+          ssh-keyscan -H ${{ secrets.DEBIAN_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+          echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
+
+          cat << EOF >> ~/.dput.cf
+          [anon]
+          fqdn = ${{ secrets.DEBIAN_HOST }}
+          incoming = /data/debian/incoming
+          method = scp
+          login = reprepro
+          allow_unsigned_uploads = 0
+          post_upload_command = ssh %(login)s@%(fqdn)s reprepro processincoming incoming
+          EOF
+
+          cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
+          dput anon ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes
+          cd ..
 
   create-release:
     runs-on: ubuntu-latest
