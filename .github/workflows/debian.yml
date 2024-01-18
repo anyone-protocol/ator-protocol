@@ -64,7 +64,7 @@ jobs:
           echo
 
           echo "test ssh"
-          ssh -i ~/.ssh/id_rsa reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
+          ssh -v reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
 
           fail
       - name: Install Dependencies
