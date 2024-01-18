@@ -156,10 +156,11 @@ jobs:
           cd ..
       - name: Distribute Package
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.DEBIAN_HOST }} >> ~/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
-          chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
+          chmod -R 600 ~/.ssh/
 
           cat << EOF >> ~/.dput.cf
           [anon]

@@ -130,7 +130,7 @@ echo "\"${pkgrev}+${debianrev}\"" > "${ddir}/debian/micro-revision.i"
     --distribution "$distribution" \
     --force-bad-version \
     --newversion "${debian_version}" \
-    "Automated build of "$pkg"-nightly at $ts, git revision $pkgrev with debiantree $debianrev."
+    "Automated build of "$distribution" at $ts, git revision $pkgrev with debiantree $debianrev."
 )
 
 dpkg-source -b $ddir $origtar
