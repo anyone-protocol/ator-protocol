@@ -240,7 +240,7 @@ jobs:
           EOF
 
           echo "Uploading packages"
-          dput anon anon-*/anon_*.deb
+          dput anon anon-*/anon_*.changes
 
           echo "Processing incoming packages"
           ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
