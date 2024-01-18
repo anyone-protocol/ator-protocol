@@ -32,7 +32,7 @@ job "anon-debian-repo" {
         image = "nginx:stable"
         ports = ["nginx-http"]
         volumes = [
-          "alloc/data/:/data/debian",
+          "/alloc/data/debian:/data/debian",
           "local/default.conf:/etc/nginx/conf.d/default.conf:ro",
         ]
       }
@@ -97,7 +97,7 @@ server {
         image = "svforte/reprepro:v0.0.4"
         ports = ["reprepro-ssh"]
         volumes = [
-          "alloc/data/:/data/debian",
+          "/alloc/data/debian:/data/debian",
           "local/distributions:/data/debian/conf/distributions:ro",
           "local/incoming:/data/debian/conf/incoming:ro",
           "secrets/config:/config:ro"
