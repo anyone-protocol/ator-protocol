@@ -24,25 +24,22 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install sudo git build-essential openssh-client
+          apt-get -y install openssh-client
       - name: Test SSH
         run: |
           mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > ~/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
-          cat << EOF > ~/.ssh/config
-          Host ${{ secrets.DEBIAN_HOST }}
-            StrictHostKeyChecking no
-          EOF
-
           chmod -R 600 ~/.ssh/*
-
-          ssh-keygen -R ${{ secrets.DEBIAN_HOST }}
-          echo "ssh configs location"
-          readlink -f ~/.ssh/
 
           echo "test copy id"
           ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
