@@ -197,6 +197,7 @@ Label: Anon
 Codename: anon-nightly-main-jammy
 Architectures: amd64 arm64 source
 Components: main
+DDebComponents: main
 Description: Anon Ubuntu Jammy Dev
 SignWith: YES
 
@@ -205,6 +206,7 @@ Label: Anon
 Codename: anon-nightly-main-focal
 Architectures: amd64 arm64 source
 Components: main
+DDebComponents: main
 Description: Anon Ubuntu Focal Dev
 SignWith: YES
         EOH
