@@ -30,7 +30,7 @@ jobs:
           mkdir -p /root/.ssh
           ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
           echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
-          chmod 644 /root/.ssh/id_rsa
+          chmod 600 /root/.ssh/id_rsa
 
           echo "test ssh"
           ssh -v reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
