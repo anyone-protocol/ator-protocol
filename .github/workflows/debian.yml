@@ -28,40 +28,8 @@ jobs:
       - name: Test SSH
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > ~/.ssh/known_hosts
-          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
-          echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
-          chmod -R 600 ~/.ssh/*
-
-          echo "/etc/ssh/ssh_config"
-          cat /etc/ssh/ssh_config
-
-          echo "ls /etc/ssh/ssh_config.d/"
-          ls /etc/ssh/ssh_config.d/
-
-          echo "which ssh"
-          which ssh
-
-          echo "Home"
-          echo $HOME
-
-          echo "User"
-          echo $USER
-
-          echo "Whoami"
-          whoami
-
-          echo "known_hosts"
-          cat ~/.ssh/known_hosts
-          echo
-
-          echo "show public"
-          ssh-keygen -y -f ~/.ssh/id_rsa
-          echo
-
-          echo "show public in file"
-          cat ~/.ssh/id_rsa.pub
-          echo
+          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
+          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
 
           echo "test ssh"
           ssh -v reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
