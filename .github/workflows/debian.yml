@@ -36,8 +36,8 @@ jobs:
           echo "/etc/ssh/ssh_config"
           cat /etc/ssh/ssh_config
 
-          echo "/etc/ssh/ssh_config.d/*.conf"
-          cat /etc/ssh/ssh_config.d/*.conf
+          echo "ls /etc/ssh/ssh_config.d/"
+          ls /etc/ssh/ssh_config.d/
 
           echo "which ssh"
           which ssh
