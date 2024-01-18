@@ -24,22 +24,6 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install openssh-client
-      - name: Test SSH
-        run: |
-          mkdir -p /root/.ssh
-          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
-          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
-          chmod 600 /root/.ssh/id_rsa
-
-          echo "test ssh"
-          ssh -v reprepro@${{ secrets.DEBIAN_HOST }} -f 'ls'
-
-          fail
-      - name: Install Dependencies
-        run: |
-          apt-get -y update
-          apt-get -y dist-upgrade
           apt-get -y install sudo git build-essential
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -172,22 +156,10 @@ jobs:
           cd ..
       - name: Distribute Package
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
-          echo "${{ secrets.DEBIAN_ID_RSA_PUB }}" | base64 -d > ~/.ssh/id_rsa.pub
-          cat << EOF > ~/.ssh/config
-          Host ${{ secrets.DEBIAN_HOST }}
-            StrictHostKeyChecking no
-          EOF
-
-          chmod -R 600 ~/.ssh/*
-
-          ssh-keygen -R ${{ secrets.DEBIAN_HOST }}
-          echo "ssh configs location"
-          readlink -f ~/.ssh/
-
-          echo "test copy id"
-          ssh-copy-id reprepro@${{ secrets.DEBIAN_HOST }}
+          mkdir -p /root/.ssh
+          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
+          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
+          chmod 600 /root/.ssh/id_rsa
 
           cat << EOF > ~/.dput.cf
           [anon]
