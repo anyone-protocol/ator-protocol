@@ -173,7 +173,7 @@ jobs:
           EOF
 
           cd anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}/
-          dput anon ${{ secrets.DEBIAN_FINGERPRINT }} anon_*.changes
+          dput anon anon_*.changes
           cd ..
 
   create-release:
