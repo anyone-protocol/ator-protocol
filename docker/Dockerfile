@@ -11,6 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
 ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_ENV=dev
 
 # Sets anon ports for build time
 ARG BUILD_ANON_ORPORT=9001
@@ -37,6 +38,7 @@ RUN apt-get update && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
     git clone ${ANON_REPO} && cd ator-protocol && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER} && \
+    cp src/app/config/auth_dirs_${ANON_ENV}.inc src/app/config/auth_dirs.inc && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
