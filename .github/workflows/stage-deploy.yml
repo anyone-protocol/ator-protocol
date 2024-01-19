@@ -1,0 +1,24 @@
+name: Stage Deploy
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  image-name: ${{ secrets.DOCKER_BASE_REPO_STAGE }}
+  image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy new version 
+        uses: ./.github/actions/deploy
+        with:
+          image-tag: ${{ env.image-tag }}
+          nomad-job-file: anon-da-node-stage.hcl
