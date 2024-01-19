@@ -33,7 +33,7 @@ jobs:
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
-          environment: anon-stage
+          environment: stage
 
   multiarch-push:
     runs-on: arm64
