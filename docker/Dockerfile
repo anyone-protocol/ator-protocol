@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of anon to use.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
+ARG ANON_VER="75780710e36daf53a0361164e1ecbe9d51019a77"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
 ARG ANON_ENV=dev
 
