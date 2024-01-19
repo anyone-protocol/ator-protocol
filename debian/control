@@ -1,7 +1,7 @@
 Source: anon
 Section: net
 Priority: optional
-Maintainer: Peter Palfrader <weasel@debian.org>
+Maintainer: Serhii Varakuta <serhii@varakuta.com>
 Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>= 1.1), asciidoc (>= 8.2), docbook-xml, docbook-xsl, xmlto, dh-apparmor, libseccomp-dev [amd64 i386], libsystemd-dev [linux-any], pkg-config [linux-any], libcap-dev [linux-any], dh-autoreconf, liblzma-dev, libzstd-dev, dh-runit (>= 2.8.8)
 Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
 Standards-Version: 4.4.0
