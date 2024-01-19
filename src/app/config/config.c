@@ -2765,7 +2765,7 @@ list_enabled_modules(void)
 static void
 print_library_versions(void)
 {
-  printf("Tor version %s. \n", get_version());
+  printf("Anon version %s. \n", get_version());
   printf("Library versions\tCompiled\t\tRuntime\n");
   printf("Libevent\t\t%-15s\t\t%s\n",
                     tor_libevent_get_header_version_str(),
@@ -4513,12 +4513,12 @@ options_init_from_torrc(int argc, char **argv)
   }
 
   if (config_line_find(cmdline_only_options, "--version")) {
-    printf("Tor version %s.\n",get_version());
+    printf("Anon version %s.\n",get_version());
 #ifdef ENABLE_GPL
     printf("This build of Tor is covered by the GNU General Public License "
             "(https://www.gnu.org/licenses/gpl-3.0.en.html)\n");
 #endif
-    printf("Tor is running on %s with Libevent %s, "
+    printf("Anon is running on %s with Libevent %s, "
             "%s %s, Zlib %s, Liblzma %s, Libzstd %s and %s %s as libc.\n",
             get_uname(),
             tor_libevent_get_version_str(),
@@ -4533,7 +4533,7 @@ options_init_from_torrc(int argc, char **argv)
             tor_libc_get_name() ?
             tor_libc_get_name() : "Unknown",
             tor_libc_get_version_str());
-    printf("Tor compiled with %s version %s\n",
+    printf("Anon compiled with %s version %s\n",
             strcmp(COMPILER_VENDOR, "gnu") == 0?
             COMPILER:COMPILER_VENDOR, COMPILER_VERSION);
 

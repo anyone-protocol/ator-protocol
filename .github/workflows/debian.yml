@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - development
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -130,7 +131,7 @@ jobs:
           dpkg-source -x ../${dsc}
           cd anon-${upstream_version}
           apt-get -y build-dep .
-          debuild -rfakeroot -uc -us "$build_selector"
+          debuild -rfakeroot -uc -us -j4 "$build_selector"
           cd ..
           binchanges="$(ls -1 *.changes)"
           if [ "$(echo "$binchanges" | wc -l)" != 1 ] || [ -z "$binchanges" ] ; then echo >&2 "Weird number of changes files produced."; exit 1; fi
@@ -140,19 +141,29 @@ jobs:
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mkdir binary-packages
           mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+      - name: Sign Package
+        run: |
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
+          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} anon-*/anon_*.changes
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
           path: anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
 
-  create-release:
+  release:
     runs-on: ubuntu-latest
     needs: build-binary
-    if: startsWith(github.ref, 'refs/tags/')
     container:
       image: debian:bookworm
     steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install devscripts gpg dput openssh-client
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -198,21 +209,41 @@ jobs:
           name: anon-ubuntu-focal-arm64
           path: anon-ubuntu-focal-arm64/
 
-      - run: |
+      - name: Copy release artifacts
+        run: |
           mkdir -p release-artifacts/
-          cp anon-debian-bookworm-amd64/anon_*.deb release-artifacts/
-          cp anon-debian-bookworm-arm64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-amd64/anon_*.deb release-artifacts/
-          cp anon-debian-bullseye-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-jammy-arm64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-amd64/anon_*.deb release-artifacts/
-          cp anon-ubuntu-focal-arm64/anon_*.deb release-artifacts/
-
-      - run: |
+          cp anon-*/anon_*.deb release-artifacts/
           ls -la release-artifacts/
 
-      - uses: ncipollo/release-action@v1
+      - name: Publish release artifacts to GitHub releases
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
         with:
           artifacts: "release-artifacts/anon_*.deb"
           bodyFile: "doc/RELEASE.md"
+
+      - name: Distribute Packages
+        run: |
+          mkdir -p /root/.ssh
+          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
+          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
+          chmod 600 /root/.ssh/id_rsa
+
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
+
+          cat << EOF > ~/.dput.cf
+          [anon]
+          fqdn = ${{ secrets.DEBIAN_HOST }}
+          incoming = /data/debian/incoming
+          method = scp
+          login = reprepro
+          allow_unsigned_uploads = 0
+          post_upload_command = ssh %(login)s@%(fqdn)s reprepro processincoming incoming
+          EOF
+
+          echo "Uploading packages"
+          dput anon anon-*/anon_*.changes
+
+          echo "Processing incoming packages"
+          ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
