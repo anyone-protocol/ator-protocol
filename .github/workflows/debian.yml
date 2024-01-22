@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - '*'
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -13,6 +11,11 @@ on:
 
 env:
   DEBIAN_FRONTEND: noninteractive
+
+  # tags: stage
+  # development: dev
+  # everything else (pr, etc.): unstable-dev
+  PKG_ENV: ${{ github.ref_type == 'tag' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
 
 jobs:
   build-source:

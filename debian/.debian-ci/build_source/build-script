@@ -61,11 +61,11 @@ rm -f *.tar.gz
 echo "Preparing upstream directory"
 echo "========================================"
 
-dir_env="${DIR_ENV:-dev}"
+pkg_env="${PKG_ENV:-dev}"
 upstream_branch=$GITHUB_SHA
 rev_upstream_branch="$(git rev-parse --short=16 "$upstream_branch")"
 pkgrev="${rev_upstream_branch}"
-distribution="${pkg}-${dir_env}"
+distribution="${pkg}-${pkg_env}"
 fudge_upstream_version "${pkggitdir}"
 
 debianrev=$(cd "$debgitdir" && git rev-parse --short HEAD)
@@ -82,6 +82,10 @@ pushd .
 
 mkdir build-tree-dist
 cd build-tree-dist
+
+if [ "$pkg_env" = "stage" ]; then
+  cp "src/app/config/auth_dirs_${pkg_env}.inc" src/app/config/auth_dirs.inc
+fi
 
 "${pkggitdir}/configure" --disable-silent-rules --enable-gcc-warnings
 if [ "$(ls -1 *.tar.gz 2>/dev/null | wc -l)" != 0 ] ; then
@@ -109,7 +113,12 @@ pushd .
 tardir="$(tar taf "$tgz" 2>/dev/null | head -n1)"
 tardir="${tardir%%/}"
 dir_version="${tardir##${pkg}-}"
+
 build_version="${dir_version}-${ts}"
+if [ "$pkg_env" = "stage" ]; then
+  build_version="${dir_version}"
+fi
+
 ddir="${pkg}-${build_version}"
 debian_version="${build_version}-1"
 
