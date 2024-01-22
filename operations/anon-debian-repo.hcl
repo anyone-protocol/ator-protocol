@@ -59,7 +59,7 @@ job "anon-debian-repo" {
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.deb-repo.entrypoints=https",
-          "traefik.http.routers.deb-repo.rule=Host(deb.dmz.ator.dev)",
+          "traefik.http.routers.deb-repo.rule=Host(`deb.dmz.ator.dev`)",
           "traefik.http.routers.deb-repo.tls=true",
           "traefik.http.routers.deb-repo.tls.certresolver=atorresolver",
         ]
