@@ -1,11 +1,11 @@
 job "ator-dir-auth-dev" {
   datacenters = ["ator-fin"]
-  type = "service" 
+  type = "service"
   namespace = "ator-network"
 
   group "dir-auth-dev-group" {
     count = 3
-    
+
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
@@ -27,7 +27,6 @@ job "ator-dir-auth-dev" {
       port "dirport" {
         static = 9030
       }
-
     }
 
     volume "dir-auth-dev" {
@@ -38,13 +37,13 @@ job "ator-dir-auth-dev" {
 
     task "dir-auth-dev-task" {
       driver = "docker"
-    
+
       volume_mount {
         volume      = "dir-auth-dev"
         destination = "/var/lib/anon/"
         read_only   = false
-      } 
-          
+      }
+
       config {
         image = "svforte/anon-dev:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
@@ -61,14 +60,14 @@ job "ator-dir-auth-dev" {
       resources {
         cpu = 256
         memory = 256
-      }  
+      }
 
       template {
         change_mode = "noop"
         data = "{{ key (env `node.unique.id` | printf `ator-network/dev/dir-auth-%s/authority_certificate`) }}"
         destination = "secrets/anon/keys/authority_certificate"
       }
-      
+
       template {
         change_mode = "noop"
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/dev/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
@@ -152,7 +151,7 @@ AuthDirMaxServersPerAddr 8
 #RelayBandwidthRate 512 KB   # Throttle traffic to
 #RelayBandwidthBurst 1024 KB # But allow bursts up to
 #MaxMemInQueues 512 MB       # Limit Memory usage to
-          
+
 ## If no Nickname or ContactInfo is set, docker-entrypoint will use
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
@@ -175,6 +174,6 @@ ContactInfo atorv4@example.org
           }
         }
       }
-    }    
+    }
   }
 }
