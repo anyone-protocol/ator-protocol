@@ -67,7 +67,9 @@ job "ator-dir-auth-stage" {
 
       template {
         change_mode = "noop"
-        data = "{{ key (env `node.unique.id` | printf `ator-network/stage/dir-auth-%s/authority_certificate`) }}"
+        data = <<EOH
+           {{ key (env `node.unique.id` | printf `ator-network/stage/dir-auth-%s/authority_certificate`) }}
+        EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
       
