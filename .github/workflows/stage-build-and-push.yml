@@ -1,9 +1,9 @@
-name: Dev Build and Push Docker Images 
+name: Stage Build and Push Docker Images 
 
 on:
   push:
     branches:
-      - development
+      - main  
   workflow_dispatch:
     
 env:
@@ -29,11 +29,11 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}-${{ matrix.platform.image-suffix }}
+          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_STAGE }}-${{ matrix.platform.image-suffix }}
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
-          environment: dev
+          environment: stage
 
   multiarch-push:
     runs-on: arm64
@@ -46,7 +46,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}
+          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_STAGE }}
           docker-tag: ${{ env.image-tag }}
   deploy:
     needs: multiarch-push
@@ -55,5 +55,5 @@ jobs:
       - name: Invoke workflow without inputs
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Dev Deploy
-          ref: refs/heads/development
+          workflow: Stage Deploy
+          ref: refs/heads/main

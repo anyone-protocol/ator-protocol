@@ -12,6 +12,8 @@ inputs:
     required: true
   version:
     required: true
+  environment:
+    required: true
   push:
     required: false  
     default: true  
@@ -38,3 +40,4 @@ runs:
         platforms: ${{ inputs.docker-platform }}
         build-args: |
           ANON_VER=${{ inputs.version }}
+          ANON_ENV=${{ inputs.environment }}
