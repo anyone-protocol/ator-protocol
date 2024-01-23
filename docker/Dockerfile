@@ -11,7 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
 ARG ANON_VER="75780710e36daf53a0361164e1ecbe9d51019a77"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
-ARG ANON_ENV=dev
+ARG ANON_ENV=stage
 
 # Sets anon ports for build time
 ARG BUILD_ANON_ORPORT=9001
