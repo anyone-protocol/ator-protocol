@@ -80,12 +80,12 @@ pushd .
 
 ./autogen.sh
 
-mkdir build-tree-dist
-cd build-tree-dist
-
 if [ "$pkg_env" = "stage" ]; then
   cp "src/app/config/auth_dirs_${pkg_env}.inc" src/app/config/auth_dirs.inc
 fi
+
+mkdir build-tree-dist
+cd build-tree-dist
 
 "${pkggitdir}/configure" --disable-silent-rules --enable-gcc-warnings
 if [ "$(ls -1 *.tar.gz 2>/dev/null | wc -l)" != 0 ] ; then
