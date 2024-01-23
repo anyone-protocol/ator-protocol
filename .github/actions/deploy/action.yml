@@ -4,6 +4,8 @@ inputs:
     required: true
   nomad-job-file:
     required: true
+  health-checks:
+    required: true  
  
 runs:
   using: "composite"
@@ -27,3 +29,11 @@ runs:
         curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
         unzip nomad.zip
         ./nomad job run operations/anon-da-node-dev.hcl
+    - name: Check health
+      uses: jtalk/url-health-check-action@v3
+      with:
+        url: ${{ health-checks }}
+        follow-redirect: false # Optional, defaults to "false"
+        max-attempts: 3 # Optional, defaults to 1
+        retry-delay: 10s # Optional, only applicable to max-attempts > 1
+        retry-all: true # Optional, defaults to "false"
