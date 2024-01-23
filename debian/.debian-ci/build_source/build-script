@@ -61,11 +61,11 @@ rm -f *.tar.gz
 echo "Preparing upstream directory"
 echo "========================================"
 
-dir_env="${DIR_ENV:-dev}"
+pkg_env="${PKG_ENV:-stage}"
 upstream_branch=$GITHUB_SHA
 rev_upstream_branch="$(git rev-parse --short=16 "$upstream_branch")"
 pkgrev="${rev_upstream_branch}"
-distribution="${pkg}-${dir_env}"
+distribution="${pkg}-${pkg_env}"
 fudge_upstream_version "${pkggitdir}"
 
 debianrev=$(cd "$debgitdir" && git rev-parse --short HEAD)
@@ -79,6 +79,13 @@ echo "========================================"
 pushd .
 
 ./autogen.sh
+
+auth_dirs_env="stage"
+if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
+  auth_dirs_env="dev"
+fi
+
+cp "src/app/config/auth_dirs_${auth_dirs_env}.inc" src/app/config/auth_dirs.inc
 
 mkdir build-tree-dist
 cd build-tree-dist
@@ -109,7 +116,12 @@ pushd .
 tardir="$(tar taf "$tgz" 2>/dev/null | head -n1)"
 tardir="${tardir%%/}"
 dir_version="${tardir##${pkg}-}"
-build_version="${dir_version}-${ts}"
+
+build_version="${dir_version}"
+if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
+  build_version="${dir_version}-${ts}"
+fi
+
 ddir="${pkg}-${build_version}"
 debian_version="${build_version}-1"
 

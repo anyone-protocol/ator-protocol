@@ -59,7 +59,7 @@ job "anon-debian-repo" {
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.deb-repo.entrypoints=https",
-          "traefik.http.routers.deb-repo.rule=Host(deb.dmz.ator.dev)",
+          "traefik.http.routers.deb-repo.rule=Host(`deb.dmz.ator.dev`)",
           "traefik.http.routers.deb-repo.tls=true",
           "traefik.http.routers.deb-repo.tls.certresolver=atorresolver",
         ]
@@ -178,6 +178,40 @@ server {
         data = <<EOH
 Origin: Anon
 Label: Anon
+Codename: anon-stage-bookworm
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Boookworm Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-bullseye
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Bullseye Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-jammy
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Jammy Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-focal
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Focal Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-dev-bookworm
 Architectures: amd64 arm64 source
 Components: main
@@ -209,6 +243,40 @@ Components: main
 DDebComponents: main
 Description: Anon Ubuntu Focal Dev
 SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-unstable-dev-bookworm
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Boookworm Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-unstable-dev-bullseye
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Bullseye Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-unstable-dev-jammy
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Jammy Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-unstable-dev-focal
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Focal Unstable Dev
+SignWith: YES
         EOH
         destination = "local/distributions"
       }
@@ -219,7 +287,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-dev-bookworm anon-dev-bullseye anon-dev-jammy anon-dev-focal
+Allow: anon-stage-bookworm anon-stage-bullseye anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-jammy anon-unstable-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
