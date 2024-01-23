@@ -12,10 +12,10 @@ on:
 env:
   DEBIAN_FRONTEND: noninteractive
 
-  # tags: stage
+  # tags, main: stage
   # development: dev
   # everything else (pr, etc.): unstable-dev
-  PKG_ENV: ${{ github.ref_type == 'tag' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
+  PKG_ENV: ${{ (github.ref == 'refs/heads/main' || github.ref_type == 'tag') && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
 
 jobs:
   build-source:
