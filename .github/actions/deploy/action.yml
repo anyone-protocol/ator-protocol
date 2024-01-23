@@ -22,7 +22,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Deploy new version 
+    - name: Deploy new version
+      shell: bash
       env:
         NOMAD_CACERT: ${{ inputs.nomad-cacert }}
         NOMAD_TOKEN: ${{ inputs.nomad-token }}
