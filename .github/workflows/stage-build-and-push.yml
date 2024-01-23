@@ -3,12 +3,7 @@ name: Stage Build and Push Docker Images
 on:
   push:
     branches:
-      - main
-  # TODO: Remove
-  pull_request:
-    branches:
-      - main
-      - development
+      - main  
   workflow_dispatch:
     
 env:
