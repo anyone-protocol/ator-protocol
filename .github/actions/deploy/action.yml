@@ -5,19 +5,31 @@ inputs:
   nomad-job-file:
     required: true
   health-checks:
-    required: true  
+    required: true
+  nomad-cacert:
+    required: true
+  nomad-token:
+    required: true
+  nomad-addr:
+    required: true
+  consul-cacert:
+    required: true
+  consul-http-token:
+    required: true
+  consul-addr:
+    required: true
  
 runs:
   using: "composite"
   steps:
     - name: Deploy new version 
       env:
-        NOMAD_CACERT: operations/admin-ui-ca.crt
-        NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
-        NOMAD_ADDR: ${{ secrets.NOMAD_DEPLOY_ADDR }}
-        CONSUL_CACERT: operations/admin-ui-ca.crt
-        CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
-        CONSUL_ADDR: ${{ secrets.CONSUL_DEPLOY_ADDR }}
+        NOMAD_CACERT: ${{ inputs.nomad-cacert }}
+        NOMAD_TOKEN: ${{ inputs.nomad-token }}
+        NOMAD_ADDR: ${{ inputs.nomad-addr }}
+        CONSUL_CACERT: ${{ inputs.consul-cacert }}
+        CONSUL_HTTP_TOKEN: ${{ inputs.consul-http-token }}
+        CONSUL_ADDR: ${{ inputs.consul-addr }}
       run: |
         #curl -L https://releases.hashicorp.com/levant/0.3.2/levant_0.3.2_linux_amd64.zip -o levant.zip
         #unzip levant.zip
@@ -32,7 +44,7 @@ runs:
     - name: Check health
       uses: jtalk/url-health-check-action@v3
       with:
-        url: ${{ health-checks }}
+        url: ${{ inputs.health-checks }}
         follow-redirect: false # Optional, defaults to "false"
         max-attempts: 3 # Optional, defaults to 1
         retry-delay: 10s # Optional, only applicable to max-attempts > 1
