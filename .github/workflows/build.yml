@@ -1,12 +1,11 @@
 name: Build Docker Images
 
-on:
-  # TODO: uncomment
-  # pull_request:
-  #   branches:
-  #     - development
-  #     - main
-  workflow_dispatch:
+on:  
+   pull_request:
+     branches:
+       - development
+       - main
+   workflow_dispatch:
 
 jobs:
   build-and-push:
