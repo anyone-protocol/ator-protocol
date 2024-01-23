@@ -21,4 +21,5 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           image-tag: ${{ env.image-tag }}
-          nomad-job-file: anon-da-node-stage.hcl
+          nomad-job-file: anon-da-node-dev.hcl
+          health-checks: http://49.13.145.234:9030/tor/status-vote/current/consensus|http://5.161.108.187:9030/tor/status-vote/current/consensus|http://5.78.90.106:9030/tor/status-vote/current/consensus

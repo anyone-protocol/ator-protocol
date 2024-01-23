@@ -22,3 +22,4 @@ jobs:
         with:
           image-tag: ${{ env.image-tag }}
           nomad-job-file: anon-da-node-stage.hcl
+          health-checks: http://49.13.145.234:9130/tor/status-vote/current/consensus|http://5.161.108.187:9130/tor/status-vote/current/consensus|http://5.78.90.106:9130/tor/status-vote/current/consensus
