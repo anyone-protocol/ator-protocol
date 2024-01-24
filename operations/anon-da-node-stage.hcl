@@ -129,11 +129,11 @@ V3AuthoritativeDirectory 1
 Address {{ key (env "node.unique.id" | printf "ator-network/stage/dir-auth-%s/public_ipv4") }}
 
 # Port to advertise for incoming Tor connections.
-ORPort 9001                  # common ports are 9001, 443
+ORPort 9101                  # common ports are 9101, 443
 #ORPort 1.1.1.1:9001
 
 # Mirror directory information for others (optional, not used on bridge)
-DirPort 9030                 # common ports are 9030, 80
+DirPort 9130                 # common ports are 9130, 80
 
 # Run Tor only as a server (no local applications)
 SocksPort 0
