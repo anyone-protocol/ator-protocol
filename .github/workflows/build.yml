@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - development
+      - main
   workflow_dispatch:
 
 jobs:
@@ -30,4 +31,5 @@ jobs:
           docker-tag: latest-pr
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
+          environment: dev
           push: false
