@@ -41,7 +41,7 @@ runs:
         sed -i 's/PLACEIMAGETAGHERE/${{ inputs.image-tag }}/g' operations/${{ inputs.nomad-job-file }}
         curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
         unzip nomad.zip
-        ./nomad job run operations/anon-da-node-dev.hcl
+        ./nomad job run operations/${{ inputs.nomad-job-file }}
     - name: Check health
       uses: jtalk/url-health-check-action@v3
       with:
