@@ -57,6 +57,8 @@ typedef enum {
   RELAY_METRICS_NUM_INTRO1_CELLS,
   /** Number of times we received a REND1 cell */
   RELAY_METRICS_NUM_REND1_CELLS,
+  /** Reachability self-test gauges. */
+  RELAY_METRICS_REACHABILITY_GAUGES,
 } relay_metrics_key_t;
 
 /** The metadata of a relay metric. */

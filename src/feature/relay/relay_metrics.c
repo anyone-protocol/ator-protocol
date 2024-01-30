@@ -36,6 +36,7 @@
 #include "feature/relay/relay_metrics.h"
 #include "feature/relay/router.h"
 #include "feature/relay/routerkeys.h"
+#include "feature/relay/selftest.h"
 #include "feature/stats/rephist.h"
 
 #include <event2/dns.h>
@@ -63,6 +64,7 @@ static void fill_est_intro_cells(void);
 static void fill_est_rend_cells(void);
 static void fill_intro1_cells(void);
 static void fill_rend1_cells(void);
+static void fill_reachability(void);
 
 /** The base metrics that is a static array of metrics added to the metrics
  * store.
@@ -216,6 +218,13 @@ static const relay_metrics_entry_t base_metrics[] =
     .name = METRICS_NAME(relay_rend1_total),
     .help = "Total number of REND1 cells we received",
     .fill_fn = fill_rend1_cells,
+  },
+  {
+    .key = RELAY_METRICS_REACHABILITY_GAUGES,
+    .type = METRICS_TYPE_GAUGE,
+    .name = METRICS_NAME(relay_reachability),
+    .help = "Relay reachability self-test status",
+    .fill_fn = fill_reachability,
   },
 };
 static const size_t num_base_metrics = ARRAY_LENGTH(base_metrics);
@@ -1204,6 +1213,33 @@ fill_rend1_cells(void)
         sentry, metrics_format_label("action", actions[i].name));
     metrics_store_entry_update(sentry, (long)rend1_actions[actions[i].key]);
   }
+}
+
+/** Fill function for the RELAY_METRICS_REACHABILITY_GAUGES metrics. */
+static void
+fill_reachability(void)
+{
+  const relay_metrics_entry_t *rentry =
+    &base_metrics[RELAY_METRICS_REACHABILITY_GAUGES];
+
+  metrics_store_entry_t *sentry;
+
+  int v4_reachable = router_orport_reachable(AF_INET);
+  int v6_reachable = router_orport_reachable(AF_INET6);
+
+  sentry = metrics_store_add(
+      the_store, rentry->type, rentry->name, rentry->help, 0, NULL);
+  metrics_store_entry_add_label(sentry,
+          metrics_format_label("family", af_to_string(AF_INET)));
+  metrics_store_entry_update(sentry,
+                             v4_reachable);
+
+  sentry = metrics_store_add(
+      the_store, rentry->type, rentry->name, rentry->help, 0, NULL);
+  metrics_store_entry_add_label(sentry,
+          metrics_format_label("family", af_to_string(AF_INET6)));
+  metrics_store_entry_update(sentry,
+                             v6_reachable);
 }
 
 /** Reset the global store and fill it with all the metrics from base_metrics

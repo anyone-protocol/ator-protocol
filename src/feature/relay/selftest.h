@@ -20,6 +20,7 @@ struct or_options_t;
 int router_orport_seems_reachable(
                                          const struct or_options_t *options,
                                          int family);
+int router_orport_reachable(int family);
 int router_dirport_seems_reachable(
                                          const struct or_options_t *options);
 
