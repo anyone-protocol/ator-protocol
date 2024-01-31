@@ -1,0 +1,33 @@
+name: Stage Deploy
+
+on:
+  push:
+    branches:
+      - feature/monitoring
+  workflow_dispatch:
+    
+
+env:
+  hc-url: http://49.13.145.234:9080/
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy new version 
+        uses: ./.github/actions/deploy
+        with:
+          image-tag: "none"
+          nomad-job-file: anon-monioring-stage.hcl
+          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}"
+          nomad-cacert: operations/admin-ui-ca.crt
+          nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          consul-cacert: operations/admin-ui-ca.crt
+          consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+          consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}
