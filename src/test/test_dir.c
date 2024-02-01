@@ -5265,7 +5265,7 @@ test_dir_conn_purpose_to_string(void *data)
   tt_str_op(dir_conn_purpose_to_string(purpose), OP_EQ, expected);
 
   EXPECT_CONN_PURPOSE(DIR_PURPOSE_UPLOAD_DIR, "server descriptor upload");
-  EXPECT_CONN_PURPOSE(DIR_PURPOSE_UPLOAD_VOTE, "server vote upload");
+  EXPECT_CONN_PURPOSE(DIR_PURPOSE_UPLOAD_VOTE, "consensus vote upload");
   EXPECT_CONN_PURPOSE(DIR_PURPOSE_UPLOAD_SIGNATURES,
                       "consensus signature upload");
   EXPECT_CONN_PURPOSE(DIR_PURPOSE_FETCH_SERVERDESC, "server descriptor fetch");
