@@ -130,6 +130,24 @@ router_orport_seems_reachable(const or_options_t *options,
   return true;
 }
 
+/**
+ * Return true if performed reachability self-test annotated orport reachable.
+ * Works only for AF_INET and AF_INET6 families.
+*/
+int
+router_orport_reachable(int family)
+{
+  if (family == AF_INET && can_reach_or_port_ipv4) {
+    return true;
+  }
+
+  if (family == AF_INET6 && can_reach_or_port_ipv6) {
+    return true;
+  }
+
+  return false;
+}
+
 /** Relay DirPorts are no longer used (though authorities are). In either case,
  * reachability self test is done anymore, since network re-entry towards an
  * authority DirPort is not allowed. Thus, consider it always reachable. */
