@@ -6,29 +6,16 @@ job "grafana" {
     group "grafana-group" {
         count = 1
 
-        spread {
-            attribute = "${node.unique.id}"
-            weight    = 100
-            target "067a42a8-d8fe-8b19-5851-43079e0eabb4" {
-                percent = 100
-            }
+        volume "grafana" {
+            type      = "host"
+            read_only = false
+            source    = "grafana"
         }
-
-        // volume "grafana_data" {
-        //     type      = "host"
-        //     read_only = false
-        //     source    = "grafana_data"
-        // }
-
-        // ephemeral_disk {
-        //     migrate = true
-        //     sticky  = true
-        // }
 
         network {
             mode = "bridge"
             port "http" {
-                to = 3000
+                static = 3000
                 host_network = "wireguard"
              }
         }
@@ -36,11 +23,17 @@ job "grafana" {
         task "grafana-task" {
             driver = "docker"
 
-            // volume_mount {
-            //     volume      = "grafana_data"
-            //     destination = "/var/lib/grafana/"
-            //     read_only   = false
-            // }
+
+        env {
+          GF_LOG_LEVEL          = "DEBUG"
+          GF_LOG_MODE           = "console"
+        }
+
+            volume_mount {
+                volume      = "grafana"
+                destination = "/var/lib/grafana"
+                read_only   = false
+            }
 
             config {
                 image = "grafana/grafana:latest"
@@ -48,14 +41,10 @@ job "grafana" {
                     "local/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
                 ]             
             }
-
-            vault {
-              	policies = ["ator-network-read"]
-      	    }
-
+          
             resources {
-                cpu = 256
-                memory = 256
+                cpu = 2048
+                memory = 2048
             }  
 
             template {
