@@ -15,8 +15,8 @@ Depends: ${shlibs:Depends}, adduser, ${misc:Depends}, lsb-base
 Pre-Depends: ${misc:Pre-Depends}
 Conflicts: libssl0.9.8 (<< 0.9.8g-9)
 Breaks: ${runit:Breaks}
-Recommends: logrotate, anon-geoipdb, torsocks
-Suggests: mixmaster, torbrowser-launcher, socat, apparmor-utils, nyx, obfs4proxy
+Recommends: logrotate, anon-geoipdb
+Suggests: mixmaster, socat, apparmor-utils, nyx, obfs4proxy
 Description: anonymizing overlay network for TCP
  Tor is a connection-based low-latency anonymous communication system.
  .
