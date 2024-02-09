@@ -1,4 +1,4 @@
-name: Stage Deploy
+name: Grafana Deploy
 
 on:
   push:
