@@ -1,0 +1,30 @@
+name: Grafana Deploy
+
+on:
+  workflow_dispatch:
+    
+
+env:
+  hc-url: https://95.217.159.249:13000/
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy new version 
+        uses: ./.github/actions/deploy
+        with:
+          image-tag: "none"
+          nomad-job-file: grafana.hcl
+          health-checks: "${{ env.hc-url }}"
+          nomad-cacert: operations/admin-ui-ca.crt
+          nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          consul-cacert: operations/admin-ui-ca.crt
+          consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+          consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}
