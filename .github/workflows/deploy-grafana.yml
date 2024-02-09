@@ -8,7 +8,7 @@ on:
     
 
 env:
-  hc-url: http://49.13.145.234:9080/
+  hc-url: https://95.217.159.249:13000/
 
 jobs:
   push:
@@ -23,8 +23,8 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           image-tag: "none"
-          nomad-job-file: anon-monioring-stage.hcl
-          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}"
+          nomad-job-file: grafana.hcl
+          health-checks: "${{ env.hc-url }}"
           nomad-cacert: operations/admin-ui-ca.crt
           nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
           nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
