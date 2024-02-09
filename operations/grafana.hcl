@@ -53,7 +53,7 @@ job "grafana" {
 apiVersion: 1
 datasources:
 - name: victoriametrics
-  type: victoriametrics-datasource
+  type: prometheus
   access: proxy
 {{- range nomadService "victoriametrics-db" }}
   url: http://{{ .Address }}:{{ .Port }}
