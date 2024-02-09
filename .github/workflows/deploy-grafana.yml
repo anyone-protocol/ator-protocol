@@ -1,9 +1,6 @@
 name: Grafana Deploy
 
 on:
-  push:
-    branches:
-      - feature/monitoring
   workflow_dispatch:
     
 
