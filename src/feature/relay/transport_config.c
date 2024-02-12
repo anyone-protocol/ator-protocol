@@ -277,8 +277,8 @@ options_act_server_transport(const or_options_t *old_options)
                "communicate with each other via the Extended ORPort so it "
                "is suggested you enable it: it will also allow your Bridge "
                "to collect statistics about its clients that use pluggable "
-               "transports. Please enable it using the ExtORPort anonrc option "
-               "(e.g. set 'ExtORPort auto').");
+               "transports. Please enable it using the ExtORPort anonrc "
+               "option (e.g. set 'ExtORPort auto').");
   }
 
   /* If we have an ExtORPort, initialize its auth cookie. */
