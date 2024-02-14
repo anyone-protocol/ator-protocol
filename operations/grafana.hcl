@@ -24,29 +24,33 @@ job "grafana" {
             driver = "docker"
 
 
-        env {
-          GF_LOG_LEVEL          = "DEBUG"
-          GF_LOG_MODE           = "console"
-        }
-
+            env {
+              GF_LOG_LEVEL          = "DEBUG"
+              GF_LOG_MODE           = "console"
+            }
+    
             volume_mount {
                 volume      = "grafana"
                 destination = "/var/lib/grafana"
                 read_only   = false
             }
-
+    
             config {
                 image = "grafana/grafana:latest"
                 volumes = [
                     "local/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
                 ]             
             }
-          
+
+            vault {
+                policies = ["ator-network-read"]
+            }
+            
             resources {
                 cpu = 2048
                 memory = 2048
             }  
-
+    
             template {
                 change_mode = "noop"
                 data = <<EOF
@@ -60,14 +64,13 @@ datasources:
   isDefault: true
 {{ end -}}
 EOF
-                destination = "local/datasources.yaml"
+                destination = "local/datasources.yaml"                 
             }
-      
+          
+            service {
+                name = "grafana"
+                port = "http"      
+            }
         }
-      
-        service {
-            name = "grafana"
-            port = "http"      
-        }      
     }
 }
