@@ -999,10 +999,10 @@ test_options_validate__relay_with_hidden_services(void *ignored)
   int ret;
   setup_capture_of_logs(LOG_DEBUG);
   options_test_data_t *tdata = get_options_test_data(
-                                  "ORPort 127.0.0.1:5555\n"
-                                  "HiddenServiceDir "
-                                  "/Library/Anon/var/lib/anon/hidden_service/\n"
-                                  "HiddenServicePort 80 127.0.0.1:8080\n"
+                                "ORPort 127.0.0.1:5555\n"
+                                "HiddenServiceDir "
+                                "/Library/Anon/var/lib/anon/hidden_service/\n"
+                                "HiddenServicePort 80 127.0.0.1:8080\n"
                                                      );
 
   ret = options_validate(NULL, tdata->opt, &msg);
@@ -2302,9 +2302,9 @@ test_options_validate__rend(void *ignored)
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(
-                 "UseEntryGuards 0\n"
-                 "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
-                 "HiddenServicePort 80 127.0.0.1:8080\n"
+                "UseEntryGuards 0\n"
+                "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
+                "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, 0);
@@ -2421,9 +2421,9 @@ test_options_validate__single_onion(void *ignored)
 
   /* Test that a hidden service can't be run in non anonymous mode. */
   tdata = get_options_test_data(
-                  "HiddenServiceNonAnonymousMode 1\n"
-                  "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
-                  "HiddenServicePort 80 127.0.0.1:8080\n"
+                "HiddenServiceNonAnonymousMode 1\n"
+                "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
+                "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, -1);
@@ -2445,8 +2445,8 @@ test_options_validate__single_onion(void *ignored)
   free_options_test_data(tdata);
 
   tdata = get_options_test_data(
-                  "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
-                  "HiddenServicePort 80 127.0.0.1:8080\n"
+                "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
+                "HiddenServicePort 80 127.0.0.1:8080\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, 0);
@@ -2454,11 +2454,11 @@ test_options_validate__single_onion(void *ignored)
   free_options_test_data(tdata);
 
   tdata = get_options_test_data(
-                  "HiddenServiceNonAnonymousMode 1\n"
-                  "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
-                  "HiddenServicePort 80 127.0.0.1:8080\n"
-                  "HiddenServiceSingleHopMode 1\n"
-                  "SOCKSPort 0\n"
+                "HiddenServiceNonAnonymousMode 1\n"
+                "HiddenServiceDir /Library/Anon/var/lib/anon/hidden_service/\n"
+                "HiddenServicePort 80 127.0.0.1:8080\n"
+                "HiddenServiceSingleHopMode 1\n"
+                "SOCKSPort 0\n"
                                 );
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, 0);

@@ -99,12 +99,63 @@ server {
     }
 
     location / {
+        location /pool/main/a/anon/ {
+	        access_log /alloc/data/access.log;
+        }
+
         root   /data/debian;
         autoindex on;
     }
 }
         EOH
         destination = "local/default.conf"
+      }
+    }
+
+    task "anon-package-exporter-task" {
+      driver = "docker"
+
+      config {
+        image = "svforte/package-exporter:v0.0.2"
+        volumes = [
+          "local/exporter.yml:/app/config.yml:ro",
+        ]
+      }
+
+      resources {
+        cpu = 256
+        memory = 256
+      }
+
+      template {
+        change_mode = "noop"
+        data = <<EOH
+fetchers:
+  dockerhub_pulls:
+    - name: anon_dev_dockerhub
+      owner: svforte
+      repo: anon-dev
+    - name: anon_stage_dockerhub
+      owner: svforte
+      repo: anon-stage
+  github_releases:
+    - name: anon_dev_github_releases
+      owner: ATOR-Development
+      repo: ator-protocol
+      assets_regexp: ^anon.+-dev-.+\.deb
+    - name: anon_stage_github_releases
+      owner: ATOR-Development
+      repo: ator-protocol
+      assets_regexp: ^anon.+-stage-.+\.deb
+  nginx_access_log:
+    - name: anon_dev_debian_repo
+      access_log_path: "/alloc/data/access.log"
+      access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-dev.+\.deb HTTP\/1\.1" 200'
+    - name: anon_stage_debian_repo
+      access_log_path: "/alloc/data/access.log"
+      access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
+        EOH
+        destination = "local/exporter.yml"
       }
     }
 
