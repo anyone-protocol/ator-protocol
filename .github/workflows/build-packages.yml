@@ -185,7 +185,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: anon-protocol
+          path: ator-protocol
           fetch-depth: 1
       - name: Set variables
         run: |
@@ -245,7 +245,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: anon-protocol
+          path: ator-protocol
           fetch-depth: 1
       - name: Install dependencies
         run: |
@@ -335,11 +335,6 @@ jobs:
           apt-get -y update
           apt-get -y dist-upgrade
           apt-get -y install devscripts gpg dput openssh-client
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       # Bookworm
       - uses: actions/download-artifact@v4
