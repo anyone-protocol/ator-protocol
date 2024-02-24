@@ -150,8 +150,7 @@ jobs:
 
           mkdir RESULT
           dcmd ln -v "build-tree/${binchanges}" RESULT
-          mkdir binary-packages
-          mv -v --no-target-directory RESULT anon-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+          mv -v --no-target-directory RESULT binary-packages/
       - name: Sign Package
         run: |
           echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
@@ -161,7 +160,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: anon-${{ env.PKG_ENV }}-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
-          path: anon-${{ env.PKG_ENV }}-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
+          path: binary-packages/
 
   #
   # MacOS Build
