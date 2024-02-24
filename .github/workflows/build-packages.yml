@@ -180,17 +180,21 @@ jobs:
           # MacOS Apple Silicon
           - runner: macos-14
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: anon-protocol
+          fetch-depth: 1
       - name: Set variables
         run: |
           echo "ANON_ARTIFACT=anon-macos-$(uname -m)" >> $GITHUB_ENV
           echo "ANON_BREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
-      - name: Build anon
+      - name: Install dependencies
         run: |
           brew install automake docbook docbook-xsl zlib libevent openssl@3
-
-          git clone https://github.com/ATOR-Development/ator-protocol.git
+      - name: Build anon
+        run: |
           cd ator-protocol
-
           ./autogen.sh
           ./configure --prefix=/usr/local \
             --disable-asciidoc \
@@ -238,6 +242,11 @@ jobs:
         run: |
           echo "ANON_ARTIFACT=anon-windows-$(uname -m)" >> $GITHUB_ENV
           echo "ANON_JOBS=$((`nproc`+1))"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: anon-protocol
+          fetch-depth: 1
       - name: Install dependencies
         run: |
           apt-get update -qq && \
@@ -285,8 +294,6 @@ jobs:
           rm -rf zlib-${ZLIB_VERSION}
       - name: Build anon
         run: |
-          git clone https://github.com/ATOR-Development/ator-protocol.git
-
           cd ator-protocol
           ./autogen.sh
           ./configure --host=${CROSS_HOST} \
