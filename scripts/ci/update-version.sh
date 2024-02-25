@@ -16,7 +16,7 @@ if [ "$(grep -c AC_INIT configure.ac)" != 1 ]; then
     exit 1
 fi
 
-sed -i "" -e "/^AC_INIT(/ s/\(-dev\)])/-stage])/" configure.ac
+sed -i "" -e "/^AC_INIT(/ s/\(-dev\)])/-$pkg_env])/" configure.ac
 
 if [ "$(grep -c "AC_INIT.*-$pkg_env" configure.ac)" != 1 ]; then
     echo >&2 "Unexpected version in configure.ac."
