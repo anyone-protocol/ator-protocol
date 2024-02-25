@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# set the upstream version in configure.ac correctly
+# Set the upstream version in configure.ac correctly and
+# copy desired environment auth dirs before build
 
 set -e
 set -x
@@ -29,3 +30,10 @@ if [ "$(grep -c "AC_INIT.*-$pkg_env" configure.ac)" != 1 ]; then
     echo >&2 "Unexpected version in configure.ac."
     exit 1
 fi
+
+auth_dirs_env="stage"
+if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
+  auth_dirs_env="dev"
+fi
+
+cp "src/app/config/auth_dirs_${auth_dirs_env}.inc" src/app/config/auth_dirs.inc
