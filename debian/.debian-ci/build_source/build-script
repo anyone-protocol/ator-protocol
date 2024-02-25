@@ -43,7 +43,7 @@ rev_upstream_branch="$(git rev-parse --short=16 "$upstream_branch")"
 pkgrev="${rev_upstream_branch}"
 distribution="${pkg}-${pkg_env}"
 
-"$pkggitdir/scripts/ci/update-version.sh" "${pkggitdir}" "${pkg_env}"
+"$pkggitdir/scripts/ci/update-version.sh" "${pkg_env}"
 "$pkggitdir/scripts/ci/copy-auth-dirs.sh" "${pkg_env}"
 
 debianrev=$(cd "$pkggitdir" && git rev-parse --short HEAD)
