@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # set the upstream version in configure.ac correctly
 
@@ -16,7 +16,7 @@ if [ "$(grep -c AC_INIT configure.ac)" != 1 ]; then
     exit 1
 fi
 
-sed -i -e "/^AC_INIT(/ s/\(-dev\)\?\(-$pkg_env\)\?])/-$pkg_env])/" configure.ac
+sed -i "" -e "/^AC_INIT(/ s/\(-dev\)])/-stage])/" configure.ac
 
 if [ "$(grep -c "AC_INIT.*-$pkg_env" configure.ac)" != 1 ]; then
     echo >&2 "Unexpected version in configure.ac."
