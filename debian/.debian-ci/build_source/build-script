@@ -27,38 +27,9 @@ set -e
 set -u
 set -x
 
-pkg_env="${PKG_ENV:-stage}"
-auth_dirs_env="stage"
-if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
-  auth_dirs_env="dev"
-fi
-
-fudge_upstream_version() {
-  # set the upstream version in configure.ac correctly
-  local pkggitdir="$1"; shift
-
-  if ! [ -e configure.ac ]; then
-    echo >&2 "Did not find configure.ac"
-    exit 1
-  fi
-
-  if [ "$(grep -c AC_INIT configure.ac)" != 1 ]; then
-    echo >&2 "Did not find exactly one AC_INIT"
-    exit 1
-  fi
-
-  sed -i -e "/^AC_INIT(/ s/\(-dev\)\?\(-$pkg_env\)\?])/-$pkg_env])/" configure.ac
-
-  if [ "$(grep -c "AC_INIT.*-$pkg_env" configure.ac)" != 1 ]; then
-    echo >&2 "Unexpected version in configure.ac."
-    exit 1
-  fi
-}
-
 pkg=anon
-
+pkg_env="${PKG_ENV:-stage}"
 pkggitdir="$(readlink -f .)"
-debgitdir="$(readlink -f .)"
 
 rm -rf RESULT
 rm -f *.tar.gz
@@ -71,9 +42,11 @@ upstream_branch=$GITHUB_SHA
 rev_upstream_branch="$(git rev-parse --short=16 "$upstream_branch")"
 pkgrev="${rev_upstream_branch}"
 distribution="${pkg}-${pkg_env}"
-fudge_upstream_version "${pkggitdir}"
 
-debianrev=$(cd "$debgitdir" && git rev-parse --short HEAD)
+"$pkggitdir/scripts/ci/update-version.sh" "${pkggitdir}" "${pkg_env}"
+"$pkggitdir/scripts/ci/copy-auth-dirs.sh" "${pkg_env}"
+
+debianrev=$(cd "$pkggitdir" && git rev-parse --short HEAD)
 ts="$(TZ=UTC date +%Y%m%dT%H%M%SZ)"
 
 # build release tarball
@@ -84,8 +57,6 @@ echo "========================================"
 pushd .
 
 ./autogen.sh
-
-cp "src/app/config/auth_dirs_${auth_dirs_env}.inc" src/app/config/auth_dirs.inc
 
 mkdir build-tree-dist
 cd build-tree-dist
@@ -135,7 +106,7 @@ echo "\"$pkgrev\"" > "$ddir/micro-revision.i"
 origtar="${pkg}_${build_version}.orig.tar.gz"
 tar caf "$origtar" "$ddir"
 
-cp -ra "${debgitdir}/debian" "$ddir"
+cp -ra "${pkggitdir}/debian" "$ddir"
 echo "\"${pkgrev}+${debianrev}\"" > "${ddir}/debian/micro-revision.i"
 
 ( cd "$ddir" &&
@@ -151,7 +122,7 @@ dpkg-source -b $ddir $origtar
 # build them ALL
 echo "Creating backported debian source packages"
 echo "===================="
-PATH="$debgitdir/debian/misc:$PATH"
+PATH="$pkggitdir/debian/misc:$PATH"
 
 . "$(which build-anon-sources)"
 set -x
