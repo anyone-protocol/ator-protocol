@@ -195,6 +195,8 @@ jobs:
       - name: Build anon
         run: |
           cd ator-protocol
+          ./scripts/ci/update-version.sh ${{ env.PKG_ENV }}
+          ./scripts/ci/copy-auth-dirs.sh ${{ env.PKG_ENV }}
           ./autogen.sh
           ./configure --prefix=/usr/local \
             --disable-asciidoc \
@@ -294,6 +296,8 @@ jobs:
       - name: Build anon
         run: |
           cd ator-protocol
+          ./scripts/ci/update-version.sh ${{ env.PKG_ENV }}
+          ./scripts/ci/copy-auth-dirs.sh ${{ env.PKG_ENV }}
           ./autogen.sh
           ./configure --host=${CROSS_HOST} \
             --disable-asciidoc \
