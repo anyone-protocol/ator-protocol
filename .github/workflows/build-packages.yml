@@ -195,8 +195,7 @@ jobs:
       - name: Build anon
         run: |
           cd ator-protocol
-          ./scripts/ci/update-version.sh ${{ env.PKG_ENV }}
-          ./scripts/ci/copy-auth-dirs.sh ${{ env.PKG_ENV }}
+          ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
           ./autogen.sh
           ./configure --prefix=/usr/local \
             --disable-asciidoc \
@@ -296,8 +295,7 @@ jobs:
       - name: Build anon
         run: |
           cd ator-protocol
-          ./scripts/ci/update-version.sh ${{ env.PKG_ENV }}
-          ./scripts/ci/copy-auth-dirs.sh ${{ env.PKG_ENV }}
+          ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
           ./autogen.sh
           ./configure --host=${CROSS_HOST} \
             --disable-asciidoc \
@@ -339,7 +337,7 @@ jobs:
           apt-get -y dist-upgrade
           apt-get -y install devscripts gpg dput openssh-client
 
-      # Bookworm
+      # Debian Bookworm Package
       - uses: actions/download-artifact@v4
         with:
           name: anon-${{ env.PKG_ENV }}-debian-bookworm-amd64
@@ -349,7 +347,7 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-debian-bookworm-arm64
           path: anon-${{ env.PKG_ENV }}-debian-bookworm-arm64/
 
-      # Bullseye
+      # Debian Bullseye Package
       - uses: actions/download-artifact@v4
         with:
           name: anon-${{ env.PKG_ENV }}-debian-bullseye-amd64
@@ -359,7 +357,7 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-debian-bullseye-arm64
           path: anon-${{ env.PKG_ENV }}-debian-bullseye-arm64/
 
-      # Jammy
+      # Ubuntu Jammy Package
       - uses: actions/download-artifact@v4
         with:
           name: anon-${{ env.PKG_ENV }}-ubuntu-jammy-amd64
@@ -369,7 +367,7 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-ubuntu-jammy-arm64
           path: anon-${{ env.PKG_ENV }}-ubuntu-jammy-arm64/
 
-      # Focal
+      # Ubuntu Focal Package
       - uses: actions/download-artifact@v4
         with:
           name: anon-${{ env.PKG_ENV }}-ubuntu-focal-amd64
@@ -379,10 +377,29 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-ubuntu-focal-arm64
           path: anon-${{ env.PKG_ENV }}-ubuntu-focal-arm64/
 
+      # MacOS Binaries
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-${{ env.PKG_ENV }}-macos-amd64
+          path: anon-${{ env.PKG_ENV }}-macos-amd64/
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-${{ env.PKG_ENV }}-macos-arm64
+          path: anon-${{ env.PKG_ENV }}-macos-arm64/
+
+      # Windows Binaries
+      - uses: actions/download-artifact@v4
+        with:
+          name: anon-${{ env.PKG_ENV }}-windows-amd64
+          path: anon-${{ env.PKG_ENV }}-windows-amd64/
+
       - name: Copy release artifacts
         run: |
           mkdir -p release-artifacts/
           cp anon-*/anon_*.deb release-artifacts/
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip anon-${{ env.PKG_ENV }}-macos-amd64/*
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip anon-${{ env.PKG_ENV }}-macos-arm64/*
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip anon-${{ env.PKG_ENV }}-windows-amd64/*
           ls -la release-artifacts/
 
       - name: Publish release artifacts to GitHub releases

@@ -38,7 +38,7 @@ RUN apt-get update && \
     apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps && \
     mkdir /src && cd /src && \
     git clone ${ANON_REPO} && cd ator-protocol && git fetch origin ${ANON_VER} && git switch --detach ${ANON_VER} && \
-    cp src/app/config/auth_dirs_${ANON_ENV}.inc src/app/config/auth_dirs.inc && \
+    ./scripts/ci/update-env.sh ${ANON_ENV} && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
     make && \
