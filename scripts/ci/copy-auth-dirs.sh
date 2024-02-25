@@ -3,6 +3,7 @@
 # copy desired environment auth dirs before build
 
 set -e
+set -x
 
 pkg_env="$1"; shift
 

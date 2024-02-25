@@ -191,7 +191,7 @@ jobs:
           echo "ANON_BREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
       - name: Install dependencies
         run: |
-          brew install automake docbook docbook-xsl zlib libevent openssl@3
+          brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
       - name: Build anon
         run: |
           cd ator-protocol
