@@ -26,7 +26,7 @@ jobs:
   # Debian Packages
   #
 
-  build-debian-source:
+  build-deb-source:
     runs-on: ubuntu-latest
     container:
       image: debian:bookworm
@@ -58,14 +58,15 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-source-packages
           path: source-packages/
 
-  build-debian-package:
+  build-deb-package:
     runs-on: ${{ matrix.build.runner }}
-    needs: build-debian-source
+    needs: build-deb-source
+    container:
+      image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
     strategy:
       fail-fast: false
       matrix:
         build:
-
           # Debian Bookworm
           - os: debian
             suite: bookworm
@@ -75,7 +76,6 @@ jobs:
             suite: bookworm
             arch: arm64
             runner: arm64
-
           # Debian Bullseye
           - os: debian
             suite: bullseye
@@ -85,7 +85,6 @@ jobs:
             suite: bullseye
             arch: arm64
             runner: arm64
-
           # Ubuntu Jammy
           - os: ubuntu
             suite: jammy
@@ -95,7 +94,6 @@ jobs:
             suite: jammy
             arch: arm64
             runner: arm64
-
           # Ubuntu Focal
           - os: ubuntu
             suite: focal
@@ -105,9 +103,6 @@ jobs:
             suite: focal
             arch: arm64
             runner: arm64
-
-    container:
-      image: ${{ matrix.build.os }}:${{ matrix.build.suite }}
     steps:
       - name: Install Dependencies
         run: |
@@ -333,7 +328,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [build-debian-package, build-macos-binary, build-windows-64-binary]
+    needs: [build-deb-package, build-macos-binary, build-windows-64-binary]
     container:
       image: debian:bookworm
     steps:
