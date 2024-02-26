@@ -7,11 +7,16 @@ FROM debian:bookworm
 # Makes the default apt answers be used for all questions
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Sets which version of anon to use.
+# Sets which version of anon to use, by default it is main branch.
 # See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
-ARG ANON_VER="75780710e36daf53a0361164e1ecbe9d51019a77"
+ARG ANON_VER="main"
 ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+
+# Sets which environment to build for, currently 'dev' and 'stage' are available.
 ARG ANON_ENV=stage
+
+# Sets number of build jobs, useful on machines with more than one CPU core available.
+ARG ANON_JOBS=4
 
 # Sets anon ports for build time
 ARG BUILD_ANON_ORPORT=9001
@@ -41,7 +46,7 @@ RUN apt-get update && \
     ./scripts/ci/update-env.sh ${ANON_ENV} && \
     ./autogen.sh && \
     ./configure --disable-asciidoc && \
-    make && \
+    make -j${ANON_JOBS} && \
     make install && \
     apt-get -y purge --auto-remove $apt_temps && \
     apt-get clean && rm -r /var/lib/apt/lists/* && \
