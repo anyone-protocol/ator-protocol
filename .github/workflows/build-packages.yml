@@ -335,7 +335,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install devscripts gpg dput openssh-client
+          apt-get -y install devscripts zip gpg dput openssh-client
 
       # Debian Bookworm Package
       - uses: actions/download-artifact@v4
