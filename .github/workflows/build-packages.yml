@@ -35,7 +35,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install sudo git build-essential
+          apt-get -y install sudo git build-essential devscripts gpg
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -47,6 +47,11 @@ jobs:
       - name: Build Source
         run: |
           $(pwd)/debian/.debian-ci/build_source/build-script
+      - name: Sign Source Package
+        run: |
+          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+          gpg --allow-secret-key-import --import debian-private.gpg
+          debsign -k ${{ secrets.DEBIAN_FINGERPRINT }} source-packages/anon_*.changes
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -108,7 +113,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install build-essential devscripts reprepro fakeroot
+          apt-get -y install build-essential devscripts gpg reprepro fakeroot
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
@@ -151,7 +156,7 @@ jobs:
           mkdir RESULT
           dcmd ln -v "build-tree/${binchanges}" RESULT
           mv -v --no-target-directory RESULT binary-packages/
-      - name: Sign Package
+      - name: Sign Binary Package
         run: |
           echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
           gpg --allow-secret-key-import --import debian-private.gpg
