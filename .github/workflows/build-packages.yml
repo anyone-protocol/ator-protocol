@@ -180,6 +180,7 @@ jobs:
           # MacOS Apple Silicon
           - runner: macos-14
             arch: arm64
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -337,79 +338,28 @@ jobs:
           apt-get -y dist-upgrade
           apt-get -y install devscripts zip gpg dput openssh-client
 
-      # Debian Bookworm Package
-      - uses: actions/download-artifact@v4
+      - name: Download raw artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: anon-${{ env.PKG_ENV }}-debian-bookworm-amd64
-          path: anon-${{ env.PKG_ENV }}-debian-bookworm-amd64/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-debian-bookworm-arm64
-          path: anon-${{ env.PKG_ENV }}-debian-bookworm-arm64/
-
-      # Debian Bullseye Package
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-debian-bullseye-amd64
-          path: anon-${{ env.PKG_ENV }}-debian-bullseye-amd64/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-debian-bullseye-arm64
-          path: anon-${{ env.PKG_ENV }}-debian-bullseye-arm64/
-
-      # Ubuntu Jammy Package
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-ubuntu-jammy-amd64
-          path: anon-${{ env.PKG_ENV }}-ubuntu-jammy-amd64/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-ubuntu-jammy-arm64
-          path: anon-${{ env.PKG_ENV }}-ubuntu-jammy-arm64/
-
-      # Ubuntu Focal Package
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-ubuntu-focal-amd64
-          path: anon-${{ env.PKG_ENV }}-ubuntu-focal-amd64/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-ubuntu-focal-arm64
-          path: anon-${{ env.PKG_ENV }}-ubuntu-focal-arm64/
-
-      # MacOS Binaries
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-macos-amd64
-          path: anon-${{ env.PKG_ENV }}-macos-amd64/
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-macos-arm64
-          path: anon-${{ env.PKG_ENV }}-macos-arm64/
-
-      # Windows Binaries
-      - uses: actions/download-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-windows-amd64
-          path: anon-${{ env.PKG_ENV }}-windows-amd64/
+          path: raw-artifacts/
 
       - name: Copy release artifacts
         run: |
           mkdir -p release-artifacts/
-          cp anon-*/anon_*.deb release-artifacts/
-          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip anon-${{ env.PKG_ENV }}-macos-amd64/*
-          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip anon-${{ env.PKG_ENV }}-macos-arm64/*
-          zip release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip anon-${{ env.PKG_ENV }}-windows-amd64/*
-          ls -la release-artifacts/
+          cp raw-artifacts/anon-*/anon_*.deb release-artifacts/
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
+          zip release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64/*
+          ls -la -R release-artifacts/
 
-      - name: Publish release artifacts to GitHub releases
+      - name: Publish release artifacts
         if: startsWith(github.ref, 'refs/tags/')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "release-artifacts/anon_*.deb"
+          artifacts: "release-artifacts/anon*"
           bodyFile: "doc/RELEASE.md"
 
-      - name: Distribute Packages
+      - name: Distribute signed .deb packages
         run: |
           mkdir -p /root/.ssh
           ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
@@ -430,7 +380,7 @@ jobs:
           EOF
 
           echo "Uploading packages"
-          dput anon anon-*/anon_*.changes
+          dput anon raw-artifacts/anon-*/anon_*.changes
 
           echo "Processing incoming packages"
           ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
