@@ -250,10 +250,10 @@ jobs:
           fetch-depth: 1
       - name: Install dependencies
         run: |
-          apt-get update -qq && \
-            apt-get upgrade -qy && \
-            apt-get install -qy autoconf automake libtool make wget git && \
-            apt-get install -qy ${MINGW_DEB}
+          apt-get update -qq
+          apt-get upgrade -qy
+          apt-get install -qy autoconf automake libtool make wget git
+          apt-get install -qy ${MINGW_DEB}
       - name: Build openssl
         run: |
           wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
