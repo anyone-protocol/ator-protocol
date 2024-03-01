@@ -380,6 +380,8 @@ jobs:
         run: |
           mkdir -p release-artifacts/
           cp raw-artifacts/anon-*/anon_*.deb release-artifacts/
+          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
+          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64/*
