@@ -24,7 +24,10 @@ job "anon-debian-repo" {
       port "nginx-http" {
         static = 8001
       }
-      port "exporter-http" {}
+      port "exporter-http" {
+        static = 8001
+        to = 8080
+      }
     }
 
     ephemeral_disk {
@@ -128,8 +131,10 @@ server {
         name = "anon-download-exporter"
         port = "exporter-http"
         check {
-          name     = "download exporter http server alive"
-          type     = "tcp"
+          name     = "anon download exporter alive"
+          type     = "http"
+          port     = "exporter-http"
+          path     = "/"
           interval = "10s"
           timeout  = "10s"
           check_restart {
