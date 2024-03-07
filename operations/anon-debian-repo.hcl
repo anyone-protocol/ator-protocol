@@ -24,6 +24,7 @@ job "anon-debian-repo" {
       port "nginx-http" {
         static = 8001
       }
+      port "exporter-http" {}
     }
 
     ephemeral_disk {
@@ -117,9 +118,25 @@ server {
 
       config {
         image = "svforte/package-exporter:v0.0.2"
+        ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
         ]
+      }
+
+      service {
+        name = "anon-download-exporter"
+        port = "exporter-http"
+        check {
+          name     = "download exporter http server alive"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "10s"
+          check_restart {
+            limit = 10
+            grace = "30s"
+          }
+        }
       }
 
       resources {
