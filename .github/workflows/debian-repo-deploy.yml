@@ -1,6 +1,9 @@
 name: Debian Repository Deploy
 
 on:
+  pull_request:
+    branches:
+      - development
   workflow_dispatch:
 
 jobs:
