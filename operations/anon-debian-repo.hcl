@@ -25,7 +25,7 @@ job "anon-debian-repo" {
         static = 8001
       }
       port "exporter-http" {
-        static = 8001
+        static = 8002
         to = 8080
       }
     }
