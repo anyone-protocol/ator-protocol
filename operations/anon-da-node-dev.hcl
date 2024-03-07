@@ -35,12 +35,24 @@ job "ator-dir-auth-dev" {
       source    = "dir-auth-dev"
     }
 
+    volume "sbws-dev" {
+      type      = "host"
+      read_only = false
+      source    = "sbws-dev"
+    }
+
     task "dir-auth-dev-task" {
       driver = "docker"
 
       volume_mount {
         volume      = "dir-auth-dev"
         destination = "/var/lib/anon/"
+        read_only   = false
+      }
+
+      volume_mount {
+        volume      = "sbws-dev"
+        destination = "/var/lib/sbws/"
         read_only   = false
       }
 
@@ -156,6 +168,8 @@ AuthDirMaxServersPerAddr 8
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/dev/dir-auth-%s/nickname") }}
 ContactInfo atorv4@example.org
+
+V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
         EOH
         destination = "local/anonrc"
       }
