@@ -56,4 +56,3 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Live Deploy
-          ref: refs/heads/main
