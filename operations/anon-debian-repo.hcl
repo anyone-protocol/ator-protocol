@@ -251,6 +251,40 @@ fetchers:
         data = <<EOH
 Origin: Anon
 Label: Anon
+Codename: anon-live-bookworm
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Boookworm Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-live-bullseye
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Bullseye Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-live-jammy
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Jammy Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-live-focal
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Focal Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-stage-bookworm
 Architectures: amd64 arm64 source
 Components: main
