@@ -3,6 +3,11 @@ name: Live Deploy
 on:
   workflow_dispatch:
   workflow_call:
+  # TODO: Remove before merge
+  pull_request:
+    branches:
+      - main
+      - development
 
 env:
   image-name: ${{ secrets.DOCKER_BASE_REPO_LIVE }}
