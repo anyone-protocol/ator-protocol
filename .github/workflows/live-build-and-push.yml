@@ -55,5 +55,5 @@ jobs:
       - name: Invoke workflow without inputs
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Stage Deploy
+          workflow: Live Deploy
           ref: refs/heads/main
