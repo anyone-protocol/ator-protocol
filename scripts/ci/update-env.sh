@@ -20,7 +20,7 @@ if [ "$(grep -c AC_INIT configure.ac)" != 1 ]; then
     exit 1
 fi
 
-sed_arg="/^AC_INIT(/ s/\(-dev\)\?\(-$pkg_env\)\?])/-$pkg_env])/"
+sed_arg="/^AC_INIT(/ s/\(-git\)\?\(-$pkg_env\)\?])/-$pkg_env])/"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     gsed -i -e "$sed_arg" configure.ac
