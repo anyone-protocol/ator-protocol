@@ -2,12 +2,12 @@
 
 job "ator-dir-auth-stage" {
   datacenters = ["ator-fin"]
-  type = "service" 
+  type = "service"
   namespace = "ator-network"
 
   group "dir-auth-stage-group" {
     count = 3
-    
+
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
@@ -38,15 +38,27 @@ job "ator-dir-auth-stage" {
       source    = "dir-auth-stage"
     }
 
+    volume "sbws-stage" {
+      type      = "host"
+      read_only = false
+      source    = "sbws-stage"
+    }
+
     task "dir-auth-stage-task" {
       driver = "docker"
-    
+
       volume_mount {
         volume      = "dir-auth-stage"
         destination = "/var/lib/anon/"
         read_only   = false
-      } 
-          
+      }
+
+      volume_mount {
+        volume      = "sbws-stage"
+        destination = "/var/lib/sbws/"
+        read_only   = false
+      }
+
       config {
         image = "svforte/anon-stage:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
@@ -63,7 +75,7 @@ job "ator-dir-auth-stage" {
       resources {
         cpu = 256
         memory = 256
-      }  
+      }
 
       template {
         change_mode = "noop"
@@ -72,7 +84,7 @@ job "ator-dir-auth-stage" {
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
-      
+
       template {
         change_mode = "noop"
         data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/stage/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
@@ -156,7 +168,7 @@ AuthDirMaxServersPerAddr 8
 #RelayBandwidthRate 512 KB   # Throttle traffic to
 #RelayBandwidthBurst 1024 KB # But allow bursts up to
 #MaxMemInQueues 512 MB       # Limit Memory usage to
-          
+
 ## If no Nickname or ContactInfo is set, docker-entrypoint will use
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/stage/dir-auth-%s/nickname") }}
@@ -179,6 +191,6 @@ ContactInfo atorv4@example.org
           }
         }
       }
-    }    
+    }
   }
 }
