@@ -3,16 +3,10 @@ name: Live Deploy
 on:
   workflow_dispatch:
   workflow_call:
-  # TODO: Remove before merge
-  pull_request:
-    branches:
-      - main
-      - development
 
 env:
   image-name: ${{ secrets.DOCKER_BASE_REPO_LIVE }}
-  image-tag: 'v0.4.9.0'
-  # image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
+  image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
   da-1-hc-url: http://49.13.145.234:9230/tor/status-vote/current/consensus
   da-2-hc-url: http://5.161.108.187:9230/tor/status-vote/current/consensus
   da-3-hc-url: http://5.78.90.106:9230/tor/status-vote/current/consensus
