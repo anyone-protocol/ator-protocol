@@ -169,6 +169,8 @@ AuthDirMaxServersPerAddr 8
 ## the environment variables to add Nickname/ContactInfo below
 Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
 ContactInfo atorv4@example.org
+
+V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
         EOH
         destination = "local/anonrc"
       }
