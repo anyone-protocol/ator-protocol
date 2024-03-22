@@ -34,6 +34,7 @@ jobs:
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
           environment: live
+          push-latest: true
 
   multiarch-push:
     runs-on: arm64
@@ -48,6 +49,8 @@ jobs:
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
           docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_LIVE }}
           docker-tag: ${{ env.image-tag }}
+          push-latest: true
+
   deploy:
     needs: multiarch-push
     runs-on: ubuntu-latest
