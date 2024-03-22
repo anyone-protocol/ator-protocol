@@ -46,9 +46,9 @@ runs:
           ANON_ENV=${{ inputs.environment }}
 
     - name: Push latest
-      if: ${{ inputs.push-latest }}
+      if: ${{ inputs.push-latest == true }}
       shell: bash
       run: |
-        docker pull ${{ inputs.docker-base-repo }}:${{ github.sha }}
-        docker tag ${{ inputs.docker-base-repo }}:${{ github.sha }} ${{ inputs.docker-base-repo }}:latest
-        docker push ${{ inputs.docker-base-repo }}:latest
+        docker buildx imagetools create \
+          -t ${{ inputs.docker-base-repo }}:${{ github.sha }} \
+             ${{ inputs.docker-base-repo }}:latest
