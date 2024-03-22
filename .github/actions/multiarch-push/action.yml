@@ -38,6 +38,6 @@ runs:
 
     - name: Push latest
       if: ${{ inputs.push-latest }}
-      run:
-        - docker tag ${{ inputs.docker-base-repo }}:${{ github.sha }} ${{ inputs.docker-base-repo }}:latest
-        - docker push ${{ inputs.docker-base-repo }}:latest
+      run: |
+        docker tag ${{ inputs.docker-base-repo }}:${{ github.sha }} ${{ inputs.docker-base-repo }}:latest
+        docker push ${{ inputs.docker-base-repo }}:latest
