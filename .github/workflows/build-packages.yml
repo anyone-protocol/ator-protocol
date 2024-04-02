@@ -200,19 +200,6 @@ jobs:
           apt_runtime_deps="iputils-ping curl pwgen" && \
           apt_temps="build-essential automake git wget" && \
           apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps
-      - name: Build openssl
-        run: |
-          wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
-          tar zxf openssl-${OPENSSL_VERSION}.tar.gz
-          rm openssl-${OPENSSL_VERSION}.tar.gz
-
-          cd openssl-${OPENSSL_VERSION}
-          ./config --prefix="/build/openssl-prefix/" no-shared no-dso no-zlib
-          make -j${{ env.ANON_JOBS }}
-          make install
-          cd ..
-
-          rm -rf openssl-${OPENSSL_VERSION}
       - name: Build anon
         run: |
           cd ator-protocol
@@ -227,7 +214,7 @@ jobs:
             --enable-static-openssl \
             --enable-static-tor \
             --with-libevent-dir=/usr/lib/${{ matrix.build.libarch }}-linux-gnu/ \
-            --with-openssl-dir=/build/openssl-prefix/ \
+            --with-openssl-dir=/usr/lib/${{ matrix.build.libarch }}-linux-gnu/ \
             --with-zlib-dir=/usr/lib/${{ matrix.build.libarch }}-linux-gnu/ \
             --disable-tool-name-check \
             --disable-gcc-hardening
