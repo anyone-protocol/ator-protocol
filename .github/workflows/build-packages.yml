@@ -185,7 +185,7 @@ jobs:
           # Linux arm64
           - runner: arm64
             arch: arm64
-            libarch: arm64
+            libarch: aarch64
 
     steps:
       - name: Checkout Repository
