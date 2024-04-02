@@ -163,6 +163,87 @@ jobs:
           path: binary-packages/
 
   #
+  # Linux Build
+  #
+
+  build-linux-binary:
+    runs-on: ${{ matrix.build.runner }}
+    container:
+      image: debian:bookworm
+    env:
+      OPENSSL_VERSION: "1.1.1w"
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+
+          # Linux amd64
+          - runner: ubuntu-latest
+            arch: amd64
+            libarch: x86_64
+
+          # Linux arm64
+          - runner: arm64
+            arch: arm64
+            libarch: arm64
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: ator-protocol
+          fetch-depth: 1
+      - name: Install dependencies
+        run: |
+          apt-get update && \
+          apt_build_deps="libssl-dev zlib1g-dev libevent-dev ca-certificates dh-apparmor libseccomp-dev debhelper" && \
+          apt_runtime_deps="iputils-ping curl pwgen" && \
+          apt_temps="build-essential automake git wget" && \
+          apt-get -y --no-install-recommends install $apt_build_deps $apt_runtime_deps $apt_temps
+      - name: Build openssl
+        run: |
+          wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
+          tar zxf openssl-${OPENSSL_VERSION}.tar.gz
+          rm openssl-${OPENSSL_VERSION}.tar.gz
+
+          cd openssl-${OPENSSL_VERSION}
+          ./config --prefix="/build/openssl-prefix/" no-shared no-dso no-zlib
+          make -j${{ env.ANON_JOBS }}
+          make install
+          cd ..
+
+          rm -rf openssl-${OPENSSL_VERSION}
+      - name: Build anon
+        run: |
+          cd ator-protocol
+          ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
+          ./autogen.sh
+          ./configure \
+            --disable-asciidoc \
+            --disable-zstd \
+            --disable-lzma \
+            --enable-static-zlib \
+            --enable-static-libevent \
+            --enable-static-openssl \
+            --enable-static-tor \
+            --with-libevent-dir=/usr/lib/${{ matrix.build.libarch }}-linux-gnu/ \
+            --with-openssl-dir=/build/openssl-prefix/ \
+            --with-zlib-dir=/usr/lib/${{ matrix.build.libarch }}-linux-gnu/ \
+            --disable-tool-name-check \
+            --disable-gcc-hardening
+          make
+      - name: Copy executables to artifact directory
+        run: |
+          mkdir -p package
+          cp ator-protocol/src/app/anon package
+          cp ator-protocol/src/tools/anon-gencert package
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: anon-${{ env.PKG_ENV }}-linux-${{ matrix.build.arch }}
+          path: package/
+
+  #
   # MacOS Build
   #
 
@@ -380,8 +461,12 @@ jobs:
         run: |
           mkdir -p release-artifacts/
           cp raw-artifacts/anon-*/anon_*.deb release-artifacts/
+          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
+          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
           chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
           chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
+          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
+          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
           zip -j release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64/*
