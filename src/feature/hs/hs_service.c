@@ -2153,7 +2153,7 @@ build_all_descriptors(time_t now)
       continue;
     }
 
-    /* Reaching this point means we are pass bootup so at runtime. We should
+    /* Reaching this point means we are past bootup so at runtime. We should
      * *never* have an empty current descriptor. If the next descriptor is
      * empty, we'll try to build it for the next time period. This only
      * happens when we rotate meaning that we are guaranteed to have a new SRV
@@ -2175,7 +2175,7 @@ build_all_descriptors(time_t now)
 /** Randomly pick a node to become an introduction point but not present in the
  * given exclude_nodes list. The chosen node is put in the exclude list
  * regardless of success or not because in case of failure, the node is simply
- * unsusable from that point on.
+ * unusable from that point on.
  *
  * If direct_conn is set, try to pick a node that our local firewall/policy
  * allows us to connect to directly. If we can't find any, return NULL.
