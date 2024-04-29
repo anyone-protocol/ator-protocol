@@ -751,7 +751,6 @@ relay_send_command_from_edge_,(streamid_t stream_id, circuit_t *orig_circ,
                                        cpath_layer, stream_id, filename,
                                        lineno);
   if (ret < 0) {
-    log_warn(LD_BUG,"circuit_package_relay_cell failed. Closing.");
     circuit_mark_for_close(circ, END_CIRC_REASON_INTERNAL);
     return -1;
   } else if (ret == 0) {
