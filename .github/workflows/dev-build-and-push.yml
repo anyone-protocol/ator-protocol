@@ -34,6 +34,7 @@ jobs:
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
           environment: dev
+          event-name: ${{ github.event_name }}
 
   multiarch-push:
     runs-on: arm64
