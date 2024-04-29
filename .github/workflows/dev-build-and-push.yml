@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     
 env:
-  image-tag: ${{ github.event_name == 'push' && 'latest' || 'latest-manual' }}
+  image-tag: ${{ github.sha }}
 
 jobs:
   build-and-push:
