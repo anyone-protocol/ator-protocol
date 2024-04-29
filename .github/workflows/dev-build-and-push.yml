@@ -49,6 +49,7 @@ jobs:
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
           docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}
           docker-tag: ${{ env.image-tag }}
+          event-name: ${{ github.event_name }}
   deploy:
     needs: multiarch-push
     runs-on: ubuntu-latest
