@@ -8,9 +8,8 @@ inputs:
     required: true
   docker-tag:
     required: true
-  push-latest:
-    required: false
-    default: false
+  event-name:
+    required: true
 
 runs:
   using: "composite"
@@ -32,14 +31,6 @@ runs:
              ${{ inputs.docker-base-repo }}-amd64:${{ inputs.docker-tag }} \
              ${{ inputs.docker-base-repo }}-arm64:${{ inputs.docker-tag }}
         docker buildx imagetools create \
-          -t ${{ inputs.docker-base-repo }}:${{ github.sha }} \
-             ${{ inputs.docker-base-repo }}-amd64:${{ github.sha }} \
-             ${{ inputs.docker-base-repo }}-arm64:${{ github.sha }}
-
-    - name: Push latest
-      if: ${{ inputs.push-latest == true }}
-      shell: bash
-      run: |
-        docker buildx imagetools create \
-          -t ${{ inputs.docker-base-repo }}:${{ github.sha }} \
-             ${{ inputs.docker-base-repo }}:latest
+          -t ${{ inputs.docker-base-repo }}:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }} \
+             ${{ inputs.docker-base-repo }}-amd64:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }} \
+             ${{ inputs.docker-base-repo }}-arm64:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }}
