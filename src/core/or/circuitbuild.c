@@ -1343,7 +1343,7 @@ circuit_finish_handshake(origin_circuit_t *circ,
         hop->ccontrol = congestion_control_new(&params, CC_PATH_EXIT);
       } else {
         /* This is likely directory requests, which should block on orconn
-         * before congestion control, but lets give them the lower sbws
+         * before congestion control, but let's give them the lower sbws
          * param set anyway just in case. */
         log_info(LD_CIRC,
                  "Unexpected path length %d for exit circuit %d, purpose %d",
