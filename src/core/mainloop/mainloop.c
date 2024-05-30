@@ -1235,7 +1235,7 @@ run_connection_housekeeping(int i, time_t now)
     if (conn->state == OR_CONN_STATE_CONNECTING)
       connection_or_connect_failed(TO_OR_CONN(conn),
                                    END_OR_CONN_REASON_TIMEOUT,
-                                   "Tor gave up on the connection");
+                                   "Anon gave up on the connection");
     connection_or_close_normally(TO_OR_CONN(conn), 1);
   } else if (!connection_state_is_open(conn)) {
     if (past_keepalive) {

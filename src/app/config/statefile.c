@@ -386,7 +386,7 @@ or_state_save_broken(char *fname)
     }
   } else {
     log_warn(LD_BUG, "Unable to parse state in \"%s\". Moving it aside "
-             "to \"%s\".  This could be a bug in Tor; please tell "
+             "to \"%s\".  This could be a bug in Anon; please tell "
              "the developers.", fname, fname2);
     if (tor_rename(fname, fname2) < 0) {//XXXX sandbox prohibits
       log_warn(LD_BUG, "Weirdly, I couldn't even move the state aside. The "
@@ -462,7 +462,7 @@ or_state_load(void)
 
   if (badstate && !contents) {
     log_warn(LD_BUG, "Uh oh.  We couldn't even validate our own default state."
-             " This is a bug in Tor.");
+             " This is a bug in Anon.");
     goto done;
   } else if (badstate && contents) {
     or_state_save_broken(fname);
@@ -583,12 +583,12 @@ or_state_save(time_t now)
   global_state->LastWritten = now;
 
   tor_free(global_state->TorVersion);
-  tor_asprintf(&global_state->TorVersion, "Tor %s", get_version());
+  tor_asprintf(&global_state->TorVersion, "Anon %s", get_version());
 
   state = config_dump(get_state_mgr(), NULL, global_state, 1, 0);
   format_local_iso_time(tbuf, now);
   tor_asprintf(&contents,
-               "# Tor state file last generated on %s local time\n"
+               "# Anon state file last generated on %s local time\n"
                "# Other times below are in UTC\n"
                "# You *do not* need to edit this file.\n\n%s",
                tbuf, state);

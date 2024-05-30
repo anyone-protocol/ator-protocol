@@ -57,7 +57,7 @@ options_validate_dirauth_mode(const struct or_options_t *old_options,
    * options. */
   if (options->AuthoritativeDir) {
     /* REJECT() this configuration */
-    *msg = tor_strdup("This tor was built with dirauth mode disabled. "
+    *msg = tor_strdup("This anon was built with dirauth mode disabled. "
                       "It can not be configured with AuthoritativeDir 1.");
     return -1;
   }

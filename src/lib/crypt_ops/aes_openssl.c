@@ -258,7 +258,7 @@ evaluate_ctr_for_aes(void)
     /* Counter mode is buggy */
     /* LCOV_EXCL_START */
     log_err(LD_CRYPTO, "This OpenSSL has a buggy version of counter mode; "
-                  "quitting tor.");
+                  "quitting anon.");
     exit(1); // exit ok: openssl is broken.
     /* LCOV_EXCL_STOP */
   }

@@ -80,7 +80,7 @@ stream_end_reason_to_string(int reason)
     case END_STREAM_REASON_INTERNAL:       return "internal error at server";
     case END_STREAM_REASON_RESOURCELIMIT:  return "server out of resources";
     case END_STREAM_REASON_CONNRESET:      return "connection reset";
-    case END_STREAM_REASON_TORPROTOCOL:    return "Tor protocol error";
+    case END_STREAM_REASON_TORPROTOCOL:    return "Anon protocol error";
     case END_STREAM_REASON_NOTDIRECTORY:   return "not a directory";
     default:
       log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
@@ -490,7 +490,7 @@ end_reason_to_http_connect_response_line(int endreason)
     case END_STREAM_REASON_CONNRESET:
       return "HTTP/1.0 403 Forbidden (connection reset)\r\n\r\n";
     case END_STREAM_REASON_TORPROTOCOL:
-      return "HTTP/1.0 502 Bad Gateway (tor protocol violation)\r\n\r\n";
+      return "HTTP/1.0 502 Bad Gateway (anon protocol violation)\r\n\r\n";
     case END_STREAM_REASON_ENTRYPOLICY:
       return "HTTP/1.0 403 Forbidden (entry policy violation)\r\n\r\n";
     case END_STREAM_REASON_NOTDIRECTORY: FALLTHROUGH;

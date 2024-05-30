@@ -206,7 +206,7 @@ options_validate_server_transport(const or_options_t *old_options,
   config_line_t *cl;
 
   if (options->ServerTransportPlugin && !server_mode(options)) {
-    log_notice(LD_GENERAL, "Tor is not configured as a relay but you specified"
+    log_notice(LD_GENERAL, "Anon is not configured as a relay but you specified"
                " a ServerTransportPlugin line (%s). The ServerTransportPlugin "
                "line will be ignored.",
                escaped(options->ServerTransportPlugin->value));
@@ -273,7 +273,7 @@ options_act_server_transport(const or_options_t *old_options)
   if (options->ServerTransportPlugin &&
       !options->ExtORPort_lines) {
     log_notice(LD_CONFIG, "We use pluggable transports but the Extended "
-               "ORPort is disabled. Tor and your pluggable transports proxy "
+               "ORPort is disabled. Anon and your pluggable transports proxy "
                "communicate with each other via the Extended ORPort so it "
                "is suggested you enable it: it will also allow your Bridge "
                "to collect statistics about its clients that use pluggable "

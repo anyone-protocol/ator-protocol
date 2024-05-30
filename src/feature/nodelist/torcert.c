@@ -321,7 +321,7 @@ tor_cert_opt_eq(const tor_cert_t *cert1, const tor_cert_t *cert2)
   return tor_cert_eq(cert1, cert2);
 }
 
-#define RSA_ED_CROSSCERT_PREFIX "Tor TLS RSA/Ed25519 cross-certificate"
+#define RSA_ED_CROSSCERT_PREFIX "Anon TLS RSA/Ed25519 cross-certificate"
 
 /** Create new cross-certification object to certify <b>ed_key</b> as the
  * master ed25519 identity key for the RSA identity key <b>rsa_key</b>.

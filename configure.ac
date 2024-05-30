@@ -367,7 +367,7 @@ if test "x$enable_android" = "xyes"; then
 fi
 
 dnl ---
-dnl Tor modules options. These options are namespaced with --disable-module-XXX
+dnl Anon modules options. These options are namespaced with --disable-module-XXX
 dnl ---
 
 dnl All our modules.
@@ -539,7 +539,7 @@ AC_CACHE_CHECK([for working C99 mid-block declaration syntax],
 	 [tor_cv_c_c99_decl=yes],
 	 [tor_cv_c_c99_decl=no] )])
 if test "$tor_cv_c_c99_decl" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Anon 0.2.6.x])
 fi
 
 AC_CACHE_CHECK([for working C99 designated initializers],
@@ -551,7 +551,7 @@ AC_CACHE_CHECK([for working C99 designated initializers],
 	 [tor_cv_c_c99_designated_init=no] )])
 
 if test "$tor_cv_c_c99_designated_init" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Anon 0.2.6.x])
 fi
 
 saved_CFLAGS="$CFLAGS"
@@ -1011,7 +1011,7 @@ TOR_SEARCH_LIBRARY(openssl, $tryssldir, [-lssl -lcrypto $TOR_LIB_GDI $TOR_LIB_WS
     dnl will neither make code that call SSL_CIPHER_get_id(NULL) [producing
     dnl a crash], nor optimize out the call to SSL_CIPHER_get_id().
     dnl We look for SSL_cipher_get_id() because it is present in
-    dnl OpenSSL >=1.0.1, because it is not deprecated, and because Tor
+    dnl OpenSSL >=1.0.1, because it is not deprecated, and because Anon
     dnl depends on it.
     [if (getenv("THIS_SHOULDNT_BE_SET_X201803")) SSL_CIPHER_get_id((void *)0);], [],
     [/usr/local/opt/openssl /usr/local/openssl /usr/lib/openssl /usr/local/ssl /usr/lib/ssl /usr/local /opt/openssl])
@@ -1035,7 +1035,7 @@ LIBS="$TOR_OPENSSL_LIBS $LIBS"
 LDFLAGS="$TOR_LDFLAGS_openssl $LDFLAGS"
 CPPFLAGS="$TOR_CPPFLAGS_openssl $CPPFLAGS"
 
-dnl Tor currently uses a number of APIs that are deprecated in OpenSSL 3.0.0
+dnl Anon currently uses a number of APIs that are deprecated in OpenSSL 3.0.0
 dnl and later.  We want to migrate away from them, but that will be a lot of
 dnl work. (See ticket tor#40166.)  For now, we disable the deprecation
 dnl warnings.
@@ -1071,7 +1071,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #endif
    ]], [[]])],
    [ AC_MSG_RESULT([no]) ],
-   [ AC_MSG_ERROR([This version of LibreSSL won't work with Tor. Please upgrade to LibreSSL 3.4.1 or later. (Or downgrade to 3.2.0 if you really must.)]) ])
+   [ AC_MSG_ERROR([This version of LibreSSL won't work with Anon. Please upgrade to LibreSSL 3.4.1 or later. (Or downgrade to 3.2.0 if you really must.)]) ])
 
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <openssl/opensslv.h>
@@ -1834,7 +1834,7 @@ AX_CHECK_SIGN([time_t],
 ])
 
 if test "$ax_cv_decl_time_t_signed" = "no"; then
-  AC_MSG_ERROR([You have an unsigned time_t; Tor does not support that. Please tell the Tor developers about your interesting platform.])
+  AC_MSG_ERROR([You have an unsigned time_t; Anon does not support that. Please tell the Anon developers about your interesting platform.])
 fi
 
 AX_CHECK_SIGN([size_t],
@@ -2067,7 +2067,7 @@ AS_CASE([$malloc],
 
   [openbsd], [
     tor_incr_n_warnings
-    AC_MSG_WARN([The openbsd malloc port is deprecated in Tor 0.3.5 and will be removed in a future version.])
+    AC_MSG_WARN([The openbsd malloc port is deprecated in Anon 0.3.5 and will be removed in a future version.])
     enable_openbsd_malloc=yes
   ],
 
@@ -2629,7 +2629,7 @@ if test "x$asciidoc" = "xtrue" && test "$ASCIIDOC" = "none"; then
     if ! [[ -f "$srcdir/$file.1.in" ]] || ! [[ -f "$srcdir/$file.html.in" ]] ; then
       echo "==================================";
       echo;
-      echo "Building Tor has failed since manpages cannot be built.";
+      echo "Building Anon has failed since manpages cannot be built.";
       echo;
       echo "You need asciidoc installed to be able to build the manpages.";
       echo "To build without manpages, use the --disable-asciidoc argument";
@@ -2682,7 +2682,7 @@ PPRINT_SET_INDENT(1)
 PPRINT_SET_TS(65)
 
 AS_ECHO
-AS_ECHO("Tor Version: ${PPRINT_COLOR_BLDBLU}Tor $PACKAGE_VERSION $PPRINT_COLOR_RST")
+AS_ECHO("Anon Version: ${PPRINT_COLOR_BLDBLU}Anon $PACKAGE_VERSION $PPRINT_COLOR_RST")
 AS_ECHO
 
 PPRINT_SUBTITLE([Build Features])

@@ -34,7 +34,7 @@
 /** Length of algorithm personalization string (P) used in the PoW scheme */
 #define HS_POW_PSTRING_LEN 16
 /** Algorithm personalization string (P) */
-#define HS_POW_PSTRING "Tor hs intro v1\0"
+#define HS_POW_PSTRING "Anon hs intro v1\0"
 /** Length of the blinded public ID for the onion service (ID) */
 #define HS_POW_ID_LEN 32
 /** Length of random seed used in the PoW scheme. */

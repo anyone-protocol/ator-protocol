@@ -120,7 +120,7 @@ cell_version_can_be_handled(uint8_t cell_version)
   if (accept_version > SENDME_MAX_SUPPORTED_VERSION) {
     log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
            "Unable to accept SENDME version %u (from consensus). "
-           "We only support <= %u. Probably your tor is too old?",
+           "We only support <= %u. Probably your anon is too old?",
            accept_version, SENDME_MAX_SUPPORTED_VERSION);
     goto invalid;
   }

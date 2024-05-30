@@ -1823,7 +1823,7 @@ connection_ap_handshake_rewrite(entry_connection_t *conn,
   if (!strcmpend(socks->address, ".exit")) {
     static ratelim_t exit_warning_limit = RATELIM_INIT(60*15);
     log_fn_ratelim(&exit_warning_limit, LOG_WARN, LD_APP,
-                   "The  \".exit\" notation is disabled in Tor due to "
+                   "The  \".exit\" notation is disabled in Anon due to "
                    "security risks.");
     control_event_client_status(LOG_WARN, "SOCKS_BAD_HOSTNAME HOSTNAME=%s",
                                 escaped(socks->address));
@@ -2487,8 +2487,8 @@ connection_ap_handshake_rewrite_and_attach(entry_connection_t *conn,
               nodelist_reentry_contains(&addr, socks->port)) {
             log_warn(LD_APP, "Not attempting connection to %s:%d because "
                      "the network would reject it. Are you trying to send "
-                     "Tor traffic over Tor? This traffic can be harmful to "
-                     "the Tor network. If you really need it, try using "
+                     "Anon traffic over Anon? This traffic can be harmful to "
+                     "the Anon network. If you really need it, try using "
                      "a bridge as a workaround.",
                      safe_str_client(socks->address), socks->port);
             connection_mark_unattached_ap(conn, END_STREAM_REASON_TORPROTOCOL);
@@ -2994,7 +2994,7 @@ static const char HTTP_CONNECT_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "<body>\n"
   "<h1>This is an HTTP CONNECT tunnel, not an HTTP proxy.</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use this Tor port as\n"
+  "It appears you have configured your web browser to use this Anon port as\n"
   "an HTTP proxy.\n"
   "</p><p>\n"
   "This is not correct: This port is configured as a CONNECT tunnel, not\n"

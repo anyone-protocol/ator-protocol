@@ -2055,7 +2055,7 @@ handle_relay_cell_command(cell_t *cell, circuit_t *circ,
   }
   log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
          "Received unknown relay command %d. Perhaps the other side is using "
-         "a newer version of Tor? Dropping.",
+         "a newer version of Anon? Dropping.",
          rh->command);
   return 0; /* for forward compatibility, don't kill the circuit */
 }

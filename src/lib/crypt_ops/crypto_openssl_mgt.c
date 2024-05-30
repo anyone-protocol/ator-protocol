@@ -137,7 +137,7 @@ crypto_openssl_get_header_version_str(void)
 
 #ifndef COCCI
 #ifndef OPENSSL_THREADS
-#error "OpenSSL has been built without thread support. Tor requires an \
+#error "OpenSSL has been built without thread support. Anon requires an \
  OpenSSL library with thread support enabled."
 #endif
 #endif /* !defined(COCCI) */

@@ -2678,7 +2678,7 @@ circuits_handle_oom(size_t current_allocation)
   uint32_t now_ts;
   log_notice(LD_GENERAL, "We're low on memory (cell queues total alloc:"
              " %"TOR_PRIuSZ" buffer total alloc: %" TOR_PRIuSZ ","
-             " tor compress total alloc: %" TOR_PRIuSZ
+             " anon compress total alloc: %" TOR_PRIuSZ
              " (zlib: %" TOR_PRIuSZ ", zstd: %" TOR_PRIuSZ ","
              " lzma: %" TOR_PRIuSZ "),"
              " rendezvous cache total alloc: %" TOR_PRIuSZ "). Killing"

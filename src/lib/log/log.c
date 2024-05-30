@@ -315,7 +315,7 @@ log_tor_version(logfile_t *lf, int reset)
                  "%s opening %slog file.\n", appname, is_new?"new ":"");
   } else {
     tor_snprintf(buf+n, sizeof(buf)-n,
-                 "Tor %s opening %slog file.\n", VERSION, is_new?"new ":"");
+                 "Anon %s opening %slog file.\n", VERSION, is_new?"new ":"");
   }
   if (write_all_to_fd_minimal(lf->fd, buf, strlen(buf)) < 0) /* error */
     return -1; /* failed */
@@ -1188,9 +1188,9 @@ add_syslog_log(const log_severity_list_t *severity,
     /* This is the first syslog. */
     static char buf[256];
     if (syslog_identity_tag) {
-      tor_snprintf(buf, sizeof(buf), "Tor-%s", syslog_identity_tag);
+      tor_snprintf(buf, sizeof(buf), "Anon-%s", syslog_identity_tag);
     } else {
-      tor_snprintf(buf, sizeof(buf), "Tor");
+      tor_snprintf(buf, sizeof(buf), "Anon");
     }
     openlog(buf, LOG_PID | LOG_NDELAY, LOGFACILITY);
   }

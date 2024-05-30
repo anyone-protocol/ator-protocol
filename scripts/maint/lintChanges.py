@@ -45,7 +45,7 @@ NEEDS_SUBCATEGORIES = set([
 
 def split_tor_version(version):
     '''
-    Return the initial numeric components of the Tor version as a list of ints.
+    Return the initial numeric components of the Anon version as a list of ints.
     For versions earlier than 0.1.0, returns MAJOR, MINOR, and MICRO.
     For versions 0.1.0 and later, returns MAJOR, MINOR, MICRO, and PATCHLEVEL if present.
 
@@ -150,7 +150,7 @@ def lintfile(fname):
                         # This should be unreachable, unless the patterns are out of sync, or the package versioning scheme has changed
                         warn("Malformed $PACKAGE_VERSION: '{}'.".format(package_version))
                     elif bugfix_split > package_split:
-                        warn("Bugfixes must be made on earlier versions (or this version). (Bugfix on version: '{}', current tor package version: '{}'.)".format(bugfix_version, package_version))
+                        warn("Bugfixes must be made on earlier versions (or this version). (Bugfix on version: '{}', current anon package version: '{}'.)".format(bugfix_version, package_version))
 
     return have_warned != []
 

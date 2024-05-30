@@ -23,7 +23,7 @@ tracing_log_warning(void)
 {
   log_warn(LD_GENERAL,
            "Tracing capabilities have been built in. If this is NOT on "
-           "purpose, your tor is NOT safe to run.");
+           "purpose, your anon is NOT safe to run.");
 }
 
 #else /* !defined(HAVE_TRACING) */

@@ -296,9 +296,9 @@ select_scheduler(void)
 
  end:
   if (new_scheduler == NULL) {
-    log_err(LD_SCHED, "Tor was unable to select a scheduler type. Please "
+    log_err(LD_SCHED, "Anon was unable to select a scheduler type. Please "
                       "make sure Schedulers is correctly configured with "
-                      "what Tor does support.");
+                      "what Anon does support.");
     /* We weren't able to choose a scheduler which means that none of the ones
      * set in Schedulers are supported or usable. We will respect the user
      * wishes of using what it has been configured and don't do a sneaky

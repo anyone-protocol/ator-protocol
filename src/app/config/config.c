@@ -817,7 +817,7 @@ static const struct {
 static const config_deprecation_t option_deprecation_notes_[] = {
   /* Deprecated since 0.3.2.0-alpha. */
   { "HTTPProxy", "It only applies to direct unencrypted HTTP connections "
-    "to your directory server, which your Tor probably wasn't using." },
+    "to your directory server, which your Anon probably wasn't using." },
   { "HTTPProxyAuthenticator", "HTTPProxy is deprecated in favor of HTTPSProxy "
     "which should be used with HTTPSProxyAuthenticator." },
   /* End of options deprecated since 0.3.2.1-alpha */
@@ -1263,9 +1263,9 @@ validate_dir_servers(const or_options_t *options,
              "You have used DirAuthority or AlternateDirAuthority to "
              "specify alternate directory authorities in "
              "your configuration. This is potentially dangerous: it can "
-             "make you look different from all other Tor users, and hurt "
+             "make you look different from all other Anon users, and hurt "
              "your anonymity. Even if you've specified the same "
-             "authorities as Tor uses by default, the defaults could "
+             "authorities as Anon uses by default, the defaults could "
              "change in the future. Be sure you know what you're doing.");
   }
 
@@ -1671,7 +1671,7 @@ options_start_listener_transaction(const or_options_t *old_options,
   }
   if (options->DisableNetwork) {
     /* Aggressively close non-controller stuff, NOW */
-    log_notice(LD_NET, "DisableNetwork is set. Tor will not make or accept "
+    log_notice(LD_NET, "DisableNetwork is set. Anon will not make or accept "
                "non-control network connections. Shutting down all existing "
                "connections.");
     connection_mark_all_noncontrol_connections();
@@ -2117,7 +2117,7 @@ options_act,(const or_options_t *old_options))
   }
 
   if (hs_service_non_anonymous_mode_enabled(options)) {
-    log_warn(LD_GENERAL, "This copy of Tor was compiled or configured to run "
+    log_warn(LD_GENERAL, "This copy of Anon was compiled or configured to run "
              "in a non-anonymous mode. It will provide NO ANONYMITY.");
   }
 
@@ -3241,7 +3241,7 @@ options_validate_single_onion(or_options_t *options, char **msg)
                                options->DNSPort_set ||
                                options->HTTPTunnelPort_set);
   if (hs_service_non_anonymous_mode_enabled(options) && client_port_set) {
-    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Tor as "
+    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Anon as "
            "an anonymous client. Please set Socks/Trans/NATD/DNSPort to 0, or "
            "revert HiddenServiceNonAnonymousMode to 0.");
   }
@@ -3342,7 +3342,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     log_warn(LD_CONFIG,
         "SocksPort, TransPort, NATDPort, DNSPort, and ORPort are all "
         "undefined, and there aren't any hidden services configured.  "
-        "Tor will still run, but probably won't do anything.");
+        "Anon will still run, but probably won't do anything.");
 
   options->TransProxyType_parsed = TPT_DEFAULT;
 #ifdef USE_TRANSPARENT
@@ -3414,7 +3414,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options->ExcludeNodes && options->StrictNodes) {
     COMPLAIN("You have asked to exclude certain relays from all positions "
-             "in your circuits. Expect hidden services and other Tor "
+             "in your circuits. Expect hidden services and other Anon "
              "features to be broken in unpredictable ways.");
   }
 
@@ -3599,7 +3599,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
       !hs_service_allow_non_anonymous_connection(options)) {
     log_warn(LD_CONFIG,
              "UseEntryGuards is disabled, but you have configured one or more "
-             "hidden services on this Tor instance.  Your hidden services "
+             "hidden services on this Anon instance.  Your hidden services "
              "will be very easy to locate using a well-known attack -- see "
              "https://freehaven.net/anonbib/#hs-attack06 for details.");
   }
@@ -3642,8 +3642,8 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (hs_service_non_anonymous_mode_enabled(options)) {
     log_warn(LD_CONFIG,
              "HiddenServiceNonAnonymousMode is set. Every hidden service on "
-             "this tor instance is NON-ANONYMOUS. If "
-             "the HiddenServiceNonAnonymousMode option is changed, Tor will "
+             "this anon instance is NON-ANONYMOUS. If "
+             "the HiddenServiceNonAnonymousMode option is changed, Anon will "
              "refuse to launch hidden services from the same directories, to "
              "protect your anonymity against config errors. This setting is "
              "for experimental use only.");
@@ -3654,7 +3654,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     log_warn(LD_CONFIG,
         "CircuitBuildTimeout is shorter (%d seconds) than the recommended "
         "minimum (%d seconds), and LearnCircuitBuildTimeout is disabled.  "
-        "If tor isn't working, raise this value or enable "
+        "If anon isn't working, raise this value or enable "
         "LearnCircuitBuildTimeout.",
         options->CircuitBuildTimeout,
         RECOMMENDED_MIN_CIRCUIT_BUILD_TIMEOUT );
@@ -3880,8 +3880,8 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
       !options->CookieAuthentication) {
     log_warn(LD_CONFIG, "Control%s is %s, but no authentication method "
              "has been configured.  This means that any program on your "
-             "computer can reconfigure your Tor.  That's bad!  You should "
-             "upgrade your Tor controller as soon as possible.",
+             "computer can reconfigure your Anon.  That's bad!  You should "
+             "upgrade your Anon controller as soon as possible.",
              options->ControlPort_set ? "Port" : "Socket",
              options->ControlPort_set ? "open" : "world writable");
   }
@@ -3979,7 +3979,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     if (!config_is_same(get_options_mgr(),options,                      \
                         dflt_options,#arg)) {                           \
       or_options_free(dflt_options);                                    \
-      REJECT(#arg " may only be changed in testing Tor "                \
+      REJECT(#arg " may only be changed in testing Anon "                \
              "networks!");                                              \
     }                                                                   \
   STMT_END
@@ -4047,20 +4047,20 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (options->TestingEnableConnBwEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableConnBwEvent may only be changed in testing "
-           "Tor networks!");
+           "Anon networks!");
   }
 
   if (options->TestingEnableCellStatsEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableCellStatsEvent may only be changed in testing "
-           "Tor networks!");
+           "Anon networks!");
   }
 
   if (options->TestingTorNetwork) {
     log_warn(LD_CONFIG, "TestingTorNetwork is set. This will make your node "
-                        "almost unusable in the public Tor network, and is "
+                        "almost unusable in the public Anon network, and is "
                         "therefore only advised if you are building a "
-                        "testing Tor network!");
+                        "testing Anon network!");
   }
 
   if (options_validate_scheduler(options, msg) < 0) {
@@ -4195,7 +4195,7 @@ options_check_transition_cb(const void *old_,
     return 0;
 
 #define BAD_CHANGE_TO(opt, how) do {                                    \
-    *msg = tor_strdup("While Tor is running"how", changing " #opt       \
+    *msg = tor_strdup("While Anon is running"how", changing " #opt       \
                       " is not allowed");                               \
     return -1;                                                          \
   } while (0)
@@ -4515,7 +4515,7 @@ options_init_from_torrc(int argc, char **argv)
   if (config_line_find(cmdline_only_options, "--version")) {
     printf("Anon version %s.\n",get_version());
 #ifdef ENABLE_GPL
-    printf("This build of Tor is covered by the GNU General Public License "
+    printf("This build of Anon is covered by the GNU General Public License "
             "(https://www.gnu.org/licenses/gpl-3.0.en.html)\n");
 #endif
     printf("Anon is running on %s with Libevent %s, "
@@ -5941,9 +5941,9 @@ warn_nonlocal_controller_ports(smartlist_t *ports, unsigned forbid_nonlocal)
                  "You have a ControlPort set to accept "
                  "unauthenticated connections from a non-local address.  "
                  "This means that programs not running on your computer "
-                 "can reconfigure your Tor, without even having to guess a "
+                 "can reconfigure your Anon, without even having to guess a "
                  "password.  That's so bad that I'm closing your ControlPort "
-                 "for you.  If you need to control your Tor remotely, try "
+                 "for you.  If you need to control your Anon remotely, try "
                  "enabling authentication and using a tool like stunnel or "
                  "ssh to encrypt remote access.");
         warned = 1;
@@ -5953,7 +5953,7 @@ warn_nonlocal_controller_ports(smartlist_t *ports, unsigned forbid_nonlocal)
         log_warn(LD_CONFIG, "You have a ControlPort set to accept "
                  "connections from a non-local address.  This means that "
                  "programs not running on your computer can reconfigure your "
-                 "Tor.  That's pretty bad, since the controller "
+                 "Anon.  That's pretty bad, since the controller "
                  "protocol isn't encrypted!  Maybe you should just listen on "
                  "127.0.0.1 and use a tool like stunnel or ssh to encrypt "
                  "remote connections to your control port.");
@@ -6985,12 +6985,12 @@ validate_data_directories(or_options_t *options)
 
 /** This string must remain the same forevermore. It is how we
  * recognize that the torrc file doesn't need to be backed up. */
-#define GENERATED_FILE_PREFIX "# This file was generated by Tor; " \
+#define GENERATED_FILE_PREFIX "# This file was generated by Anon; " \
   "if you edit it, comments will not be preserved"
 /** This string can change; it tries to give the reader an idea
  * that editing this file by hand is not a good plan. */
 #define GENERATED_FILE_COMMENT "# The old anonrc file was renamed " \
-  "to anonrc.orig.1, and Tor will ignore it"
+  "to anonrc.orig.1, and Anon will ignore it"
 
 /** Save a configuration file for the configuration in <b>options</b>
  * into the file <b>fname</b>.  If the file already exists, and

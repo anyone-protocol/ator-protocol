@@ -270,13 +270,13 @@ def run(fname):
     # which contains the src directory
     if not os.path.isdir("src"):
         raise RuntimeError("Could not find './src/'. "
-                           "Run this script from the top-level tor source "
+                           "Run this script from the top-level anon source "
                            "directory.")
 
     # And it looks like a tor/src directory
     if not os.path.isfile("src/include.am"):
         raise RuntimeError("Could not find './src/include.am'. "
-                           "Run this script from the top-level tor source "
+                           "Run this script from the top-level anon source "
                            "directory.")
 
     # Make the file name relative to the top-level tor directory

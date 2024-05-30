@@ -74,7 +74,7 @@ tor_version_is_obsolete(const char *myversion, const char *versionlist)
   }
 
   SMARTLIST_FOREACH_BEGIN(version_sl, const char *, cp) {
-    if (!strcmpstart(cp, "Tor "))
+    if (!strcmpstart(cp, "Anon "))
       cp += 4;
 
     if (tor_version_parse(cp, &other)) {
@@ -131,7 +131,7 @@ tor_version_parse_platform(const char *platform,
   char tmp[128];
   char *s, *s2, *start;
 
-  if (strcmpstart(platform,"Tor ")) /* nonstandard Tor; say 0. */
+  if (strcmpstart(platform,"Anon ")) /* nonstandard Tor; say 0. */
     return 0;
 
   start = (char *)eat_whitespace(platform+3);
@@ -216,7 +216,7 @@ tor_version_parse(const char *s, tor_version_t *out)
 
   memset(out, 0, sizeof(tor_version_t));
   out->status = VER_RELEASE;
-  if (!strcasecmpstart(s, "Tor "))
+  if (!strcasecmpstart(s, "Anon "))
     s += 4;
 
   cp = s;
@@ -520,7 +520,7 @@ summarize_protover_flags(protover_summary_flags_t *out,
   if (protocols && strcmp(protocols, "")) {
     memoize_protover_summary(out, protocols);
   }
-  if (version && strcmp(version, "") && !strcmpstart(version, "Tor ")) {
+  if (version && strcmp(version, "") && !strcmpstart(version, "Anon ")) {
     if (!out->protocols_known) {
       /* The version is a "Tor" version, and where there is no
        * list of protocol versions that we should be looking at instead. */

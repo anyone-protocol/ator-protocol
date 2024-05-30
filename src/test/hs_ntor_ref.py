@@ -344,7 +344,7 @@ def do_little_t_tor_ntor_test():
     assert(client_ntor_key_seed == service_ntor_key_seed)
     assert(client_ntor_auth_mac == service_ntor_auth_mac)
 
-    print("DONE: tor dance [%s]" % repr(client_ntor_auth_mac))
+    print("DONE: anon dance [%s]" % repr(client_ntor_auth_mac))
 
 """
 Do mixed test as follows:

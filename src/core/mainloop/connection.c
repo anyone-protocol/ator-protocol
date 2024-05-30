@@ -319,9 +319,9 @@ conn_state_to_string(int type, int state)
         case OR_CONN_STATE_TLS_SERVER_RENEGOTIATING:
           return "waiting for renegotiation or V3 handshake";
         case OR_CONN_STATE_OR_HANDSHAKING_V2:
-          return "handshaking (Tor, v2 handshake)";
+          return "handshaking (Anon, v2 handshake)";
         case OR_CONN_STATE_OR_HANDSHAKING_V3:
-          return "handshaking (Tor, v3 handshake)";
+          return "handshaking (Anon, v3 handshake)";
         case OR_CONN_STATE_OPEN: return "open";
       }
       break;
@@ -1348,7 +1348,7 @@ check_location_for_unix_socket(const or_options_t *options, const char *path,
   p = tor_strdup(path);
   cpd_check_t flags = CPD_CHECK_MODE_ONLY;
   if (get_parent_directory(p)<0 || p[0] != '/') {
-    log_warn(LD_GENERAL, "Bad unix socket address '%s'.  Tor does not support "
+    log_warn(LD_GENERAL, "Bad unix socket address '%s'.  Anon does not support "
              "relative paths for unix sockets.", path);
     goto done;
   }
@@ -1371,10 +1371,10 @@ check_location_for_unix_socket(const or_options_t *options, const char *path,
     char *escpath, *escdir;
     escpath = esc_for_log(path);
     escdir = esc_for_log(p);
-    log_warn(LD_GENERAL, "Before Tor can create a %s in %s, the directory "
+    log_warn(LD_GENERAL, "Before Anon can create a %s in %s, the directory "
              "%s needs to exist, and to be accessible only by the user%s "
-             "account that is running Tor.  (On some Unix systems, anybody "
-             "who can list a socket can connect to it, so Tor is being "
+             "account that is running Anon.  (On some Unix systems, anybody "
+             "who can list a socket can connect to it, so Anon is being "
              "careful.)",
              unix_socket_purpose_to_string(purpose), escpath, escdir,
              port->is_group_writable ? " and group" : "");
@@ -1572,7 +1572,7 @@ connection_listener_new(const struct sockaddr *listensockaddr,
       const char *helpfulhint = "";
       int e = tor_socket_errno(s);
       if (ERRNO_IS_EADDRINUSE(e)) {
-        helpfulhint = ". Is Tor already running?";
+        helpfulhint = ". Is Anon already running?";
         if (addr_in_use)
           *addr_in_use = 1;
       }
@@ -2244,9 +2244,9 @@ connection_connect_sockaddr,(connection_t *conn,
   if (bindaddr && try_ip_bind_address_no_port &&
       setsockopt(s, SOL_IP, IP_BIND_ADDRESS_NO_PORT, &(int){1}, sizeof(int))) {
     if (errno == EINVAL) {
-      log_notice(LD_NET, "Tor was built with support for "
+      log_notice(LD_NET, "Anon was built with support for "
                          "IP_BIND_ADDRESS_NO_PORT, but the current kernel "
-                         "doesn't support it. This might cause Tor to run out "
+                         "doesn't support it. This might cause Anon to run out "
                          "of ephemeral ports more quickly.");
       try_ip_bind_address_no_port = 0;
     } else {
@@ -5973,7 +5973,7 @@ clock_skew_warning, (const connection_t *conn, long apparent_skew, int trusted,
   log_fn(trusted ? LOG_WARN : LOG_INFO, domain,
          "Received %s with skewed time (%s): "
          "It seems that our clock is %s by %s, or that theirs is %s%s. "
-         "Tor requires an accurate clock to work: please check your time, "
+         "Anon requires an accurate clock to work: please check your time, "
          "timezone, and date settings.", received, ext_source,
          apparent_skew > 0 ? "ahead" : "behind", dbuf,
          apparent_skew > 0 ? "behind" : "ahead",

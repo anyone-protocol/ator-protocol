@@ -27,7 +27,7 @@ fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
 
-echo "TOR BINARY IS ${TOR_BINARY}"
+echo "ANON BINARY IS ${TOR_BINARY}"
 
 die() { echo "$1" >&2 ; exit 5; }
 

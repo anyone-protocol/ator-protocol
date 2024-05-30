@@ -169,7 +169,7 @@ conflux_is_enabled(const circuit_t *circ)
       static ratelim_t rlimit = RATELIM_INIT(60 * 60); /* Hourly */
       if ((msg = rate_limit_log(&rlimit, time(NULL)))) {
         log_warn(LD_GENERAL,
-                 "This tor is a relay and ConfluxEnabled is set to 0. "
+                 "This anon is a relay and ConfluxEnabled is set to 0. "
                  "We would ask you to please write to us on "
                  "tor-relay@lists.torproject.org or file a bug explaining "
                  "why you have disabled this option. Without news from you, "

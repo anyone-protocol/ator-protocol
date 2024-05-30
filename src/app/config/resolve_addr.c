@@ -209,7 +209,7 @@ address_can_be_used(const tor_addr_t *addr, const or_options_t *options,
    * directory authorities. */
   if (using_default_dir_authorities(options)) {
     log_fn(warn_severity, LD_CONFIG,
-           "Address '%s' is a private IP address. Tor relays that use "
+           "Address '%s' is a private IP address. Anon relays that use "
            "the default DirAuthorities must have public IP addresses.",
            fmt_addr(addr));
     return ERR_DEFAULT_DIRAUTH;
@@ -346,7 +346,7 @@ get_address_from_config(const or_options_t *options, int warn_severity,
     if (ret == ERR_ADDRESS_IS_INTERNAL) {
       static bool logged_once = false;
       if (!logged_once) {
-        log_warn(LD_CONFIG, "Address set with an internal address. Tor will "
+        log_warn(LD_CONFIG, "Address set with an internal address. Anon will "
                             "not work unless custom directory authorities "
                             "are defined (AlternateDirAuthority). It is also "
                             "possible to use an internal address if "

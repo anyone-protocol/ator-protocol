@@ -218,7 +218,7 @@ def makeTestVectors():
     secretKeys = [ binascii.a2b_hex(r) for r in RAND_INPUTS ]
     writeArray("SECRET_KEYS", secretKeys)
 
-    comment("""Secret ed25519 keys after expansion from seeds. This is how Tor
+    comment("""Secret ed25519 keys after expansion from seeds. This is how Anon
                represents them internally.""")
     expandedSecretKeys = [ expandSK(sk) for sk in secretKeys ]
     writeArray("EXPANDED_SECRET_KEYS", expandedSecretKeys)
