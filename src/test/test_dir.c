@@ -1772,14 +1772,14 @@ test_dir_versions(void *arg)
   tt_versionstatus_op(val, OP_EQ, tor_version_is_obsolete(ver, lst))
 
   /* make sure tor_version_is_obsolete() works */
-  test_v_i_o(VS_OLD, "0.0.1", "Tor 0.0.2");
+  test_v_i_o(VS_OLD, "0.0.1", "Anon 0.0.2");
   test_v_i_o(VS_OLD, "0.0.1", "0.0.2, Tor 0.0.3");
   test_v_i_o(VS_OLD, "0.0.1", "0.0.2,Tor 0.0.3");
   test_v_i_o(VS_OLD, "0.0.1","0.0.3,BetterTor 0.0.1");
-  test_v_i_o(VS_RECOMMENDED, "0.0.2", "Tor 0.0.2,Tor 0.0.3");
-  test_v_i_o(VS_NEW_IN_SERIES, "0.0.2", "Tor 0.0.2pre1,Tor 0.0.3");
-  test_v_i_o(VS_OLD, "0.0.2", "Tor 0.0.2.1,Tor 0.0.3");
-  test_v_i_o(VS_NEW, "0.1.0", "Tor 0.0.2,Tor 0.0.3");
+  test_v_i_o(VS_RECOMMENDED, "0.0.2", "Anon 0.0.2,Tor 0.0.3");
+  test_v_i_o(VS_NEW_IN_SERIES, "0.0.2", "Anon 0.0.2pre1,Tor 0.0.3");
+  test_v_i_o(VS_OLD, "0.0.2", "Anon 0.0.2.1,Tor 0.0.3");
+  test_v_i_o(VS_NEW, "0.1.0", "Anon 0.0.2,Tor 0.0.3");
   test_v_i_o(VS_RECOMMENDED, "0.0.7rc2", "0.0.7,Tor 0.0.7rc2,Tor 0.0.8");
   test_v_i_o(VS_OLD, "0.0.5.0", "0.0.5.1-cvs");
   test_v_i_o(VS_NEW_IN_SERIES, "0.0.5.1-cvs", "0.0.5, 0.0.6");
@@ -6840,7 +6840,7 @@ test_dir_platform_str(void *arg)
   platform[0] = 0;
   get_platform_str(platform, sizeof(platform));
   tt_int_op((int)strlen(platform), OP_GT, 0);
-  tt_assert(!strcmpstart(platform, "Tor "));
+  tt_assert(!strcmpstart(platform, "Anon "));
 
   tor_version_t ver;
   // make sure this is a tor version, a real actual tor version.

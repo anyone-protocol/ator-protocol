@@ -830,7 +830,7 @@ test_desc_signature(void *arg)
    * signature is verifiable. */
   tor_asprintf(&data, "This is a signed descriptor\n");
   ret = ed25519_sign_prefixed(&sig, (const uint8_t *) data, strlen(data),
-                              "Anon onion service descriptor sig v3", &kp);
+                              "Tor onion service descriptor sig v3", &kp);
   tt_int_op(ret, OP_EQ, 0);
   ed25519_signature_to_base64(sig_b64, &sig);
   /* Build the descriptor that should be valid. */
