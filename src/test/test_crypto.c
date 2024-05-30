@@ -1804,7 +1804,7 @@ test_crypto_kdf_TAP(void *arg)
                  "c654883e56d11e43c44e9842926af7ca0a8cca12604f945414"
                  "f07b01e13da42c6cf1de3abfdea9b95f34687cbbe92b9a7383");
 
-  EXPAND("Tor");
+  EXPAND("Anon");
   tt_int_op(r, OP_EQ, 0);
   test_memeq_hex(key_material,
                  "776c6214fc647aaa5f683c737ee66ec44f03d0372e1cce6922"
@@ -1847,7 +1847,7 @@ test_crypto_hkdf_sha256(void *arg)
     key_material, 100)
 
   /* Test vectors generated with ntor_ref.py */
-  EXPAND("Tor");
+  EXPAND("Anon");
   tt_int_op(r, OP_EQ, 0);
   test_memeq_hex(key_material,
                  "5521492a85139a8d9107a2d5c0d9c91610d0f95989975ebee6"
