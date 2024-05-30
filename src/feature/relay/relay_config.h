@@ -123,7 +123,7 @@ options_validate_relay_mode(const struct or_options_t *old_options,
       options->ORPort_lines ||
       options->DirPort_lines) {
     /* REJECT() this configuration */
-    *msg = tor_strdup("This tor was built with relay mode disabled. "
+    *msg = tor_strdup("This anon was built with relay mode disabled. "
                       "It can not be configured with an ORPort, a DirPort, "
                       "DirCache 1, or BridgeRelay 1.");
     return -1;

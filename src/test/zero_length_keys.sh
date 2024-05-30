@@ -23,7 +23,7 @@ if [ $# -eq 0 ] || [ ! -f "${1}" ] || [ ! -x "${1}" ]; then
   echo "Usage: ${0} PATH_TO_TOR [-z|-d|-e]"
   exit 1
 elif [ $# -eq 1 ]; then
-  echo "Testing that tor correctly handles zero-length keys"
+  echo "Testing that anon correctly handles zero-length keys"
   "$0" "${1}" -z && "$0" "${1}" -d && "$0" "${1}" -e
   exit $?
 else #[$# -gt 1 ]; then
@@ -51,10 +51,10 @@ TOR="${TOR_BINARY} --hush --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 123
 
 if [ -s "$DATA_DIR"/keys/secret_id_key ] && [ -s "$DATA_DIR"/keys/secret_onion_key ] &&
    [ -s "$DATA_DIR"/keys/secret_onion_key_ntor ]; then
-  echo "Failure: Previous tor keys present in tor data directory" >&2
+  echo "Failure: Previous anon keys present in anon data directory" >&2
   exit 3
 else
-  echo "Generating initial tor keys"
+  echo "Generating initial anon keys"
   $TOR --DataDirectory "$DATA_DIR"  --list-fingerprint
 
   # tor must successfully generate non-zero-length key files
@@ -62,7 +62,7 @@ else
      [ -s "$DATA_DIR"/keys/secret_onion_key_ntor ]; then
     true #echo "tor generated the initial key files"
   else
-    echo "Failure: tor failed to generate the initial key files"
+    echo "Failure: anon failed to generate the initial key files"
     exit 2
   fi
 fi
@@ -91,7 +91,7 @@ if [ "$1" = "-z" ]; then
   touch "$DATA_DIR"/keys/secret_onion_key_ntor || exit 3
 fi
 
-echo "Running tor again to check if it $FILE_DESC keys"
+echo "Running anon again to check if it $FILE_DESC keys"
 $TOR --DataDirectory "$DATA_DIR" --list-fingerprint
 
 #ls -lh "$DATA_DIR"/keys/ || exit 3
@@ -106,22 +106,22 @@ if [ -s "$DATA_DIR"/keys/secret_id_key ] && [ -s "$DATA_DIR"/keys/secret_onion_k
   # the current keys should be different to the old ones
   if [ "$1" != "-e" ]; then
     if [ $SAME_KEYS -ne 0 ]; then
-      echo "Success: test that tor $FILE_DESC key files: different keys"
+      echo "Success: test that anon $FILE_DESC key files: different keys"
       exit 0
     else
-      echo "Failure: test that tor $FILE_DESC key files: same keys"
+      echo "Failure: test that anon $FILE_DESC key files: same keys"
       exit 1
     fi
   else #[ "$1" == "-e" ]; then
     if [ $SAME_KEYS -eq 0 ]; then
-      echo "Success: test that tor $FILE_DESC key files: same keys"
+      echo "Success: test that anon $FILE_DESC key files: same keys"
       exit 0
     else
-      echo "Failure: test that tor $FILE_DESC key files: different keys"
+      echo "Failure: test that anon $FILE_DESC key files: different keys"
       exit 1
     fi
   fi
 else
-  echo "Failure: test that tor $FILE_DESC key files: no key files"
+  echo "Failure: test that anon $FILE_DESC key files: no key files"
   exit 1
 fi

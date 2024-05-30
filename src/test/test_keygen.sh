@@ -45,7 +45,7 @@ fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
 
-echo "TOR BINARY IS ${TOR_BINARY}"
+echo "ANON BINARY IS ${TOR_BINARY}"
 
 if "$TOR_BINARY" --list-modules | grep -q "relay: no"; then
   echo "This test requires the relay module. Skipping." >&2
@@ -131,7 +131,7 @@ check_file "${DATA_DIR}/orig/keys/ed25519_signing_secret_key"
 # Step 2: Start Tor with --keygen.  Make sure everything is there.
 mkdir "${DATA_DIR}/keygen"
 ${TOR} --DataDirectory "${DATA_DIR}/keygen" --keygen --no-passphrase 2>"${DATA_DIR}/keygen/stderr"
-grep "Not encrypting the secret key" "${DATA_DIR}/keygen/stderr" >/dev/null || die "Tor didn't declare that there would be no encryption"
+grep "Not encrypting the secret key" "${DATA_DIR}/keygen/stderr" >/dev/null || die "Anon didn't declare that there would be no encryption"
 
 check_dir "${DATA_DIR}/keygen/keys"
 check_file "${DATA_DIR}/keygen/keys/ed25519_master_id_public_key"
@@ -171,7 +171,7 @@ if ${TOR} --DataDirectory "${ME}" --list-fingerprint > "${ME}/stdout"; then
 fi
 check_files_eq "${SRC}/keys/ed25519_master_id_public_key" "${ME}/keys/ed25519_master_id_public_key"
 
-grep "We needed to load a secret key.*but couldn't find it" "${ME}/stdout" >/dev/null || die "Tor didn't declare that it was missing a secret key"
+grep "We needed to load a secret key.*but couldn't find it" "${ME}/stdout" >/dev/null || die "Anon didn't declare that it was missing a secret key"
 
 echo "==== Case 2A ok"
 fi
@@ -191,7 +191,7 @@ ${TOR} --DataDirectory "${ME}" --list-fingerprint > "${ME}/stdout" && dir "Someh
 check_files_eq "${SRC}/keys/ed25519_master_id_public_key" "${ME}/keys/ed25519_master_id_public_key"
 check_files_eq "${SRC}/keys/ed25519_master_id_secret_key_encrypted" "${ME}/keys/ed25519_master_id_secret_key_encrypted"
 
-grep "We needed to load a secret key.*but it was encrypted.*--keygen" "${ME}/stdout" >/dev/null || die "Tor didn't declare that it was missing a secret key and suggest --keygen."
+grep "We needed to load a secret key.*but it was encrypted.*--keygen" "${ME}/stdout" >/dev/null || die "Anon didn't declare that it was missing a secret key and suggest --keygen."
 
 echo "==== Case 2B ok"
 
@@ -206,7 +206,7 @@ SRC="${DATA_DIR}/orig"
 
 mkdir -p "${ME}/keys"
 cp "${SRC}/keys/ed25519_master_id_"* "${ME}/keys/"
-${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint >/dev/null || die "Tor failed when starting with only master key"
+${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint >/dev/null || die "Anon failed when starting with only master key"
 check_files_eq "${SRC}/keys/ed25519_master_id_public_key" "${ME}/keys/ed25519_master_id_public_key"
 check_files_eq "${SRC}/keys/ed25519_master_id_secret_key" "${ME}/keys/ed25519_master_id_secret_key"
 check_file "${ME}/keys/ed25519_signing_cert"
@@ -264,11 +264,11 @@ SRC="${DATA_DIR}/orig"
 
 mkdir -p "${ME}/keys"
 cp "${SRC}/keys/ed25519_master_id_secret_key" "${ME}/keys/"
-${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint > "${ME}/fp1" || die "Tor wouldn't start with only unencrypted secret key"
+${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint > "${ME}/fp1" || die "Anon wouldn't start with only unencrypted secret key"
 check_file "${ME}/keys/ed25519_master_id_public_key"
 check_file "${ME}/keys/ed25519_signing_cert"
 check_file "${ME}/keys/ed25519_signing_secret_key"
-${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint > "${ME}/fp2" || die "Tor wouldn't start again after starting once with only unencrypted secret key."
+${TOR} --DataDirectory "${ME}" ${SILENTLY} --list-fingerprint > "${ME}/fp2" || die "Anon wouldn't start again after starting once with only unencrypted secret key."
 
 check_files_eq "${ME}/fp1" "${ME}/fp2"
 
@@ -285,11 +285,11 @@ SRC="${DATA_DIR}/encrypted"
 
 mkdir -p "${ME}/keys"
 cp "${SRC}/keys/ed25519_master_id_secret_key_encrypted" "${ME}/keys/"
-${TOR} --DataDirectory "${ME}" --list-fingerprint >"${ME}/stdout" && die "Tor started with only encrypted secret key!"
+${TOR} --DataDirectory "${ME}" --list-fingerprint >"${ME}/stdout" && die "Anon started with only encrypted secret key!"
 check_no_file "${ME}/keys/ed25519_master_id_public_key"
 check_no_file "${ME}/keys/ed25519_master_id_public_key"
 
-grep "but not public key file" "${ME}/stdout" >/dev/null || die "Tor didn't declare it couldn't find a public key."
+grep "but not public key file" "${ME}/stdout" >/dev/null || die "Anon didn't declare it couldn't find a public key."
 
 echo "==== Case 5 ok"
 
@@ -306,12 +306,12 @@ mkdir -p "${ME}/keys"
 cp "${SRC}/keys/ed25519_master_id_secret_key_encrypted" "${ME}/keys/"
 cp "${SRC}/keys/ed25519_master_id_public_key" "${ME}/keys/"
 if ${TOR} --DataDirectory "${ME}" --list-fingerprint > "${ME}/stdout"; then
-  die "Tor started with encrypted secret key and no certs"
+  die "Anon started with encrypted secret key and no certs"
 fi
 check_no_file "${ME}/keys/ed25519_signing_cert"
 check_no_file "${ME}/keys/ed25519_signing_secret_key"
 
-grep "but it was encrypted" "${ME}/stdout" >/dev/null || die "Tor didn't declare that the secret key was encrypted."
+grep "but it was encrypted" "${ME}/stdout" >/dev/null || die "Anon didn't declare that the secret key was encrypted."
 
 echo "==== Case 6 ok"
 
@@ -400,7 +400,7 @@ if ${TOR} --DataDirectory "${ME}" --list-fingerprint >"${ME}/stdout"; then
   die "Successfully started with mismatched keys!?"
 fi
 
-grep "public_key does not match.*secret_key" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a key mismatch"
+grep "public_key does not match.*secret_key" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a key mismatch"
 
 echo "==== Case 10 ok"
 
@@ -418,7 +418,7 @@ if ${TOR} --DataDirectory "${ME}" --passphrase-fd 1 > "${ME}/stdout"; then
   die "Successfully started with passphrase-fd but no keygen?"
 fi
 
-grep "passphrase-fd specified without --keygen" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+grep "passphrase-fd specified without --keygen" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
 echo "==== Case 11A ok"
 
@@ -436,7 +436,7 @@ if ${TOR} --DataDirectory "${ME}" --no-passphrase > "${ME}/stdout"; then
   die "Successfully started with no-passphrase but no keygen?"
 fi
 
-grep "no-passphrase specified without --keygen" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+grep "no-passphrase specified without --keygen" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
 echo "==== Case 11B ok"
 
@@ -454,7 +454,7 @@ if ${TOR} --DataDirectory "${ME}" --newpass > "${ME}/stdout"; then
   die "Successfully started with newpass but no keygen?"
 fi
 
-grep "newpass specified without --keygen" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+grep "newpass specified without --keygen" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
 echo "==== Case 11C ok"
 
@@ -475,7 +475,7 @@ if [ "$CASE11D" = 1 ]; then
 #
 # cat "${ME}/stdout"
 #
-# grep "master-key without --keygen" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+# grep "master-key without --keygen" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
     echo "==== Case 11D skipped"
 
@@ -494,7 +494,7 @@ if ${TOR} --DataDirectory "${ME}" --keygen --passphrase-fd ewigeblumenkraft > "$
   die "Successfully started with bogus passphrase-fd?"
 fi
 
-grep "Invalid --passphrase-fd value" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+grep "Invalid --passphrase-fd value" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
 echo "==== Case 11E ok"
 
@@ -513,7 +513,7 @@ if ${TOR} --DataDirectory "${ME}" --keygen --passphrase-fd 1 --no-passphrase > "
   die "Successfully started with bogus passphrase-fd combination?"
 fi
 
-grep "no-passphrase specified with --passphrase-fd" "${ME}/stdout" >/dev/null || die "Tor didn't declare that there was a problem with the arguments."
+grep "no-passphrase specified with --passphrase-fd" "${ME}/stdout" >/dev/null || die "Anon didn't declare that there was a problem with the arguments."
 
 echo "==== Case 11F ok"
 

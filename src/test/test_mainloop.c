@@ -140,7 +140,7 @@ test_mainloop_update_time_jumps(void *arg)
   mt_now += 4000*BILLION;
   monotime_coarse_set_mock_time_nsec(mt_now);
   update_current_time(now);
-  expect_single_log_msg_containing("Tor has been idle for 4000 seconds");
+  expect_single_log_msg_containing("Anon has been idle for 4000 seconds");
   tt_int_op(approx_time(), OP_EQ, now);
   tt_int_op(get_uptime(), OP_EQ, 5);
 

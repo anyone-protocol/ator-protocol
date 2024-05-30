@@ -40,7 +40,7 @@ fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
 
-echo "TOR BINARY IS ${TOR_BINARY}"
+echo "ANON BINARY IS ${TOR_BINARY}"
 
 if "${TOR_BINARY}" --list-modules | grep -q "relay: no"; then
   echo "This test requires the relay module. Skipping." >&2

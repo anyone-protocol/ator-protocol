@@ -31,15 +31,15 @@ def wait_for_log(s):
         l = tor_process.stdout.readline()
         l = l.decode('utf8', 'backslashreplace')
         if s in l:
-            logging.info('Tor logged: "{}"'.format(l.strip()))
+            logging.info('Anon logged: "{}"'.format(l.strip()))
             return
         # readline() returns a blank string when there is no output
         # avoid busy-waiting
         if len(l) == 0:
-            logging.debug('Tor has not logged anything, waiting for "{}"'.format(s))
+            logging.debug('Anon has not logged anything, waiting for "{}"'.format(s))
             time.sleep(LOG_WAIT)
         else:
-            logging.info('Tor logged: "{}", waiting for "{}"'.format(l.strip(), s))
+            logging.info('Anon logged: "{}", waiting for "{}"'.format(l.strip(), s))
     fail('Could not find "{}" in logs after {} seconds'.format(s, LOG_TIMEOUT))
 
 def pick_random_port():
@@ -95,7 +95,7 @@ if len(sys.argv) < 4:
      fail('Usage: %s <path-to-tor> <data-dir> <anonrc>' % sys.argv[0])
 
 if not os.path.exists(sys.argv[1]):
-    fail('ERROR: cannot find tor at %s' % sys.argv[1])
+    fail('ERROR: cannot find anon at %s' % sys.argv[1])
 if not os.path.exists(sys.argv[2]):
     fail('ERROR: cannot find datadir at %s' % sys.argv[2])
 if not os.path.exists(sys.argv[3]):
@@ -125,7 +125,7 @@ tor_process = subprocess.Popen([tor_path,
                                stderr=subprocess.PIPE)
 
 if tor_process == None:
-    fail('ERROR: running tor failed')
+    fail('ERROR: running anon failed')
 
 wait_for_log('Opened Control listener')
 
@@ -191,6 +191,6 @@ try:
 except OSError as e:
     if e.errno == errno.ESRCH: # errno 3: No such process
         # assume tor has already exited due to SIGNAL HALT
-        logging.warn("Tor has already exited")
+        logging.warn("Anon has already exited")
     else:
         raise

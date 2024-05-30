@@ -58,7 +58,7 @@ options_validate_server_transport(const struct or_options_t *old_options,
       options->ServerTransportOptions ||
       options->ExtORPort_lines) {
     /* REJECT() this configuration */
-    *msg = tor_strdup("This tor was built with relay mode disabled. "
+    *msg = tor_strdup("This anon was built with relay mode disabled. "
                       "It can not be configured with an ExtORPort, "
                       "a ServerTransportPlugin, a ServerTransportListenAddr, "
                       "or ServerTransportOptions.");

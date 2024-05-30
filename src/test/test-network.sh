@@ -45,7 +45,7 @@ if [ ! -d "$TOR_DIR" ]; then
         $ECHO "$myname: \$TOR_DIR not set, trying \$PWD"
         TOR_DIR="$PWD"
     else
-        $ECHO "$myname: no \$TOR_DIR, chutney will use \$PATH for tor binaries"
+        $ECHO "$myname: no \$TOR_DIR, chutney will use \$PATH for anon binaries"
         unset TOR_DIR
     fi
 fi
