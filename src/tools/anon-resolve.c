@@ -257,9 +257,9 @@ onion_hs_warning(const char *hostname)
 {
   log_warn(LD_NET,
         "%s is a hidden service; those don't have IP addresses. "
-        "You can use the AutomapHostsOnResolve option to have Tor return a "
+        "You can use the AutomapHostsOnResolve option to have Anon return a "
         "fake address for hidden services.  Or you can have your "
-        "application send the address to Tor directly; we recommend an "
+        "application send the address to Anon directly; we recommend an "
         "application that uses SOCKS 5 with hostnames.",
            hostname);
 }
