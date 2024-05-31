@@ -539,7 +539,7 @@ tor_init(int argc, char *argv[])
   time_of_process_start = time(NULL);
   tor_init_connection_lists();
   /* Have the log set up with our application name. */
-  tor_snprintf(progname, sizeof(progname), "Anon %s", get_version());
+  tor_snprintf(progname, sizeof(progname), "Tor %s", get_version());
   log_set_application_name(progname);
 
   /* Initialize the history structures. */

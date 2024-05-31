@@ -2765,7 +2765,7 @@ list_enabled_modules(void)
 static void
 print_library_versions(void)
 {
-  printf("Anon version %s. \n", get_version());
+  printf("Tor version %s. \n", get_version());
   printf("Library versions\tCompiled\t\tRuntime\n");
   printf("Libevent\t\t%-15s\t\t%s\n",
                     tor_libevent_get_header_version_str(),

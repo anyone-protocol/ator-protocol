@@ -2744,7 +2744,7 @@ check_descriptor_ipaddress_changed(time_t now)
 STATIC void
 get_platform_str(char *platform, size_t len)
 {
-  tor_snprintf(platform, len, "Anon %s on %s",
+  tor_snprintf(platform, len, "Tor %s on %s",
                get_short_version(), get_uname());
 }
 

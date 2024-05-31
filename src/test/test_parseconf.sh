@@ -207,7 +207,7 @@ MODULES_WITHOUT_CONFIG_TESTS="dircache\\|pow"
 # shellcheck disable=SC2018,SC2019
 TOR_LIBS_ENABLED="$("$TOR_BINARY" --verify-config \
                       -f "$EMPTY" --defaults-anonrc "$EMPTY" \
-                    | sed -n 's/.* Anon .* running on .* with\(.*\) and .* .* as libc\./\1/p' \
+                    | sed -n 's/.* Tor .* running on .* with\(.*\) and .* .* as libc\./\1/p' \
                     | tr 'A-Z' 'a-z' | tr ',' '\n' \
                     | grep -v "$STANDARD_LIBS" | grep -v "n/a" \
                     | sed 's/\( and\)* \(lib\)*\([a-z0-9]*\) .*/\3/' \

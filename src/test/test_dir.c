@@ -1772,117 +1772,117 @@ test_dir_versions(void *arg)
   tt_versionstatus_op(val, OP_EQ, tor_version_is_obsolete(ver, lst))
 
   /* make sure tor_version_is_obsolete() works */
-  test_v_i_o(VS_OLD, "0.0.1", "Anon 0.0.2");
-  test_v_i_o(VS_OLD, "0.0.1", "0.0.2, Anon 0.0.3");
-  test_v_i_o(VS_OLD, "0.0.1", "0.0.2,Anon 0.0.3");
+  test_v_i_o(VS_OLD, "0.0.1", "Tor 0.0.2");
+  test_v_i_o(VS_OLD, "0.0.1", "0.0.2, Tor 0.0.3");
+  test_v_i_o(VS_OLD, "0.0.1", "0.0.2,Tor 0.0.3");
   test_v_i_o(VS_OLD, "0.0.1","0.0.3,BetterTor 0.0.1");
-  test_v_i_o(VS_RECOMMENDED, "0.0.2", "Anon 0.0.2,Anon 0.0.3");
-  test_v_i_o(VS_NEW_IN_SERIES, "0.0.2", "Anon 0.0.2pre1,Anon 0.0.3");
-  test_v_i_o(VS_OLD, "0.0.2", "Anon 0.0.2.1,Anon 0.0.3");
-  test_v_i_o(VS_NEW, "0.1.0", "Anon 0.0.2,Anon 0.0.3");
-  test_v_i_o(VS_RECOMMENDED, "0.0.7rc2", "0.0.7,Anon 0.0.7rc2,Anon 0.0.8");
+  test_v_i_o(VS_RECOMMENDED, "0.0.2", "Tor 0.0.2,Tor 0.0.3");
+  test_v_i_o(VS_NEW_IN_SERIES, "0.0.2", "Tor 0.0.2pre1,Tor 0.0.3");
+  test_v_i_o(VS_OLD, "0.0.2", "Tor 0.0.2.1,Tor 0.0.3");
+  test_v_i_o(VS_NEW, "0.1.0", "Tor 0.0.2,Tor 0.0.3");
+  test_v_i_o(VS_RECOMMENDED, "0.0.7rc2", "0.0.7,Tor 0.0.7rc2,Tor 0.0.8");
   test_v_i_o(VS_OLD, "0.0.5.0", "0.0.5.1-cvs");
   test_v_i_o(VS_NEW_IN_SERIES, "0.0.5.1-cvs", "0.0.5, 0.0.6");
   test_v_i_o(VS_NEW, "0.2.9.9-dev", "0.2.9.9");
   /* Not on list, but newer than any in same series. */
   test_v_i_o(VS_NEW_IN_SERIES, "0.1.0.3",
-             "Anon 0.1.0.2,Anon 0.0.9.5,Anon 0.1.1.0");
+             "Tor 0.1.0.2,Tor 0.0.9.5,Tor 0.1.1.0");
   /* Series newer than any on list. */
-  test_v_i_o(VS_NEW, "0.1.2.3", "Anon 0.1.0.2,Anon 0.0.9.5,Anon 0.1.1.0");
+  test_v_i_o(VS_NEW, "0.1.2.3", "Tor 0.1.0.2,Tor 0.0.9.5,Tor 0.1.1.0");
   /* Series older than any on list. */
-  test_v_i_o(VS_OLD, "0.0.1.3", "Anon 0.1.0.2,Anon 0.0.9.5,Anon 0.1.1.0");
+  test_v_i_o(VS_OLD, "0.0.1.3", "Tor 0.1.0.2,Tor 0.0.9.5,Tor 0.1.1.0");
   /* Not on list, not newer than any on same series. */
   test_v_i_o(VS_UNRECOMMENDED, "0.1.0.1",
-             "Anon 0.1.0.2,Anon 0.0.9.5,Anon 0.1.1.0");
+             "Tor 0.1.0.2,Tor 0.0.9.5,Tor 0.1.1.0");
   /* On list, not newer than any on same series. */
   test_v_i_o(VS_UNRECOMMENDED,
-             "0.1.0.1", "Anon 0.1.0.2,Anon 0.0.9.5,Anon 0.1.1.0");
-  tt_int_op(0,OP_EQ, tor_version_as_new_as("Anon 0.0.5", "0.0.9pre1-cvs"));
+             "0.1.0.1", "Tor 0.1.0.2,Tor 0.0.9.5,Tor 0.1.1.0");
+  tt_int_op(0,OP_EQ, tor_version_as_new_as("Tor 0.0.5", "0.0.9pre1-cvs"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-          "Anon 0.0.8 on Darwin 64-121-192-100.c3-0."
+          "Tor 0.0.8 on Darwin 64-121-192-100.c3-0."
           "sfpo-ubr1.sfrn-sfpo.ca.cable.rcn.com Power Macintosh",
           "0.0.8rc2"));
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-          "Anon 0.0.8 on Darwin 64-121-192-100.c3-0."
+          "Tor 0.0.8 on Darwin 64-121-192-100.c3-0."
           "sfpo-ubr1.sfrn-sfpo.ca.cable.rcn.com Power Macintosh", "0.0.8.2"));
 
   /* Now try svn revisions. */
-  tt_int_op(1,OP_EQ, tor_version_as_new_as("Anon 0.2.1.0-dev (r100)",
-                                   "Anon 0.2.1.0-dev (r99)"));
+  tt_int_op(1,OP_EQ, tor_version_as_new_as("Tor 0.2.1.0-dev (r100)",
+                                   "Tor 0.2.1.0-dev (r99)"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                   "Anon 0.2.1.0-dev (r100) on Banana Jr",
-                                   "Anon 0.2.1.0-dev (r99) on Hal 9000"));
-  tt_int_op(1,OP_EQ, tor_version_as_new_as("Anon 0.2.1.0-dev (r100)",
-                                   "Anon 0.2.1.0-dev on Colossus"));
-  tt_int_op(0,OP_EQ, tor_version_as_new_as("Anon 0.2.1.0-dev (r99)",
-                                   "Anon 0.2.1.0-dev (r100)"));
-  tt_int_op(0,OP_EQ, tor_version_as_new_as("Anon 0.2.1.0-dev (r99) on MCP",
-                                   "Anon 0.2.1.0-dev (r100) on AM"));
-  tt_int_op(0,OP_EQ, tor_version_as_new_as("Anon 0.2.1.0-dev",
-                                   "Anon 0.2.1.0-dev (r99)"));
-  tt_int_op(1,OP_EQ, tor_version_as_new_as("Anon 0.2.1.1",
-                                   "Anon 0.2.1.0-dev (r99)"));
+                                   "Tor 0.2.1.0-dev (r100) on Banana Jr",
+                                   "Tor 0.2.1.0-dev (r99) on Hal 9000"));
+  tt_int_op(1,OP_EQ, tor_version_as_new_as("Tor 0.2.1.0-dev (r100)",
+                                   "Tor 0.2.1.0-dev on Colossus"));
+  tt_int_op(0,OP_EQ, tor_version_as_new_as("Tor 0.2.1.0-dev (r99)",
+                                   "Tor 0.2.1.0-dev (r100)"));
+  tt_int_op(0,OP_EQ, tor_version_as_new_as("Tor 0.2.1.0-dev (r99) on MCP",
+                                   "Tor 0.2.1.0-dev (r100) on AM"));
+  tt_int_op(0,OP_EQ, tor_version_as_new_as("Tor 0.2.1.0-dev",
+                                   "Tor 0.2.1.0-dev (r99)"));
+  tt_int_op(1,OP_EQ, tor_version_as_new_as("Tor 0.2.1.1",
+                                   "Tor 0.2.1.0-dev (r99)"));
   /* And git revisions */
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                        "Anon 0.2.9.9 (git-56788a2489127072)",
-                                        "Anon 0.2.9.9 (git-56788a2489127072)"));
+                                        "Tor 0.2.9.9 (git-56788a2489127072)",
+                                        "Tor 0.2.9.9 (git-56788a2489127072)"));
   /* a git revision is newer than no git revision */
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                        "Anon 0.2.9.9 (git-56788a2489127072)",
-                                        "Anon 0.2.9.9"));
+                                        "Tor 0.2.9.9 (git-56788a2489127072)",
+                                        "Tor 0.2.9.9"));
   /* a longer git revision is newer than a shorter git revision
    * this should be true if they prefix-match, but if they don't, they are
    * incomparable, because hashes aren't ordered (but we compare their bytes
    * anyway) */
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                  "Anon 0.2.9.9 (git-56788a2489127072d513cf4baf35a8ff475f3c7b)",
-                  "Anon 0.2.9.9 (git-56788a2489127072)"));
+                  "Tor 0.2.9.9 (git-56788a2489127072d513cf4baf35a8ff475f3c7b)",
+                  "Tor 0.2.9.9 (git-56788a2489127072)"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                        "Anon 0.2.9.9 (git-0102)",
-                                        "Anon 0.2.9.9 (git-03)"));
+                                        "Tor 0.2.9.9 (git-0102)",
+                                        "Tor 0.2.9.9 (git-03)"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                        "Anon 0.2.9.9 (git-0102)",
-                                        "Anon 0.2.9.9 (git-00)"));
+                                        "Tor 0.2.9.9 (git-0102)",
+                                        "Tor 0.2.9.9 (git-00)"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.2.9.9 (git-01)",
-                                           "Anon 0.2.9.9 (git-00)"));
+                                           "Tor 0.2.9.9 (git-01)",
+                                           "Tor 0.2.9.9 (git-00)"));
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.2.9.9 (git-00)",
-                                           "Anon 0.2.9.9 (git-01)"));
+                                           "Tor 0.2.9.9 (git-00)",
+                                           "Tor 0.2.9.9 (git-01)"));
   /* In #21278, we compare without integer overflows.
    * But since #21450 limits version components to [0, INT32_MAX], it is no
    * longer possible to cause an integer overflow in tor_version_compare() */
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.0.0.0",
-                                           "Anon 2147483647.0.0.0"));
+                                           "Tor 0.0.0.0",
+                                           "Tor 2147483647.0.0.0"));
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                           "Anon 2147483647.0.0.0",
-                                           "Anon 0.0.0.0"));
+                                           "Tor 2147483647.0.0.0",
+                                           "Tor 0.0.0.0"));
   /* These versions used to cause an overflow, now they don't parse
    * (and authorities reject their descriptors), and log a BUG message */
   setup_full_capture_of_logs(LOG_WARN);
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.0.0.0",
-                                           "Anon 0.-2147483648.0.0"));
+                                           "Tor 0.0.0.0",
+                                           "Tor 0.-2147483648.0.0"));
   expect_single_log_msg_containing("unparseable");
   mock_clean_saved_logs();
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.2147483647.0.0",
-                                           "Anon 0.-1.0.0"));
+                                           "Tor 0.2147483647.0.0",
+                                           "Tor 0.-1.0.0"));
   expect_single_log_msg_containing("unparseable");
   mock_clean_saved_logs();
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.2147483647.0.0",
-                                           "Anon 0.-2147483648.0.0"));
+                                           "Tor 0.2147483647.0.0",
+                                           "Tor 0.-2147483648.0.0"));
   expect_single_log_msg_containing("unparseable");
   mock_clean_saved_logs();
   tt_int_op(1,OP_EQ, tor_version_as_new_as(
-                                           "Anon 4294967295.0.0.0",
-                                           "Anon 0.0.0.0"));
+                                           "Tor 4294967295.0.0.0",
+                                           "Tor 0.0.0.0"));
   expect_no_log_entry();
   tt_int_op(0,OP_EQ, tor_version_as_new_as(
-                                           "Anon 0.4294967295.0.0",
-                                           "Anon 0.-4294967295.0.0"));
+                                           "Tor 0.4294967295.0.0",
+                                           "Tor 0.-4294967295.0.0"));
   expect_single_log_msg_containing("unparseable");
   mock_clean_saved_logs();
   teardown_capture_of_logs();
@@ -6840,7 +6840,7 @@ test_dir_platform_str(void *arg)
   platform[0] = 0;
   get_platform_str(platform, sizeof(platform));
   tt_int_op((int)strlen(platform), OP_GT, 0);
-  tt_assert(!strcmpstart(platform, "Anon "));
+  tt_assert(!strcmpstart(platform, "Tor "));
 
   tor_version_t ver;
   // make sure this is a tor version, a real actual tor version.
@@ -6850,7 +6850,7 @@ test_dir_platform_str(void *arg)
 
   // Handle an example version.
   tt_int_op(tor_version_parse_platform(
-        "Anon 0.3.3.3 (foo) (git-xyzzy) on a potato", &ver, 1), OP_EQ, 1);
+        "Tor 0.3.3.3 (foo) (git-xyzzy) on a potato", &ver, 1), OP_EQ, 1);
  done:
   ;
 }

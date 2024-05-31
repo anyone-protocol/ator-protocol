@@ -843,12 +843,12 @@ test_buffer_peek_startswith(void *arg)
   tt_assert(buf_peek_startswith(buf, ""));
   tt_assert(! buf_peek_startswith(buf, "X"));
 
-  buf_add(buf, "Anon", 3);
+  buf_add(buf, "Tor", 3);
 
   tt_assert(buf_peek_startswith(buf, ""));
   tt_assert(buf_peek_startswith(buf, "T"));
   tt_assert(buf_peek_startswith(buf, "To"));
-  tt_assert(buf_peek_startswith(buf, "Anon"));
+  tt_assert(buf_peek_startswith(buf, "Tor"));
   tt_assert(! buf_peek_startswith(buf, "Top"));
   tt_assert(! buf_peek_startswith(buf, "For"));
   tt_assert(! buf_peek_startswith(buf, "Tork"));

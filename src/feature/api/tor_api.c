@@ -140,7 +140,7 @@ tor_main_configuration_free(tor_main_configuration_t *cfg)
 const char *
 tor_api_get_provider_version(void)
 {
-  return "anon " VERSION;
+  return "tor " VERSION;
 }
 
 /* Main entry point for the Tor process.  Called from main().

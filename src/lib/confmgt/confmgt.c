@@ -693,7 +693,7 @@ warn_deprecated_option(const char *what, const char *why)
 {
   const char *space = (why && strlen(why)) ? " " : "";
   log_warn(LD_CONFIG, "The %s option is deprecated, and will most likely "
-           "be removed in a future version of Anon.%s%s (If you think this is "
+           "be removed in a future version of Tor.%s%s (If you think this is "
            "a mistake, please let us know!)",
            what, space, why);
 }

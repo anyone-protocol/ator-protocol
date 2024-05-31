@@ -1188,9 +1188,9 @@ add_syslog_log(const log_severity_list_t *severity,
     /* This is the first syslog. */
     static char buf[256];
     if (syslog_identity_tag) {
-      tor_snprintf(buf, sizeof(buf), "Anon-%s", syslog_identity_tag);
+      tor_snprintf(buf, sizeof(buf), "Tor-%s", syslog_identity_tag);
     } else {
-      tor_snprintf(buf, sizeof(buf), "Anon");
+      tor_snprintf(buf, sizeof(buf), "Tor");
     }
     openlog(buf, LOG_PID | LOG_NDELAY, LOGFACILITY);
   }

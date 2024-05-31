@@ -539,7 +539,7 @@ AC_CACHE_CHECK([for working C99 mid-block declaration syntax],
 	 [tor_cv_c_c99_decl=yes],
 	 [tor_cv_c_c99_decl=no] )])
 if test "$tor_cv_c_c99_decl" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Anon 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Tor 0.2.6.x])
 fi
 
 AC_CACHE_CHECK([for working C99 designated initializers],
@@ -551,7 +551,7 @@ AC_CACHE_CHECK([for working C99 designated initializers],
 	 [tor_cv_c_c99_designated_init=no] )])
 
 if test "$tor_cv_c_c99_designated_init" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Anon 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Tor 0.2.6.x])
 fi
 
 saved_CFLAGS="$CFLAGS"
@@ -2067,7 +2067,7 @@ AS_CASE([$malloc],
 
   [openbsd], [
     tor_incr_n_warnings
-    AC_MSG_WARN([The openbsd malloc port is deprecated in Anon 0.3.5 and will be removed in a future version.])
+    AC_MSG_WARN([The openbsd malloc port is deprecated in Tor 0.3.5 and will be removed in a future version.])
     enable_openbsd_malloc=yes
   ],
 

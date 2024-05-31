@@ -1335,7 +1335,7 @@ handle_control_protocolinfo(control_connection_t *conn,
   control_reply_add_str(reply, 250, "PROTOCOLINFO 1");
   add_authmethods(reply);
   control_reply_add_str(reply, 250, "VERSION");
-  control_reply_append_kv(reply, "Anon", escaped(VERSION));
+  control_reply_append_kv(reply, "Tor", escaped(VERSION));
   control_reply_add_done(reply);
 
   control_write_reply_lines(conn, reply);

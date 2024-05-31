@@ -583,7 +583,7 @@ or_state_save(time_t now)
   global_state->LastWritten = now;
 
   tor_free(global_state->TorVersion);
-  tor_asprintf(&global_state->TorVersion, "Anon %s", get_version());
+  tor_asprintf(&global_state->TorVersion, "Tor %s", get_version());
 
   state = config_dump(get_state_mgr(), NULL, global_state, 1, 0);
   format_local_iso_time(tbuf, now);

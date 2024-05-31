@@ -705,7 +705,7 @@ test_protover_summarize_flags(void *args)
 
   /* EXTEND2 cell support */
   memset(&flags, 0, sizeof(flags));
-  summarize_protover_flags(&flags, NULL, "Anon 0.2.4.8-alpha");
+  summarize_protover_flags(&flags, NULL, "Tor 0.2.4.8-alpha");
   DEBUG_PROTOVER(flags);
   tt_int_op(flags.protocols_known, OP_EQ, 1);
   tt_int_op(flags.supports_extend2_cells, OP_EQ, 1);
@@ -730,7 +730,7 @@ test_protover_summarize_flags(void *args)
   memset(&flags, 0, sizeof(flags));
   summarize_protover_flags(&flags,
                            PROTOVER("HSDir", PROTOVER_HSDIR_V3),
-                           "Anon 0.3.0.7");
+                           "Tor 0.3.0.7");
   DEBUG_PROTOVER(flags);
   tt_int_op(flags.protocols_known, OP_EQ, 1);
   /* Now clear that flag, and check the rest are zero */

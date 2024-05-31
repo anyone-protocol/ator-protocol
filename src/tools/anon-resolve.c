@@ -578,7 +578,7 @@ main(int argc, char **argv)
     usage();
 
   if (!strcmp(arg[0],"--version")) {
-    printf("Anon version %s.\n",VERSION);
+    printf("Tor version %s.\n",VERSION);
     return 0;
   }
   while (n_args && *arg[0] == '-') {
