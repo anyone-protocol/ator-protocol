@@ -3414,7 +3414,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options->ExcludeNodes && options->StrictNodes) {
     COMPLAIN("You have asked to exclude certain relays from all positions "
-             "in your circuits. Expect hidden services and other Tor "
+             "in your circuits. Expect hidden services and other Anon "
              "features to be broken in unpredictable ways.");
   }
 
@@ -4195,7 +4195,7 @@ options_check_transition_cb(const void *old_,
     return 0;
 
 #define BAD_CHANGE_TO(opt, how) do {                                    \
-    *msg = tor_strdup("While Tor is running"how", changing " #opt       \
+    *msg = tor_strdup("While Anon is running"how", changing " #opt       \
                       " is not allowed");                               \
     return -1;                                                          \
   } while (0)

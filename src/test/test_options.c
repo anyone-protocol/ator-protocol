@@ -4167,7 +4167,7 @@ test_options_trial_assign(void *arg)
   tt_int_op(r, OP_EQ, 0);
   v = options_trial_assign(lines, 0, &msg);
   tt_int_op(v, OP_EQ, SETOPT_ERR_TRANSITION);
-  tt_str_op(msg, OP_EQ,  "While Tor is running, changing User is not allowed");
+  tt_str_op(msg, OP_EQ,  "While Anon is running, changing User is not allowed");
   tor_free(msg);
   config_free_lines(lines);
 
