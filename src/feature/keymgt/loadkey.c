@@ -66,7 +66,7 @@ init_key_from_file(const char *fname, int generate, int severity,
           if (try_locking(get_options(), 0)<0) {
             /* Make sure that --list-fingerprint only creates new keys
              * if there is no possibility for a deadlock. */
-            tor_log(severity, LD_FS, "Another Tor process has locked \"%s\". "
+            tor_log(severity, LD_FS, "Another Anon process has locked \"%s\". "
                     "Not writing any new keys.", fname);
             /*XXXX The 'other process' might make a key in a second or two;
              * maybe we should wait for it. */

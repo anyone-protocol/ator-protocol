@@ -200,7 +200,7 @@ check_private_dir,(const char *dirname, cpd_check_t check,
     }
 
     log_warn(LD_FS, "%s is not owned by this user (%s, %d) but by "
-        "%s (%d). Perhaps you are running Tor as the wrong user?",
+        "%s (%d). Perhaps you are running Anon as the wrong user?",
              dirname, process_ownername, (int)running_uid,
              file_ownername, (int)st.st_uid);
 
@@ -218,7 +218,7 @@ check_private_dir,(const char *dirname, cpd_check_t check,
     gr = getgrgid(st.st_gid);
 
     log_warn(LD_FS, "%s is not owned by this group (%s, %d) but by group "
-             "%s (%d).  Are you running Tor as the wrong user?",
+             "%s (%d).  Are you running Anon as the wrong user?",
              dirname, process_groupname, (int)running_gid,
              gr ?  gr->gr_name : "<unknown>", (int)st.st_gid);
 

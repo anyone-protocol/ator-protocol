@@ -202,7 +202,7 @@ test_socks_4_bad_arguments(void *ptr)
   tt_int_op(fetch_from_buf_socks(buf, socks, 1, 0), OP_EQ, -1);
   buf_clear(buf);
   expect_log_msg_containing("Your application (using socks4 to port 80) "
-                            "gave Tor a malformed hostname: ");
+                            "gave Anon a malformed hostname: ");
   mock_clean_saved_logs();
 
  done:
@@ -742,7 +742,7 @@ test_socks_5_bad_arguments(void *ptr)
   tt_int_op(fetch_from_buf_socks(buf, socks, 1, 0), OP_EQ, -1);
   buf_clear(buf);
   expect_log_msg_containing("Your application (using socks5 to port 80) "
-                            "gave Tor a malformed hostname: ");
+                            "gave Anon a malformed hostname: ");
   mock_clean_saved_logs();
   socks_request_clear(socks);
 

@@ -2647,7 +2647,7 @@ compute_frac_paths_available(const networkstatus_t *consensus,
     if (have_consensus_path == CONSENSUS_PATH_INTERNAL) {
       log_notice(LD_NET,
                  "The current consensus has no exit nodes. "
-                 "Tor can only build internal paths, "
+                 "Anon can only build internal paths, "
                  "such as paths to onion services.");
 
       /* However, exit nodes can reachability self-test using this consensus,
@@ -2657,7 +2657,7 @@ compute_frac_paths_available(const networkstatus_t *consensus,
     } else if (old_have_consensus_path == CONSENSUS_PATH_INTERNAL) {
       log_notice(LD_NET,
                  "The current consensus contains exit nodes. "
-                 "Tor can build exit and internal paths.");
+                 "Anon can build exit and internal paths.");
     }
   }
 

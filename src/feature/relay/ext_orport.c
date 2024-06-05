@@ -307,7 +307,7 @@ connection_ext_or_auth_handle_client_nonce(connection_t *conn)
   if (!ext_or_auth_cookie_is_set) { /* this should not happen */
     log_warn(LD_BUG, "Extended ORPort authentication cookie was not set. "
              "That's weird since we should have done that on startup. "
-             "This might be a Tor bug, please file a bug report. ");
+             "This might be a Anon bug, please file a bug report. ");
     return -1;
   }
 

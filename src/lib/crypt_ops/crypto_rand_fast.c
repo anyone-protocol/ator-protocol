@@ -183,7 +183,7 @@ crypto_fast_rng_new_from_seed(const uint8_t *seed)
   tor_assertf(inherit != INHERIT_RES_KEEP,
               "We failed to create a non-inheritable memory region, even "
               "though we believed such a failure to be impossible! This is "
-              "probably a bug in Tor support for your platform; please report "
+              "probably a bug in Anon support for your platform; please report "
               "it.");
 #endif /* defined(CHECK_PID) || ... */
   return result;

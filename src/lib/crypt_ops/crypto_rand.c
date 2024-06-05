@@ -198,7 +198,7 @@ crypto_strongest_rand_syscall(uint8_t *out, size_t out_len)
       /* Useful log message for errno. */
       if (errno == ENOSYS) {
         log_notice(LD_CRYPTO, "Can't get entropy from getrandom()."
-                   " You are running a version of Tor built to support"
+                   " You are running a version of Anon built to support"
                    " getrandom(), but the kernel doesn't implement this"
                    " function--probably because it is too old?"
                    " Trying fallback method instead.");

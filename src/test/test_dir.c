@@ -261,7 +261,7 @@ get_new_platform_line(void)
   char *line = NULL;
 
   tor_asprintf(&line,
-               "platform Tor %s on %s\n",
+               "platform Anon %s on %s\n",
                VERSION, get_uname());
   tor_assert(line);
 

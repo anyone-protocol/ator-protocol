@@ -315,7 +315,7 @@ log_tor_version(logfile_t *lf, int reset)
                  "%s opening %slog file.\n", appname, is_new?"new ":"");
   } else {
     tor_snprintf(buf+n, sizeof(buf)-n,
-                 "Tor %s opening %slog file.\n", VERSION, is_new?"new ":"");
+                 "Anon %s opening %slog file.\n", VERSION, is_new?"new ":"");
   }
   if (write_all_to_fd_minimal(lf->fd, buf, strlen(buf)) < 0) /* error */
     return -1; /* failed */

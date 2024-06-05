@@ -205,7 +205,7 @@ log_heartbeat(time_t now)
   bw_rcvd = bytes_to_usage(get_bytes_read());
   bw_sent = bytes_to_usage(get_bytes_written());
 
-  log_fn(LOG_NOTICE, LD_HEARTBEAT, "Heartbeat: Tor's uptime is %s, with %d "
+  log_fn(LOG_NOTICE, LD_HEARTBEAT, "Heartbeat: Anon's uptime is %s, with %d "
          "circuits open. I've sent %s and received %s. I've received %u "
          "connections on IPv4 and %u on IPv6. I've made %u connections "
          "with IPv4 and %u with IPv6.%s",
