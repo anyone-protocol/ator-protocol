@@ -1951,7 +1951,7 @@ test_options_validate__testing(void *ignored)
   tdata = get_options_test_data(#varname " " #varval "\n"); \
   ret = options_validate(NULL, tdata->opt, &msg); \
   tt_str_op(msg, OP_EQ, \
-            #varname " may only be changed in testing Tor networks!");  \
+            #varname " may only be changed in testing Anon networks!");  \
   tt_int_op(ret, OP_EQ, -1);                                            \
   tor_free(msg);                                                        \
                                                 \
@@ -1963,7 +1963,7 @@ test_options_validate__testing(void *ignored)
   ret = options_validate(NULL, tdata->opt, &msg);             \
   if (msg) { \
     tt_str_op(msg, OP_NE, \
-              #varname " may only be changed in testing Tor networks!"); \
+              #varname " may only be changed in testing Anon networks!"); \
     tor_free(msg); \
   } \
                                                                         \
@@ -1974,7 +1974,7 @@ test_options_validate__testing(void *ignored)
   ret = options_validate(NULL, tdata->opt, &msg);\
   if (msg) { \
     tt_str_op(msg, OP_NE, \
-              #varname " may only be changed in testing Tor networks!"); \
+              #varname " may only be changed in testing Anon networks!"); \
     tor_free(msg); \
   } \
     STMT_END
@@ -2396,7 +2396,7 @@ test_options_validate__single_onion(void *ignored)
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "HiddenServiceNonAnonymousMode is incompatible with "
-            "using Tor as an anonymous client. Please set "
+            "using Anon as an anonymous client. Please set "
             "Socks/Trans/NATD/DNSPort to 0, or revert "
             "HiddenServiceNonAnonymousMode to 0.");
   tor_free(msg);
@@ -3797,7 +3797,7 @@ test_options_validate__testing_options(void *ignored)
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "TestingEnableConnBwEvent may only be changed in "
-            "testing Tor networks!");
+            "testing Anon networks!");
   tor_free(msg);
 
   free_options_test_data(tdata);
@@ -3829,7 +3829,7 @@ test_options_validate__testing_options(void *ignored)
   ret = options_validate(NULL, tdata->opt, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "TestingEnableCellStatsEvent may only be changed in "
-            "testing Tor networks!");
+            "testing Anon networks!");
   tor_free(msg);
 
   free_options_test_data(tdata);

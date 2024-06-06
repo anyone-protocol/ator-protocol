@@ -3241,7 +3241,7 @@ options_validate_single_onion(or_options_t *options, char **msg)
                                options->DNSPort_set ||
                                options->HTTPTunnelPort_set);
   if (hs_service_non_anonymous_mode_enabled(options) && client_port_set) {
-    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Tor as "
+    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Anon as "
            "an anonymous client. Please set Socks/Trans/NATD/DNSPort to 0, or "
            "revert HiddenServiceNonAnonymousMode to 0.");
   }
@@ -3979,7 +3979,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     if (!config_is_same(get_options_mgr(),options,                      \
                         dflt_options,#arg)) {                           \
       or_options_free(dflt_options);                                    \
-      REJECT(#arg " may only be changed in testing Tor "                \
+      REJECT(#arg " may only be changed in testing Anon "                \
              "networks!");                                              \
     }                                                                   \
   STMT_END
@@ -4047,13 +4047,13 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (options->TestingEnableConnBwEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableConnBwEvent may only be changed in testing "
-           "Tor networks!");
+           "Anon networks!");
   }
 
   if (options->TestingEnableCellStatsEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableCellStatsEvent may only be changed in testing "
-           "Tor networks!");
+           "Anon networks!");
   }
 
   if (options->TestingTorNetwork) {

@@ -131,7 +131,7 @@ fi
 
 TOR_BINARY="$(abspath "$TOR_BINARY")"
 
-echo "Using Tor binary '$TOR_BINARY'."
+echo "Using Anon binary '$TOR_BINARY'."
 
 # make a safe space for temporary files
 DATA_DIR=$(mktemp -d -t tor_parseconf_tests.XXXXXX)
@@ -239,7 +239,7 @@ TOR_MODULES_DISABLED="$("$TOR_BINARY" --list-modules | grep ': no' \
 # Remove the last underscore, if there is one
 TOR_MODULES_DISABLED=${TOR_MODULES_DISABLED%_}
 
-echo "Tor is configured with:"
+echo "Anon is configured with:"
 echo "Optional Libraries: ${TOR_LIBS_ENABLED:-(None)}"
 if test "$TOR_LIBS_ENABLED"; then
     echo "Optional Library Search List: $TOR_LIBS_ENABLED_SEARCH"
@@ -258,7 +258,7 @@ log_verify_config()
 {
     # show the command we're about to execute
     # log_verify_config() is only called when we've failed
-    printf "Tor --verify-config said:\\n" >&2
+    printf "Anon --verify-config said:\\n" >&2
     printf "$ %s %s %s %s %s %s %s\\n" \
     "$TOR_BINARY" --verify-config \
                   -f "$1" \
@@ -305,7 +305,7 @@ dump_config()
                        --defaults-anonrc "$2" \
                        $3 \
                        > "$4"; then
-        fail_printf "'%s': Tor --dump-config reported an error%s:\\n%s\\n" \
+        fail_printf "'%s': Anon --dump-config reported an error%s:\\n%s\\n" \
                     "$5" \
                     "$CONTEXT" \
                     "$FULL_TOR_CMD"
@@ -356,7 +356,7 @@ check_diff()
     if cmp "$1" "$2" > /dev/null; then
         return "$TRUE"
     else
-        fail_printf "'%s': Tor --dump-config said%s:\\n%s\\n" \
+        fail_printf "'%s': Anon --dump-config said%s:\\n%s\\n" \
                     "$1" \
                     "$CONTEXT" \
                     "$7"
@@ -459,7 +459,7 @@ verify_config()
 
     # Convert the actual and expected results to boolean, and compare
     if test $((! (! RESULT))) -ne $((! (! $5))); then
-        fail_printf "'%s': Tor --verify-config did not %s:\\n%s\\n" \
+        fail_printf "'%s': Anon --verify-config did not %s:\\n%s\\n" \
                     "$6" \
                     "$7" \
                     "$FULL_TOR_CMD"
@@ -484,7 +484,7 @@ check_pattern()
                     "$3" \
                     "$1" \
                     "$expect_log"
-        printf "Tor --verify-config said:\\n%s\\n" \
+        printf "Anon --verify-config said:\\n%s\\n" \
                "$4" >&2
         cat "$2" >&2
     fi

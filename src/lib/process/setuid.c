@@ -284,7 +284,7 @@ switch_id(const char *user, const unsigned flags)
                "anonrc, check whether it was specified on the command line "
                "by a startup script.)", user);
     } else {
-      log_warn(LD_GENERAL, "If you set the \"User\" option, you must start Tor"
+      log_warn(LD_GENERAL, "If you set the \"User\" option, you must start Anon"
                " as root.");
     }
     return -1;

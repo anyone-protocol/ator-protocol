@@ -88,7 +88,7 @@ static const struct {
   /* Creating AP circuits */
 
   { BOOTSTRAP_STATUS_CIRCUIT_CREATE, "circuit_create",
-    "Establishing a Tor circuit" },
+    "Establishing a Anon circuit" },
   { BOOTSTRAP_STATUS_DONE, "done", "Done" },
 };
 #define N_BOOT_TO_STR (sizeof(boot_to_str_tab)/sizeof(boot_to_str_tab[0]))
