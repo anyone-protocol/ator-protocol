@@ -626,8 +626,8 @@ nt_service_install(int argc, char **argv)
    * situation. */
   if (using_default_torrc)
     printf("IMPORTANT NOTE:\n"
-        "    The Tor service will run under the account \"%s\".  This means\n"
-        "    that Tor will look for its configuration file under that\n"
+        "    The Anon service will run under the account \"%s\".  This means\n"
+        "    that Anon will look for its configuration file under that\n"
         "    account's Application Data directory, which is probably not\n"
         "    the same as yours.\n", user_acct?user_acct:"<local system>");
 

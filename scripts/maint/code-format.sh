@@ -45,7 +45,7 @@ function usage() {
     echo "    -c: check whether files are correctly formatted"
     echo "    -d: print a diff for the changes that would be applied"
     echo "    -i: change files in-place"
-    echo "    -a: run over all the C files in Tor"
+    echo "    -a: run over all the C files in Anon"
     echo "    -v: verbose mode"
     echo "    -g: look at the files that have changed in git."
     echo "    -G: look at the files that are staged for the git commit."

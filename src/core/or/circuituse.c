@@ -2348,7 +2348,7 @@ circuit_get_open_circ_or_launch(entry_connection_t *conn,
                                               conn->socks_request->port,
                                               need_uptime)) {
         log_notice(LD_APP,
-                   "No Tor server allows exit to %s:%d. Rejecting.",
+                   "No Anon server allows exit to %s:%d. Rejecting.",
                    safe_str_client(conn->socks_request->address),
                    conn->socks_request->port);
         return -1;

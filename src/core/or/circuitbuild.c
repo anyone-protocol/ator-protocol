@@ -1126,7 +1126,7 @@ circuit_build_no_more_hops(origin_circuit_t *circ)
     note_that_we_completed_a_circuit();
     /* FFFF Log a count of known routers here */
     log_info(LD_GENERAL,
-             "Tor has successfully opened a circuit. "
+             "Anon has successfully opened a circuit. "
              "Looks like client functionality is working.");
     control_event_bootstrap(BOOTSTRAP_STATUS_DONE, 0);
     control_event_client_status(LOG_NOTICE, "CIRCUIT_ESTABLISHED");
@@ -1238,7 +1238,7 @@ circuit_note_clock_jumped(int64_t seconds_elapsed, bool was_idle)
 {
   int severity = server_mode(get_options()) ? LOG_WARN : LOG_NOTICE;
   if (was_idle) {
-    tor_log(severity, LD_GENERAL, "Tor has been idle for %"PRId64
+    tor_log(severity, LD_GENERAL, "Anon has been idle for %"PRId64
             " seconds; assuming established circuits no longer work.",
             (seconds_elapsed));
   } else {
@@ -1930,7 +1930,7 @@ pick_restricted_middle_node(router_crn_flags_t flags,
     log_fn_ratelim(&pinned_notice_limit, LOG_NOTICE, LD_CIRC,
             "Your _HSLayer%dNodes setting has resulted "
             "in %d total nodes. This is a lot of nodes. "
-            "You may want to consider using a Tor controller "
+            "You may want to consider using a Anon controller "
             "to select and update a smaller set of nodes instead.",
             position_hint, smartlist_len(allowlisted_live_middles));
 
@@ -2060,7 +2060,7 @@ warn_if_last_router_excluded(origin_circuit_t *circ,
     } else {
       log_warn(LD_CIRC, "Using %s '%s' which is listed in "
                "ExcludeNodes%s, because no better options were available. To "
-               "prevent this (and possibly break your Tor functionality), "
+               "prevent this (and possibly break your Anon functionality), "
                "set the StrictNodes configuration option. "
                "(Circuit purpose: %s)",
                description, extend_info_describe(exit_ei),

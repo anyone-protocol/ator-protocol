@@ -501,7 +501,7 @@ handle_control_takeownership(control_connection_t *conn,
   conn->is_owning_control_connection = 1;
 
   log_info(LD_CONTROL, "Control connection %d has taken ownership of this "
-           "Tor instance.",
+           "Anon instance.",
            (int)(conn->base_.s));
 
   send_control_done(conn);
@@ -524,7 +524,7 @@ handle_control_dropownership(control_connection_t *conn,
   conn->is_owning_control_connection = 0;
 
   log_info(LD_CONTROL, "Control connection %d has dropped ownership of this "
-           "Tor instance.",
+           "Anon instance.",
            (int)(conn->base_.s));
 
   send_control_done(conn);
@@ -1390,7 +1390,7 @@ handle_control_dropguards(control_connection_t *conn,
   if (! have_warned) {
     log_warn(LD_CONTROL, "DROPGUARDS is dangerous; make sure you understand "
              "the risks before using it. It may be removed in a future "
-             "version of Tor.");
+             "version of Anon.");
     have_warned = 1;
   }
 
@@ -1415,7 +1415,7 @@ handle_control_droptimeouts(control_connection_t *conn,
   if (! have_warned) {
     log_warn(LD_CONTROL, "DROPTIMEOUTS is dangerous; make sure you understand "
              "the risks before using it. It may be removed in a future "
-             "version of Tor.");
+             "version of Anon.");
     have_warned = 1;
   }
 
@@ -1750,7 +1750,7 @@ handle_control_add_onion(control_connection_t *conn,
      * (I've deliberately written them out in full here to aid searchability.)
      */
     control_printf_endreply(conn, 512,
-                            "Tor is in %sanonymous hidden service " "mode",
+                            "Anon is in %sanonymous hidden service " "mode",
                             non_anonymous ? "" : "non-");
     goto out;
   }
