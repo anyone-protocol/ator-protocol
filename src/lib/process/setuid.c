@@ -278,13 +278,13 @@ switch_id(const char *user, const unsigned flags)
     log_warn(LD_GENERAL, "Error setting groups to gid %d: \"%s\".",
              (int)pw->pw_gid, strerror(errno));
     if (old_uid == pw->pw_uid) {
-      log_warn(LD_GENERAL, "Tor is already running as %s.  You do not need "
+      log_warn(LD_GENERAL, "Anon is already running as %s.  You do not need "
                "the \"User\" option if you are already running as the user "
                "you want to be.  (If you did not set the User option in your "
                "anonrc, check whether it was specified on the command line "
                "by a startup script.)", user);
     } else {
-      log_warn(LD_GENERAL, "If you set the \"User\" option, you must start Tor"
+      log_warn(LD_GENERAL, "If you set the \"User\" option, you must start Anon"
                " as root.");
     }
     return -1;

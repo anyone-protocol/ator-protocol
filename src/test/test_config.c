@@ -1522,7 +1522,7 @@ test_config_find_my_address(void *arg)
   retval = find_my_address(options, p->family, LOG_NOTICE, &resolved_addr,
                            &method_used, &hostname_out);
 
-  expect_log_msg_containing("is a private IP address. Tor relays that "
+  expect_log_msg_containing("is a private IP address. Anon relays that "
                             "use the default DirAuthorities must have "
                             "public IP addresses.");
   teardown_capture_of_logs();

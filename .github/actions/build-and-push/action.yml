@@ -17,9 +17,8 @@ inputs:
   push:
     required: false
     default: true
-  push-latest:
-    required: false
-    default: false
+  event-name:
+    required: true
 
 runs:
   using: "composite"
@@ -39,16 +38,8 @@ runs:
         context: ./docker/
         file: ./docker/Dockerfile
         push: ${{ inputs.push }}
-        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ github.sha }}
+        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
           ANON_VER=${{ inputs.version }}
           ANON_ENV=${{ inputs.environment }}
-
-    - name: Push latest
-      if: ${{ inputs.push-latest == true }}
-      shell: bash
-      run: |
-        docker buildx imagetools create \
-          -t ${{ inputs.docker-base-repo }}:${{ github.sha }} \
-             ${{ inputs.docker-base-repo }}:latest

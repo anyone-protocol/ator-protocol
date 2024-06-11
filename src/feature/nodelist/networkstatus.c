@@ -1799,7 +1799,7 @@ reload_consensus_from_file(const char *fname,
     log_notice(LD_GENERAL, "Looks like the above failures are probably "
                "because of a CRLF in consensus file %s; falling back to "
                "read_file_to_string. Nothing to worry about: this file "
-               "was probably saved by an earlier version of Tor.",
+               "was probably saved by an earlier version of Anon.",
                escaped(fname));
     char *content = read_file_to_str(fname, RFTS_IGNORE_MISSING, NULL);
     rv = networkstatus_set_current_consensus(content, strlen(content),
@@ -1901,7 +1901,7 @@ warn_early_consensus(const networkstatus_t *c, const char *flavor,
   format_iso_time(tbuf, c->valid_after);
   format_time_interval(dbuf, sizeof(dbuf), delta);
   log_warn(LD_GENERAL, "Our clock is %s behind the time published in the "
-           "consensus network status document (%s UTC).  Tor needs an "
+           "consensus network status document (%s UTC).  Anon needs an "
            "accurate clock to work correctly. Please check your time and "
            "date settings!", dbuf, tbuf);
   tor_asprintf(&flavormsg, "%s flavor consensus", flavor);
@@ -2267,7 +2267,7 @@ routers_update_all_from_networkstatus(time_t now, int dir_version)
                "The directory authorities don't recommend any versions.");
     } else if (status == VS_NEW || status == VS_NEW_IN_SERIES) {
       if (!have_warned_about_new_version) {
-        log_notice(LD_GENERAL, "This version of Tor (%s) is newer than any "
+        log_notice(LD_GENERAL, "This version of Anon (%s) is newer than any "
                    "recommended version%s, according to the directory "
                    "authorities. Recommended versions are: %s",
                    VERSION,
@@ -2280,7 +2280,7 @@ routers_update_all_from_networkstatus(time_t now, int dir_version)
       }
     } else {
       log_warn(LD_GENERAL, "Please upgrade! "
-               "This version of Tor (%s) is %s, according to the directory "
+               "This version of Anon (%s) is %s, according to the directory "
                "authorities. Recommended versions are: %s",
                VERSION,
                status == VS_OLD ? "obsolete" : "not recommended",
@@ -2757,9 +2757,9 @@ networkstatus_check_required_protocols(const networkstatus_t *ns,
 
   if (!protover_all_supported(required, &missing)) {
     tor_asprintf(warning_out, "At least one protocol listed as required in "
-                 "the consensus is not supported by this version of Tor. "
-                 "You should upgrade. This version of Tor will not work as a "
-                 "%s on the Tor network. The missing protocols are: %s",
+                 "the consensus is not supported by this version of Anon. "
+                 "You should upgrade. This version of Anon will not work as a "
+                 "%s on the Anon network. The missing protocols are: %s",
                  func, missing);
     tor_free(missing);
     return 1;
@@ -2767,9 +2767,9 @@ networkstatus_check_required_protocols(const networkstatus_t *ns,
 
   if (! protover_all_supported(recommended, &missing)) {
     tor_asprintf(warning_out, "At least one protocol listed as recommended in "
-                 "the consensus is not supported by this version of Tor. "
-                 "You should upgrade. This version of Tor will eventually "
-                 "stop working as a %s on the Tor network. The missing "
+                 "the consensus is not supported by this version of Anon. "
+                 "You should upgrade. This version of Anon will eventually "
+                 "stop working as a %s on the Anon network. The missing "
                  "protocols are: %s",
                  func, missing);
     tor_free(missing);

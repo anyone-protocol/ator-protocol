@@ -64,7 +64,7 @@ log_unsafe_socks_warning(int socks_protocol, const char *address,
   if (safe_socks) {
     log_fn_ratelim(&socks_ratelim, LOG_WARN, LD_APP,
              "Your application (using socks%d to port %d) is giving "
-             "Tor only an IP address. Applications that do DNS resolves "
+             "Anon only an IP address. Applications that do DNS resolves "
              "themselves may leak information. Consider using Socks4A "
              "(e.g. via privoxy or socat) instead. For more information, "
              "please see https://2019.www.torproject.org/docs/faq.html.en"
@@ -253,13 +253,13 @@ process_socks4_request(const socks_request_t *req, int is_socks4a,
     if (log_sockstype)
       log_notice(LD_APP,
                  "Your application (using socks4a to port %d) instructed "
-                 "Tor to take care of the DNS resolution itself if "
+                 "Anon to take care of the DNS resolution itself if "
                  "necessary. This is good.", req->port);
   }
 
   if (!string_is_valid_dest(req->address)) {
     log_warn(LD_PROTOCOL,
-             "Your application (using socks4 to port %d) gave Tor "
+             "Your application (using socks4 to port %d) gave Anon "
              "a malformed hostname: %s. Rejecting the connection.",
              req->port, escaped_safe_str_client(req->address));
      return SOCKS_RESULT_INVALID;
@@ -646,7 +646,7 @@ process_socks5_client_request(socks_request_t *req,
     socks_request_set_socks5_error(req, SOCKS5_GENERAL_ERROR);
 
     log_warn(LD_PROTOCOL,
-             "Your application (using socks5 to port %d) gave Tor "
+             "Your application (using socks5 to port %d) gave Anon "
              "a malformed hostname: %s. Rejecting the connection.",
              req->port, escaped_safe_str_client(req->address));
 
@@ -669,7 +669,7 @@ process_socks5_client_request(socks_request_t *req,
   if (log_sockstype)
     log_notice(LD_APP,
               "Your application (using socks5 to port %d) instructed "
-              "Tor to take care of the DNS resolution itself if "
+              "Anon to take care of the DNS resolution itself if "
               "necessary. This is good.", req->port);
 
   end:

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     
 env:
-  image-tag: ${{ github.event_name == 'push' && 'latest' || 'latest-manual' }}
+  image-tag: ${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -34,6 +34,7 @@ jobs:
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
           environment: stage
+          event-name: ${{ github.event_name }}
 
   multiarch-push:
     runs-on: arm64
@@ -48,6 +49,7 @@ jobs:
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
           docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_STAGE }}
           docker-tag: ${{ env.image-tag }}
+          event-name: ${{ github.event_name }}
   deploy:
     needs: multiarch-push
     runs-on: ubuntu-latest

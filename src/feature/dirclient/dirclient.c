@@ -1182,7 +1182,7 @@ directory_request_set_dir_from_routerstatus(directory_request_t *req)
       routerset_contains_routerstatus(options->ExcludeNodes, status, -1)) {
     log_warn(LD_DIR, "Wanted to contact directory mirror %s for %s, but "
              "it's in our ExcludedNodes list and StrictNodes is set. "
-             "Skipping. This choice might make your Tor not work.",
+             "Skipping. This choice might make your Anon not work.",
              routerstatus_describe(status),
              dir_conn_purpose_to_string(req->dir_purpose));
     return -1;
