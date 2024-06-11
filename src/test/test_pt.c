@@ -413,7 +413,9 @@ test_pt_get_extrainfo_string(void *arg)
   tt_assert(s);
   tt_str_op(s, OP_EQ,
             "transport hagbard 127.0.0.1:5555\n"
-            "transport celine 127.0.0.1:1723 card=no-enemy\n");
+            "transport-info\n"
+            "transport celine 127.0.0.1:1723 card=no-enemy\n"
+            "transport-info\n");
 
  done:
   /* XXXX clean up better */

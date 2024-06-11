@@ -1798,20 +1798,21 @@ pt_get_extra_info_descriptor_string(void)
 
     /* Set transport-info line. */
     {
-      char *transport_info_args = NULL;
+      char *version = NULL;
+      char *impl = NULL;
 
       if (mp->version) {
-        tor_asprintf(&transport_info_args, " version=%s", mp->version);
+        tor_asprintf(&version, " version=%s", mp->version);
       }
       if (mp->implementation) {
-        tor_asprintf(&transport_info_args, " implementation=%s",
-                     mp->implementation);
+        tor_asprintf(&impl, " implementation=%s", mp->implementation);
       }
-      if (transport_info_args) {
-        smartlist_add_asprintf(string_chunks, "transport-info%s",
-                               transport_info_args ? transport_info_args : "");
-        tor_free(transport_info_args);
-      }
+      /* Always put in the line even if empty. Else, we don't know to which
+       * transport this applies to. */
+      smartlist_add_asprintf(string_chunks, "transport-info%s%s",
+                             version ? version: "", impl ? impl: "");
+      tor_free(version);
+      tor_free(impl);
     }
   } SMARTLIST_FOREACH_END(mp);
 
