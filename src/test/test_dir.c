@@ -1305,6 +1305,72 @@ test_dir_parse_router_list(void *arg)
 #undef ADD
 }
 
+/* Made with chutney and a patched tor: Has no onion-key or
+ * onion-key-crosscert */
+static const char ROUTERDESC_NO_ONION_KEY[] =
+"router test001a 127.0.0.1 5001 0 7001\n"
+"identity-ed25519\n"
+"-----BEGIN ED25519 CERT-----\n"
+"AQQAB0xWARbCJfDrX0OTtpM0fDxU9cLweMnZeUq/KBfAN1wwWHtMAQAgBADBQJ1o\n"
+"ClrXUenWC90FYEUQDpMSdxdxKlrR83rYy+keGe61WQHYP0ebowJC19UvPnYryLeA\n"
+"Gnhko2WwmbUDGicdnY4j2VSFU15oxBjln65IznZJyiZM4zGE1GkNZzKGmQY=\n"
+"-----END ED25519 CERT-----\n"
+"master-key-ed25519 wUCdaApa11Hp1gvdBWBFEA6TEncXcSpa0fN62MvpHhk\n"
+"or-address [::]:5001\n"
+"platform Tor 0.4.9.0-alpha-dev on Linux\n"
+"proto Conflux=1 Cons=1-2 Desc=1-2 DirCache=2 FlowCtrl=1-2 HSDir=2 "
+  "HSIntro=4-5 HSRend=1-2 Link=1-5 LinkAuth=1,3 Microdesc=1-2 Padding=2 "
+  "Relay=1-4\n"
+"published 2024-06-24 21:34:22\n"
+"fingerprint FD3A 6FA4 E716 C379 3CBA FEC3 39EA 01C8 B49D 7189\n"
+"uptime 0\n"
+"bandwidth 1073741824 1073741824 0\n"
+"extra-info-digest 9946CAC41485EDFFDD83F7DAF1A088C30563126C "
+  "lpAMRlRTy9QR2xVCu1nnnxOHA2I05TTKvCSPPcr1geo\n"
+"caches-extra-info\n"
+"signing-key\n"
+"-----BEGIN RSA PUBLIC KEY-----\n"
+"MIGJAoGBALcIIij7gNpvSZPvaCLDDNyyQZq7fR0aXiHgmiIc5hYVcBl+zF5sTX6a\n"
+"jQF+GQdbSHcRzA1IMWPXnA7+nGOxSNayrQwExuf7ESsBaQHU81/dmV+rgTwtcd3K\n"
+"9lobTQUm+idLvGjVF5P1XJkduPvURIgpIfXT1ZHJUQhwxWSw8MmnAgMBAAE=\n"
+"-----END RSA PUBLIC KEY-----\n"
+"ntor-onion-key-crosscert 1\n"
+"-----BEGIN ED25519 CERT-----\n"
+"AQoAB0wmAcFAnWgKWtdR6dYL3QVgRRAOkxJ3F3EqWtHzetjL6R4ZAFPSCMLyQ82v\n"
+"dvcpZDa7C/qp8TsJn2Z8v77RjRc2QD1KYDzGfg5euwlB1lu8+IR38l3mmC1PXXhe\n"
+"ZB84q4aUdAA=\n"
+"-----END ED25519 CERT-----\n"
+"hidden-service-dir\n"
+"contact auth1@test.test\n"
+"ntor-onion-key m0dedSB2vjtvz08bNu+LCdIApVuspRlzXbsphXZ62zQ\n"
+"reject *:*\n"
+"tunnelled-dir-server\n"
+"router-sig-ed25519 VMwmiN9KhWWFSFSuVZxG1g46mb2QhMhv0UlatvPKyAV+1jPl"
+  "EbDFaO1Qur0335Rn0ToysC6UqB1p78pefX67Aw\n"
+"router-signature\n"
+"-----BEGIN SIGNATURE-----\n"
+"q9Hxy4FJVIK2ks/ByBv8P1p7Pc68ie/TTlDN+tce9opPlijy9+ze9/Gd2SKonRm1\n"
+"J+WBj/kKYKw+YoUExIT0qMfa6QTCOe/ecp1sNmgeW0YfloP4Nv8goi3S0k4yrPk/\n"
+"qw6TIXGYJpvrdR1Qe7+MEl2K1Okqsy5amtOU400lYRA=\n"
+"-----END SIGNATURE-----\n"
+  ;
+
+static void
+test_dir_parse_no_onion_keyrouter_list(void *arg)
+{
+  (void) arg;
+
+  routerinfo_t *ri =
+    router_parse_entry_from_string(ROUTERDESC_NO_ONION_KEY, NULL,
+                                   0, 1, 0, NULL);
+
+  tt_assert(ri);
+  tt_assert(ri->tap_onion_pkey == NULL);
+
+ done:
+  routerinfo_free(ri);
+}
+
 static download_status_t dls_minimal;
 static download_status_t dls_maximal;
 static download_status_t dls_bad_fingerprint;
@@ -7229,6 +7295,7 @@ struct testcase_t dir_tests[] = {
   DIR(routerinfo_parsing, 0),
   DIR(extrainfo_parsing, 0),
   DIR(parse_router_list, TT_FORK),
+  DIR(parse_no_onion_keyrouter_list, TT_FORK),
   DIR(load_routers, TT_FORK),
   DIR(load_extrainfo, TT_FORK),
   DIR(getinfo_extra, 0),
