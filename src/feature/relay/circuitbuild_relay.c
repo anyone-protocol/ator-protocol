@@ -389,7 +389,6 @@ circuit_open_connection_for_extend(const struct extend_cell_t *ec,
   circ->n_hop = extend_info_new(NULL /*nickname*/,
                                 (const char*)ec->node_id,
                                 &ec->ed_pubkey,
-                                NULL, /*onion_key*/
                                 NULL, /*curve25519_key*/
                                 &chosen_ap->addr,
                                 chosen_ap->port,
