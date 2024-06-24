@@ -217,7 +217,7 @@ basic_routerinfo_new(const char *nickname, uint32_t ipv4_addr,
   r1->ipv4_dirport = dir_port;
   r1->supports_tunnelled_dir_requests = 1;
 
-  router_set_rsa_onion_pkey(pk1, &r1->onion_pkey, &r1->onion_pkey_len);
+  router_set_rsa_onion_pkey(pk1, &r1->tap_onion_pkey, &r1->tap_onion_pkey_len);
   r1->identity_pkey = pk2;
 
   r1->bandwidthrate = bandwidthrate;
@@ -382,8 +382,8 @@ get_new_onion_key_block(const routerinfo_t *r1)
 {
   char *block = NULL;
   tor_assert(r1);
-  crypto_pk_t *pk_tmp = router_get_rsa_onion_pkey(r1->onion_pkey,
-                                                  r1->onion_pkey_len);
+  crypto_pk_t *pk_tmp = router_get_rsa_onion_pkey(r1->tap_onion_pkey,
+                                                  r1->tap_onion_pkey_len);
   block = get_new_rsa_key_block("onion-key", pk_tmp);
   crypto_pk_free(pk_tmp);
   return block;
@@ -587,8 +587,8 @@ setup_mocks_for_fresh_descriptor(const routerinfo_t *r1,
   if (rsa_onion_keypair) {
     mocked_onionkey = crypto_pk_dup_key(rsa_onion_keypair);
   } else {
-    mocked_onionkey = router_get_rsa_onion_pkey(r1->onion_pkey,
-                                                r1->onion_pkey_len);
+    mocked_onionkey = router_get_rsa_onion_pkey(r1->tap_onion_pkey,
+                                                r1->tap_onion_pkey_len);
   }
   MOCK(get_onion_key, mock_get_onion_key);
 }
@@ -643,10 +643,12 @@ STMT_BEGIN \
   tt_int_op(rp1->bandwidthrate,OP_EQ, r1->bandwidthrate); \
   tt_int_op(rp1->bandwidthburst,OP_EQ, r1->bandwidthburst); \
   tt_int_op(rp1->bandwidthcapacity,OP_EQ, r1->bandwidthcapacity); \
-  crypto_pk_t *rp1_onion_pkey = router_get_rsa_onion_pkey(rp1->onion_pkey, \
-                                                      rp1->onion_pkey_len); \
-  crypto_pk_t *r1_onion_pkey = router_get_rsa_onion_pkey(r1->onion_pkey, \
-                                                      r1->onion_pkey_len); \
+  crypto_pk_t *rp1_onion_pkey = router_get_rsa_onion_pkey( \
+                                                    rp1->tap_onion_pkey, \
+                                                    rp1->tap_onion_pkey_len); \
+  crypto_pk_t *r1_onion_pkey = router_get_rsa_onion_pkey( \
+                                                    r1->tap_onion_pkey, \
+                                                    r1->tap_onion_pkey_len); \
   tt_int_op(crypto_pk_cmp_keys(rp1_onion_pkey, r1_onion_pkey), OP_EQ, 0); \
   crypto_pk_free(rp1_onion_pkey); \
   crypto_pk_free(r1_onion_pkey); \

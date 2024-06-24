@@ -601,8 +601,8 @@ router_parse_entry_from_string(const char *s, const char *end,
              "Relay's onion key had invalid exponent.");
     goto err;
   }
-  router->onion_pkey = tor_memdup(tok->object_body, tok->object_size);
-  router->onion_pkey_len = tok->object_size;
+  router->tap_onion_pkey = tor_memdup(tok->object_body, tok->object_size);
+  router->tap_onion_pkey_len = tok->object_size;
   crypto_pk_free(tok->key);
 
   if ((tok = find_opt_by_keyword(tokens, K_ONION_KEY_NTOR))) {
@@ -776,8 +776,12 @@ router_parse_entry_from_string(const char *s, const char *end,
         goto err;
       }
 
-      rsa_pubkey = router_get_rsa_onion_pkey(router->onion_pkey,
-                                             router->onion_pkey_len);
+      rsa_pubkey = router_get_rsa_onion_pkey(router->tap_onion_pkey,
+                                             router->tap_onion_pkey_len);
+      if (rsa_pubkey == NULL) {
+        log_warn(LD_DIR, "No pubkey for TAP cross-verification.");
+        goto err;
+      }
       if (check_tap_onion_key_crosscert(
                       (const uint8_t*)cc_tap_tok->object_body,
                       (int)cc_tap_tok->object_size,
