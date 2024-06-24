@@ -889,20 +889,14 @@ circuit_pick_create_handshake(uint8_t *cell_type_out,
 {
   /* torspec says: In general, clients SHOULD use CREATE whenever they are
    * using the TAP handshake, and CREATE2 otherwise. */
-  if (extend_info_supports_ntor(ei)) {
-    *cell_type_out = CELL_CREATE2;
-    /* Only use ntor v3 with exits that support congestion control,
-     * and only when it is enabled. */
-    if (ei->exit_supports_congestion_control &&
-        congestion_control_enabled())
-      *handshake_type_out = ONION_HANDSHAKE_TYPE_NTOR_V3;
-    else
-      *handshake_type_out = ONION_HANDSHAKE_TYPE_NTOR;
-  } else {
-    /* XXXX030 Remove support for deciding to use TAP and EXTEND. */
-    *cell_type_out = CELL_CREATE;
-    *handshake_type_out = ONION_HANDSHAKE_TYPE_TAP;
-  }
+  *cell_type_out = CELL_CREATE2;
+  /* Only use ntor v3 with exits that support congestion control,
+   * and only when it is enabled. */
+  if (ei->exit_supports_congestion_control &&
+      congestion_control_enabled())
+    *handshake_type_out = ONION_HANDSHAKE_TYPE_NTOR_V3;
+  else
+    *handshake_type_out = ONION_HANDSHAKE_TYPE_NTOR;
 }
 
 /** Decide whether to use a TAP or ntor handshake for extending to <b>ei</b>
@@ -923,16 +917,8 @@ circuit_pick_extend_handshake(uint8_t *cell_type_out,
   uint8_t t;
   circuit_pick_create_handshake(&t, handshake_type_out, ei);
 
-  /* torspec says: Clients SHOULD use the EXTEND format whenever sending a TAP
-   * handshake... In other cases, clients SHOULD use EXTEND2. */
-  if (*handshake_type_out != ONION_HANDSHAKE_TYPE_TAP) {
-    *cell_type_out = RELAY_COMMAND_EXTEND2;
-    *create_cell_type_out = CELL_CREATE2;
-  } else {
-    /* XXXX030 Remove support for deciding to use TAP and EXTEND. */
-    *cell_type_out = RELAY_COMMAND_EXTEND;
-    *create_cell_type_out = CELL_CREATE;
-  }
+  *cell_type_out = RELAY_COMMAND_EXTEND2;
+  *create_cell_type_out = CELL_CREATE2;
 }
 
 /**
