@@ -2052,11 +2052,8 @@ node_get_rsa_onion_key(const node_t *node)
   if (node->ri) {
     onion_pkey = node->ri->onion_pkey;
     onion_pkey_len = node->ri->onion_pkey_len;
-  } else if (node->rs && node->md) {
-    onion_pkey = node->md->onion_pkey;
-    onion_pkey_len = node->md->onion_pkey_len;
   } else {
-    /* No descriptor or microdescriptor. */
+    /* No descriptor; we don't take onion keys from microdescs. */
     goto end;
   }
   pk = router_get_rsa_onion_pkey(onion_pkey, onion_pkey_len);
