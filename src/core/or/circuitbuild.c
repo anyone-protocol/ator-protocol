@@ -33,7 +33,6 @@
 #include "core/crypto/hs_ntor.h"
 #include "core/crypto/onion_crypto.h"
 #include "core/crypto/onion_fast.h"
-#include "core/crypto/onion_tap.h"
 #include "core/mainloop/connection.h"
 #include "core/mainloop/mainloop.h"
 #include "core/or/channel.h"
