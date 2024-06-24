@@ -627,24 +627,16 @@ router_parse_entry_from_string(const char *s, const char *end,
   {
     directory_token_t *ed_sig_tok, *ed_cert_tok, *cc_tap_tok, *cc_ntor_tok,
       *master_key_tok;
-    ed_sig_tok = find_opt_by_keyword(tokens, K_ROUTER_SIG_ED25519);
-    ed_cert_tok = find_opt_by_keyword(tokens, K_IDENTITY_ED25519);
-    master_key_tok = find_opt_by_keyword(tokens, K_MASTER_KEY_ED25519);
+    ed_sig_tok = find_by_keyword(tokens, K_ROUTER_SIG_ED25519);
+    ed_cert_tok = find_by_keyword(tokens, K_IDENTITY_ED25519);
+    master_key_tok = find_by_keyword(tokens, K_MASTER_KEY_ED25519);
     cc_tap_tok = find_opt_by_keyword(tokens, K_ONION_KEY_CROSSCERT);
-    cc_ntor_tok = find_opt_by_keyword(tokens, K_NTOR_ONION_KEY_CROSSCERT);
-    int n_ed_toks = !!ed_sig_tok + !!ed_cert_tok +
-      !!cc_tap_tok + !!cc_ntor_tok;
-    if ((n_ed_toks != 0 && n_ed_toks != 4) ||
-        (n_ed_toks == 4 && !router->onion_curve25519_pkey)) {
-      log_warn(LD_DIR, "Router descriptor with only partial ed25519/"
-               "cross-certification support");
+    cc_ntor_tok = find_by_keyword(tokens, K_NTOR_ONION_KEY_CROSSCERT);
+
+    IF_BUG_ONCE(! (ed_sig_tok && ed_cert_tok&& cc_ntor_tok &&master_key_tok)) {
       goto err;
     }
-    if (master_key_tok && !ed_sig_tok) {
-      log_warn(LD_DIR, "Router descriptor has ed25519 master key but no "
-               "certificate");
-      goto err;
-    }
+
     if (ed_sig_tok) {
       tor_assert(ed_cert_tok && cc_tap_tok && cc_ntor_tok);
       const int ed_cert_token_pos = smartlist_pos(tokens, ed_cert_tok);
