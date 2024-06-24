@@ -97,7 +97,6 @@ extend_info_t *
 extend_info_from_node(const node_t *node, int for_direct_connect,
                       bool for_exit)
 {
-  crypto_pk_t *rsa_pubkey = NULL;
   extend_info_t *info = NULL;
   tor_addr_port_t ap;
   int valid_addr = 0;
