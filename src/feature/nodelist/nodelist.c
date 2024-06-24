@@ -2034,34 +2034,6 @@ node_get_curve25519_onion_key(const node_t *node)
     return NULL;
 }
 
-/* Return a newly allocacted RSA onion public key taken from the given node.
- *
- * Return NULL if node is NULL or no RSA onion public key can be found. It is
- * the caller responsibility to free the returned object. */
-crypto_pk_t *
-node_get_rsa_onion_key(const node_t *node)
-{
-  crypto_pk_t *pk = NULL;
-  const char *onion_pkey;
-  size_t onion_pkey_len;
-
-  if (!node) {
-    goto end;
-  }
-
-  if (node->ri) {
-    onion_pkey = node->ri->onion_pkey;
-    onion_pkey_len = node->ri->onion_pkey_len;
-  } else {
-    /* No descriptor; we don't take onion keys from microdescs. */
-    goto end;
-  }
-  pk = router_get_rsa_onion_pkey(onion_pkey, onion_pkey_len);
-
- end:
-  return pk;
-}
-
 /** Refresh the country code of <b>ri</b>.  This function MUST be called on
  * each router when the GeoIP database is reloaded, and on all new routers. */
 void
