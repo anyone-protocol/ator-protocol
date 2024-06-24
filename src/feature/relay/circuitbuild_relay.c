@@ -443,6 +443,12 @@ circuit_extend(struct cell_t *cell, struct circuit_t *circ)
 
   relay_header_unpack(&rh, cell->payload);
 
+  /* We no longer accept EXTEND messages; only EXTEND2. */
+  if (rh.command == RELAY_COMMAND_EXTEND) {
+    /* TODO: Should we log this? */
+    return -1;
+  }
+
   if (extend_cell_parse(&ec, rh.command,
                         cell->payload+RELAY_HEADER_SIZE,
                         rh.length) < 0) {
