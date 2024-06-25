@@ -211,13 +211,37 @@ set_onion_key(crypto_pk_t *k)
   mark_my_descriptor_dirty("set onion key");
 }
 
-/** Return the current onion key.  Requires that the onion key has been
- * loaded or generated. */
+/** Return the current TAP onion key.  Requires that the onion key has been
+ * loaded or generated.
+ *
+ * Note that this key is no longer used for anything; we only keep it around
+ * because (as of June 2024) other Tor instances all expect to find it in
+ * our routerdescs.
+ **/
 MOCK_IMPL(crypto_pk_t *,
 get_onion_key,(void))
 {
   tor_assert(onionkey);
   return onionkey;
+}
+
+/**
+ * Return true iff we should include our TAP onion key in our router
+ * descriptor.
+ */
+static int
+should_publish_tap_onion_key(void)
+{
+#define SHOULD_PUBLISH_TAP_MIN 0
+#define SHOULD_PUBLISH_TAP_MAX 1
+  /* Note that we err on the side of publishing. */
+#define SHOULD_PUBLISH_TAP_DFLT 1
+
+  return networkstatus_get_param(NULL,
+                                 "publish-dummy-tap-key",
+                                 SHOULD_PUBLISH_TAP_DFLT,
+                                 SHOULD_PUBLISH_TAP_MIN,
+                                 SHOULD_PUBLISH_TAP_MAX);
 }
 
 /** Store a full copy of the current onion key into *<b>key</b>, and a full
@@ -2138,9 +2162,12 @@ router_build_fresh_unsigned_routerinfo,(routerinfo_t **ri_out))
   ri->supports_tunnelled_dir_requests =
     directory_permits_begindir_requests(options);
   ri->cache_info.published_on = time(NULL);
-  /* get_onion_key() must invoke from main thread */
-  router_set_rsa_onion_pkey(get_onion_key(), &ri->tap_onion_pkey,
-                            &ri->tap_onion_pkey_len);
+
+  if (should_publish_tap_onion_key()) {
+    /* get_onion_key() must invoke from main thread */
+    router_set_rsa_onion_pkey(get_onion_key(), &ri->tap_onion_pkey,
+                              &ri->tap_onion_pkey_len);
+  }
 
   ri->onion_curve25519_pkey =
     tor_memdup(&get_current_curve25519_keypair()->pubkey,
