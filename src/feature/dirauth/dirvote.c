@@ -3870,8 +3870,12 @@ dirvote_create_microdescriptor(const routerinfo_t *ri, int consensus_method)
   size_t keylen;
   smartlist_t *chunks = smartlist_new();
   char *output = NULL;
-  crypto_pk_t *rsa_pubkey = router_get_rsa_onion_pkey(ri->onion_pkey,
-                                                      ri->onion_pkey_len);
+  crypto_pk_t *rsa_pubkey = router_get_rsa_onion_pkey(ri->tap_onion_pkey,
+                                                      ri->tap_onion_pkey_len);
+  if (!rsa_pubkey) {
+    /* We do not yet support creating MDs for relays without TAP onion keys. */
+    goto done;
+  }
 
   if (crypto_pk_write_public_key_to_string(rsa_pubkey, &key, &keylen)<0)
     goto done;
