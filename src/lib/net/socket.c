@@ -51,7 +51,7 @@ network_init(void)
     return -1;
   }
   if (sizeof(SOCKET) != sizeof(tor_socket_t)) {
-    log_warn(LD_BUG,"The tor_socket_t type does not match SOCKET in size; Tor "
+    log_warn(LD_BUG,"The tor_socket_t type does not match SOCKET in size; Anon "
              "might not work. (Sizes are %d and %d respectively.)",
              (int)sizeof(tor_socket_t), (int)sizeof(SOCKET));
   }

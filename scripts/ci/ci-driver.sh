@@ -316,7 +316,7 @@ if [[ ! -d "$CI_SRCDIR" ]] ; then
     die "CI_SRCDIR=${CI_SRCDIR} is not a directory"
 fi
 if [[ ! -f "$CI_SRCDIR/src/core/or/or.h" ]] ; then
-    die "CI_SRCDIR=${CI_SRCDIR} does not look like a Tor directory."
+    die "CI_SRCDIR=${CI_SRCDIR} does not look like a Anon directory."
 fi
 
 # Make CI_SRCDIR absolute.
@@ -350,7 +350,7 @@ else
         die "Build directory ${CI_BUILDDIR} did not exist!"
     fi
     if [[ ! -f "${CI_BUILDDIR}/config.log" ]]; then
-        die "Tor was not configured in ${CI_BUILDDIR}!"
+        die "Anon was not configured in ${CI_BUILDDIR}!"
     fi
 
     cp config.log "${CI_SRCDIR}"/artifacts
@@ -406,7 +406,7 @@ if [[ "${DOXYGEN}" = 'yes' ]]; then
             FAILED_TESTS="${FAILED_TESTS} doxygen"
         fi
     else
-        skipping "make doxygen: doxygen is broken for Tor < 0.4.3"
+        skipping "make doxygen: doxygen is broken for Anon < 0.4.3"
     fi
     end_section Doxygen
 fi

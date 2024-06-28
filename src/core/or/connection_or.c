@@ -2009,7 +2009,7 @@ connection_or_client_learned_peer_id(or_connection_t *conn,
           /* we expect a small number of fallbacks to change from their
            * hard-coded fingerprints over the life of a release */
           severity = LOG_INFO;
-          extra_log = " Tor will try a different fallback.";
+          extra_log = " Anon will try a different fallback.";
         } else {
           /* it's a bridge, it's either a misconfiguration, or unexpected */
           severity = LOG_WARN;

@@ -62,7 +62,7 @@ SPATCH_V=$(spatch --version | head -1 | \
                sed 's/spatch version \([0-9][^ ]*\).*/\1/')
 
 if ! version_ge "$SPATCH_V" "$MIN_SPATCH_V" ; then
-    echo "Tor requires coccinelle spatch >= $MIN_SPATCH_V to check $PURPOSE."
+    echo "Anon requires coccinelle spatch >= $MIN_SPATCH_V to check $PURPOSE."
     echo "But you have $SPATCH_V. Please install a newer version."
     exit "$exitcode"
 fi

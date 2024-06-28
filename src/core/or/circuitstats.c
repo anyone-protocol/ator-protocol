@@ -440,7 +440,7 @@ circuit_build_times_new_consensus_params(circuit_build_times_t *cbt,
       if (num != cbt->liveness.num_recent_circs) {
         int8_t *recent_circs;
         if (cbt->liveness.num_recent_circs > 0) {
-          log_notice(LD_CIRC, "The Tor Directory Consensus has changed how "
+          log_notice(LD_CIRC, "The Anon Directory Consensus has changed how "
                      "many circuits we must track to detect network failures "
                      "from %d to %d.", cbt->liveness.num_recent_circs, num);
         } else {
@@ -966,7 +966,7 @@ circuit_build_times_shuffle_and_store_array(circuit_build_times_t *cbt,
 {
   uint32_t n = num_times;
   if (num_times > CBT_NCIRCUITS_TO_OBSERVE) {
-    log_notice(LD_CIRC, "The number of circuit times that this Tor version "
+    log_notice(LD_CIRC, "The number of circuit times that this Anon version "
                "uses to calculate build times is less than the number stored "
                "in your state file. Decreasing the circuit time history from "
                "%lu to %d.", (unsigned long)num_times,
@@ -1372,7 +1372,7 @@ circuit_build_times_network_is_live(circuit_build_times_t *cbt)
   if (cbt->liveness.nonlive_timeouts > 0) {
     time_t time_since_live = now - cbt->liveness.network_last_live;
     log_notice(LD_CIRC,
-               "Tor now sees network activity. Restoring circuit build "
+               "Anon now sees network activity. Restoring circuit build "
                "timeout recording. Network was down for %d seconds "
                "during %d circuit attempts.",
                (int)time_since_live,
@@ -1514,7 +1514,7 @@ circuit_build_times_network_close(circuit_build_times_t *cbt,
     cbt->liveness.nonlive_timeouts++;
     if (cbt->liveness.nonlive_timeouts == 1) {
       log_notice(LD_CIRC,
-                 "Tor has not observed any network activity for the past %d "
+                 "Anon has not observed any network activity for the past %d "
                  "seconds. Disabling circuit build timeout recording.",
                  (int)(now - cbt->liveness.network_last_live));
 

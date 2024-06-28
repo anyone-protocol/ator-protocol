@@ -148,7 +148,7 @@ load_ed_keys(const or_options_t *options, time_t now)
                "If the master identity key was not moved or encrypted "
                "with a passphrase, this will be done automatically and "
                "no further action is required. Otherwise, provide the "
-               "necessary data using 'tor --keygen' to do it manually.",
+               "necessary data using 'anon --keygen' to do it manually.",
             (NULL == use_signing) ? "I don't have one" :
             EXPIRES_SOON(check_signing_cert, 0) ? "the one I have is expired" :
                "you asked me to make one with --keygen",
@@ -161,13 +161,13 @@ load_ed_keys(const or_options_t *options, time_t now)
                "If the master identity key was not moved or encrypted "
                "with a passphrase, this will be done automatically and "
                "no further action is required. Otherwise, provide the "
-               "necessary data using 'tor --keygen' to do it manually.");
+               "necessary data using 'anon --keygen' to do it manually.");
   } else if (want_new_signing_key) {
     log_notice(LD_OR, "It looks like I should try to generate and sign a "
                "new medium-term signing key, because the one I have is "
                "going to expire soon. But OfflineMasterKey is set, so I "
                "won't try to load a permanent master identity key. You "
-               "will need to use 'tor --keygen' to make a new signing "
+               "will need to use 'anon --keygen' to make a new signing "
                "key and certificate.");
   }
 

@@ -49,7 +49,7 @@ chmod 02750 /var/log/anon
 
 
 anon_error_init() {
-	echo "Tor was unable to start due to configuration errors.";
+	echo "Anon was unable to start due to configuration errors.";
 	echo "Please fix them and manually restart the anon daemon using";
 	echo " ´service start anon";
 }
