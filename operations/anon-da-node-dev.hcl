@@ -177,6 +177,7 @@ V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
       service {
         name = "dir-auth-dev"
         port = "dirport"
+        tags     = ["logging"]
         check {
           name     = "dir auth alive"
           type     = "tcp"
