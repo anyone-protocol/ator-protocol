@@ -38,7 +38,7 @@ runs:
         context: ./docker/
         file: ./docker/Dockerfile
         push: ${{ inputs.push }}
-        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }}
+        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
           ANON_VER=${{ inputs.version }}
