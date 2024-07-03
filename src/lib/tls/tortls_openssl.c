@@ -272,47 +272,6 @@ tor_tls_get_last_error_msg(const tor_tls_t *tls)
 #define CATCH_SYSCALL 1
 #define CATCH_ZERO    2
 
-// Define the ssl_info_callback function
-static void ssl_info_callback(const SSL *ssl, int where, int ret);
-
-void initialize_ssl_context() {
-    SSL_CTX *ctx = SSL_CTX_new(TLS_method());
-    if (!ctx) {
-        ERR_print_errors_fp(stderr);
-        return; // Or handle the error appropriately
-    }
-    SSL_CTX_set_info_callback(ctx, ssl_info_callback);
-
-    // The rest of your SSL context setup
-}
-
-static void ssl_info_callback(const SSL *ssl, int where, int ret) {
-    const char *str;
-    int w;
-
-    w = where & ~SSL_ST_MASK;
-    if (w & SSL_ST_CONNECT)
-        str = "SSL_connect";
-    else if (w & SSL_ST_ACCEPT)
-        str = "SSL_accept";
-    else
-        str = "undefined";
-
-    if (where & SSL_CB_LOOP) {
-        printf("%s:%s\n", str, SSL_state_string_long(ssl));
-    } else if (where & SSL_CB_ALERT) {
-        str = (where & SSL_CB_READ) ? "read" : "write";
-        printf("SSL3 alert %s:%s:%s\n", str,
-               SSL_alert_type_string_long(ret),
-               SSL_alert_desc_string_long(ret));
-    } else if (where & SSL_CB_EXIT) {
-        if (ret == 0)
-            printf("%s: failed in %s\n", str, SSL_state_string_long(ssl));
-        else if (ret < 0)
-            printf("%s: error in %s\n", str, SSL_state_string_long(ssl));
-    }
-}
-
 /** Given a TLS object and the result of an SSL_* call, use
  * SSL_get_error to determine whether an error has occurred, and if so
  * which one.  Return one of TOR_TLS_{DONE|WANTREAD|WANTWRITE|ERROR}.
@@ -337,31 +296,18 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
     case SSL_ERROR_WANT_WRITE:
       return TOR_TLS_WANTWRITE;
     case SSL_ERROR_SYSCALL:
-      if (extra & CATCH_SYSCALL)
+      if (extra&CATCH_SYSCALL)
         return TOR_TLS_SYSCALL_;
       if (r == 0) {
-        // Log detailed information for unexpected close
-        tor_log(severity, LD_NET,
-                "Detailed log message with variables: r=%d, err=%d, state=%s, timestamp=%ld",
-                r, err, SSL_state_string_long(tls->ssl), time(NULL));
+        tor_log(severity, LD_NET, "TLS error: unexpected close while %s (%s)",
+            doing, SSL_state_string_long(tls->ssl));
         tor_error = TOR_TLS_ERROR_IO;
       } else {
         int e = tor_socket_errno(tls->socket);
-        // Log detailed information for syscall error
         tor_log(severity, LD_NET,
-                "TLS error: <syscall error while %s> (errno=%d: %s; state=%s; r=%d; err=%d; socket=%d; timestamp=%ld)",
-                doing, e, tor_socket_strerror(e),
-                SSL_state_string_long(tls->ssl), r, err, tls->socket, time(NULL));
-
-        // Log additional SSL error queue information
-        unsigned long ssl_err;
-        while ((ssl_err = ERR_get_error()) != 0) {
-          char err_buf[256];
-          ERR_error_string_n(ssl_err, err_buf, sizeof(err_buf));
-          tor_log(severity, LD_NET,
-                  "Additional SSL error: %s", err_buf);
-        }
-
+            "TLS error: <syscall error while %s> (errno=%d: %s; state=%s)",
+            doing, e, tor_socket_strerror(e),
+            SSL_state_string_long(tls->ssl));
         tor_error = tor_errno_to_tls_error(e);
       }
       tls_log_errors(tls, severity, domain, doing);
