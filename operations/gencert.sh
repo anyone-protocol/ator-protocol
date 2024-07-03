@@ -58,7 +58,7 @@ docker start $ATOR_CONTAINER
 sleep 5 
 docker stop $ATOR_CONTAINER
 
-chown -R root:root .
-chmod -R 777 .
+sudo chown -R $USER:$USER .
+sudo chmod -R 777 .
 
 cd ..
