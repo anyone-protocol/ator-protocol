@@ -272,6 +272,47 @@ tor_tls_get_last_error_msg(const tor_tls_t *tls)
 #define CATCH_SYSCALL 1
 #define CATCH_ZERO    2
 
+// Define the ssl_info_callback function
+static void ssl_info_callback(const SSL *ssl, int where, int ret);
+
+void initialize_ssl_context() {
+    SSL_CTX *ctx = SSL_CTX_new(TLS_method());
+    if (!ctx) {
+        ERR_print_errors_fp(stderr);
+        return; // Or handle the error appropriately
+    }
+    SSL_CTX_set_info_callback(ctx, ssl_info_callback);
+
+    // The rest of your SSL context setup
+}
+
+static void ssl_info_callback(const SSL *ssl, int where, int ret) {
+    const char *str;
+    int w;
+
+    w = where & ~SSL_ST_MASK;
+    if (w & SSL_ST_CONNECT)
+        str = "SSL_connect";
+    else if (w & SSL_ST_ACCEPT)
+        str = "SSL_accept";
+    else
+        str = "undefined";
+
+    if (where & SSL_CB_LOOP) {
+        printf("%s:%s\n", str, SSL_state_string_long(ssl));
+    } else if (where & SSL_CB_ALERT) {
+        str = (where & SSL_CB_READ) ? "read" : "write";
+        printf("SSL3 alert %s:%s:%s\n", str,
+               SSL_alert_type_string_long(ret),
+               SSL_alert_desc_string_long(ret));
+    } else if (where & SSL_CB_EXIT) {
+        if (ret == 0)
+            printf("%s: failed in %s\n", str, SSL_state_string_long(ssl));
+        else if (ret < 0)
+            printf("%s: error in %s\n", str, SSL_state_string_long(ssl));
+    }
+}
+
 /** Given a TLS object and the result of an SSL_* call, use
  * SSL_get_error to determine whether an error has occurred, and if so
  * which one.  Return one of TOR_TLS_{DONE|WANTREAD|WANTWRITE|ERROR}.
@@ -1269,7 +1310,7 @@ tor_tls_read,(tor_tls_t *tls, char *cp, size_t len))
     }
     return r;
   }
-  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_DEBUG, LD_NET);
+  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_ERR, LD_NET);
   if (err == TOR_TLS_ZERORETURN_ || err == TOR_TLS_CLOSE) {
     log_debug(LD_NET,"read returned r=%d; TLS is closed",r);
     tls->state = TOR_TLS_ST_CLOSED;
@@ -1312,7 +1353,7 @@ tor_tls_write(tor_tls_t *tls, const char *cp, size_t n)
     tls->wantwrite_n = 0;
   }
   r = SSL_write(tls->ssl, cp, (int)n);
-  err = tor_tls_get_error(tls, r, 0, "writing", LOG_INFO, LD_NET);
+  err = tor_tls_get_error(tls, r, 0, "writing", LOG_WARN, LD_NET);
   if (err == TOR_TLS_DONE) {
     total_bytes_written_over_tls += r;
     return r;
@@ -1357,7 +1398,7 @@ tor_tls_handshake(tor_tls_t *tls)
   /* We need to call this here and not earlier, since OpenSSL has a penchant
    * for clearing its flags when you say accept or connect. */
   tor_tls_unblock_renegotiation(tls);
-  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_INFO, LD_HANDSHAKE);
+  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_WARN, LD_HANDSHAKE);
   if (ERR_peek_error() != 0) {
     tls_log_errors(tls, tls->isServer ? LOG_INFO : LOG_WARN, LD_HANDSHAKE,
                    "handshaking");
