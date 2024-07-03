@@ -1256,7 +1256,7 @@ tor_tls_read,(tor_tls_t *tls, char *cp, size_t len))
     }
     return r;
   }
-  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_DEBUG, LD_NET);
+  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_ERR, LD_NET);
   if (err == TOR_TLS_ZERORETURN_ || err == TOR_TLS_CLOSE) {
     log_debug(LD_NET,"read returned r=%d; TLS is closed",r);
     tls->state = TOR_TLS_ST_CLOSED;
@@ -1299,7 +1299,7 @@ tor_tls_write(tor_tls_t *tls, const char *cp, size_t n)
     tls->wantwrite_n = 0;
   }
   r = SSL_write(tls->ssl, cp, (int)n);
-  err = tor_tls_get_error(tls, r, 0, "writing", LOG_INFO, LD_NET);
+  err = tor_tls_get_error(tls, r, 0, "writing", LOG_WARN, LD_NET);
   if (err == TOR_TLS_DONE) {
     total_bytes_written_over_tls += r;
     return r;
@@ -1344,7 +1344,7 @@ tor_tls_handshake(tor_tls_t *tls)
   /* We need to call this here and not earlier, since OpenSSL has a penchant
    * for clearing its flags when you say accept or connect. */
   tor_tls_unblock_renegotiation(tls);
-  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_INFO, LD_HANDSHAKE);
+  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_WARN, LD_HANDSHAKE);
   if (ERR_peek_error() != 0) {
     tls_log_errors(tls, tls->isServer ? LOG_INFO : LOG_WARN, LD_HANDSHAKE,
                    "handshaking");

@@ -2145,10 +2145,10 @@ select_primary_guard_for_circuit(guard_selection_t *gs,
   SMARTLIST_FOREACH_BEGIN(gs->primary_entry_guards, entry_guard_t *, guard) {
     entry_guard_consider_retry(guard);
     if (!entry_guard_obeys_restriction(guard, rst)) {
-      log_info(LD_GUARD, "Entry guard %s doesn't obey restriction, we test the"
-          " next one", entry_guard_describe(guard));
+      log_notice(LD_GUARD, "Entry guard %s doesn't obey restriction, we test the"
+          " next one. Restriction: %s", entry_guard_describe(guard), rst);
       if (!entry_guard_restriction_is_reachability(rst)) {
-        log_info(LD_GUARD,
+        log_notice(LD_GUARD,
                  "Skipping guard %s due to circuit path restriction. "
                  "Have %d, considered: %d, to consider: %d",
                  entry_guard_describe(guard),
@@ -2316,7 +2316,7 @@ select_entry_guard_for_circuit(guard_selection_t *gs,
       <maybe> or <yes>, return the first such guard." */
   chosen_guard = select_primary_guard_for_circuit(gs, usage, rst, state_out);
   if (chosen_guard) {
-    log_info(LD_GUARD, "Selected primary guard %s for circuit.",
+    log_notice(LD_GUARD, "Selected primary guard %s for circuit.",
              entry_guard_describe(chosen_guard));
     return chosen_guard;
   }

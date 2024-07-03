@@ -280,7 +280,7 @@ router_do_orport_reachability_checks(const routerinfo_t *me,
       extend_info_free(ei);
       return;
     }
-    log_info(LD_CIRC, "Testing %s of my %s ORPort: %s.",
+    log_notice(LD_CIRC, "Testing %s of my %s ORPort: %s.",
              !orport_reachable ? "reachability" : "bandwidth",
              family_name, fmt_addrport_ap(ap));
 

@@ -2100,7 +2100,7 @@ circuit_launch_by_extend_info(uint8_t purpose,
   }
 
   if (!onehop_tunnel && (!router_have_minimum_dir_info() || !have_path)) {
-    log_debug(LD_CIRC,"Haven't %s yet; canceling "
+    log_warn(LD_CIRC,"Haven't %s yet; canceling "
               "circuit launch.",
               !router_have_minimum_dir_info() ?
               "fetched enough directory info" :
@@ -2191,7 +2191,7 @@ circuit_launch_by_extend_info(uint8_t purpose,
   if (did_circs_fail_last_period &&
       n_circuit_failures > MAX_CIRCUIT_FAILURES) {
     /* too many failed circs in a row. don't try. */
-//    log_fn(LOG_INFO,"%d failures so far, not trying.",n_circuit_failures);
+    log_notice(LD_GENERAL,"%d failures so far, not trying.", n_circuit_failures);
     return NULL;
   }
 
