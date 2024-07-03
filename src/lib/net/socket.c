@@ -163,7 +163,7 @@ tor_close_socket_simple(tor_socket_t s)
 
   if (r != 0) {
     int err = tor_socket_errno(-1);
-    log_info(LD_NET, "Close returned an error: %s", tor_socket_strerror(err));
+    log_warn(LD_NET, "Close returned an error: %s", tor_socket_strerror(err));
     return err;
   }
 

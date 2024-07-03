@@ -1405,6 +1405,7 @@ void
 connection_or_connect_failed(or_connection_t *conn,
                              int reason, const char *msg)
 {
+  log_warn(LD_GENERAL, "Connection error: %s", reason);
   connection_or_event_status(conn, OR_CONN_EVENT_FAILED, reason);
   if (!authdir_mode_tests_reachability(get_options()))
     control_event_bootstrap_prob_or(msg, reason, conn);
