@@ -6,21 +6,27 @@
 bash gencert.sh da1 49.13.145.234 ATORDAeucstage
 bash gencert.sh da2 5.161.108.187 ATORDAusestage
 bash gencert.sh da3 49.13.145.234 ATORDAuswstage
-
 bash gencert.sh da4 5.161.228.187 AnyoneAshLive
 bash gencert.sh da5 5.78.94.15 AnyoneHilLive
+bash gencert.sh da6 95.216.32.105 AnyoneHelLive
+bash gencert.sh da7 176.9.29.53 AnyoneFalLive
 
+# Check/update script for phase
 bash uploadcert.sh da1 067a42a8-d8fe-8b19-5851-43079e0eabb4 49.13.145.234 ATORDAeucstage
 bash uploadcert.sh da2 16be0723-edc1-83c4-6c02-193d96ec308a 5.161.108.187 ATORDAusestage
 bash uploadcert.sh da3 e6e0baed-8402-fd5c-7a15-8dd49e7b60d9 49.13.145.234 ATORDAuswstage
-
 bash uploadcert.sh da4 5ace4a92-63c4-ac72-3ed1-e4485fa0d4a4 5.161.228.187 AnyoneAshLive
 bash uploadcert.sh da5 eb42c498-e7a8-415f-14e9-31e9e71e5707 5.78.94.15 AnyoneHilLive
+bash uploadcert.sh da6 4aa61f61-893a-baf4-541b-870e99ac4839 95.216.32.105 AnyoneHelLive
+bash uploadcert.sh da7 c2adc610-6316-cd9d-c678-cda4b0080b52 176.9.29.53 AnyoneFalLive
 
+# mind the phase.... and by default only checks curl output
 # Move DA folders and script to server, login, run script
+
 # bash uploadsecrets.sh da1 067a42a8-d8fe-8b19-5851-43079e0eabb4
 # bash uploadsecrets.sh da2 16be0723-edc1-83c4-6c02-193d96ec308a
 # bash uploadsecrets.sh da3 e6e0baed-8402-fd5c-7a15-8dd49e7b60d9
-
 # bash uploadsecrets.sh da4 5ace4a92-63c4-ac72-3ed1-e4485fa0d4a4
 # bash uploadsecrets.sh da5 eb42c498-e7a8-415f-14e9-31e9e71e5707
+# bash uploadsecrets.sh da6 4aa61f61-893a-baf4-541b-870e99ac4839
+# bash uploadsecrets.sh da7 c2adc610-6316-cd9d-c678-cda4b0080b52
