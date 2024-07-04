@@ -272,6 +272,13 @@ tor_tls_get_last_error_msg(const tor_tls_t *tls)
 #define CATCH_SYSCALL 1
 #define CATCH_ZERO    2
 
+// Function to convert session ID to a printable hexadecimal string
+static void session_id_to_hex(const unsigned char *session_id, unsigned int session_id_len, char *buf, size_t buf_len) {
+    for (unsigned int i = 0; i < session_id_len && i * 2 + 1 < buf_len; i++) {
+        snprintf(buf + i * 2, buf_len - i * 2, "%02x", session_id[i]);
+    }
+}
+
 /** Given a TLS object and the result of an SSL_* call, use
  * SSL_get_error to determine whether an error has occurred, and if so
  * which one.  Return one of TOR_TLS_{DONE|WANTREAD|WANTWRITE|ERROR}.
@@ -300,11 +307,15 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
 
   char peer_cert_subject[256] = {0};
   char peer_cert_issuer[256] = {0};
+  char session_id_hex[256] = {0};
 
   if (peer_cert) {
       X509_NAME_oneline(X509_get_subject_name(peer_cert), peer_cert_subject, sizeof(peer_cert_subject) - 1);
       X509_NAME_oneline(X509_get_issuer_name(peer_cert), peer_cert_issuer, sizeof(peer_cert_issuer) - 1);
   }
+
+  // Convert session ID to a printable format
+  session_id_to_hex(session_id, session_id_len, session_id_hex, sizeof(session_id_hex));
 
   switch (err) {
     case SSL_ERROR_NONE:
@@ -317,9 +328,10 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
       if (extra&CATCH_SYSCALL)
         return TOR_TLS_SYSCALL_;
       if (r == 0) {
-        tor_log(LOG_ERR, LD_NET, "TLS error: unexpected close while %s (%s). Domain = %d, extra = %d, tor error = %d, socket = %d, errno = %d, strerror = %s, cipher = %s, session = %s, peer_cert = %s",
-            doing, SSL_state_string_long(tls->ssl), domain, extra, TOR_TLS_ERROR_IO, tls->socket, errno, strerror(errno), cipher ? SSL_CIPHER_get_name(cipher) : "unknown", (void*)session, (void*)peer_cert, ssl_version, session_reused, compression, session_id_len, session_id, peer_cert_subject, peer_cert_issuer);
-        tor_error = TOR_TLS_ERROR_IO;
+        tor_log(LOG_ERR, LD_NET,
+            "TLS error: unexpected close while %s (%s). Domain = %d, extra = %d, tor error = %d, socket = %d, errno = %d, strerror = %s, cipher = %s, session = %p, peer_cert = %p, ssl_version = %s, session_reused = %d, compression = %s, session_id = %s, peer_cert_subject = %s, peer_cert_issuer = %s",
+            doing, SSL_state_string_long(tls->ssl), domain, extra, TOR_TLS_ERROR_IO, tls->socket, errno, strerror(errno),
+            cipher ? SSL_CIPHER_get_name(cipher) : "unknown", (void*)session, (void*)peer_cert, ssl_version, session_reused, compression, session_id_hex, peer_cert_subject, peer_cert_issuer);
       } else {
         int e = tor_socket_errno(tls->socket);
         tor_log(severity, LD_NET,
