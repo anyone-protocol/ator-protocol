@@ -6,7 +6,7 @@ job "ator-dir-auth-live" {
   namespace = "ator-network"
 
   group "dir-auth-live-group" {
-    count = 5
+    count = 7
 
     spread {
       attribute = "${node.unique.id}"
