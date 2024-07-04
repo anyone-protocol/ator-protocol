@@ -288,6 +288,24 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
 {
   int err = SSL_get_error(tls->ssl, r);
   int tor_error = TOR_TLS_ERROR_MISC;
+
+  SSL_SESSION *session = SSL_get_session(tls->ssl);
+  const SSL_CIPHER *cipher = SSL_get_current_cipher(tls->ssl);
+  X509 *peer_cert = SSL_get_peer_certificate(tls->ssl);
+  const char *ssl_version = SSL_get_version(tls->ssl);
+  int session_reused = SSL_session_reused(tls->ssl);
+  const char *compression = SSL_get_current_compression(tls->ssl) ? SSL_COMP_get_name(SSL_get_current_compression(tls->ssl)) : "none";
+  unsigned int session_id_len;
+  const unsigned char *session_id = SSL_SESSION_get_id(session, &session_id_len);
+
+  char peer_cert_subject[256] = {0};
+  char peer_cert_issuer[256] = {0};
+
+  if (peer_cert) {
+      X509_NAME_oneline(X509_get_subject_name(peer_cert), peer_cert_subject, sizeof(peer_cert_subject) - 1);
+      X509_NAME_oneline(X509_get_issuer_name(peer_cert), peer_cert_issuer, sizeof(peer_cert_issuer) - 1);
+  }
+
   switch (err) {
     case SSL_ERROR_NONE:
       return TOR_TLS_DONE;
@@ -299,8 +317,8 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
       if (extra&CATCH_SYSCALL)
         return TOR_TLS_SYSCALL_;
       if (r == 0) {
-        tor_log(severity, LD_NET, "TLS error: unexpected close while %s (%s)",
-            doing, SSL_state_string_long(tls->ssl));
+        tor_log(LOG_ERR, LD_NET, "TLS error: unexpected close while %s (%s). Domain = %d, extra = %d, tor error = %d, socket = %d, errno = %d, strerror = %s, cipher = %s, session = %s, peer_cert = %s",
+            doing, SSL_state_string_long(tls->ssl), domain, extra, TOR_TLS_ERROR_IO, tls->socket, errno, strerror(errno), cipher ? SSL_CIPHER_get_name(cipher) : "unknown", (void*)session, (void*)peer_cert, ssl_version, session_reused, compression, session_id_len, session_id, peer_cert_subject, peer_cert_issuer);
         tor_error = TOR_TLS_ERROR_IO;
       } else {
         int e = tor_socket_errno(tls->socket);
@@ -1256,7 +1274,7 @@ tor_tls_read,(tor_tls_t *tls, char *cp, size_t len))
     }
     return r;
   }
-  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_ERR, LD_NET);
+  err = tor_tls_get_error(tls, r, CATCH_ZERO, "reading", LOG_DEBUG, LD_NET);
   if (err == TOR_TLS_ZERORETURN_ || err == TOR_TLS_CLOSE) {
     log_debug(LD_NET,"read returned r=%d; TLS is closed",r);
     tls->state = TOR_TLS_ST_CLOSED;
@@ -1299,7 +1317,7 @@ tor_tls_write(tor_tls_t *tls, const char *cp, size_t n)
     tls->wantwrite_n = 0;
   }
   r = SSL_write(tls->ssl, cp, (int)n);
-  err = tor_tls_get_error(tls, r, 0, "writing", LOG_WARN, LD_NET);
+  err = tor_tls_get_error(tls, r, 0, "writing", LOG_INFO, LD_NET);
   if (err == TOR_TLS_DONE) {
     total_bytes_written_over_tls += r;
     return r;
@@ -1344,7 +1362,7 @@ tor_tls_handshake(tor_tls_t *tls)
   /* We need to call this here and not earlier, since OpenSSL has a penchant
    * for clearing its flags when you say accept or connect. */
   tor_tls_unblock_renegotiation(tls);
-  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_WARN, LD_HANDSHAKE);
+  r = tor_tls_get_error(tls,r,0, "handshaking", LOG_INFO, LD_HANDSHAKE);
   if (ERR_peek_error() != 0) {
     tls_log_errors(tls, tls->isServer ? LOG_INFO : LOG_WARN, LD_HANDSHAKE,
                    "handshaking");

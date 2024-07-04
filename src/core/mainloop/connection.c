@@ -4191,7 +4191,7 @@ connection_buf_read_from_socket(connection_t *conn, ssize_t *max_to_read,
                   result == TOR_TLS_CLOSE ? "cleanly " : "");
         return result;
       CASE_TOR_TLS_ERROR_ANY_NONIO:
-        log_err(LD_NET,"tls error [%s] from %s. Breaking.",
+        log_debug(LD_NET,"tls error [%s] from %s. Breaking.",
                  tor_tls_err_to_string(result),
                   connection_describe(conn));
         return result;
