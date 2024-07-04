@@ -6,19 +6,25 @@ job "ator-dir-auth-live" {
   namespace = "ator-network"
 
   group "dir-auth-live-group" {
-    count = 3
+    count = 5
 
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
       target "067a42a8-d8fe-8b19-5851-43079e0eabb4" {
-        percent = 34
+        percent = 20
       }
       target "16be0723-edc1-83c4-6c02-193d96ec308a" {
-        percent = 33
+        percent = 20
       }
       target "e6e0baed-8402-fd5c-7a15-8dd49e7b60d9" {
-        percent = 33
+        percent = 20
+      }
+      target "5ace4a92-63c4-ac72-3ed1-e4485fa0d4a4" {
+        percent = 20
+      }
+      target "eb42c498-e7a8-415f-14e9-31e9e71e5707" {
+        percent = 20
       }
     }
 
