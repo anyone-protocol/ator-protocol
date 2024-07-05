@@ -31,6 +31,6 @@ runs:
              ${{ inputs.docker-base-repo }}-amd64:${{ inputs.docker-tag }} \
              ${{ inputs.docker-base-repo }}-arm64:${{ inputs.docker-tag }}
         docker buildx imagetools create \
-          -t ${{ inputs.docker-base-repo }}:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }} \
-             ${{ inputs.docker-base-repo }}-amd64:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }} \
-             ${{ inputs.docker-base-repo }}-arm64:${{ inputs.event_name == 'push' && 'latest' || 'latest-manual' }}
+          -t ${{ inputs.docker-base-repo }}:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }} \
+             ${{ inputs.docker-base-repo }}-amd64:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }} \
+             ${{ inputs.docker-base-repo }}-arm64:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }}
