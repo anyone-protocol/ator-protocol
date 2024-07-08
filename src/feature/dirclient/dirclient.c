@@ -1667,6 +1667,7 @@ directory_send_command(dir_connection_t *conn,
       const char *why = router_get_descriptor_gen_reason();
       tor_assert(!resource);
       tor_assert(payload);
+      log_notice(LD_GENERAL, "Uploading descriptor: %s", payload);
       httpcommand = "POST";
       url = tor_strdup("/tor/");
       if (!why) {
