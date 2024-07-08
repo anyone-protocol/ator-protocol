@@ -85,8 +85,8 @@ job "ator-dir-auth-live" {
       }
 
       resources {
-        cpu = 256
-        memory = 256
+        cpu = 2560
+        memory = 2560
       }
 
       template {
