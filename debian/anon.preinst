@@ -7,6 +7,6 @@
 db_get anon/terms
 if [ "$RET" != "true" ]; then
     echo "You must accept the terms and conditions to install this package."
-    echo PURGE | debconf-communicate
+    db_unregister anon/terms
     exit 1
 fi
