@@ -893,6 +893,10 @@ forward slash (/) in the configuration file and on the command line.
     that fine-grained information about nodes can be discarded when it hasn't
     changed for a given amount of time.  (Default: 24 hours)
 
+[[AgreeToTerms]] **AgreeToTerms** **0**|**1**::
+    If 1, agree to Anyone terms and conditions (https://www.anyone.io/terms).
+    (Default: 0)
+
 [[RunAsDaemon]] **RunAsDaemon** **0**|**1**::
     If 1, Tor forks and daemonizes to the background. This option has no effect
     on Windows; instead you should use the --service command-line option.

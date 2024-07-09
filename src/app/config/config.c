@@ -642,6 +642,7 @@ static const config_var_t option_vars_[] = {
   V(RelayBandwidthBurst,         MEMUNIT,  "0"),
   V(RelayBandwidthRate,          MEMUNIT,  "0"),
   V(RephistTrackTime,            INTERVAL, "24 hours"),
+  V_IMMUTABLE(AgreeToTerms,      BOOL,     "0"),
   V_IMMUTABLE(RunAsDaemon,       BOOL,     "0"),
   V(ReducedExitPolicy,           BOOL,     "0"),
   V(ReevaluateExitPolicy,        BOOL,     "0"),
@@ -4614,7 +4615,13 @@ options_init_from_torrc(int argc, char **argv)
     argeement = read_file_to_str(terms_fname, 0, NULL);
   }
 
-  if (argeement == NULL || strcmp(argeement, "agreed") != 0) {
+  if (!get_options_mutable()->AgreeToTerms && (argeement == NULL || strcmp(argeement, "agreed") != 0)) {
+    if (get_options_mutable()->RunAsDaemon) {
+        tor_asprintf(&errmsg, "Not agreed to terms");
+        retval = -1;
+        goto err;
+    }
+
     char response;
     while (1) {
       printf("\nPlease read terms and conditions at: https://www.anyone.io/terms\n");
