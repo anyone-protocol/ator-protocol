@@ -67,6 +67,9 @@ The following options in this section are only recognized on the
 [[opt-h]] **`-h`**, **`--help`**::
     Display a short help message and exit.
 
+[[opt-agree-to-terms]] **`--agree-to-terms`**::
+    Agree to Anyone terms and conditions (https://www.anyone.io/terms).
+
 [[opt-f]] **`-f`**, **`--anonrc-file`** __FILE__::
     Specify a new configuration file to contain further Tor configuration
     options, or pass *-* to make Tor read its configuration from standard

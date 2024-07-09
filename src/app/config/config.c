@@ -2469,6 +2469,7 @@ static const struct {
   /** If nonzero, set the quiet level to this. 1 is "hush", 2 is "quiet" */
   int quiet;
 } CMDLINE_ONLY_OPTIONS[] = {
+  { .name="--agree-to-terms" },
   { .name="--anonrc-file",
     .short_name="-f",
     .takes_argument=ARGUMENT_NECESSARY },
@@ -4601,6 +4602,40 @@ options_init_from_torrc(int argc, char **argv)
     }
   }
 
+  char *terms_fname = get_datadir_fname("terms-agreement");
+  if (config_line_find(cmdline_only_options, "--agree-to-terms")) {
+    write_str_to_file_if_not_equal(terms_fname, "agreed");
+    log_notice(LD_CONFIG, "Marked agreement as set");
+  }
+
+  char *argeement = NULL;
+  file_status_t terms_status = file_status(terms_fname);
+  if (terms_status == FN_FILE) {
+    argeement = read_file_to_str(terms_fname, 0, NULL);
+  }
+
+  if (argeement == NULL || strcmp(argeement, "agreed") != 0) {
+    char response;
+    while (1) {
+      printf("\nPlease read terms and conditions at: https://www.anyone.io/terms\n");
+      printf("Do you agree to the terms and conditions? (y/n): ");
+
+      response = getchar();
+      while (getchar() != '\n');
+      if (response == 'y' || response == 'Y') {
+        write_str_to_file_if_not_equal(terms_fname, "agreed");
+        log_notice(LD_CONFIG, "Marked agreement as set\n");
+        break;
+      } else if (response == 'n' || response == 'N') {
+        tor_asprintf(&errmsg, "Not agreed to terms");
+        retval = -1;
+        goto err;
+      } else {
+        printf("Invalid response. Please enter 'y' or 'n'.\n");
+      }
+    }
+  }
+
   const config_line_t *format_line = config_line_find(cmdline_only_options,
                                                       "--format");
   if (format_line) {
@@ -4641,6 +4676,8 @@ options_init_from_torrc(int argc, char **argv)
  err:
   tor_free(cf);
   tor_free(cf_defaults);
+  tor_free(argeement);
+  tor_free(terms_fname);
   if (errmsg) {
     log_warn(LD_CONFIG,"%s", errmsg);
     tor_free(errmsg);
