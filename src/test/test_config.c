@@ -2004,12 +2004,10 @@ test_config_adding_default_trusted_dir_servers(void *arg)
   // tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
   // tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
 
-  /* Assume we have three V3 authorities */
+  /* Assume we have at least three V3 authorities */
   add_default_trusted_dir_authorities(V3_DIRINFO);
-  // Disable this check, we have different number of directory authorities on
-  // different envs
-  // tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 7);
-  // tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 7);
+  tt_int_op(get_n_authorities(V3_DIRINFO), OP_GE, 3);
+  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_GE, 3);
 
  done:
   clear_dir_servers();
