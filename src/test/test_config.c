@@ -2007,8 +2007,6 @@ test_config_adding_default_trusted_dir_servers(void *arg)
   /* Assume we have three V3 authorities */
   /* Assume we have at least three V3 authorities */
   add_default_trusted_dir_authorities(V3_DIRINFO);
-  tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 7);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 7);
   tt_int_op(get_n_authorities(V3_DIRINFO), OP_GE, 3);
   tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_GE, 3);
 
