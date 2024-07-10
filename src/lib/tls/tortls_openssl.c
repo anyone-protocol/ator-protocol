@@ -299,7 +299,7 @@ tor_tls_get_error(tor_tls_t *tls, int r, int extra,
       if (extra&CATCH_SYSCALL)
         return TOR_TLS_SYSCALL_;
       if (r == 0) {
-        tor_log(severity, LD_NET, "TLS error: unexpected close while %s (%s)",
+        tor_log(LOG_WARN, LD_NET, "TLS error: unexpected close while %s (%s)",
             doing, SSL_state_string_long(tls->ssl));
         tor_error = TOR_TLS_ERROR_IO;
       } else {
