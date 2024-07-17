@@ -277,6 +277,14 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-live-buster
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Buster Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-live-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -307,6 +315,14 @@ Codename: anon-stage-bullseye
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Bullseye Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-buster
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Buster Stage
 SignWith: YES
 
 Origin: Anon
@@ -345,6 +361,14 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-dev-buster
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Buster Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-dev-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -379,6 +403,14 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-unstable-dev-buster
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Buster Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-unstable-dev-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -404,7 +436,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-live-bookworm anon-live-bullseye anon-live-jammy anon-live-focal anon-stage-bookworm anon-stage-bullseye anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-jammy anon-unstable-dev-focal
+Allow: anon-live-bookworm anon-live-bullseye anon-live-buster anon-live-jammy anon-live-focal anon-stage-bookworm anon-stage-bullseye anon-stage-buster anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-buster anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-buster anon-unstable-dev-jammy anon-unstable-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
