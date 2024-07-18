@@ -120,7 +120,7 @@ server {
       driver = "docker"
 
       config {
-        image = "svforte/package-exporter:v0.0.2"
+        image = "svforte/package-exporter:v0.0.3"
         ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
@@ -152,6 +152,7 @@ server {
       template {
         change_mode = "noop"
         data = <<EOH
+labels: [os, arch]
 fetchers:
   dockerhub_pulls:
     - name: anon_dev_dockerhub
@@ -168,24 +169,42 @@ fetchers:
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-dev-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_stage_github_releases
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-stage-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_live_github_releases
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-live-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
   nginx_access_log:
     - name: anon_dev_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-dev.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_stage_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_live_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-live.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
         EOH
         destination = "local/exporter.yml"
       }
@@ -285,6 +304,24 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-live-noble
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Noble Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-live-lunar
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Lunar Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-live-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -323,6 +360,24 @@ Codename: anon-stage-buster
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Buster Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-noble
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Noble Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-stage-lunar
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Lunar Stage
 SignWith: YES
 
 Origin: Anon
@@ -369,6 +424,24 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-dev-noble
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Noble Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-dev-lunar
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Lunar Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-dev-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -411,6 +484,24 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-unstable-dev-noble
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Noble Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-unstable-dev-lunar
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Lunar Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-unstable-dev-jammy
 Architectures: amd64 arm64 source
 Components: main
@@ -436,7 +527,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-live-bookworm anon-live-bullseye anon-live-buster anon-live-jammy anon-live-focal anon-stage-bookworm anon-stage-bullseye anon-stage-buster anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-buster anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-buster anon-unstable-dev-jammy anon-unstable-dev-focal
+Allow: anon-live-bookworm anon-live-bullseye anon-live-buster anon-live-noble anon-live-lunar anon-live-jammy anon-live-focal anon-stage-bookworm anon-stage-bullseye anon-stage-buster anon-stage-noble anon-stage-lunar anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-buster anon-dev-noble anon-dev-lunar anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-buster anon-unstable-dev-noble anon-unstable-dev-lunar anon-unstable-dev-jammy anon-unstable-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"
