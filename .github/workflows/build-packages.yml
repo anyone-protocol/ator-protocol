@@ -19,7 +19,7 @@ env:
   # main: stage
   # development: dev
   # everything else (pull request, etc.): unstable-dev
-  PKG_ENV: ${{ github.ref_type == 'tag' && 'live' || github.ref == 'refs/heads/main' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
+  PKG_ENV: 'live'
 
 jobs:
 
@@ -404,77 +404,77 @@ jobs:
   # Release
   #
 
-  release-deb:
-    runs-on: ubuntu-latest
-    needs: build-deb-package
-    container:
-      image: debian:bookworm
-    steps:
-      - name: Install Dependencies
-        run: |
-          apt-get -y update
-          apt-get -y dist-upgrade
-          apt-get -y install devscripts zip gpg dput openssh-client
-      - name: Download raw artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: raw-artifacts/
-      - name: Distribute signed .deb packages
-        run: |
-          mkdir -p /root/.ssh
-          ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
-          echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
-          chmod 600 /root/.ssh/id_rsa
+  # release-deb:
+  #   runs-on: ubuntu-latest
+  #   needs: build-deb-package
+  #   container:
+  #     image: debian:bookworm
+  #   steps:
+  #     - name: Install Dependencies
+  #       run: |
+  #         apt-get -y update
+  #         apt-get -y dist-upgrade
+  #         apt-get -y install devscripts zip gpg dput openssh-client
+  #     - name: Download raw artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         path: raw-artifacts/
+  #     - name: Distribute signed .deb packages
+  #       run: |
+  #         mkdir -p /root/.ssh
+  #         ssh-keyscan ${{ secrets.DEBIAN_HOST }} > /root/.ssh/known_hosts
+  #         echo "${{ secrets.DEBIAN_ID_RSA }}" | base64 -d > /root/.ssh/id_rsa
+  #         chmod 600 /root/.ssh/id_rsa
 
-          echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
-          gpg --allow-secret-key-import --import debian-private.gpg
+  #         echo "${{ secrets.DEBIAN_PRIVATE_KEY }}" | base64 -d > debian-private.gpg
+  #         gpg --allow-secret-key-import --import debian-private.gpg
 
-          cat << EOF > ~/.dput.cf
-          [anon]
-          fqdn = ${{ secrets.DEBIAN_HOST }}
-          incoming = /data/debian/incoming
-          method = scp
-          login = reprepro
-          allow_unsigned_uploads = 0
-          post_upload_command = ssh %(login)s@%(fqdn)s reprepro processincoming incoming
-          EOF
+  #         cat << EOF > ~/.dput.cf
+  #         [anon]
+  #         fqdn = ${{ secrets.DEBIAN_HOST }}
+  #         incoming = /data/debian/incoming
+  #         method = scp
+  #         login = reprepro
+  #         allow_unsigned_uploads = 0
+  #         post_upload_command = ssh %(login)s@%(fqdn)s reprepro processincoming incoming
+  #         EOF
 
-          echo "Uploading packages"
-          dput anon raw-artifacts/anon-*/anon_*.changes
+  #         echo "Uploading packages"
+  #         dput anon raw-artifacts/anon-*/anon_*.changes
 
-          echo "Processing incoming packages"
-          ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
+  #         echo "Processing incoming packages"
+  #         ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
 
-  release-github:
-    runs-on: ubuntu-latest
-    needs: [build-deb-package, build-macos-binary, build-windows-64-binary]
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - name: Download raw artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: raw-artifacts/
-      - name: Copy release artifacts
-        run: |
-          mkdir -p release-artifacts/
-          cp raw-artifacts/anon-*/anon_*.deb release-artifacts/
-          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
-          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
-          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
-          chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
-          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
-          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
-          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
-          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
-          zip -j release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64/*
-          ls -la -R release-artifacts/
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          path: ator-protocol
-          fetch-depth: 1
-      - name: Publish release artifacts
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release-artifacts/anon*"
-          bodyFile: "ator-protocol/doc/RELEASE.md"
+  # release-github:
+  #   runs-on: ubuntu-latest
+  #   needs: [build-deb-package, build-macos-binary, build-windows-64-binary]
+  #   if: startsWith(github.ref, 'refs/tags/')
+  #   steps:
+  #     - name: Download raw artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         path: raw-artifacts/
+  #     - name: Copy release artifacts
+  #       run: |
+  #         mkdir -p release-artifacts/
+  #         cp raw-artifacts/anon-*/anon_*.deb release-artifacts/
+  #         chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
+  #         chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
+  #         chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
+  #         chmod +x raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
+  #         zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-amd64/*
+  #         zip -j release-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-linux-arm64/*
+  #         zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-amd64/*
+  #         zip -j release-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-macos-arm64/*
+  #         zip -j release-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64.zip raw-artifacts/anon-${{ env.PKG_ENV }}-windows-amd64/*
+  #         ls -la -R release-artifacts/
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: ator-protocol
+  #         fetch-depth: 1
+  #     - name: Publish release artifacts
+  #       uses: ncipollo/release-action@v1
+  #       with:
+  #         artifacts: "release-artifacts/anon*"
+  #         bodyFile: "ator-protocol/doc/RELEASE.md"
