@@ -120,7 +120,7 @@ server {
       driver = "docker"
 
       config {
-        image = "svforte/package-exporter:v0.0.2"
+        image = "svforte/package-exporter:v0.0.3"
         ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
@@ -152,6 +152,7 @@ server {
       template {
         change_mode = "noop"
         data = <<EOH
+labels: [os, arch]
 fetchers:
   dockerhub_pulls:
     - name: anon_dev_dockerhub
@@ -168,24 +169,42 @@ fetchers:
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-dev-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_stage_github_releases
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-stage-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_live_github_releases
       owner: ATOR-Development
       repo: ator-protocol
       assets_regexp: ^anon.+-live-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
   nginx_access_log:
     - name: anon_dev_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-dev.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_stage_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_live_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-live.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
         EOH
         destination = "local/exporter.yml"
       }
