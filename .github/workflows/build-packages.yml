@@ -95,6 +95,24 @@ jobs:
             suite: buster
             arch: arm64
             runner: arm64
+          # Ubuntu Noble
+          - os: ubuntu
+            suite: noble
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: noble
+            arch: arm64
+            runner: arm64
+          # Ubuntu Lunar
+          - os: ubuntu
+            suite: lunar
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: lunar
+            arch: arm64
+            runner: arm64
           # Ubuntu Jammy
           - os: ubuntu
             suite: jammy
