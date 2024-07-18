@@ -201,6 +201,11 @@ backport_all() {
 	bp1 $pkg $dir $sid_debian_version mantic
 	bp2 $pkg $dir $origtar
 
+	# noble (EOL: 202????)
+	#################################################
+	bp1 $pkg $dir $sid_debian_version noble
+	bp2 $pkg $dir $origtar
+
 	#################################################
 	## BPO
 	#################################################
