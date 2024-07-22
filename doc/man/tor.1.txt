@@ -1010,7 +1010,7 @@ forward slash (/) in the configuration file and on the command line.
     equivalent option for directory connections, because all Tor client versions
     that support this option download directory documents via OR connections. +
 +
-    The only protocol supported right now 'haproxy'. This option is only for
+    The only protocol supported right now is 'haproxy'. This option is only for
     clients. (Default: none) +
 +
     The HAProxy version 1 proxy protocol is described in detail at
@@ -3128,7 +3128,7 @@ hard and are likely different for each service operator.
 Why is this not helping reachability of the service? Because the defenses are
 at the introduction point, an attacker can easily flood all introduction point
 rendering the service unavailable due to no client being able to pass through.
-But, the service itself is not overwhelmed with connetions allowing it to
+But, the service itself is not overwhelmed with connections allowing it to
 function properly for the few clients that were able to go through or other any
 services running on the same tor instance.
 
