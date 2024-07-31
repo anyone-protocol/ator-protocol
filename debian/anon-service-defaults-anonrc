@@ -1,6 +1,7 @@
 DataDirectory /var/lib/anon
 PidFile /run/anon/anon.pid
 RunAsDaemon 1
+AgreeToTerms 1
 User debian-anon
 
 ControlSocket /run/anon/control GroupWritable RelaxDirModeCheck

@@ -1,0 +1,5 @@
+Template: anon/terms
+Type: boolean
+Default: false
+Description: Do you accept the terms and conditions?
+ Please read the terms and conditions at https://www.anyone.io/terms
