@@ -913,6 +913,7 @@ sandbox_init_filter(void)
   OPEN_DATADIR_SUFFIX("unparseable-desc", ".tmp");
   OPEN_DATADIR_SUFFIX("v3-status-votes", ".tmp");
   OPEN_DATADIR("key-pinning-journal");
+  OPEN_DATADIR("terms-agreement");
   OPEN("/dev/srandom");
   OPEN("/dev/urandom");
   OPEN("/dev/random");

@@ -356,6 +356,7 @@ struct or_options_t {
                               *   have this many. */
   int ConnLimit_low_thresh; /**< try to get down to here after socket
                              *   exhaustion. */
+  int AgreeToTerms; /**< If true, agree to the terms and conditions */
   int RunAsDaemon; /**< If true, run in the background. (Unix only) */
   int FascistFirewall; /**< Whether to prefer ORs reachable on open ports. */
   struct smartlist_t *FirewallPorts; /**< Which ports our firewall allows

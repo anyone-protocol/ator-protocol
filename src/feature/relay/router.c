@@ -1657,6 +1657,9 @@ router_upload_dir_desc_to_dirservers(int force)
   dirinfo_type_t auth = get_options()->PublishServerDescriptor_;
 
   ri = router_get_my_routerinfo();
+
+  log_debug(LD_GENERAL, "Router info: %s", ri->cache_info.signed_descriptor_body);
+
   if (!ri) {
     log_info(LD_GENERAL, "No descriptor; skipping upload");
     return;
