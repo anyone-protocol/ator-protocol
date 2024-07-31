@@ -27,9 +27,9 @@ jobs:
       - name: Build and push
         uses: ./.github/actions/build-and-push
         with:
-          docker-username: ${{ secrets.DOCKER_USERNAME }}
-          docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}-${{ matrix.platform.image-suffix }}
+          docker-username: ${{ secrets.CR_USERNAME }}
+          docker-password: ${{ secrets.CR_PAT }}
+          docker-base-repo: ghcr.io/ator-development/ator-protocol-dev-${{ matrix.platform.image-suffix }}
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
@@ -45,9 +45,9 @@ jobs:
       - name: Multiarch push
         uses: ./.github/actions/multiarch-push
         with:
-          docker-username: ${{ secrets.DOCKER_USERNAME }}
-          docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-base-repo: ${{ secrets.DOCKER_BASE_REPO_DEV }}
+          docker-username: ${{ secrets.CR_USERNAME }}
+          docker-password: ${{ secrets.CR_PAT }}
+          docker-base-repo: ghcr.io/ator-development/ator-protocol-dev
           docker-tag: ${{ env.image-tag }}
           event-name: ${{ github.event_name }}
   deploy:
