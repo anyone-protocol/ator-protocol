@@ -33,7 +33,7 @@ jobs:
         with:
           docker-username: ${{ secrets.CR_USERNAME }}
           docker-password: ${{ secrets.CR_PAT }}
-          docker-base-repo: ghcr.io/ator-development/ator-protocol-dev-${{ matrix.platform.image-suffix }}
+          docker-base-repo: ${{ env.image-name }}-${{ matrix.platform.image-suffix }}
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
@@ -51,7 +51,7 @@ jobs:
         with:
           docker-username: ${{ secrets.CR_USERNAME }}
           docker-password: ${{ secrets.CR_PAT }}
-          docker-base-repo: ghcr.io/ator-development/ator-protocol-dev
+          docker-base-repo: ${{ env.image-name }}
           docker-tag: ${{ env.image-tag }}
           event-name: ${{ github.event_name }}
 

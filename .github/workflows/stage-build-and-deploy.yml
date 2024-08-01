@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     
 env:
-  image-tag: ${{ github.sha }}
   image-name: ghcr.io/ator-development/ator-protocol-stage
+  image-tag: ${{ github.sha }}
   da-1-hc-url: http://49.13.145.234:9130/tor/status-vote/current/consensus
   da-2-hc-url: http://5.161.108.187:9130/tor/status-vote/current/consensus
   da-3-hc-url: http://5.78.90.106:9130/tor/status-vote/current/consensus
@@ -33,7 +33,7 @@ jobs:
         with:
           docker-username: ${{ secrets.CR_USERNAME }}
           docker-password: ${{ secrets.CR_PAT }}
-          docker-base-repo: ghcr.io/ator-development/ator-protocol-stage-${{ matrix.platform.image-suffix }}
+          docker-base-repo: ${{ env.image-name }}-${{ matrix.platform.image-suffix }}
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
@@ -51,7 +51,7 @@ jobs:
         with:
           docker-username: ${{ secrets.CR_USERNAME }}
           docker-password: ${{ secrets.CR_PAT }}
-          docker-base-repo: ghcr.io/ator-development/ator-protocol-stage
+          docker-base-repo: ${{ env.image-name }}
           docker-tag: ${{ env.image-tag }}
           event-name: ${{ github.event_name }}
 

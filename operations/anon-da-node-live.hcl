@@ -72,7 +72,7 @@ job "ator-dir-auth-live" {
       }
 
       config {
-        image = "ghcr.io/ator-development/ator-protocol-live:PLACEIMAGETAGHERE"
+        image = "ghcr.io/ator-development/ator-protocol:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
