@@ -20,6 +20,7 @@ runs:
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
+        registry: ghcr.io
         username: ${{ inputs.docker-username }}
         password: ${{ inputs.docker-password }}
 

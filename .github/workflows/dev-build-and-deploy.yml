@@ -1,0 +1,73 @@
+name: Dev Build Image and Deploy
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+    
+env:
+  image-name: ghcr.io/ator-development/ator-protocol-dev
+  image-tag: ${{ github.sha }}
+  da-1-hc-url: http://49.13.145.234:9030/tor/status-vote/current/consensus
+  da-2-hc-url: http://5.161.108.187:9030/tor/status-vote/current/consensus
+  da-3-hc-url: http://5.78.90.106:9030/tor/status-vote/current/consensus
+
+jobs:
+  build-and-push:
+    runs-on: ${{ matrix.platform.runs-on }}
+    strategy:
+      matrix:
+        platform:
+          - name: linux/amd64
+            image-suffix: amd64
+            runs-on: ubuntu-latest
+          - name: linux/arm64
+            image-suffix: arm64
+            runs-on: arm64
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
+        with:
+          docker-username: ${{ secrets.CR_USERNAME }}
+          docker-password: ${{ secrets.CR_PAT }}
+          docker-base-repo: ${{ env.image-name }}-${{ matrix.platform.image-suffix }}
+          docker-tag: ${{ env.image-tag }}
+          docker-platform: ${{ matrix.platform.name }}
+          version: ${{ github.sha }}
+          environment: dev
+          event-name: ${{ github.event_name }}
+
+  multiarch-push:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Multiarch push
+        uses: ./.github/actions/multiarch-push
+        with:
+          docker-username: ${{ secrets.CR_USERNAME }}
+          docker-password: ${{ secrets.CR_PAT }}
+          docker-base-repo: ${{ env.image-name }}
+          docker-tag: ${{ env.image-tag }}
+          event-name: ${{ github.event_name }}
+
+  deploy:
+    needs: multiarch-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy new version 
+        uses: ./.github/actions/deploy
+        with:
+          image-tag: ${{ env.image-tag }}
+          nomad-job-file: anon-da-node-dev.hcl
+          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}"
+          nomad-cacert: operations/admin-ui-ca.crt
+          nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          consul-cacert: operations/admin-ui-ca.crt
+          consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+          consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}
