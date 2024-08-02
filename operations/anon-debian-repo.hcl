@@ -120,7 +120,7 @@ server {
       driver = "docker"
 
       config {
-        image = "svforte/package-exporter:v0.0.3"
+        image = "ghcr.io/ator-development/package-exporter:v0.0.4"
         ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",

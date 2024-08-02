@@ -57,7 +57,7 @@ job "ator-dir-auth-dev" {
       }
 
       config {
-        image = "svforte/anon-dev:PLACEIMAGETAGHERE"
+        image = "ghcr.io/ator-development/ator-protocol-dev:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
@@ -128,6 +128,8 @@ job "ator-dir-auth-dev" {
 # Run Tor as a regular user (do not change this)
 User anond
 DataDirectory /var/lib/anon
+
+AgreeToTerms 1
 
 AuthoritativeDirectory 1
 V3AuthoritativeDirectory 1
