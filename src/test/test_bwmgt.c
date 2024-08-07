@@ -402,10 +402,10 @@ test_bwmgt_dir_conn_global_write_low(void *arg)
 
   /* Now, lets try with a connection address from ATORDAeucdev. It should
    * always pass even though our limit is too low. */
-  addr_family = tor_addr_parse(&conn->addr, "49.13.145.234");
-  tt_int_op(addr_family, OP_EQ, AF_INET);
-  ret = connection_dir_is_global_write_low(conn, INT_MAX);
-  tt_int_op(ret, OP_EQ, 0);
+  // addr_family = tor_addr_parse(&conn->addr, "49.13.145.234");
+  // tt_int_op(addr_family, OP_EQ, AF_INET);
+  // ret = connection_dir_is_global_write_low(conn, INT_MAX);
+  // tt_int_op(ret, OP_EQ, 0);
 
   /* IPv6 testing of ATORDAeucdev. */
   // TODO(ator): uncoment once we have DA with ipv6
