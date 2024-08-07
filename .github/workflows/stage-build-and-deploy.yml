@@ -9,9 +9,9 @@ on:
 env:
   image-name: ghcr.io/ator-development/ator-protocol-stage
   image-tag: ${{ github.sha }}
-  da-1-hc-url: http://49.13.145.234:9130/tor/status-vote/current/consensus
-  da-2-hc-url: http://5.161.108.187:9130/tor/status-vote/current/consensus
-  da-3-hc-url: http://5.78.90.106:9130/tor/status-vote/current/consensus
+  da-1-hc-url: http://88.99.219.105:9130/tor/status-vote/current/consensus
+  da-2-hc-url: http://176.9.29.53:9130/tor/status-vote/current/consensus
+  da-3-hc-url: http://95.216.32.105:9130/tor/status-vote/current/consensus
 
 jobs:
   build-and-push:
