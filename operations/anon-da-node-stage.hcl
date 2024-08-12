@@ -117,7 +117,7 @@ EOF
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
