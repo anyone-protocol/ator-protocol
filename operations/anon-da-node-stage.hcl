@@ -219,29 +219,29 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       }
     }
 
-    volume "dir-auth-stage-group-2" {
+    volume "dir-auth-stage-2" {
       type      = "host"
       read_only = false
-      source    = "dir-auth-stage-group-2"
+      source    = "dir-auth-stage-2"
     }
 
-    volume "sbws-stage-group-2" {
+    volume "sbws-stage-2" {
       type      = "host"
       read_only = false
-      source    = "sbws-stage-group-2"
+      source    = "sbws-stage-2"
     }
 
     task "dir-auth-stage-task" {
       driver = "docker"
 
       volume_mount {
-        volume      = "dir-auth-stage-group-2"
+        volume      = "dir-auth-stage-2"
         destination = "/var/lib/anon/"
         read_only   = false
       }
 
       volume_mount {
-        volume      = "sbws-stage-group-2"
+        volume      = "sbws-stage-2"
         destination = "/var/lib/sbws/"
         read_only   = false
       }
@@ -267,7 +267,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
@@ -369,28 +369,28 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       }
     }
 
-    volume "dir-auth-stage-group-3" {
+    volume "dir-auth-stage-3" {
       type      = "host"
       read_only = false
-      source    = "dir-auth-stage-group-3"
+      source    = "dir-auth-stage-3"
     }
 
-    volume "sbws-stage-group-3" {
+    volume "sbws-stage-3" {
       type      = "host"
       read_only = false
-      source    = "sbws-stage-group-3"
+      source    = "sbws-stage-3"
     }
 
     task "dir-auth-stage-task" {
         driver = "docker"
      volume_mount {
-        volume      = "dir-auth-stage-group-3"
+        volume      = "dir-auth-stage-3"
         destination = "/var/lib/anon/"
         read_only   = false
       }
 
       volume_mount {
-        volume      = "sbws-stage-group-3"
+        volume      = "sbws-stage-3"
         destination = "/var/lib/sbws/"
         read_only   = false
       }
@@ -416,7 +416,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
