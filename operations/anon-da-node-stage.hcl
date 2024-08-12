@@ -117,50 +117,50 @@ EOF
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
@@ -170,7 +170,7 @@ EOF
 {{ env "NOMAD_META_anonrc_template" }}
 
 # Server's public IP Address (usually automatic)
-Address {{ key (printf "ator-network/stage/dir-auth-%s-%d/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Address {{ key (printf "ator-network/stage/dir-auth-%s-%s/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
 
 # Port to advertise for incoming Tor connections.
 ORPort {{ env "NOMAD_PORT_orport" }}
@@ -178,7 +178,7 @@ ORPort {{ env "NOMAD_PORT_orport" }}
 # Mirror directory information for others (optional, not used on bridge)
 DirPort {{ env "NOMAD_PORT_dirport" }}
 
-Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
         EOH
         destination = "local/anonrc"
       }
@@ -267,50 +267,50 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
@@ -320,7 +320,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
 {{ env "NOMAD_META_anonrc_template" }}
 
 # Server's public IP Address (usually automatic)
-Address {{ key (printf "ator-network/stage/dir-auth-%s-%d/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Address {{ key (printf "ator-network/stage/dir-auth-%s-%s/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
 
 # Port to advertise for incoming Tor connections.
 ORPort {{ env "NOMAD_PORT_orport" }}
@@ -328,7 +328,7 @@ ORPort {{ env "NOMAD_PORT_orport" }}
 # Mirror directory information for others (optional, not used on bridge)
 DirPort {{ env "NOMAD_PORT_dirport" }}
 
-Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
         EOH
         destination = "local/anonrc"
       }
@@ -416,50 +416,50 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (printf `ator-network/stage/dir-auth-%s-%d/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
+           {{ key (printf `ator-network/stage/dir-auth-%s-%s/authority_certificate` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%d` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        data = "{{ with secret (printf `kv/ator-network/stage/dir-auth-%s-%s` (env `node.unique.id`) (env `NOMAD_PORT_orport`)) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
@@ -469,7 +469,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.
 {{ env "NOMAD_META_anonrc_template" }}
 
 # Server's public IP Address (usually automatic)
-Address {{ key (printf "ator-network/stage/dir-auth-%s-%d/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Address {{ key (printf "ator-network/stage/dir-auth-%s-%s/public_ipv4" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
 
 # Port to advertise for incoming Tor connections.
 ORPort {{ env "NOMAD_PORT_orport" }}
@@ -477,7 +477,7 @@ ORPort {{ env "NOMAD_PORT_orport" }}
 # Mirror directory information for others (optional, not used on bridge)
 DirPort {{ env "NOMAD_PORT_dirport" }}
 
-Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%d/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
+Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.unique.id") (env "NOMAD_PORT_orport")) }}
         EOH
         destination = "local/anonrc"
       }
