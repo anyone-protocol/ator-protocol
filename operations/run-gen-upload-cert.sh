@@ -1,5 +1,5 @@
 # Requirements:
-# have: docker, consul, vault
+# access to: consul, vault
 # consul env: CONSUL_HTTP_ADDR, CONSUL_HTTP_TOKEN, CONSUL_CACERT
 
 # STAGE by default in scripts
@@ -20,8 +20,8 @@ bash gencert.sh stage-da3-hel 95.216.32.105 AnyoneHelStage
 
 bash gencert.sh stage-da2-fal-2 176.9.29.53 AnyoneFal2Stage
 bash gencert.sh stage-da3-hel-2 95.216.32.105 AnyoneHel2Stage
-bash gencert.sh stage-da2-fal-3 176.9.29.53 AnyoneFal2Stage
-bash gencert.sh stage-da3-hel-3 95.216.32.105 AnyoneHel2Stage
+bash gencert.sh stage-da2-fal-3 176.9.29.53 AnyoneFal3Stage
+bash gencert.sh stage-da3-hel-3 95.216.32.105 AnyoneHel3Stage
 
 # Check/update script for phase
 ## LIVE
@@ -38,10 +38,10 @@ bash uploadcert.sh stage-da1-dmz c8e55509-a756-0aa7-563b-9665aa4915ab-9101 88.99
 bash uploadcert.sh stage-da2-fal c2adc610-6316-cd9d-c678-cda4b0080b52-9101 176.9.29.53 AnyoneFalLive
 bash uploadcert.sh stage-da3-hel 4aa61f61-893a-baf4-541b-870e99ac4839-9101 95.216.32.105 AnyoneHelLive
 
-bash uploadcert.sh stage-da2-fal-2 c2adc610-6316-cd9d-c678-cda4b0080b52-9102 176.9.29.53 AnyoneFalLive
-bash uploadcert.sh stage-da3-hel-2 4aa61f61-893a-baf4-541b-870e99ac4839-9102 95.216.32.105 AnyoneHelLive
-bash uploadcert.sh stage-da2-fal-3 c2adc610-6316-cd9d-c678-cda4b0080b52-9103 176.9.29.53 AnyoneFalLive
-bash uploadcert.sh stage-da3-hel-3 4aa61f61-893a-baf4-541b-870e99ac4839-9103 95.216.32.105 AnyoneHelLive
+bash uploadcert.sh stage-da2-fal-2 c2adc610-6316-cd9d-c678-cda4b0080b52-9102 176.9.29.53 AnyoneFal2Live
+bash uploadcert.sh stage-da3-hel-2 4aa61f61-893a-baf4-541b-870e99ac4839-9102 95.216.32.105 AnyoneHel2Live
+bash uploadcert.sh stage-da2-fal-3 c2adc610-6316-cd9d-c678-cda4b0080b52-9103 176.9.29.53 AnyoneFal3Live
+bash uploadcert.sh stage-da3-hel-3 4aa61f61-893a-baf4-541b-870e99ac4839-9103 95.216.32.105 AnyoneHel3Live
 
 # mind the phase.... and by default only checks curl output
 # Move DA folders and script to server, login, run script
@@ -62,5 +62,5 @@ bash uploadsecrets.sh stage-da3-hel 4aa61f61-893a-baf4-541b-870e99ac4839-9101
 
 bash uploadsecrets.sh stage-da2-fal-2 c2adc610-6316-cd9d-c678-cda4b0080b52-9102
 bash uploadsecrets.sh stage-da3-hel-2 4aa61f61-893a-baf4-541b-870e99ac4839-9102
-bash uploadsecrets.sh stage-da2-fal-2 c2adc610-6316-cd9d-c678-cda4b0080b52-9103
-bash uploadsecrets.sh stage-da3-hel-2 4aa61f61-893a-baf4-541b-870e99ac4839-9103
+bash uploadsecrets.sh stage-da2-fal-3 c2adc610-6316-cd9d-c678-cda4b0080b52-9103
+bash uploadsecrets.sh stage-da3-hel-3 4aa61f61-893a-baf4-541b-870e99ac4839-9103
