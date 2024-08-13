@@ -70,7 +70,7 @@ jobs:
         with:
           image-tag: ${{ env.image-tag }}
           nomad-job-file: anon-da-node-stage.hcl
-          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}"
+          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}|${{ env.da-4-hc-url }}|${{ env.da-5-hc-url }}|${{ env.da-6-hc-url }}|${{ env.da-7-hc-url }}"
           nomad-cacert: operations/admin-ui-ca.crt
           nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
           nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
