@@ -1,6 +1,7 @@
 # Operations
 /operations/da*
 /operations/stage-da*
+/operations/dev-da*
 # Editor droppings
 \#*\#
 .#*

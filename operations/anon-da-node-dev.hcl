@@ -1,4 +1,4 @@
-job "ator-dir-auth-dev" {
+job "dir-auth-dev" {
   datacenters = ["ator-fin"]
   type = "service"
   namespace = "ator-network"
@@ -9,13 +9,13 @@ job "ator-dir-auth-dev" {
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
-      target "067a42a8-d8fe-8b19-5851-43079e0eabb4" {
+      target "c8e55509-a756-0aa7-563b-9665aa4915ab" {
         percent = 34
       }
-      target "16be0723-edc1-83c4-6c02-193d96ec308a" {
+      target "c2adc610-6316-cd9d-c678-cda4b0080b52" {
         percent = 33
       }
-      target "e6e0baed-8402-fd5c-7a15-8dd49e7b60d9" {
+      target "4aa61f61-893a-baf4-541b-870e99ac4839" {
         percent = 33
       }
     }
@@ -183,7 +183,7 @@ V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
         port = "dirport"
         tags     = ["logging"]
         check {
-          name     = "dir auth alive"
+          name     = "dir-auth-dev-alive"
           type     = "tcp"
           interval = "10s"
           timeout  = "10s"
