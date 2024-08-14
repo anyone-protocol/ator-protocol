@@ -179,6 +179,13 @@ fetchers:
       labels:
         os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
+    - name: anon_beta_github_releases
+      owner: ATOR-Development
+      repo: ator-protocol
+      assets_regexp: ^anon.+-beta-.+\.deb
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
     - name: anon_live_github_releases
       owner: ATOR-Development
       repo: ator-protocol
@@ -196,6 +203,12 @@ fetchers:
     - name: anon_stage_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
+      labels:
+        os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
+        arch: '(amd64|arm64)\.deb'
+    - name: anon_beta_debian_repo
+      access_log_path: "/alloc/data/access.log"
+      access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-beta.+\.deb HTTP\/1\.1" 200'
       labels:
         os: 'anon.+(bookworm|bullseye|buster|noble|lunar|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
@@ -336,6 +349,66 @@ Architectures: amd64 arm64 source
 Components: main
 DDebComponents: main
 Description: Anon Ubuntu Focal Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-bookworm
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Boookworm Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-bullseye
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Bullseye Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-buster
+Architectures: amd64 arm64 source
+Components: main
+Description: Anon Debian Buster Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-noble
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Noble Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-lunar
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Lunar Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-jammy
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Jammy Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-focal
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Focal Beta
 SignWith: YES
 
 Origin: Anon
@@ -527,7 +600,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-live-bookworm anon-live-bullseye anon-live-buster anon-live-noble anon-live-lunar anon-live-jammy anon-live-focal anon-stage-bookworm anon-stage-bullseye anon-stage-buster anon-stage-noble anon-stage-lunar anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-buster anon-dev-noble anon-dev-lunar anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-buster anon-unstable-dev-noble anon-unstable-dev-lunar anon-unstable-dev-jammy anon-unstable-dev-focal
+Allow: anon-live-bookworm anon-live-bullseye anon-live-buster anon-live-noble anon-live-lunar anon-live-jammy anon-live-focal anon-beta-bookworm anon-beta-bullseye anon-beta-buster anon-beta-noble anon-beta-lunar anon-beta-jammy anon-beta-focal anon-stage-bookworm anon-stage-bullseye anon-stage-buster anon-stage-noble anon-stage-lunar anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-buster anon-dev-noble anon-dev-lunar anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-buster anon-unstable-dev-noble anon-unstable-dev-lunar anon-unstable-dev-jammy anon-unstable-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"

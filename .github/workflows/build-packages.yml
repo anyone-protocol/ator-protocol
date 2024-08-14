@@ -3,7 +3,8 @@ name: Build Anon Packages
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
+      - '*beta*'
     branches:
       - main
       - development
@@ -19,7 +20,7 @@ env:
   # main: stage
   # development: dev
   # everything else (pull request, etc.): unstable-dev
-  PKG_ENV: ${{ github.ref_type == 'tag' && 'live' || github.ref == 'refs/heads/main' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
+  PKG_ENV: ${{ github.ref_type == 'tag' && (contains(github.ref_type, 'beta') && 'beta' || 'live') || github.ref == 'refs/heads/main' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
 
 jobs:
 
