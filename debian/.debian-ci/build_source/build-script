@@ -88,7 +88,7 @@ tardir="${tardir%%/}"
 dir_version="${tardir##${pkg}-}"
 
 build_version="${dir_version}"
-if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
+if [ "$pkg_env" = "stage" ] || [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
   build_version="${dir_version}-${ts}"
 fi
 
