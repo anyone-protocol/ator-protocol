@@ -60,6 +60,7 @@ jobs:
           event-name: ${{ github.event_name }}
 
   deploy:
+    if: ${{ !contains(github.ref, 'beta') }}
     needs: multiarch-push
     runs-on: ubuntu-latest
     steps:
