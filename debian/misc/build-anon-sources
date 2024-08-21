@@ -148,9 +148,7 @@ backport_all() {
 
 	# buster
 	#################################################
-	bp1 $pkg $dir $sid_debian_version buster
-	(cd $dir; remove_runit)
-	bp2 $pkg $dir $origtar
+	# null
 
 	# bullseye
 	#################################################
