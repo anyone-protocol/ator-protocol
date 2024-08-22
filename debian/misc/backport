@@ -37,7 +37,6 @@ squeeze		d6.squeeze	1
 wheezy		d7.wheezy	1
 jessie		d8.jessie	1
 stretch		d9.stretch	1
-buster		d10.buster	1
 bullseye	d11.bullseye	1
 bookworm	d12.bookworm	1
 trixie		d13.trixie	1
@@ -47,7 +46,6 @@ squeeze-bpo	bpo6		1	squeeze-backports
 wheezy-bpo	bpo7		1	wheezy-backports
 jessie-bpo	bpo8		1	jessie-backports
 stretch-bpo	bpo9		1	stretch-backports
-buster-bpo	bpo10		1	buster-backports
 bullseye-bpo	bpo11		1	bullseye-backports
 bookworm-bpo	bpo12		1	bookworm-backports
 trixie-bpo	bpo13		1	trixie-backports

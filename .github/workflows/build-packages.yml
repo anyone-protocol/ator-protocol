@@ -88,15 +88,6 @@ jobs:
             suite: bullseye
             arch: arm64
             runner: arm64
-          # Debian Buster
-          - os: debian
-            suite: buster
-            arch: amd64
-            runner: ubuntu-latest
-          - os: debian
-            suite: buster
-            arch: arm64
-            runner: arm64
           # Ubuntu Noble
           - os: ubuntu
             suite: noble
