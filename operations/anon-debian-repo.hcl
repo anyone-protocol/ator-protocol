@@ -120,7 +120,7 @@ server {
       driver = "docker"
 
       config {
-        image = "ghcr.io/ator-development/package-exporter:v0.0.4"
+        image = "ghcr.io/anyone-protocol/package-exporter:v0.0.4"
         ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
@@ -166,28 +166,28 @@ fetchers:
       repo: anon
   github_releases:
     - name: anon_dev_github_releases
-      owner: ATOR-Development
+      owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-dev-.+\.deb
       labels:
         os: 'anon.+(bookworm|bullseye|noble|lunar|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_stage_github_releases
-      owner: ATOR-Development
+      owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-stage-.+\.deb
       labels:
         os: 'anon.+(bookworm|bullseye|noble|lunar|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_beta_github_releases
-      owner: ATOR-Development
+      owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-beta-.+\.deb
       labels:
         os: 'anon.+(bookworm|bullseye|noble|lunar|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_live_github_releases
-      owner: ATOR-Development
+      owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-live-.+\.deb
       labels:

@@ -57,7 +57,7 @@ job "dir-auth-dev" {
       }
 
       config {
-        image = "ghcr.io/ator-development/ator-protocol-dev:PLACEIMAGETAGHERE"
+        image = "ghcr.io/anyone-protocol/ator-protocol-dev:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",

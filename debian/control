@@ -6,8 +6,8 @@ Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>
 Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
 Standards-Version: 4.4.0
 Homepage: https://ator.io/
-Vcs-Git: https://github.com/ATOR-Development/ator-protocol.git
-Vcs-Browser: https://github.com/ATOR-Development/ator-protocol
+Vcs-Git: https://github.com/anyone-protocol/ator-protocol.git
+Vcs-Browser: https://github.com/anyone-protocol/ator-protocol
 
 Package: anon
 Architecture: any

@@ -6,7 +6,7 @@
 
 1. Download package. Package name depends on your distributive version and CPU architecture. You can find full link to desired package file (`.deb`) in the release assets section below. 
 ```sh
-wget https://github.com/ATOR-Development/ator-protocol/releases/download/<version>/<package_name>
+wget https://github.com/anyone-protocol/ator-protocol/releases/download/<version>/<package_name>
 ```
 
 2. Update repository information

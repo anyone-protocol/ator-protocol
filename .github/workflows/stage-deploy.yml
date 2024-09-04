@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 env:
-  image-name: ghcr.io/ator-development/ator-protocol-stage
+  image-name: ghcr.io/anyone-protocol/ator-protocol-stage
   image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
   da-1-hc-url: http://88.99.219.105:9130/tor/status-vote/current/consensus
   da-2-hc-url: http://176.9.29.53:9130/tor/status-vote/current/consensus

@@ -3,7 +3,7 @@ FROM debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG ANON_VER="57814c033988acf82dfb6452c20a3bc441af74ab"
-ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_REPO="https://github.com/anyone-protocol/ator-protocol.git"
 
 ENV ANON_NICKNAME=ANONv4
 

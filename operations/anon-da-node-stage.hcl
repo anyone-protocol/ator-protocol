@@ -97,7 +97,7 @@ EOF
       }
 
       config {
-        image = "ghcr.io/ator-development/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
@@ -247,7 +247,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
       }
 
       config {
-        image = "ghcr.io/ator-development/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
@@ -396,7 +396,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
       }
 
       config {
-        image = "ghcr.io/ator-development/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",

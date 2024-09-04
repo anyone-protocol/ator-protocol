@@ -27,7 +27,7 @@ jobs:
         with:
           docker-username: ${{ secrets.CR_USERNAME }}
           docker-password: ${{ secrets.CR_PAT }}
-          docker-base-repo: ghcr.io/ator-development/ator-protocol-dev-${{ matrix.platform.image-suffix }}
+          docker-base-repo: ghcr.io/anyone-protocol/ator-protocol-dev-${{ matrix.platform.image-suffix }}
           docker-tag: latest-pr
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}

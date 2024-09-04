@@ -8,9 +8,9 @@ FROM debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Sets which version of anon to use, by default it is main branch.
-# See https://github.com/ATOR-Development/ator-protocol/tags for available tags.
+# See https://github.com/anyone-protocol/ator-protocol/tags for available tags.
 ARG ANON_VER="main"
-ARG ANON_REPO="https://github.com/ATOR-Development/ator-protocol.git"
+ARG ANON_REPO="https://github.com/anyone-protocol/ator-protocol.git"
 
 # Sets which environment to build for, currently 'dev' and 'stage' are available.
 ARG ANON_ENV=stage
