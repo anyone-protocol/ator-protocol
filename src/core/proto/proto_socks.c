@@ -451,6 +451,19 @@ parse_socks5_userpass_auth(const uint8_t *raw_data, socks_request_t *req,
   const char *password =
    socks5_client_userpass_auth_getconstarray_passwd(trunnel_req);
 
+  /* Detect invalid SOCKS5 extended-parameter requests. */
+  if (usernamelen >= 8 &&
+      tor_memeq(username, "<torS0X>", 8)) {
+    /* This is indeed an extended-parameter request. */
+    if (usernamelen != 9 ||
+        tor_memneq(username, "<torS0X>0", 9)) {
+      /* This request is an unrecognized version, or it includes an Arti RPC
+       * object ID (which we do not recognize). */
+      res = SOCKS_RESULT_INVALID;
+      goto end;
+    }
+  }
+
   if (usernamelen && username) {
     tor_free(req->username);
     req->username = tor_memdup_nulterm(username, usernamelen);
