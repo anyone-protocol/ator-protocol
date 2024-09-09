@@ -35,8 +35,8 @@ jobs:
       - name: Build and push
         uses: ./.github/actions/build-and-push
         with:
-          docker-username: ${{ secrets.CR_USERNAME }}
-          docker-password: ${{ secrets.CR_PAT }}
+          docker-username: ${{ github.actor }}
+            docker-password: ${{ secrets.GITHUB_TOKEN }}
           docker-base-repo: ${{ env.image-name }}-${{ matrix.platform.image-suffix }}
           docker-tag: ${{ env.image-tag }}
           docker-platform: ${{ matrix.platform.name }}
@@ -53,8 +53,8 @@ jobs:
       - name: Multiarch push
         uses: ./.github/actions/multiarch-push
         with:
-          docker-username: ${{ secrets.CR_USERNAME }}
-          docker-password: ${{ secrets.CR_PAT }}
+          docker-username: ${{ github.actor }}
+            docker-password: ${{ secrets.GITHUB_TOKEN }}
           docker-base-repo: ${{ env.image-name }}
           docker-tag: ${{ env.image-tag }}
           event-name: ${{ github.event_name }}
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      - name: Deploy new version 
+      - name: Deploy new version
         uses: ./.github/actions/deploy
         with:
           image-tag: ${{ env.image-tag }}
