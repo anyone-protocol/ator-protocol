@@ -66,6 +66,10 @@ job "anon-debian-repo" {
           "traefik.http.routers.deb-repo.rule=Host(`deb.dmz.ator.dev`)",
           "traefik.http.routers.deb-repo.tls=true",
           "traefik.http.routers.deb-repo.tls.certresolver=atorresolver",
+          "traefik.http.routers.deb-repo-dns.entrypoints=https",
+          "traefik.http.routers.deb-repo-dns.rule=Host(`deb.en.anyone.tech`)",
+          "traefik.http.routers.deb-repo-dns.tls=true",
+          "traefik.http.routers.deb-repo-dns.tls.certresolver=anyoneresolver"
         ]
         check {
           name     = "nginx http server alive"
