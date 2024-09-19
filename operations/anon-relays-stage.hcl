@@ -1,5 +1,5 @@
 locals {
-  instances_count = 3
+  instances_count = 101
   nicnname_prefix = "anonW12fqj5t5FML"
 	nicknames = [for i in range(0, local.instances_count) : "${local.nicnname_prefix}${i}"]
 	nicknames_string = join(",", local.nicknames)
