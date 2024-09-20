@@ -4470,28 +4470,6 @@ load_torrc_from_disk(const config_line_t *cmd_arg, int defaults_file)
   return NULL;
 }
 
-// Function to check if the process is running interactively
-int is_interactive_mode(void) {
-    // Check if stdin is a TTY
-    if (isatty(STDIN_FILENO)) {
-        return 1;
-    }
-
-    // Alternatively, check if RunAsDaemon flag is not set
-    if (!get_options_mutable()->RunAsDaemon) {
-        return 1;
-    }
-
-    // Add other checks if necessary, e.g., environment variables
-    // Example: Check if running in a CI environment
-    const char *ci_env = getenv("CI");
-    if (ci_env && strcmp(ci_env, "true") == 0) {
-        return 0;
-    }
-
-    return 0;
-}
-
 /** Read a configuration file into <b>options</b>, finding the configuration
  * file location based on the command line.  After loading the file
  * call options_init_from_string() to load the config.
@@ -4638,7 +4616,7 @@ options_init_from_torrc(int argc, char **argv)
   }
 
   if (!get_options_mutable()->AgreeToTerms && (argeement == NULL || strcmp(argeement, "agreed") != 0)) {
-    if (!is_interactive_mode()) {
+    if (get_options_mutable()->RunAsDaemon || !isatty(STDIN_FILENO)) {
         // Non-interactive mode: Fail fast
         log_err(LD_CONFIG, "User has not agreed to the terms and conditions. Exiting.");
         tor_asprintf(&errmsg, "Not agreed to terms");
