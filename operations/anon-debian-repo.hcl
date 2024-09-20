@@ -54,7 +54,7 @@ job "anon-debian-repo" {
 
       resources {
         cpu = 256
-        memory = 256
+        memory = 512
       }
 
       service {
