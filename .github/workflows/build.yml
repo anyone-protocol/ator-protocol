@@ -25,8 +25,8 @@ jobs:
       - name: Build and push
         uses: ./.github/actions/build-and-push
         with:
-          docker-username: ${{ secrets.CR_USERNAME }}
-          docker-password: ${{ secrets.CR_PAT }}
+          docker-username: ${{ github.actor }}
+          docker-password: ${{ secrets.GITHUB_TOKEN }}
           docker-base-repo: ghcr.io/anyone-protocol/ator-protocol-dev-${{ matrix.platform.image-suffix }}
           docker-tag: latest-pr
           docker-platform: ${{ matrix.platform.name }}
