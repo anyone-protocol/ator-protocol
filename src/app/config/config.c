@@ -4616,7 +4616,7 @@ options_init_from_torrc(int argc, char **argv)
   }
 
   if (!get_options_mutable()->AgreeToTerms && (argeement == NULL || strcmp(argeement, "agreed") != 0)) {
-    if (get_options_mutable()->RunAsDaemon || !isatty(STDIN_FILENO)) {
+    if (get_options_mutable()->RunAsDaemon || !isatty(STDIN_FILENO)) { // Non-interactive mode: Fail fast
         // Non-interactive mode: Fail fast
         log_err(LD_CONFIG, "User has not agreed to the terms and conditions. Exiting.");
         tor_asprintf(&errmsg, "Not agreed to terms");
