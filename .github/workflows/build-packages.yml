@@ -445,7 +445,7 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y dist-upgrade
-          apt-get -y install devscripts zip gpg dput openssh-client
+          apt-get -y install devscripts zip gpg dput openssh-client reprepro
       - name: Clear vanished artifacts
         run: |
           reprepro -b /data/debian clearvanished
