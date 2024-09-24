@@ -446,6 +446,9 @@ jobs:
           apt-get -y update
           apt-get -y dist-upgrade
           apt-get -y install devscripts zip gpg dput openssh-client
+      - name: Clear vanished artifacts
+        run: |
+          reprepro -b /data/debian clearvanished
       - name: Download raw artifacts
         uses: actions/download-artifact@v4
         with:
