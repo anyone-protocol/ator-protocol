@@ -350,7 +350,7 @@ jobs:
 
           cd openssl-${OPENSSL_VERSION}
           ./Configure ${MINGW} shared --cross-compile-prefix=${CROSS_HOST}- --prefix="/build/openssl-${BUILD_TYPE}-prefix/"
-          make -j1
+          make -j${{ env.ANON_JOBS }}
           make install
           cd ..
 
@@ -397,7 +397,7 @@ jobs:
             --disable-gcc-hardening \
             --enable-static-tor \
             --prefix="/build/anon-prefix"
-          make -j${{ env.ANON_JOBS }}
+          make -j1
           make install
       - name: Copy executables to artifact directory
         run: |
