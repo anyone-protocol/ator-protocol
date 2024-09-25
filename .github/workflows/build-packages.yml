@@ -330,7 +330,7 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          echo "ANON_JOBS=$((`nproc`-1))"
+          echo "ANON_JOBS=1"
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
