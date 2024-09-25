@@ -323,7 +323,6 @@ jobs:
       OPENSSL_VERSION: "1.1.1w"
       LIBEVENT_VERSION: "2.1.12-stable"
       ZLIB_VERSION: "1.3.1"
-
       BUILD_TYPE: "64"
       CROSS_HOST: "x86_64-w64-mingw32"
       MINGW: "mingw64"
@@ -398,7 +397,7 @@ jobs:
             --disable-gcc-hardening \
             --enable-static-tor \
             --prefix="/build/anon-prefix"
-          make -j${{ env.ANON_JOBS }}
+          make -j1
           make install
       - name: Copy executables to artifact directory
         run: |
