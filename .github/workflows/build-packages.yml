@@ -391,8 +391,6 @@ jobs:
             --disable-asciidoc \
             --disable-zstd \
             --disable-lzma \
-            --disable-tests \
-            --disable-slow-tests \
             --enable-static-libevent --with-libevent-dir="/build/libevent-${BUILD_TYPE}-prefix/" \
             --enable-static-openssl --with-openssl-dir="/build/openssl-${BUILD_TYPE}-prefix/" \
             --enable-static-zlib --with-zlib-dir="/build/zlib-${BUILD_TYPE}-prefix/" \
