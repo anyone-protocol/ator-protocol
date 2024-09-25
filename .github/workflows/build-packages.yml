@@ -330,7 +330,7 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          echo "ANON_JOBS=1"
+          echo "ANON_JOBS=$((`nproc`+1))"
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -350,7 +350,7 @@ jobs:
 
           cd openssl-${OPENSSL_VERSION}
           ./Configure ${MINGW} shared --cross-compile-prefix=${CROSS_HOST}- --prefix="/build/openssl-${BUILD_TYPE}-prefix/"
-          make -j${{ env.ANON_JOBS }}
+          make -j1
           make install
           cd ..
 
