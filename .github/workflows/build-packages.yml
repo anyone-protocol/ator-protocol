@@ -330,7 +330,7 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          echo "ANON_JOBS=$((`nproc`+1))"
+          echo "ANON_JOBS=$((`nproc`-1))"
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -383,7 +383,6 @@ jobs:
           rm -rf zlib-${ZLIB_VERSION}
       - name: Build anon
         run: |
-          echo ${{ env.ANON_JOBS }}
           cd ator-protocol
           ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
           ./autogen.sh
@@ -398,8 +397,7 @@ jobs:
             --disable-gcc-hardening \
             --enable-static-tor \
             --prefix="/build/anon-prefix"
-          echo ${{ env.ANON_JOBS }}
-          make -j1
+          make -j${{ env.ANON_JOBS }}
           make install
       - name: Copy executables to artifact directory
         run: |
