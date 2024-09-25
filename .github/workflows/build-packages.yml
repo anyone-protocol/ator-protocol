@@ -323,7 +323,6 @@ jobs:
       OPENSSL_VERSION: "1.1.1w"
       LIBEVENT_VERSION: "2.1.12-stable"
       ZLIB_VERSION: "1.3.1"
-
       BUILD_TYPE: "64"
       CROSS_HOST: "x86_64-w64-mingw32"
       MINGW: "mingw64"
@@ -384,6 +383,7 @@ jobs:
           rm -rf zlib-${ZLIB_VERSION}
       - name: Build anon
         run: |
+          echo ${{ env.ANON_JOBS }}
           cd ator-protocol
           ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
           ./autogen.sh
@@ -391,6 +391,8 @@ jobs:
             --disable-asciidoc \
             --disable-zstd \
             --disable-lzma \
+            --disable-tests \
+            --disable-slow-tests \
             --enable-static-libevent --with-libevent-dir="/build/libevent-${BUILD_TYPE}-prefix/" \
             --enable-static-openssl --with-openssl-dir="/build/openssl-${BUILD_TYPE}-prefix/" \
             --enable-static-zlib --with-zlib-dir="/build/zlib-${BUILD_TYPE}-prefix/" \
@@ -398,7 +400,8 @@ jobs:
             --disable-gcc-hardening \
             --enable-static-tor \
             --prefix="/build/anon-prefix"
-          make -j${{ env.ANON_JOBS }}
+          echo ${{ env.ANON_JOBS }}
+          make -j1
           make install
       - name: Copy executables to artifact directory
         run: |
