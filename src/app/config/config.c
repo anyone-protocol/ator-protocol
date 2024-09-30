@@ -570,7 +570,7 @@ static const config_var_t option_vars_[] = {
   V(MaxUnparseableDescSizeToLog, MEMUNIT, "10 MB"),
   VPORT(MetricsPort),
   V(MetricsPortPolicy,           LINELIST, NULL),
-  V(TestingMinTimeToReportBandwidth,    INTERVAL, "2 hours"),
+  V(TestingMinTimeToReportBandwidth,    INTERVAL, "1 day"),
   VAR("MyFamily",                LINELIST, MyFamily_lines,       NULL),
   V(NewCircuitPeriod,            INTERVAL, "30 seconds"),
   OBSOLETE("NamingAuthoritativeDirectory"),
