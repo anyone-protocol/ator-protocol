@@ -64,6 +64,14 @@ Java_io_anyone_jni_AnonService_runMain
 
 /*
  * Class:     io_anyone_jni_AnonService
+ * Method:    prepareFileDescriptor
+ */
+JNIEXPORT jobject JNICALL
+Java_io_anyone_jni_AnonService_prepareFileDescriptor
+(JNIEnv *env, jclass, jstring);
+
+/*
+ * Class:     io_anyone_jni_AnonService
  * Method:    freeAll
  * Signature: ()V
  */
