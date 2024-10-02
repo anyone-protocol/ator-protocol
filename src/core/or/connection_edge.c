@@ -2994,7 +2994,7 @@ static const char HTTP_CONNECT_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "<body>\n"
   "<h1>This is an HTTP CONNECT tunnel, not an HTTP proxy.</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use this Tor port as\n"
+  "It appears you have configured your web browser to use this Anon port as\n"
   "an HTTP proxy.\n"
   "</p><p>\n"
   "This is not correct: This port is configured as a CONNECT tunnel, not\n"

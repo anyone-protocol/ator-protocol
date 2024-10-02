@@ -1,7 +1,7 @@
 Source: anon
 Section: net
 Priority: optional
-Maintainer: Serhii Varakuta <serhii@varakuta.com>
+Maintainer: Yurii Kovalchuk <yurii.kovalchuk@fortegrp.com>
 Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>= 1.1), asciidoc (>= 8.2), docbook-xml, docbook-xsl, xmlto, dh-apparmor, libseccomp-dev [amd64 i386], libsystemd-dev [linux-any], pkg-config [linux-any], libcap-dev [linux-any], dh-autoreconf, liblzma-dev, libzstd-dev, dh-runit (>= 2.8.8)
 Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
 Standards-Version: 4.4.0
@@ -18,7 +18,7 @@ Breaks: ${runit:Breaks}
 Recommends: logrotate, anon-geoipdb
 Suggests: mixmaster, socat, apparmor-utils, nyx, obfs4proxy
 Description: anonymizing overlay network for TCP
- Tor is a connection-based low-latency anonymous communication system.
+ Anon is a connection-based low-latency anonymous communication system.
  .
  Clients choose a source-routed path through a set of relays, and
  negotiate a "virtual circuit" through the network, in which each relay
@@ -26,26 +26,26 @@ Description: anonymizing overlay network for TCP
  down the circuit is decrypted at each relay, which reveals the
  downstream relay.
  .
- Basically, Tor provides a distributed network of relays. Users bounce
+ Basically, Anon provides a distributed network of relays. Users bounce
  their TCP streams (web traffic, ftp, ssh, etc) around the relays, and
  recipients, observers, and even the relays themselves have difficulty
  learning which users connected to which destinations.
  .
- This package enables only a Tor client by default, but it can also be
+ This package enables only a Anon client by default, but it can also be
  configured as a relay and/or a hidden service easily.
  .
- Client applications can use the Tor network by connecting to the local
- socks proxy interface provided by your Tor instance. If the application
+ Client applications can use the Anon network by connecting to the local
+ socks proxy interface provided by your Anon instance. If the application
  itself does not come with socks support, you can use a socks client
  such as torsocks.
  .
- Note that Tor does no protocol cleaning on application traffic. There
+ Note that Anon does no protocol cleaning on application traffic. There
  is a danger that application protocols and associated programs can be
- induced to reveal information about the user. Tor depends on Torbutton
+ induced to reveal information about the user. Anon depends on Torbutton
  and similar protocol cleaners to solve this problem. For best
- protection when web surfing, the Tor Project recommends that you use
- the Tor Browser Bundle, a standalone tarball that includes static
- builds of Tor, Torbutton, and a modified Firefox that is patched to fix
+ protection when web surfing, the Anon Project recommends that you use
+ the Anon Browser Bundle, a standalone tarball that includes static
+ builds of Anon, Torbutton, and a modified Firefox that is patched to fix
  a variety of privacy bugs.
 
 Package: anon-geoipdb
@@ -54,15 +54,15 @@ Priority: optional
 Depends: anon (>= ${source:Version}), ${misc:Depends}
 Replaces: anon (<< 0.2.4.8)
 Breaks: anon (<< 0.2.4.8)
-Description: GeoIP database for Tor
- This package provides a GeoIP database for Tor, i.e. it maps IPv4 addresses
+Description: GeoIP database for Anon
+ This package provides a GeoIP database for Anon, i.e. it maps IPv4 addresses
  to countries.
  .
- Bridge relays (special Tor relays that aren't listed in the main Tor
+ Bridge relays (special Anon relays that aren't listed in the main Anon
  directory) use this information to report which countries they see
- connections from.  These statistics enable the Tor network operators to
+ connections from.  These statistics enable the Anon network operators to
  learn when certain countries start blocking access to bridges.
  .
  Clients can also use this to learn what country each relay is in, so
- Tor controllers like arm or Vidalia can use it, or if they want to
+ Anon controllers like arm or Vidalia can use it, or if they want to
  configure path selection preferences.

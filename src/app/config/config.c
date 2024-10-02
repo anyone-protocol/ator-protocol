@@ -818,7 +818,7 @@ static const struct {
 static const config_deprecation_t option_deprecation_notes_[] = {
   /* Deprecated since 0.3.2.0-alpha. */
   { "HTTPProxy", "It only applies to direct unencrypted HTTP connections "
-    "to your directory server, which your Tor probably wasn't using." },
+    "to your directory server, which your Anon probably wasn't using." },
   { "HTTPProxyAuthenticator", "HTTPProxy is deprecated in favor of HTTPSProxy "
     "which should be used with HTTPSProxyAuthenticator." },
   /* End of options deprecated since 0.3.2.1-alpha */
@@ -7035,7 +7035,7 @@ validate_data_directories(or_options_t *options)
 /** This string can change; it tries to give the reader an idea
  * that editing this file by hand is not a good plan. */
 #define GENERATED_FILE_COMMENT "# The old anonrc file was renamed " \
-  "to anonrc.orig.1, and Tor will ignore it"
+  "to anonrc.orig.1, and Anon will ignore it"
 
 /** Save a configuration file for the configuration in <b>options</b>
  * into the file <b>fname</b>.  If the file already exists, and

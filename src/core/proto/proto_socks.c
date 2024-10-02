@@ -912,7 +912,7 @@ socks_request_set_socks5_error(socks_request_t *req,
 }
 
 static const char SOCKS_PROXY_IS_NOT_AN_HTTP_PROXY_MSG[] =
-  "HTTP/1.0 501 Tor is not an HTTP Proxy\r\n"
+  "HTTP/1.0 501 Anon is not an HTTP Proxy\r\n"
   "Content-Type: text/html; charset=iso-8859-1\r\n\r\n"
   "<html>\n"
   "<head>\n"
@@ -921,7 +921,7 @@ static const char SOCKS_PROXY_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "<body>\n"
   "<h1>This is a SOCKs proxy, not an HTTP proxy.</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use this Tor port as\n"
+  "It appears you have configured your web browser to use this Anon port as\n"
   "an HTTP proxy.\n"
   "</p><p>\n"
   "This is not correct: This port is configured as a SOCKS proxy, not\n"
