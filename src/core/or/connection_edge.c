@@ -2488,7 +2488,7 @@ connection_ap_handshake_rewrite_and_attach(entry_connection_t *conn,
             log_warn(LD_APP, "Not attempting connection to %s:%d because "
                      "the network would reject it. Are you trying to send "
                      "Anon traffic over Anon? This traffic can be harmful to "
-                     "the Anon network. If you really need it, try using "
+                     "the Anyone network. If you really need it, try using "
                      "a bridge as a workaround.",
                      safe_str_client(socks->address), socks->port);
             connection_mark_unattached_ap(conn, END_STREAM_REASON_TORPROTOCOL);

@@ -2759,7 +2759,7 @@ networkstatus_check_required_protocols(const networkstatus_t *ns,
     tor_asprintf(warning_out, "At least one protocol listed as required in "
                  "the consensus is not supported by this version of Anon. "
                  "You should upgrade. This version of Anon will not work as a "
-                 "%s on the Anon network. The missing protocols are: %s",
+                 "%s on the Anyone network. The missing protocols are: %s",
                  func, missing);
     tor_free(missing);
     return 1;
@@ -2769,7 +2769,7 @@ networkstatus_check_required_protocols(const networkstatus_t *ns,
     tor_asprintf(warning_out, "At least one protocol listed as recommended in "
                  "the consensus is not supported by this version of Anon. "
                  "You should upgrade. This version of Anon will eventually "
-                 "stop working as a %s on the Anon network. The missing "
+                 "stop working as a %s on the Anyone network. The missing "
                  "protocols are: %s",
                  func, missing);
     tor_free(missing);

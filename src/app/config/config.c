@@ -3973,7 +3973,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     if (!config_is_same(get_options_mgr(),options,                      \
                         dflt_options,#arg)) {                           \
       or_options_free(dflt_options);                                    \
-      REJECT(#arg " may only be changed in testing Anon "                \
+      REJECT(#arg " may only be changed in testing Anyone "                \
              "networks!");                                              \
     }                                                                   \
   STMT_END
@@ -4041,20 +4041,20 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (options->TestingEnableConnBwEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableConnBwEvent may only be changed in testing "
-           "Anon networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingEnableCellStatsEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableCellStatsEvent may only be changed in testing "
-           "Anon networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingTorNetwork) {
     log_warn(LD_CONFIG, "TestingTorNetwork is set. This will make your node "
-                        "almost unusable in the public Anon network, and is "
+                        "almost unusable in the public Anyone network, and is "
                         "therefore only advised if you are building a "
-                        "testing Anon network!");
+                        "testing Anyone network!");
   }
 
   if (options_validate_scheduler(options, msg) < 0) {

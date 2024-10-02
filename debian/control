@@ -34,7 +34,7 @@ Description: anonymizing overlay network for TCP
  This package enables only a Anon client by default, but it can also be
  configured as a relay and/or a hidden service easily.
  .
- Client applications can use the Anon network by connecting to the local
+ Client applications can use the Anyone network by connecting to the local
  socks proxy interface provided by your Anon instance. If the application
  itself does not come with socks support, you can use a socks client
  such as torsocks.
@@ -60,7 +60,7 @@ Description: GeoIP database for Anon
  .
  Bridge relays (special Anon relays that aren't listed in the main Anon
  directory) use this information to report which countries they see
- connections from.  These statistics enable the Anon network operators to
+ connections from.  These statistics enable the Anyone network operators to
  learn when certain countries start blocking access to bridges.
  .
  Clients can also use this to learn what country each relay is in, so
