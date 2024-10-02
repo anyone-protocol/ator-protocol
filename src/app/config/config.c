@@ -2705,13 +2705,7 @@ options_trial_assign(config_line_t *list, unsigned flags, char **msg)
 static void
 print_usage(void)
 {
-  printf(
-"Copyright (c) 2001-2004, Roger Dingledine\n"
-"Copyright (c) 2004-2006, Roger Dingledine, Nick Mathewson\n"
-"Copyright (c) 2007-2021, The Tor Project, Inc.\n\n"
-"anon -f <anonrc> [args]\n"
-"See man page for options, or https://www.torproject.org/ for "
-"documentation.\n");
+  printf("anon -f <anonrc> [args]\n");
 }
 
 /** Print all non-obsolete torrc options. */
@@ -3619,8 +3613,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "You have one single EntryNodes and at least one hidden service "
              "configured. This is bad because it's very easy to locate your "
              "entry guard which can then lead to the deanonymization of your "
-             "hidden service -- for more details, see "
-             "https://bugs.torproject.org/tpo/core/tor/14917. "
+             "hidden service. "
              "For this reason, the use of one EntryNodes with an hidden "
              "service is prohibited until a better solution is found.");
     return -1;
@@ -3636,8 +3629,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "hidden service is configured. Pinning entry nodes can possibly "
              "be harmful to the service anonymity. Because of this, we "
              "recommend you either don't do that or make sure you know what "
-             "you are doing. For more details, please look at "
-             "https://bugs.torproject.org/tpo/core/tor/21155.");
+             "you are doing.");
   }
 
   /* Single Onion Services: non-anonymous hidden services */

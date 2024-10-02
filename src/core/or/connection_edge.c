@@ -3001,11 +3001,6 @@ static const char HTTP_CONNECT_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "an HTTP proxy. Please configure your client accordingly.  You can also\n"
   "use HTTPS; then the client should automatically use HTTP CONNECT."
   "</p>\n"
-  "<p>\n"
-  "See <a href=\"https://www.torproject.org/documentation.html\">"
-  "https://www.torproject.org/documentation.html</a> for more "
-  "information.\n"
-  "</p>\n"
   "</body>\n"
   "</html>\n";
 

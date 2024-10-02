@@ -496,24 +496,21 @@ test_options_validate__uname_for_server(void *ignored)
   fixed_get_uname_result = "Windows 95";
   options_validate(NULL, tdata->opt, &msg);
   expect_log_msg("Anon is running as a server, but you"
-           " are running Windows 95; this probably won't work. See https://www"
-           ".torproject.org/docs/faq.html#BestOSForRelay for details.\n");
+           " are running Windows 95; this probably won't work.\n");
   tor_free(msg);
 
   fixed_get_uname_result = "Windows 98";
   mock_clean_saved_logs();
   options_validate(NULL, tdata->opt, &msg);
   expect_log_msg("Anon is running as a server, but you"
-           " are running Windows 98; this probably won't work. See https://www"
-           ".torproject.org/docs/faq.html#BestOSForRelay for details.\n");
+           " are running Windows 98; this probably won't work.\n");
   tor_free(msg);
 
   fixed_get_uname_result = "Windows Me";
   mock_clean_saved_logs();
   options_validate(NULL, tdata->opt, &msg);
   expect_log_msg("Anon is running as a server, but you"
-           " are running Windows Me; this probably won't work. See https://www"
-           ".torproject.org/docs/faq.html#BestOSForRelay for details.\n");
+           " are running Windows Me; this probably won't work.\n");
   tor_free(msg);
 
   fixed_get_uname_result = "Windows 2000";
@@ -1010,8 +1007,7 @@ test_options_validate__relay_with_hidden_services(void *ignored)
   expect_log_msg(
             "Anon is currently configured as a relay and a hidden service. "
             "That's not very secure: you should probably run your hidden servi"
-            "ce in a separate Anon process, at least -- see "
-            "https://bugs.torproject.org/tpo/core/tor/8742.\n");
+            "ce in a separate Anon process.\n");
 
  done:
   teardown_capture_of_logs();

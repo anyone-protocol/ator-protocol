@@ -170,8 +170,7 @@ conflux_is_enabled(const circuit_t *circ)
       if ((msg = rate_limit_log(&rlimit, time(NULL)))) {
         log_warn(LD_GENERAL,
                  "This tor is a relay and ConfluxEnabled is set to 0. "
-                 "We would ask you to please write to us on "
-                 "tor-relay@lists.torproject.org or file a bug explaining "
+                 "We would ask you to please write to us or file a bug explaining "
                  "why you have disabled this option. Without news from you, "
                  "we might end up marking your relay as a BadExit.");
         tor_free(msg);
