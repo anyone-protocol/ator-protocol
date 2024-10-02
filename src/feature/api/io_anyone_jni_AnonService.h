@@ -62,4 +62,13 @@ JNIEXPORT jint JNICALL
 Java_io_anyone_jni_AnonService_runMain
 (JNIEnv *, jobject);
 
+/*
+ * Class:     io_anyone_jni_AnonService
+ * Method:    freeAll
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL
+Java_io_anyone_jni_AnonService_freeAll
+(JNIEnv *, jobject);
+
 #endif /* !defined(IO_ANYONE_JNI_ANONSERVICE_H) */

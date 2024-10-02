@@ -257,3 +257,12 @@ Java_io_anyone_jni_AnonService_runMain
 {
   return RunMain(env, thisObj);
 }
+
+JNIEXPORT void JNICALL
+Java_io_anyone_jni_AnonService_freeAll
+(JNIEnv *env, jobject _ignore)
+{
+  UNUSED(env);
+  UNUSED(_ignore);
+  tor_free_all(0);
+}
