@@ -9,11 +9,10 @@ DataDirectory /var/lib/anon
 
 AgreeToTerms 1
 
-ORPort {{ env `NOMAD_PORT_orport` }}
+ORPort 8081
 
 Nickname $2
 ContactInfo anon@anon.com
-MyFamily {{ env `NICKNAMES_STRING` }}
 
 EOL
 
