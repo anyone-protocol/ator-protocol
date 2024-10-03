@@ -31,22 +31,15 @@ Description: anonymizing overlay network for TCP
  recipients, observers, and even the relays themselves have difficulty
  learning which users connected to which destinations.
  .
- This package enables only a Anon client by default, but it can also be
+ This package enables only a Anyone client by default, but it can also be
  configured as a relay and/or a hidden service easily.
  .
  Client applications can use the Anyone network by connecting to the local
- socks proxy interface provided by your Anon instance. If the application
- itself does not come with socks support, you can use a socks client
- such as torsocks.
+ socks proxy interface provided by your Anon instance.
  .
  Note that Anon does no protocol cleaning on application traffic. There
  is a danger that application protocols and associated programs can be
- induced to reveal information about the user. Anon depends on Torbutton
- and similar protocol cleaners to solve this problem. For best
- protection when web surfing, the Anon Project recommends that you use
- the Anon Browser Bundle, a standalone tarball that includes static
- builds of Anon, Torbutton, and a modified Firefox that is patched to fix
- a variety of privacy bugs.
+ induced to reveal information about the user.
 
 Package: anon-geoipdb
 Architecture: all
@@ -63,6 +56,3 @@ Description: GeoIP database for Anon
  connections from.  These statistics enable the Anyone network operators to
  learn when certain countries start blocking access to bridges.
  .
- Clients can also use this to learn what country each relay is in, so
- Anon controllers like arm or Vidalia can use it, or if they want to
- configure path selection preferences.

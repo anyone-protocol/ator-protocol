@@ -950,7 +950,7 @@ init_keys_client(void)
   set_client_identity_key(prkey);
   /* Create a TLS context. */
   if (router_initialize_tls_context() < 0) {
-    log_err(LD_GENERAL,"Error creating TLS context for Anon client.");
+    log_err(LD_GENERAL,"Error creating TLS context for Anyone client.");
     return -1;
   }
   return 0;
