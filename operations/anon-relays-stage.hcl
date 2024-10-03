@@ -1,6 +1,6 @@
 locals {
   instances_count = 101
-  nicnname_prefix = "anonW12fqj5t5FML"
+  nicnname_prefix = "anonW13fqj5t5FML"
 	nicknames = [for i in range(0, local.instances_count) : "${local.nicnname_prefix}${i}"]
 	nicknames_string = join(",", local.nicknames)
 }
@@ -21,9 +21,13 @@ job "relays-family-stage" {
     }
 
     network  {
-      port "orport" {
-        static = 0
-      }     
+      dynamic "port" {
+        for_each = range(0, local.instances_count)
+        labels = [ "orport${port.value}" ]
+        content {
+          static = 10000 + port.value
+        }
+      }
     }
 
     task "relay-live-task" {
@@ -31,7 +35,7 @@ job "relays-family-stage" {
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:latest"
-        ports = ["orport"]
+        ports = ["orport${NOMAD_ALLOC_INDEX}"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
         ]
@@ -48,7 +52,7 @@ job "relays-family-stage" {
 
       resources {
         cpu = 256
-        memory = 256
+        memory = 2048
       }
 
       template {
