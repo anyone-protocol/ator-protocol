@@ -17,9 +17,9 @@ ContactInfo anon@anon.com
 EOL
 
 
-docker run -i -w /var/lib/tor/keys -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ svforte/ator-protocol:latest tor-gencert --create-identity-key
+docker run -i -w /var/lib/tor/keys -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ ghcr.io/anyone-protocol/ator-protocol-stage:latest tor-gencert --create-identity-key
 
-ATOR_CONTAINER=$(docker create -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ svforte/ator-protocol:latest)
+ATOR_CONTAINER=$(docker create -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ ghcr.io/anyone-protocol/ator-protocol-stage:latest)
 docker start $ATOR_CONTAINER 
 sleep 5 
 docker stop $ATOR_CONTAINER
