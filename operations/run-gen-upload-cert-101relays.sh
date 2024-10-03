@@ -4,7 +4,7 @@
 # STAGE by default in scripts
 
 for i in {0..100}; do
-    bash gencert-101relay.sh anon-family-relays-$i AnonFamilyRelay$i
-    bash uploadcert-101relay.sh anon-family-relays-$i $i
-    bash uploadcert-101relay.sh anon-family-relays-$i $i
+    bash gencert-101relays.sh anon-family-relay-$i AnonFamilyRelay$i
+    bash uploadcert-101relays.sh anon-family-relay-$i $i
+    bash uploadcert-101relays.sh anon-family-relay-$i $i
 done
