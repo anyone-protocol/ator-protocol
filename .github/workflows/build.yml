@@ -3,7 +3,6 @@ name: Build Docker Images
 on:
   pull_request:
     branches:
-      - development
       - main
   workflow_dispatch:
 
