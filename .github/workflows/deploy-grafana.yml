@@ -2,7 +2,6 @@ name: Grafana Deploy
 
 on:
   workflow_dispatch:
-    
 
 env:
   hc-url: https://95.217.159.249:13000/
@@ -16,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Deploy new version 
+      - name: Deploy new version
         uses: ./.github/actions/deploy
         with:
           image-tag: "none"

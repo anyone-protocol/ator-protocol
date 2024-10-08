@@ -7,11 +7,9 @@ on:
       - '*beta*'
     branches:
       - main
-      - development
   pull_request:
     branches:
       - main
-      - development
 
 env:
   DEBIAN_FRONTEND: noninteractive
