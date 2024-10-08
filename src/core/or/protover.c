@@ -216,7 +216,7 @@ parse_single_entry(const char *s, const char *end_of_entry)
   if (equals - s > (int)MAX_PROTOCOL_NAME_LENGTH) {
     log_warn(LD_NET, "When parsing a protocol entry, I got a very large "
              "protocol name. This is possibly an attack or a bug, unless "
-             "the Anon network truly supports protocol names larger than "
+             "the Anyone network truly supports protocol names larger than "
              "%ud characters. The offending string was: %s",
              MAX_PROTOCOL_NAME_LENGTH, escaped(out->name));
     goto error;

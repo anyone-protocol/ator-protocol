@@ -19,20 +19,20 @@ __cert_file__] [-m __num__] [-a __address__:__port__]
 
 DESCRIPTION
 -----------
-**anon-gencert** generates certificates and private keys for use by Tor
-directory authorities running the v3 Tor directory protocol, as used by
-Tor 0.2.0 and later. If you are not running a directory authority, you
+**anon-gencert** generates certificates and private keys for use by Anon
+directory authorities running the v3 Anon directory protocol, as used by
+Anon 0.2.0 and later. If you are not running a directory authority, you
 don't need to use anon-gencert. +
 
 Every directory authority has a long term authority __identity__ __key__ (which
-is distinct from the identity key it uses as a Tor server); this key
+is distinct from the identity key it uses as a Anon server); this key
 should be kept offline in a secure location. It is used to certify
 shorter-lived __signing__ __keys__, which are kept online and used by the
 directory authority to sign votes and consensus documents. +
 
 After you use this program to generate a signing key and a certificate,
-copy those files to the keys subdirectory of your Tor process, and send
-Tor a SIGHUP signal. DO NOT COPY THE IDENTITY KEY.
+copy those files to the keys subdirectory of your Anon process, and send
+Anon a SIGHUP signal. DO NOT COPY THE IDENTITY KEY.
 
 OPTIONS
 -------
@@ -85,4 +85,4 @@ SEE ALSO
 --------
 **anon**(1) +
 
-See also the "dir-spec.txt" file, distributed with Tor.
+See also the "dir-spec.txt" file, distributed with Anon.

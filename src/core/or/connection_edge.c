@@ -2488,7 +2488,7 @@ connection_ap_handshake_rewrite_and_attach(entry_connection_t *conn,
             log_warn(LD_APP, "Not attempting connection to %s:%d because "
                      "the network would reject it. Are you trying to send "
                      "Anon traffic over Anon? This traffic can be harmful to "
-                     "the Anon network. If you really need it, try using "
+                     "the Anyone network. If you really need it, try using "
                      "a bridge as a workaround.",
                      safe_str_client(socks->address), socks->port);
             connection_mark_unattached_ap(conn, END_STREAM_REASON_TORPROTOCOL);
@@ -2994,17 +2994,12 @@ static const char HTTP_CONNECT_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "<body>\n"
   "<h1>This is an HTTP CONNECT tunnel, not an HTTP proxy.</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use this Tor port as\n"
+  "It appears you have configured your web browser to use this Anon port as\n"
   "an HTTP proxy.\n"
   "</p><p>\n"
   "This is not correct: This port is configured as a CONNECT tunnel, not\n"
   "an HTTP proxy. Please configure your client accordingly.  You can also\n"
   "use HTTPS; then the client should automatically use HTTP CONNECT."
-  "</p>\n"
-  "<p>\n"
-  "See <a href=\"https://www.torproject.org/documentation.html\">"
-  "https://www.torproject.org/documentation.html</a> for more "
-  "information.\n"
   "</p>\n"
   "</body>\n"
   "</html>\n";
