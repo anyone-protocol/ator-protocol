@@ -591,9 +591,7 @@ tor_init(int argc, char *argv[])
                  tor_libc_get_name() : "Unknown",
                tor_libc_get_version_str());
 
-    log_notice(LD_GENERAL, "Anon can't help you if you use it wrong! "
-               "Learn how to be safe at "
-               "https://support.torproject.org/faq/staying-anonymous/");
+    log_notice(LD_GENERAL, "Anon can't help you if you use it wrong!");
 
     if (strstr(version, "alpha") || strstr(version, "beta"))
       log_notice(LD_GENERAL, "This version is not a stable Anon release. "

@@ -468,10 +468,7 @@ config_generic_service(const hs_opts_t *hs_opts,
   if (hs_opts->HiddenServiceVersion == -1) {
     /* No value was set; stay with the default. */
   } else if (hs_opts->HiddenServiceVersion == 2) {
-    log_warn(LD_CONFIG, "Onion services version 2 are obsolete. Please see "
-                        "https://blog.torproject.org/v2-deprecation-timeline "
-                        "for more details and for instructions on how to "
-                        "transition to version 3.");
+    log_warn(LD_CONFIG, "Onion services version 2 are obsolete. Please do a transition to version 3.");
     goto err;
   } else if (CHECK_OOB(hs_opts, HiddenServiceVersion,
                        HS_VERSION_MIN, HS_VERSION_MAX)) {

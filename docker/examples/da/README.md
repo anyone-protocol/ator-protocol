@@ -1,6 +1,6 @@
-## Private Anon network with ability to add new DA in production mode ##
+## Private Anyone network with ability to add new DA in production mode ##
 
-This example provides ability to run private Anon network and change tha number and composition of directory authority list adding the new DA to the source code and rebuilding the image.
+This example provides ability to run private Anyone network and change tha number and composition of directory authority list adding the new DA to the source code and rebuilding the image.
 
 Copy predefined DA state (keys, fingerprint and configs) to temp anon folder
 ```

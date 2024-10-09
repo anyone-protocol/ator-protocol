@@ -22,7 +22,7 @@ set -- "${daemon}"                                             \
 	--RunAsDaemon 0
 
 if ! "$@" --verify-config ; then
-	echo "persistent error: Tor configuration is not valid"
+	echo "persistent error: Anon configuration is not valid"
 	exec sv down anon
 fi
 

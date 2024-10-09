@@ -818,7 +818,7 @@ static const struct {
 static const config_deprecation_t option_deprecation_notes_[] = {
   /* Deprecated since 0.3.2.0-alpha. */
   { "HTTPProxy", "It only applies to direct unencrypted HTTP connections "
-    "to your directory server, which your Tor probably wasn't using." },
+    "to your directory server, which your Anon probably wasn't using." },
   { "HTTPProxyAuthenticator", "HTTPProxy is deprecated in favor of HTTPSProxy "
     "which should be used with HTTPSProxyAuthenticator." },
   /* End of options deprecated since 0.3.2.1-alpha */
@@ -2705,13 +2705,7 @@ options_trial_assign(config_line_t *list, unsigned flags, char **msg)
 static void
 print_usage(void)
 {
-  printf(
-"Copyright (c) 2001-2004, Roger Dingledine\n"
-"Copyright (c) 2004-2006, Roger Dingledine, Nick Mathewson\n"
-"Copyright (c) 2007-2021, The Tor Project, Inc.\n\n"
-"anon -f <anonrc> [args]\n"
-"See man page for options, or https://www.torproject.org/ for "
-"documentation.\n");
+  printf("anon -f <anonrc> [args]\n");
 }
 
 /** Print all non-obsolete torrc options. */
@@ -3619,8 +3613,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "You have one single EntryNodes and at least one hidden service "
              "configured. This is bad because it's very easy to locate your "
              "entry guard which can then lead to the deanonymization of your "
-             "hidden service -- for more details, see "
-             "https://bugs.torproject.org/tpo/core/tor/14917. "
+             "hidden service. "
              "For this reason, the use of one EntryNodes with an hidden "
              "service is prohibited until a better solution is found.");
     return -1;
@@ -3636,8 +3629,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "hidden service is configured. Pinning entry nodes can possibly "
              "be harmful to the service anonymity. Because of this, we "
              "recommend you either don't do that or make sure you know what "
-             "you are doing. For more details, please look at "
-             "https://bugs.torproject.org/tpo/core/tor/21155.");
+             "you are doing.");
   }
 
   /* Single Onion Services: non-anonymous hidden services */
@@ -3981,7 +3973,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     if (!config_is_same(get_options_mgr(),options,                      \
                         dflt_options,#arg)) {                           \
       or_options_free(dflt_options);                                    \
-      REJECT(#arg " may only be changed in testing Anon "                \
+      REJECT(#arg " may only be changed in testing Anyone "                \
              "networks!");                                              \
     }                                                                   \
   STMT_END
@@ -4049,20 +4041,20 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (options->TestingEnableConnBwEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableConnBwEvent may only be changed in testing "
-           "Anon networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingEnableCellStatsEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableCellStatsEvent may only be changed in testing "
-           "Anon networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingTorNetwork) {
     log_warn(LD_CONFIG, "TestingTorNetwork is set. This will make your node "
-                        "almost unusable in the public Anon network, and is "
+                        "almost unusable in the public Anyone network, and is "
                         "therefore only advised if you are building a "
-                        "testing Anon network!");
+                        "testing Anyone network!");
   }
 
   if (options_validate_scheduler(options, msg) < 0) {
@@ -7035,7 +7027,7 @@ validate_data_directories(or_options_t *options)
 /** This string can change; it tries to give the reader an idea
  * that editing this file by hand is not a good plan. */
 #define GENERATED_FILE_COMMENT "# The old anonrc file was renamed " \
-  "to anonrc.orig.1, and Tor will ignore it"
+  "to anonrc.orig.1, and Anon will ignore it"
 
 /** Save a configuration file for the configuration in <b>options</b>
  * into the file <b>fname</b>.  If the file already exists, and

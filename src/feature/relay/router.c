@@ -568,10 +568,7 @@ log_new_relay_greeting(void)
     return;
 
   tor_log(LOG_NOTICE, LD_GENERAL, "You are running a new relay. "
-         "Thanks for helping the Anon network! If you wish to know "
-         "what will happen in the upcoming weeks regarding its usage, "
-         "have a look at https://blog.torproject.org/lifecycle-of-a"
-         "-new-relay");
+         "Thanks for helping the Anyone network!");
 
   already_logged = 1;
 }
@@ -953,7 +950,7 @@ init_keys_client(void)
   set_client_identity_key(prkey);
   /* Create a TLS context. */
   if (router_initialize_tls_context() < 0) {
-    log_err(LD_GENERAL,"Error creating TLS context for Anon client.");
+    log_err(LD_GENERAL,"Error creating TLS context for Anyone client.");
     return -1;
   }
   return 0;

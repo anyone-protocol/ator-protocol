@@ -4,7 +4,7 @@ dnl Copyright (c) 2007-2019, The Tor Project, Inc.
 dnl See LICENSE for licensing information
 
 AC_PREREQ([2.63])
-AC_INIT([anon],[0.4.9.7-git])
+AC_INIT([anon],[0.4.9.8-git])
 AC_CONFIG_SRCDIR([src/app/main/anon_main.c])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -15,10 +15,10 @@ AC_DEFINE_UNQUOTED([CONFIG_FLAGS], ["$configure_flags"], [Flags passed to config
 # DO NOT EDIT THIS DEFINITION BY HAND UNLESS YOU KNOW WHAT YOU'RE DOING.
 #
 # The update_versions.py script updates this definition when the
-# version number changes.  Tor uses it to make sure that it
+# version number changes.  Anon uses it to make sure that it
 # only shuts down for missing "required protocols" when those protocols
 # are listed as required by a consensus after this date.
-AC_DEFINE(APPROX_RELEASE_DATE, ["2024-08-01"], # for 0.4.9.7-git
+AC_DEFINE(APPROX_RELEASE_DATE, ["2024-10-03"], # for 0.4.9.8-git
           [Approximate date when this software was released. (Updated when the version changes.)])
 
 # "foreign" means we don't follow GNU package layout standards
@@ -73,9 +73,9 @@ AC_ARG_ENABLE(static-libevent,
 AC_ARG_ENABLE(static-zlib,
    AS_HELP_STRING(--enable-static-zlib, [link against a static zlib library. Requires --with-zlib-dir]))
 AC_ARG_ENABLE(static-tor,
-   AS_HELP_STRING(--enable-static-tor, [create an entirely static Tor binary. Requires --with-openssl-dir and --with-libevent-dir and --with-zlib-dir]))
+   AS_HELP_STRING(--enable-static-tor, [create an entirely static Anon binary. Requires --with-openssl-dir and --with-libevent-dir and --with-zlib-dir]))
 AC_ARG_ENABLE(unittests,
-   AS_HELP_STRING(--disable-unittests, [don't build unit tests for Tor. Risky!]))
+   AS_HELP_STRING(--disable-unittests, [don't build unit tests for Anon. Risky!]))
 AC_ARG_ENABLE(coverage,
    AS_HELP_STRING(--enable-coverage, [enable coverage support in the unit-test build]))
 AC_ARG_ENABLE(asserts-in-tests,
@@ -89,13 +89,13 @@ AC_ARG_ENABLE(oss-fuzz,
 AC_ARG_ENABLE(memory-sentinels,
    AS_HELP_STRING(--disable-memory-sentinels, [disable code that tries to prevent some kinds of memory access bugs. For fuzzing only.]))
 AC_ARG_ENABLE(restart-debugging,
-   AS_HELP_STRING(--enable-restart-debugging, [Build Tor with support for debugging in-process restart. Developers only.]))
+   AS_HELP_STRING(--enable-restart-debugging, [Build Anon with support for debugging in-process restart. Developers only.]))
 AC_ARG_ENABLE(zstd-advanced-apis,
    AS_HELP_STRING(--disable-zstd-advanced-apis, [Build without support for zstd's "static-only" APIs.]))
 AC_ARG_ENABLE(nss,
    AS_HELP_STRING(--enable-nss, [Use Mozilla's NSS TLS library. (EXPERIMENTAL)]))
 AC_ARG_ENABLE(pic,
-   AS_HELP_STRING(--enable-pic, [Build Tor's binaries as position-independent code, suitable to link as a library.]))
+   AS_HELP_STRING(--enable-pic, [Build Anon's binaries as position-independent code, suitable to link as a library.]))
 AC_ARG_ENABLE(jni,
    AS_HELP_STRING(--enable-jni, [enable Java JNI API feature]))
 
@@ -276,9 +276,9 @@ AC_ARG_ENABLE(gcc-hardening,
 
 dnl Deprecated --enable-expensive-hardening but keep it for now for backward compat.
 AC_ARG_ENABLE(expensive-hardening,
-    AS_HELP_STRING(--enable-expensive-hardening, [enable more fragile and expensive compiler hardening; makes Tor slower]))
+    AS_HELP_STRING(--enable-expensive-hardening, [enable more fragile and expensive compiler hardening; makes Anon slower]))
 AC_ARG_ENABLE(fragile-hardening,
-    AS_HELP_STRING(--enable-fragile-hardening, [enable more fragile and expensive compiler hardening; makes Tor slower]))
+    AS_HELP_STRING(--enable-fragile-hardening, [enable more fragile and expensive compiler hardening; makes Anon slower]))
 if test "x$enable_expensive_hardening" = "xyes" || test "x$enable_fragile_hardening" = "xyes"; then
   fragile_hardening="yes"
   AC_DEFINE(ENABLE_FRAGILE_HARDENING, 1, [Defined if we're building with additional, fragile and expensive compiler hardening])
@@ -286,7 +286,7 @@ if test "x$enable_expensive_hardening" = "xyes" || test "x$enable_fragile_harden
 fi
 
 AC_ARG_ENABLE(all-bugs-are-fatal,
-   AS_HELP_STRING(--enable-all-bugs-are-fatal, [force all soft asserts in Tor codebase (tor_assert_nonfatal(), BUG(), etc.) to act as hard asserts (tor_assert() and equivalents); makes Tor fragile; only recommended for dev builds]))
+   AS_HELP_STRING(--enable-all-bugs-are-fatal, [force all soft asserts in Anon codebase (tor_assert_nonfatal(), BUG(), etc.) to act as hard asserts (tor_assert() and equivalents); makes Anon fragile; only recommended for dev builds]))
 
 if test "x$enable_all_bugs_are_fatal" = "xyes"; then
   AC_DEFINE(ALL_BUGS_ARE_FATAL, 1, [All assert failures are fatal])
@@ -574,7 +574,7 @@ AC_CACHE_CHECK([for working C99 mid-block declaration syntax],
 	 [tor_cv_c_c99_decl=yes],
 	 [tor_cv_c_c99_decl=no] )])
 if test "$tor_cv_c_c99_decl" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Anon 0.2.6.x])
 fi
 
 AC_CACHE_CHECK([for working C99 designated initializers],
@@ -586,7 +586,7 @@ AC_CACHE_CHECK([for working C99 designated initializers],
 	 [tor_cv_c_c99_designated_init=no] )])
 
 if test "$tor_cv_c_c99_designated_init" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Anon 0.2.6.x])
 fi
 
 saved_CFLAGS="$CFLAGS"
@@ -1106,7 +1106,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #endif
    ]], [[]])],
    [ AC_MSG_RESULT([no]) ],
-   [ AC_MSG_ERROR([This version of LibreSSL won't work with Tor. Please upgrade to LibreSSL 3.4.1 or later. (Or downgrade to 3.2.0 if you really must.)]) ])
+   [ AC_MSG_ERROR([This version of LibreSSL won't work with Anon. Please upgrade to LibreSSL 3.4.1 or later. (Or downgrade to 3.2.0 if you really must.)]) ])
 
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <openssl/opensslv.h>
@@ -1886,7 +1886,7 @@ AX_CHECK_SIGN([time_t],
 ])
 
 if test "$ax_cv_decl_time_t_signed" = "no"; then
-  AC_MSG_ERROR([You have an unsigned time_t; Tor does not support that. Please tell the Tor developers about your interesting platform.])
+  AC_MSG_ERROR([You have an unsigned time_t; Anon does not support that. Please tell the Anon developers about your interesting platform.])
 fi
 
 AX_CHECK_SIGN([size_t],
@@ -2119,7 +2119,7 @@ AS_CASE([$malloc],
 
   [openbsd], [
     tor_incr_n_warnings
-    AC_MSG_WARN([The openbsd malloc port is deprecated in Tor 0.3.5 and will be removed in a future version.])
+    AC_MSG_WARN([The openbsd malloc port is deprecated in Anon 0.3.5 and will be removed in a future version.])
     enable_openbsd_malloc=yes
   ],
 
@@ -2698,9 +2698,9 @@ if test "$fragile_hardening" = "yes"; then
   AC_MSG_WARN([
 
 ============
-Warning!  Building Tor with --enable-fragile-hardening (also known as
+Warning!  Building Anon with --enable-fragile-hardening (also known as
 --enable-expensive-hardening) makes some kinds of attacks harder, but makes
-other kinds of attacks easier. A Tor instance build with this option will be
+other kinds of attacks easier. A Anon instance build with this option will be
 somewhat less vulnerable to remote code execution, arithmetic overflow, or
 out-of-bounds read/writes... but at the cost of becoming more vulnerable to
 denial of service attacks. For more information, see
@@ -2734,7 +2734,7 @@ PPRINT_SET_INDENT(1)
 PPRINT_SET_TS(65)
 
 AS_ECHO
-AS_ECHO("Tor Version: ${PPRINT_COLOR_BLDBLU}Tor $PACKAGE_VERSION $PPRINT_COLOR_RST")
+AS_ECHO("Anon Version: ${PPRINT_COLOR_BLDBLU}Anon $PACKAGE_VERSION $PPRINT_COLOR_RST")
 AS_ECHO
 
 PPRINT_SUBTITLE([Build Features])
