@@ -1,6 +1,6 @@
 locals {
-  instances_count = 101
-  nicnname_prefix = "anonW13fqj5t5FML"
+  instances_count = 4
+  nicnname_prefix = "AnonFamilyRelay"
 	nicknames = [for i in range(0, local.instances_count) : "${local.nicnname_prefix}${i}"]
 	nicknames_string = join(",", local.nicknames)
 }
@@ -21,13 +21,9 @@ job "relays-family-stage" {
     }
 
     network  {
-      dynamic "port" {
-        for_each = range(0, local.instances_count)
-        labels = [ "orport${port.value}" ]
-        content {
-          static = 10000 + port.value
-        }
-      }
+      port "orport" {
+        static = 0
+      }     
     }
 
     task "relay-live-task" {
@@ -35,9 +31,10 @@ job "relays-family-stage" {
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:latest"
-        ports = ["orport${NOMAD_ALLOC_INDEX}"]
+        ports = ["orport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
+          "secrets/anon/keys:/var/lib/anon/keys"
         ]
       }
       
@@ -55,6 +52,57 @@ job "relays-family-stage" {
         memory = 2048
       }
 
+   
+      template {
+        change_mode = "noop"
+        data = <<EOH
+           {{ key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/authority_certificate`) }}
+        EOH
+        destination = "secrets/anon/keys/authority_certificate"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        destination = "secrets/anon/keys/authority_identity_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
+        destination = "secrets/anon/keys/authority_signing_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        destination = "secrets/anon/keys/ed25519_master_id_secret_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        destination = "secrets/anon/keys/ed25519_signing_secret_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        destination = "secrets/anon/keys/secret_id_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        destination = "secrets/anon/keys/secret_onion_key"
+      }
+
+      template {
+        change_mode = "noop"
+        data = "{{ with secret  (env `NOMAD_ALLOC_INDEX` | printf `kv/ator-network/stage/relay-family-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        destination = "secrets/anon/keys/secret_onion_key_ntor"
+      }
+
       template {
         change_mode = "noop"
         data = <<EOH
@@ -67,7 +115,7 @@ ORPort {{ env `NOMAD_PORT_orport` }}
 
 Nickname {{ env `NICKNAME_PREFIX` }}{{ env `NOMAD_ALLOC_INDEX` }}
 ContactInfo anon@example.org
-MyFamily {{ env `NICKNAMES_STRING` }}
+MyFamily 47B1B159AFD0597DB5BA7B9F743DC57D47BE2265,AF2E54656194C619B19EAB80887F37A83E6C3E43,954BBF10940BCD4B5797558145B55824C0314EB3,639BBF0705242A244EBD2DA5418AE7B7169AF1CA
         EOH
         destination = "local/anonrc"
       }    
