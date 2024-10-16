@@ -40,7 +40,9 @@ override_dh_auto_configure:
 		--sysconfdir=/etc \
 		--disable-silent-rules \
 		--enable-gcc-warnings-advisory \
-		--enable-gpl
+		--enable-gpl \
+		--disable-android \
+		--disable-jni
 
 override_dh_clean:
 	! [ -e debian/micro-revision.i ] || rm -f ./micro-revision.i
