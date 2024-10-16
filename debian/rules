@@ -60,9 +60,10 @@ override_dh_auto_build:
 	chmod +x debian/systemd/anon-generator
 
 override_dh_install-arch:
-	dh_install --fail-missing
+	dh_missing --list-missing
 
-	rm debian/anon/etc/anon/anonrc.sample
+	rm -f debian/anon/etc/anon/anonrc.sample
+	mkdir -p debian/anon/etc/anon/
 	cp build/src/config/anonrc.minimal debian/anon/etc/anon/anonrc
 
 	cp debian/anon.apparmor-profile             debian/anon/etc/apparmor.d/system_anon
