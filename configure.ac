@@ -96,6 +96,8 @@ AC_ARG_ENABLE(nss,
    AS_HELP_STRING(--enable-nss, [Use Mozilla's NSS TLS library. (EXPERIMENTAL)]))
 AC_ARG_ENABLE(pic,
    AS_HELP_STRING(--enable-pic, [Build Anon's binaries as position-independent code, suitable to link as a library.]))
+AC_ARG_ENABLE(jni,
+   AS_HELP_STRING(--enable-jni, [enable Java JNI API feature]))
 
 AC_ARG_ENABLE(missing-doc-warnings,
    AS_HELP_STRING(--enable-missing-doc-warnings, [Tell doxygen to warn about missing documentation. Makes doxygen warnings nonfatal.]))
@@ -114,6 +116,39 @@ else
 fi
 AC_SUBST(DOXYGEN_FATAL_WARNINGS)
 AC_SUBST(DOXYGEN_WARN_ON_MISSING)
+
+dnl Enable minimal, standard Android build
+AC_ARG_ENABLE(android,
+     AS_HELP_STRING(--enable-android, [setup build for Android exeutable/shared library]))
+
+if test "x$enable_android" = "xyes"; then
+  asciidoc=false
+  enable_html_manual=no
+  enable_manpage=no
+  enable_jni=yes
+  enable_pic=yes
+  enable_system_torrc=no
+  enable_tool_name_check=no
+  have_systemd=no
+
+  need_cross_compiling_host=no
+  if test "x$cross_compiling" != "xyes"; then
+       need_cross_compiling_host=yes
+  fi
+  case "$host" in
+       *-linux-android*) ;;
+       *)
+       need_cross_compiling_host=yes
+       ;;
+  esac
+  if test "x$need_cross_compiling_host" = "xyes"; then
+       AC_MSG_ERROR([
+
+ Android builds are cross-compiled, therefore require setting --host= which
+ can be derived from the NDK ABIs: https://developer.android.com/ndk/guides/abis
+       ])
+  fi
+fi
 
 if test "x$enable_coverage" != "xyes" -a "x$enable_asserts_in_tests" = "xno" ; then
     AC_MSG_ERROR([Can't disable assertions outside of coverage build])
@@ -170,7 +205,7 @@ AC_ARG_ENABLE(asciidoc,
         "yes") asciidoc=true ;;
         "no")  asciidoc=false ;;
         *) AC_MSG_ERROR(bad value for --disable-asciidoc) ;;
-      esac], [asciidoc=true])
+      esac], [test "x$asciidoc" = "xtrue" && asciidoc=true])
 
 # systemd notify support
 AC_ARG_ENABLE(systemd,
@@ -1818,6 +1853,23 @@ AC_CHECK_TYPES([rlim_t], , ,
 #include <sys/resource.h>
 #endif
 ])
+
+if test "x$enable_jni" = "xyes"; then
+  AX_JNI_INCLUDE_DIR
+  if test -n "$JNI_INCLUDE_DIRS"; then
+    AC_DEFINE(HAVE_JNI_H,1,[Have jni.h])
+    for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS; do
+      CPPFLAGS="$CPPFLAGS -I$JNI_INCLUDE_DIR"
+    done
+  fi
+  dnl Enable Android only standard libs
+  case "$host" in
+    *android*)
+      AC_CHECK_LIB([log], [__android_log_write], [LIBS="-llog $LIBS"])
+      ;;
+  esac
+fi
+AM_CONDITIONAL(USE_JNI, test -n "$JNI_INCLUDE_DIRS")
 
 AX_CHECK_SIGN([time_t],
        [ : ],
