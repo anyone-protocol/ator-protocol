@@ -172,7 +172,7 @@ AC_ARG_ENABLE(asciidoc,
         "yes") asciidoc=true ;;
         "no")  asciidoc=false ;;
         *) AC_MSG_ERROR(bad value for --disable-asciidoc) ;;
-      esac], [test "x$asciidoc" = "xtrue" && asciidoc=true])
+      esac], [asciidoc=true])
 
 # systemd notify support
 AC_ARG_ENABLE(systemd,
