@@ -3,7 +3,7 @@
 
 mkdir -p $1 && cd $1
 
-cat > torrc << EOL
+cat > anonrc << EOL
 # Run Tor as a regular user (do not change this)
 User atord
 DataDirectory /var/lib/tor
@@ -47,6 +47,8 @@ IPv6Exit 0
 #ContactInfo atorv4@example.org
 
 Nickname $3
+
+AgreeToTerms 1
 
 EOL
 
