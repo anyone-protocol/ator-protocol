@@ -15,14 +15,14 @@
 # bash gencert.sh da7 176.9.29.53 AnyoneFalLive
 
 ## STAGE
-bash gencert.sh stage-da1-hel-test-1a 135.181.231.123 AnyoneHelTest1aStage
-bash gencert.sh stage-da2-hel-test-2a 148.251.23.105 AnyoneHelTest2aStage
-bash gencert.sh stage-da3-hel-test-3a 65.21.12.154 AnyoneHelTest3aStage
+bash gencert.sh stage-da1-hel-test-1a 135.181.231.123 AnyoneHel1aStage
+bash gencert.sh stage-da2-hel-test-2a 148.251.23.105 AnyoneHel2aStage
+bash gencert.sh stage-da3-hel-test-3a 65.21.12.154 AnyoneHel3aStage
 
-bash gencert.sh stage-da2-hel-test-2b 148.251.23.105 AnyoneHelTest2bStage
-bash gencert.sh stage-da3-hel-test-3b 65.21.12.154 AnyoneHelTest3bStage
-bash gencert.sh stage-da2-hel-test-2c 148.251.23.105 AnyoneHelTest2cStage
-bash gencert.sh stage-da3-hel-test-3c 65.21.12.154 AnyoneHelTest3cStage
+bash gencert.sh stage-da2-hel-test-2b 148.251.23.105 AnyoneHel2bStage
+bash gencert.sh stage-da3-hel-test-3b 65.21.12.154 AnyoneHel3bStage
+bash gencert.sh stage-da2-hel-test-2c 148.251.23.105 AnyoneHel2cStage
+bash gencert.sh stage-da3-hel-test-3c 65.21.12.154 AnyoneHel3cStage
 
 ## DEV
 # bash gencert.sh dev-da1-dmz 88.99.219.105 AnyoneDmzDev
@@ -43,14 +43,14 @@ bash gencert.sh stage-da3-hel-test-3c 65.21.12.154 AnyoneHelTest3cStage
 # bash uploadcert.sh da7 c2adc610-6316-cd9d-c678-cda4b0080b52 176.9.29.53 AnyoneFalLive
 
 ## STAGE
-bash uploadcert.sh stage-da1-hel-test-1a 4ca2fc3c-8960-6ae7-d931-c0d6030d506b-9101 88.99.219.105 AnyoneHelTest1aStage
-bash uploadcert.sh stage-da2-hel-test-2a 232ea736-591c-4753-9dcc-3e815c4326af-9101 176.9.29.53 AnyoneHelTest2aStage
-bash uploadcert.sh stage-da3-hel-test-3a f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9101 95.216.32.105 AnyoneHelTest3aStage
+bash uploadcert.sh stage-da1-hel-test-1a 4ca2fc3c-8960-6ae7-d931-c0d6030d506b-9101 88.99.219.105 AnyoneHel1aStage
+bash uploadcert.sh stage-da2-hel-test-2a 232ea736-591c-4753-9dcc-3e815c4326af-9101 176.9.29.53 AnyoneHel2aStage
+bash uploadcert.sh stage-da3-hel-test-3a f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9101 95.216.32.105 AnyoneHel3aStage
 
-bash uploadcert.sh stage-da2-hel-test-2b 232ea736-591c-4753-9dcc-3e815c4326af-9102 176.9.29.53 AnyoneHelTest2bStage
-bash uploadcert.sh stage-da3-hel-test-3b f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9102 95.216.32.105 AnyoneHelTest3bStage
-bash uploadcert.sh stage-da2-hel-test-2c 232ea736-591c-4753-9dcc-3e815c4326af-9103 176.9.29.53 AnyoneHelTest2cStage
-bash uploadcert.sh stage-da3-hel-test-3c f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9103 95.216.32.105 AnyoneHelTest3cStage
+bash uploadcert.sh stage-da2-hel-test-2b 232ea736-591c-4753-9dcc-3e815c4326af-9102 176.9.29.53 AnyoneHel2bStage
+bash uploadcert.sh stage-da3-hel-test-3b f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9102 95.216.32.105 AnyoneHel3bStage
+bash uploadcert.sh stage-da2-hel-test-2c 232ea736-591c-4753-9dcc-3e815c4326af-9103 176.9.29.53 AnyoneHel2cStage
+bash uploadcert.sh stage-da3-hel-test-3c f3f664d6-7d65-be58-4a2c-4c66e20f1a9f-9103 95.216.32.105 AnyoneHel3cStage
 
 ## DEV
 # bash uploadcert.sh dev-da1-dmz c8e55509-a756-0aa7-563b-9665aa4915ab 88.99.219.105 AnyoneDmzDev

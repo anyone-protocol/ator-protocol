@@ -5,8 +5,8 @@ mkdir -p $1 && cd $1
 
 cat > anonrc << EOL
 # Run Tor as a regular user (do not change this)
-User atord
-DataDirectory /var/lib/tor
+User anond
+DataDirectory /var/lib/anon
 
 # Server's public IP Address (usually automatic)
 Address $2
