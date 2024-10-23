@@ -7,13 +7,13 @@ on:
 env:
   image-name: ghcr.io/anyone-protocol/ator-protocol-stage
   image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
-  da-1-hc-url: http://88.99.219.105:9130/tor/status-vote/current/consensus
-  da-2-hc-url: http://176.9.29.53:9130/tor/status-vote/current/consensus
-  da-3-hc-url: http://95.216.32.105:9130/tor/status-vote/current/consensus
-  da-4-hc-url: http://176.9.29.53:9131/tor/status-vote/current/consensus
-  da-5-hc-url: http://176.9.29.53:9132/tor/status-vote/current/consensus
-  da-6-hc-url: http://95.216.32.105:9131/tor/status-vote/current/consensus
-  da-7-hc-url: http://95.216.32.105:9132/tor/status-vote/current/consensus
+  da-1-hc-url: http://135.181.231.123:9130/tor/status-vote/current/consensus
+  da-2-hc-url: http://148.251.23.105:9130/tor/status-vote/current/consensus
+  da-3-hc-url: http://65.21.12.154:9130/tor/status-vote/current/consensus
+  da-4-hc-url: http://148.251.23.105:9131/tor/status-vote/current/consensus
+  da-5-hc-url: http://148.251.23.105:9132/tor/status-vote/current/consensus
+  da-6-hc-url: http://65.21.12.154:9131/tor/status-vote/current/consensus
+  da-7-hc-url: http://65.21.12.154:9132/tor/status-vote/current/consensus
 
 jobs:
   push:

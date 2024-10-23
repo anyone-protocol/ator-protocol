@@ -3,10 +3,10 @@
 
 mkdir -p $1 && cd $1
 
-cat > torrc << EOL
+cat > anonrc << EOL
 # Run Tor as a regular user (do not change this)
-User atord
-DataDirectory /var/lib/tor
+User anond
+DataDirectory /var/lib/anon
 
 # Server's public IP Address (usually automatic)
 Address $2
@@ -48,12 +48,13 @@ IPv6Exit 0
 
 Nickname $3
 
+AgreeToTerms 1
+
 EOL
 
+docker run -i -w /var/lib/anon/keys -v ./anonrc:/etc/anon/anonrc -v ./anon-data:/var/lib/anon/ ghcr.io/anyone-protocol/ator-protocol-stage:latest anon-gencert --create-identity-key
 
-docker run -i -w /var/lib/tor/keys -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ svforte/ator-protocol:latest tor-gencert --create-identity-key
-
-ATOR_CONTAINER=$(docker create -v ./torrc:/etc/tor/torrc -v ./tor-data:/var/lib/tor/ svforte/ator-protocol:latest)
+ATOR_CONTAINER=$(docker create -v ./anonrc:/etc/anon/anonrc -v ./anon-data:/var/lib/anon/ ghcr.io/anyone-protocol/ator-protocol-stage:latest)
 docker start $ATOR_CONTAINER 
 sleep 5 
 docker stop $ATOR_CONTAINER
