@@ -96,6 +96,8 @@ AC_ARG_ENABLE(nss,
    AS_HELP_STRING(--enable-nss, [Use Mozilla's NSS TLS library. (EXPERIMENTAL)]))
 AC_ARG_ENABLE(pic,
    AS_HELP_STRING(--enable-pic, [Build Anon's binaries as position-independent code, suitable to link as a library.]))
+AC_ARG_ENABLE(jni,
+   AS_HELP_STRING(--enable-jni, [enable Java JNI API feature]))
 
 AC_ARG_ENABLE(missing-doc-warnings,
    AS_HELP_STRING(--enable-missing-doc-warnings, [Tell doxygen to warn about missing documentation. Makes doxygen warnings nonfatal.]))
@@ -1818,6 +1820,23 @@ AC_CHECK_TYPES([rlim_t], , ,
 #include <sys/resource.h>
 #endif
 ])
+
+if test "x$enable_jni" = "xyes"; then
+  AX_JNI_INCLUDE_DIR
+  if test -n "$JNI_INCLUDE_DIRS"; then
+    AC_DEFINE(HAVE_JNI_H,1,[Have jni.h])
+    for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS; do
+      CPPFLAGS="$CPPFLAGS -I$JNI_INCLUDE_DIR"
+    done
+  fi
+  dnl Enable Android only standard libs
+  case "$host" in
+    *android*)
+      AC_CHECK_LIB([log], [__android_log_write], [LIBS="-llog $LIBS"])
+      ;;
+  esac
+fi
+AM_CONDITIONAL(USE_JNI, test -n "$JNI_INCLUDE_DIRS")
 
 AX_CHECK_SIGN([time_t],
        [ : ],
