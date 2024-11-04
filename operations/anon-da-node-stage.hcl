@@ -46,13 +46,13 @@ EOF
     attribute = "${node.unique.id}"
     weight    = 100
     target "f3f664d6-7d65-be58-4a2c-4c66e20f1a9f" {
-      percent = 14
+      percent = 43
     }
     target "232ea736-591c-4753-9dcc-3e815c4326af" {
       percent = 43
     }
     target "4ca2fc3c-8960-6ae7-d931-c0d6030d506b" {
-      percent = 43
+      percent = 14
     }
   }
 
@@ -218,7 +218,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
     constraint {
       attribute = "${node.unique.id}"
       operator  = "set_contains_any"
-      value     = "232ea736-591c-4753-9dcc-3e815c4326af,4ca2fc3c-8960-6ae7-d931-c0d6030d506b"
+      value     = "232ea736-591c-4753-9dcc-3e815c4326af,f3f664d6-7d65-be58-4a2c-4c66e20f1a9f"
     }
 
     constraint {
@@ -374,7 +374,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
     constraint {
       attribute = "${node.unique.id}"
       operator  = "set_contains_any"
-      value     = "232ea736-591c-4753-9dcc-3e815c4326af,4ca2fc3c-8960-6ae7-d931-c0d6030d506b"
+      value     = "232ea736-591c-4753-9dcc-3e815c4326af,f3f664d6-7d65-be58-4a2c-4c66e20f1a9f"
     }
 
     constraint {
