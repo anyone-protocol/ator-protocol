@@ -4676,7 +4676,7 @@ options_init_from_torrc(int argc, char **argv)
  err:
   tor_free(cf);
   tor_free(cf_defaults);
-  tor_free(argeement);
+  tor_free(agreement);
   tor_free(terms_fname);
   if (errmsg) {
     log_warn(LD_CONFIG,"%s", errmsg);
