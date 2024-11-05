@@ -4601,13 +4601,13 @@ options_init_from_torrc(int argc, char **argv)
     log_notice(LD_CONFIG, "Marked agreement as set");
   }
 
-  char *argeement = NULL;
+  char *agreement = NULL;
   file_status_t terms_status = file_status(terms_fname);
   if (terms_status == FN_FILE) {
-    argeement = read_file_to_str(terms_fname, 0, NULL);
+    agreement = read_file_to_str(terms_fname, 0, NULL);
   }
 
-  if (!get_options_mutable()->AgreeToTerms && (argeement == NULL || strcmp(argeement, "agreed") != 0)) {
+  if (!get_options_mutable()->AgreeToTerms && (agreement == NULL || strcmp(agreement, "agreed") != 0)) {
     if (get_options_mutable()->RunAsDaemon || !isatty(STDIN_FILENO)) { // Non-interactive mode: Fail fast
         log_err(LD_CONFIG, "User has not agreed to the terms and conditions. Exiting.");
         tor_asprintf(&errmsg, "Not agreed to terms");
@@ -4676,7 +4676,7 @@ options_init_from_torrc(int argc, char **argv)
  err:
   tor_free(cf);
   tor_free(cf_defaults);
-  tor_free(argeement);
+  tor_free(agreement);
   tor_free(terms_fname);
   if (errmsg) {
     log_warn(LD_CONFIG,"%s", errmsg);
