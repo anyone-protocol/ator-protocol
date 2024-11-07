@@ -3,6 +3,12 @@ job "anon-debian-repo" {
   type = "service"
   namespace = "ator-network"
 
+  update {
+    max_parallel      = 1
+    healthy_deadline  = "15m"
+    progress_deadline = "20m"
+  }
+
   group "anon-debian-repo-group" {
     count = 1
 
@@ -125,6 +131,7 @@ server {
 
       config {
         image = "ghcr.io/anyone-protocol/package-exporter:v0.0.4"
+        image_pull_timeout = "15m"
         ports = ["exporter-http"]
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
