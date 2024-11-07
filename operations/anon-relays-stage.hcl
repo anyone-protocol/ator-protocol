@@ -11,6 +11,12 @@ job "relays-family-stage" {
   type = "service"
   namespace = "ator-network"
 
+  update {
+    max_parallel      = 1
+    healthy_deadline  = "15m"
+    progress_deadline = "20m"
+  }
+
   group "relay-live-group" {
     count = local.instances_count
 
@@ -23,20 +29,22 @@ job "relays-family-stage" {
     network  {
       port "orport" {
         static = 0
-      }     
+      }
     }
 
     task "relay-live-task" {
-      driver = "docker"    
+      driver = "docker"
 
       config {
-        image = "ghcr.io/anyone-protocol/ator-protocol-stage:latest"
+        # todo - use latest commit tag - https://github.com/anyone-protocol/jira-confluence/issues/224
+        image = "ghcr.io/anyone-protocol/ator-protocol-stage:4b413cc6c0c82e4baefeb3545efe5bc416913700"
+        image_pull_timeout = "15m"
         ports = ["orport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
         ]
       }
-      
+
       env {
 				NICKNAMES_STRING = local.nicknames_string
         NICKNAME_PREFIX = local.nicnname_prefix
@@ -66,7 +74,7 @@ ContactInfo anon@example.org
 MyFamily {{ env `NICKNAMES_STRING` }}
         EOH
         destination = "local/anonrc"
-      }    
+      }
     }
   }
 }

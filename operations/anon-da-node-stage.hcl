@@ -3,6 +3,12 @@ job "dir-auth-stage" {
   type = "service"
   namespace = "ator-network"
 
+  update {
+    max_parallel      = 1
+    healthy_deadline  = "15m"
+    progress_deadline = "20m"
+  }
+
   meta {
     anonrc_template = <<EOF
 # Run Tor as a regular user (do not change this)
@@ -69,7 +75,7 @@ EOF
       operator = "distinct_hosts"
       value    = "true"
     }
-    
+
     network {
       mode = "bridge"
       port "orport" {
@@ -109,6 +115,7 @@ EOF
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
@@ -265,6 +272,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
@@ -386,7 +394,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
       mode = "bridge"
       port "orport" {
         static = 9103
-      } 
+      }
       port "dirport" {
         static = 9132
       }
@@ -420,6 +428,7 @@ Nickname {{ key (printf "ator-network/stage/dir-auth-%s-%s/nickname" (env "node.
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:PLACEIMAGETAGHERE"
+        image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",

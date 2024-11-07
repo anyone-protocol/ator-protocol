@@ -5,6 +5,12 @@ job "ator-dir-auth-live" {
   type = "service"
   namespace = "ator-network"
 
+  update {
+    max_parallel      = 1
+    healthy_deadline  = "15m"
+    progress_deadline = "20m"
+  }
+
   group "dir-auth-live-group" {
     count = 7
 
@@ -73,6 +79,7 @@ job "ator-dir-auth-live" {
 
       config {
         image = "ghcr.io/anyone-protocol/ator-protocol:PLACEIMAGETAGHERE"
+        image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
