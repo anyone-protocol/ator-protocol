@@ -14,6 +14,20 @@ job "relays-family-stage" {
   group "relay-live-group" {
     count = local.instances_count
 
+    spread {
+      attribute = "${node.unique.id}"
+      weight    = 100
+      target "f3f664d6-7d65-be58-4a2c-4c66e20f1a9f" {
+        percent = 33
+      }
+      target "232ea736-591c-4753-9dcc-3e815c4326af" {
+        percent = 33
+      }
+      target "4ca2fc3c-8960-6ae7-d931-c0d6030d506b" {
+        percent = 34
+      }
+  	}
+
     constraint {
         attribute = "${node.unique.id}"
         operator  = "set_contains_any"
