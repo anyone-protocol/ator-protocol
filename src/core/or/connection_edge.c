@@ -120,6 +120,9 @@
 #include "core/or/socks_request_st.h"
 #include "lib/evloop/compat_libevent.h"
 
+#include <unistd.h>
+#include <stdio.h>
+
 #ifdef HAVE_LINUX_TYPES_H
 #include <linux/types.h>
 #endif
@@ -1702,7 +1705,6 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
   char *s;
   char *q;
   char query[HS_SERVICE_ADDR_LEN_BASE32+1];
-
   s = strrchr(address,'.');
   if (!s) {
     *type_out = NORMAL_HOSTNAME; /* no dot, thus normal */
@@ -1712,6 +1714,16 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     *s = 0; /* NUL-terminate it */
     *type_out = EXIT_HOSTNAME; /* .exit */
     goto success;
+  }
+  if (!strcmp(s+1,"anon")) {
+    char onion_address[HS_SERVICE_ADDR_LEN_BASE32+6+1];
+    if (lookup_anon_to_onion_mapping(address,onion_address)) {
+      strlcpy(address,onion_address,HS_SERVICE_ADDR_LEN_BASE32+6+1);
+      s = strrchr(address,'.');
+    } else {
+      *type_out = BAD_HOSTNAME;
+      goto failed;
+    }
   }
   if (strcmp(s+1,"onion")) {
     *type_out = NORMAL_HOSTNAME; /* neither .exit nor .onion, thus normal */
@@ -1761,6 +1773,26 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
   if (*type_out == ONION_V3_HOSTNAME) {
       *type_out = BAD_HOSTNAME;
   }
+  return false;
+}
+
+/** Helper function to look up the .anon to .onion mapping */
+bool lookup_anon_to_onion_mapping(const char *anon_address, char *onion_address_out) {
+  FILE *file = fopen("anon_to_onion_map.txt", "r");
+  if (!file) {
+    perror("Mapping file not found");
+    return false;
+  }
+  char anon[256];
+  char onion[256];
+  while (fscanf(file,"%255s %255s",anon,onion)==2) {
+    if (strcmp(anon,anon_address)==0) {
+      strlcpy(onion_address_out,onion,HS_SERVICE_ADDR_LEN_BASE32+6+1);
+      fclose(file);
+      return true;
+    }
+  }
+  fclose(file);
   return false;
 }
 

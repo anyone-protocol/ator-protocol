@@ -17,6 +17,8 @@
 
 #include "feature/hs/hs_service.h"
 
+bool lookup_anon_to_onion_mapping(const char *anon_address, char *onion_address_out);
+
 edge_connection_t *TO_EDGE_CONN(connection_t *);
 entry_connection_t *TO_ENTRY_CONN(connection_t *);
 entry_connection_t *EDGE_TO_ENTRY_CONN(edge_connection_t *);

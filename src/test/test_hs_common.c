@@ -811,6 +811,7 @@ test_parse_extended_hostname(void *arg)
     "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.onion";
   char address10[] =
     "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.onion";
+  char address11[] = "anyone.anon";
 
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
@@ -842,6 +843,11 @@ test_parse_extended_hostname(void *arg)
   /* Invalid v3 address: too long */
   tt_assert(!parse_extended_hostname(address10, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
+
+  tt_assert(parse_extended_hostname(address11, &type));
+  tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
+  tt_str_op(address11, OP_EQ,
+                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid");
 
  done: ;
 }
