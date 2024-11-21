@@ -121,7 +121,10 @@
 #include "lib/evloop/compat_libevent.h"
 
 #include <unistd.h>
+#include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #ifdef HAVE_LINUX_TYPES_H
 #include <linux/types.h>
@@ -1716,9 +1719,11 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     goto success;
   }
   if (!strcmp(s+1,"anon")) {
+    log_warn(LD_APP, "Anon address lookup for: %s", address);
     char onion_address[HS_SERVICE_ADDR_LEN_BASE32+6+1];
-    if (lookup_anon_to_onion_mapping(address,onion_address)) {
+    if (lookup_anon_to_onion_mapping_native(address,onion_address)) {
       strlcpy(address,onion_address,HS_SERVICE_ADDR_LEN_BASE32+6+1);
+      log_warn(LD_APP, "Onion address mapping found: %s", address);
       s = strrchr(address,'.');
     } else {
       *type_out = BAD_HOSTNAME;
@@ -1778,7 +1783,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
 
 /** Helper function to look up the .anon to .onion mapping */
 bool lookup_anon_to_onion_mapping(const char *anon_address, char *onion_address_out) {
-  FILE *file = fopen("anon_to_onion_map.txt", "r");
+  FILE *file = fopen("anon-dns", "r");
   if (!file) {
     perror("Mapping file not found");
     return false;
@@ -1793,6 +1798,54 @@ bool lookup_anon_to_onion_mapping(const char *anon_address, char *onion_address_
     }
   }
   fclose(file);
+  return false;
+}
+
+bool lookup_anon_to_onion_mapping_native(const char *anon_address, char *onion_address_out) {
+  char *file_content = NULL;
+
+  // Check if the file exists using `file_status`
+  char *dns_fname = get_datadir_fname("anon-dns");
+  perror(dns_fname);
+  file_status_t terms_status = file_status(dns_fname);
+  if (terms_status != FN_FILE) {
+    perror("Mapping file not found");
+    return false;
+  } else {
+    perror("Mapping file found");
+  }
+
+  // Read the entire file content using `read_file_to_str`
+  file_content = read_file_to_str(dns_fname, 0, NULL);
+  if (!file_content) {
+    perror("Read bad");
+    return false;
+  } else {
+    perror("reed good");
+  }
+
+  // Process the file content line by line
+  char *line = strtok(file_content, "\n");
+  while (line != NULL) {
+    char anon[256];
+    char onion[HS_SERVICE_ADDR_LEN_BASE32 + 6 + 1];
+    perror(line);
+    // Parse each line into anon and onion components
+    if (sscanf(line, "%255s %62s", anon, onion) == 2) {
+      perror(anon);
+      perror(onion);
+      if (strcmp(anon, anon_address) == 0) {
+        strlcpy(onion_address_out, onion, HS_SERVICE_ADDR_LEN_BASE32 + 6 + 1);
+        free(file_content);
+        return true;
+      }
+    }
+
+    line = strtok(NULL, "\n");
+  }
+
+  // Clean up
+  free(file_content);
   return false;
 }
 

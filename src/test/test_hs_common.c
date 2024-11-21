@@ -813,6 +813,9 @@ test_parse_extended_hostname(void *arg)
     "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.onion";
   char address11[] = "anyone.anon";
 
+  char *path = get_datadir_fname("anon-dns");
+  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.onion\n", 0);
+
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
 
