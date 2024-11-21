@@ -344,7 +344,7 @@ static const config_var_t option_vars_[] = {
   OBSOLETE("AuthDirMaxServersPerAuthAddr"),
   VAR("AuthoritativeDirectory",  BOOL, AuthoritativeDir,    "0"),
   V(AutomapHostsOnResolve,       BOOL,     "0"),
-  V(AutomapHostsSuffixes,        CSV,      ".onion,.exit"),
+  V(AutomapHostsSuffixes,        CSV,      ".any,.exit"),
   V(AvoidDiskWrites,             BOOL,     "0"),
   V(BandwidthBurst,              MEMUNIT,  "1 GB"),
   V(BandwidthRate,               MEMUNIT,  "1 GB"),

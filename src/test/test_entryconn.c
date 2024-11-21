@@ -741,7 +741,7 @@ test_entryconn_rewrite_onion_v3(void *arg)
   /* Make a SOCKS request */
   conn->socks_request->command = SOCKS_COMMAND_CONNECT;
   strlcpy(conn->socks_request->address,
-          "git.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.onion",
+          "git.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.any",
           sizeof(conn->socks_request->address));
 
   /* Make an onion connection using the SOCKS request */

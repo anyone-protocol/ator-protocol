@@ -1730,7 +1730,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
       goto failed;
     }
   }
-  if (strcmp(s+1,"onion")) {
+  if (strcmp(s+1,"any")) {
     *type_out = NORMAL_HOSTNAME; /* neither .exit nor .onion, thus normal */
     goto success;
   }
