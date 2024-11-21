@@ -41,7 +41,7 @@ write_stream_target_to_buf(entry_connection_t *conn, char *buf, size_t len)
                conn->socks_request->address,
                conn->chosen_exit_name ? buf2 : "",
                !conn->chosen_exit_name && connection_edge_is_rendezvous_stream(
-                                     ENTRY_TO_EDGE_CONN(conn)) ? ".onion" : "",
+                                     ENTRY_TO_EDGE_CONN(conn)) ? ".any" : "",
                conn->socks_request->port)<0)
     return -1;
   return 0;

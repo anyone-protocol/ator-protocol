@@ -559,14 +559,14 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
 
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".onion");
+                ".any");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "foo.onion abcdefghijklmnop.onion");
+                     "MapAddress", "foo.any abcdefghijklmnop.any");
   config_register_addressmaps(get_options());
 
   /* Connect to foo.onion. */
-  strlcpy(ec->socks_request->address, "foo.onion",
+  strlcpy(ec->socks_request->address, "foo.any",
           sizeof(ec->socks_request->address));
   ec->socks_request->command = SOCKS_COMMAND_CONNECT;
   connection_ap_handshake_rewrite(ec, &rr);
@@ -576,11 +576,11 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "foo.onion");
-  tt_str_op(ec->socks_request->address, OP_EQ, "abcdefghijklmnop.onion");
+  tt_str_op(rr.orig_address, OP_EQ, "foo.any");
+  tt_str_op(ec->socks_request->address, OP_EQ, "abcdefghijklmnop.any");
 
   /* Okay, resolve foo.onion */
-  strlcpy(ec2->socks_request->address, "foo.onion",
+  strlcpy(ec2->socks_request->address, "foo.any",
           sizeof(ec2->socks_request->address));
   ec2->socks_request->command = SOCKS_COMMAND_RESOLVE;
   connection_ap_handshake_rewrite(ec2, &rr);
@@ -590,7 +590,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "foo.onion");
+  tt_str_op(rr.orig_address, OP_EQ, "foo.any");
   tt_assert(!strcmpstart(ec2->socks_request->address, "192.168."));
 
   /* Now connect */
@@ -602,10 +602,10 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.should_close, OP_EQ, 0);
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_assert(!strcmpstart(ec3->socks_request->address,
-                         "abcdefghijklmnop.onion"));
+                         "abcdefghijklmnop.any"));
 
   /* Now resolve abcefghijklmnop.onion. */
-  strlcpy(ec4->socks_request->address, "abcdefghijklmnop.onion",
+  strlcpy(ec4->socks_request->address, "abcdefghijklmnop.any",
           sizeof(ec4->socks_request->address));
   ec4->socks_request->command = SOCKS_COMMAND_RESOLVE;
   connection_ap_handshake_rewrite(ec4, &rr);
@@ -615,7 +615,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "abcdefghijklmnop.onion");
+  tt_str_op(rr.orig_address, OP_EQ, "abcdefghijklmnop.any");
   tt_assert(!strcmpstart(ec4->socks_request->address, "192.168."));
   /* XXXX doesn't work
    tt_str_op(ec4->socks_request->address, OP_EQ, ec2->socks_request->address);
@@ -652,7 +652,7 @@ test_entryconn_rewrite_mapaddress_automap_onion_common(entry_connection_t *ec,
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
   tt_str_op(rr.orig_address, OP_EQ, "irc.example.com");
   tt_str_op(ec->socks_request->address, OP_EQ,
-            map_to_onion ? "abcdefghijklmnop.onion" : "irc.example.com");
+            map_to_onion ? "abcdefghijklmnop.any" : "irc.example.com");
 
   /* Okay, resolve irc.example.com */
   strlcpy(ec2->socks_request->address, "irc.example.com",
@@ -679,7 +679,7 @@ test_entryconn_rewrite_mapaddress_automap_onion_common(entry_connection_t *ec,
   tt_int_op(rr.end_reason, OP_EQ, 0);
   if (map_to_onion)
     tt_assert(!strcmpstart(ec3->socks_request->address,
-                           "abcdefghijklmnop.onion"));
+                           "abcdefghijklmnop.any"));
 
  done:
   connection_free_minimal(ENTRY_TO_CONN(ec2));
@@ -694,10 +694,10 @@ test_entryconn_rewrite_mapaddress_automap_onion2(void *arg)
   char *msg = NULL;
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".onion");
+                ".any");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "irc.example.com abcdefghijklmnop.onion");
+                     "MapAddress", "irc.example.com abcdefghijklmnop.any");
   config_register_addressmaps(get_options());
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 1, 1);
@@ -708,7 +708,7 @@ static void
 test_entryconn_rewrite_mapaddress_automap_onion3(void *arg)
 {
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "irc.example.com abcdefghijklmnop.onion");
+                     "MapAddress", "irc.example.com abcdefghijklmnop.any");
   config_register_addressmaps(get_options());
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 1, 0);
@@ -721,7 +721,7 @@ test_entryconn_rewrite_mapaddress_automap_onion4(void *arg)
   char *msg = NULL;
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".onion");
+                ".any");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 0, 1);

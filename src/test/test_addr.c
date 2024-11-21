@@ -1413,9 +1413,9 @@ test_virtaddrmap_persist(void *data)
   testing_enable_prefilled_rng(canned_data, canned_data_len);
 
   a = addressmap_register_virtual_address(RESOLVED_TYPE_IPV4,
-                                          tor_strdup("wumble.onion"));
+                                          tor_strdup("wumble.any"));
   b = addressmap_register_virtual_address(RESOLVED_TYPE_IPV4,
-                                          tor_strdup("wumpus.onion"));
+                                          tor_strdup("wumpus.any"));
   tt_str_op(a, OP_EQ, "192.168.3.4");
   tt_str_op(b, OP_EQ, "192.168.7.240");
   testing_disable_prefilled_rng();
@@ -1467,7 +1467,7 @@ test_virtaddrmap_persist(void *data)
   // There is some chance this one will fail if a previous random
   // allocation gave out the address already.
   a = addressmap_register_virtual_address(RESOLVED_TYPE_IPV4,
-                                          tor_strdup("might-work.onion"));
+                                          tor_strdup("might-work.any"));
   if (a) {
     tt_str_op(a, OP_EQ, "192.168.1.1");
   }
@@ -1475,7 +1475,7 @@ test_virtaddrmap_persist(void *data)
   // This one will definitely fail, since we've set up the RNG to hand
   // out "1" forever.
   b = addressmap_register_virtual_address(RESOLVED_TYPE_IPV4,
-                                          tor_strdup("wont-work.onion"));
+                                          tor_strdup("wont-work.any"));
   tt_assert(b == NULL);
   expect_single_log_msg_containing("Ran out of virtual addresses!");
 
