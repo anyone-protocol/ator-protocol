@@ -71,7 +71,7 @@ job "relays-family-stage" {
 
       resources {
         cpu = 256
-        memory = 2048
+        memory = 256
       }
 
    
