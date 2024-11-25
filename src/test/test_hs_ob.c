@@ -60,11 +60,11 @@ mock_read_file_to_str(const char *filename, int flags, struct stat *stat_out)
 
   if (!strcmp(filename, get_fname("hs3" PATH_SEPARATOR "ob_config"))) {
     if (config_is_good) {
-      tor_asprintf(&ret, "MasterOnionAddress %s.any\n"
-                         "MasterOnionAddress %s.any\n",
+      tor_asprintf(&ret, "MasterOnionAddress %s.anon\n"
+                         "MasterOnionAddress %s.anon\n",
                          onion_addr_1, onion_addr_2);
     } else {
-      tor_asprintf(&ret, "MasterOnionAddress JUNKJUNKJUNK.any\n"
+      tor_asprintf(&ret, "MasterOnionAddress JUNKJUNKJUNK.anon\n"
                          "UnknownOption BLAH\n");
     }
     goto done;
@@ -154,7 +154,7 @@ test_parse_config_file_bad(void *arg)
   tor_free(conf);
   tt_int_op(ret, OP_EQ, -1);
   expect_log_msg_containing("OnionBalance: MasterOnionAddress "
-                            "JUNKJUNKJUNK.any is invalid");
+                            "JUNKJUNKJUNK.anon is invalid");
   expect_log_msg_containing("Found unrecognized option \'UnknownOption\'; "
                             "saving it.");
   teardown_capture_of_logs();

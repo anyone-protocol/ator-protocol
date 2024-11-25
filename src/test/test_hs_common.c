@@ -101,7 +101,7 @@ mock_write_str_to_file(const char *path, const char *str, int bin)
   (void)bin;
   tt_str_op(path, OP_EQ, "/double/five"PATH_SEPARATOR"squared");
   tt_str_op(str, OP_EQ,
-           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.any\n");
+           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon\n");
 
  done:
   return 0;
@@ -799,22 +799,22 @@ test_parse_extended_hostname(void *arg)
   (void) arg;
   hostname_type_t type;
 
-  char address1[] = "fooaddress.any";
+  char address1[] = "fooaddress.anon";
   char address3[] = "fooaddress.exit";
   char address4[] = "www.torproject.org";
-  char address5[] = "foo.abcdefghijklmnop.any";
-  char address6[] = "foo.bar.abcdefghijklmnop.any";
-  char address7[] = ".abcdefghijklmnop.any";
+  char address5[] = "foo.abcdefghijklmnop.anon";
+  char address6[] = "foo.bar.abcdefghijklmnop.anon";
+  char address7[] = ".abcdefghijklmnop.anon";
   char address8[] =
-    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.any";
+    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon";
   char address9[] =
-    "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.any";
+    "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon";
   char address10[] =
-    "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.any";
+    "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.anon";
   char address11[] = "anyone.anon";
 
-  char *path = get_datadir_fname("anon-dns");
-  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.any\n", 0);
+  char *path = get_datadir_fname("anons");
+  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon\n", 0);
 
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);

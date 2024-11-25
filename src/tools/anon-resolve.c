@@ -314,7 +314,7 @@ parse_socks4a_resolve_response(const char *hostname,
   status = socks4_server_reply_get_status(reply);
   if (status != 90) {
     log_warn(LD_NET,"Got status response '%d': socks request failed.", status);
-    if (!strcasecmpend(hostname, ".any")) {
+    if (!strcasecmpend(hostname, ".anon")) {
       onion_hs_warning(hostname);
       result = -1; goto cleanup;
     }
@@ -507,7 +507,7 @@ do_resolve(const char *hostname,
       log_warn(LD_NET,"Got SOCKS5 status response '%u': %s",
                (unsigned)reply_field,
                socks5_reason_to_string(reply_field));
-      if (reply_field == 4 && !strcasecmpend(hostname, ".any")) {
+      if (reply_field == 4 && !strcasecmpend(hostname, ".anon")) {
         onion_hs_warning(hostname);
       }
 

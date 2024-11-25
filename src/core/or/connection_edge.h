@@ -17,9 +17,6 @@
 
 #include "feature/hs/hs_service.h"
 
-bool lookup_anon_to_onion_mapping(const char *anon_address, char *onion_address_out);
-bool lookup_anon_to_onion_mapping_native(const char *anon_address, char *onion_address_out);
-
 edge_connection_t *TO_EDGE_CONN(connection_t *);
 entry_connection_t *TO_ENTRY_CONN(connection_t *);
 entry_connection_t *EDGE_TO_ENTRY_CONN(edge_connection_t *);
@@ -254,6 +251,8 @@ void half_edge_free_(struct half_edge_t *he);
 #ifdef CONNECTION_EDGE_PRIVATE
 
 STATIC bool parse_extended_hostname(char *address, hostname_type_t *type_out);
+
+bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out);
 
 /** A parsed BEGIN or BEGIN_DIR cell */
 typedef struct begin_cell_t {

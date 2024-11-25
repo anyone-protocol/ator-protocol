@@ -43,20 +43,20 @@ test_crypto_rng(void *arg)
     d = crypto_rand_double();
     tt_assert(d >= 0);
     tt_assert(d < 1.0);
-    host = crypto_random_hostname(3,6,"www.",".any");
+    host = crypto_random_hostname(3,7,"www.",".anon");
     if (strcmpstart(host,"www.") ||
-        strcmpend(host,".any") ||
-        strlen(host) < 11 ||
-        strlen(host) > 16)
+        strcmpend(host,".anon") ||
+        strlen(host) < 12 ||
+        strlen(host) > 17)
       allok = 0;
     tor_free(host);
   }
 
   /* Make sure crypto_random_hostname clips its inputs properly. */
-  h = crypto_random_hostname(20000, 9000, "www.", ".any");
+  h = crypto_random_hostname(20000, 9000, "www.", ".anon");
   tt_assert(! strcmpstart(h,"www."));
-  tt_assert(! strcmpend(h,".any"));
-  tt_int_op(63+4+4, OP_EQ, strlen(h));
+  tt_assert(! strcmpend(h,".anon"));
+  tt_int_op(63+4+5, OP_EQ, strlen(h));
 
   tt_assert(allok);
  done:

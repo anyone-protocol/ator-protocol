@@ -107,14 +107,14 @@ get_onion_public_key(const char *value, ed25519_public_key_t *pkey_out)
   tor_assert(value);
   tor_assert(pkey_out);
 
-  if (strcmpend(value, ".any")) {
+  if (strcmpend(value, ".anon")) {
     /* Not a .onion extension, bad format. */
     return false;
   }
 
   /* Length validation. The -1 is because sizeof() counts the NUL byte. */
   if (strlen(value) >
-      (HS_SERVICE_ADDR_LEN_BASE32 + sizeof(".any") - 1)) {
+      (HS_SERVICE_ADDR_LEN_BASE32 + sizeof(".anon") - 1)) {
     /* Too long, bad format. */
     return false;
   }
@@ -122,7 +122,7 @@ get_onion_public_key(const char *value, ed25519_public_key_t *pkey_out)
   /* We don't want the .onion so we add 2 because size - 1 is copied with
    * strlcpy() in order to accommodate the NUL byte and sizeof() counts the NUL
    * byte so we need to remove them from the equation. */
-  strlcpy(address, value, strlen(value) - sizeof(".any") + 2);
+  strlcpy(address, value, strlen(value) - sizeof(".anon") + 2);
 
   if (hs_parse_address_no_log(address, pkey_out, NULL, NULL, NULL) < 0) {
     return false;
