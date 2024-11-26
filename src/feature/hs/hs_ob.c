@@ -95,7 +95,7 @@ ob_option_new(void)
 }
 
 /** Helper function: From the configuration line value which is an onion
- * address with the ".onion" extension, find the public key and put it in
+ * address with the ".anon" extension, find the public key and put it in
  * pkey_out.
  *
  * On success, true is returned. Else, false and pkey is untouched. */
@@ -108,7 +108,7 @@ get_onion_public_key(const char *value, ed25519_public_key_t *pkey_out)
   tor_assert(pkey_out);
 
   if (strcmpend(value, ".anon")) {
-    /* Not a .onion extension, bad format. */
+    /* Not a .anon extension, bad format. */
     return false;
   }
 
@@ -119,7 +119,7 @@ get_onion_public_key(const char *value, ed25519_public_key_t *pkey_out)
     return false;
   }
 
-  /* We don't want the .onion so we add 2 because size - 1 is copied with
+  /* We don't want the .anon so we add 2 because size - 1 is copied with
    * strlcpy() in order to accommodate the NUL byte and sizeof() counts the NUL
    * byte so we need to remove them from the equation. */
   strlcpy(address, value, strlen(value) - sizeof(".anon") + 2);

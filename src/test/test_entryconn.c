@@ -542,7 +542,7 @@ test_entryconn_rewrite_mapaddress_exit(void *arg)
   ;
 }
 
-/* Map foo.onion to longthing.onion, and also automap. */
+/* Map foo.anon to longthing.anon, and also automap. */
 static void
 test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
 {
@@ -565,7 +565,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
                      "MapAddress", "foo.anon abcdefghijklmnop.anon");
   config_register_addressmaps(get_options());
 
-  /* Connect to foo.onion. */
+  /* Connect to foo.anon. */
   strlcpy(ec->socks_request->address, "foo.anon",
           sizeof(ec->socks_request->address));
   ec->socks_request->command = SOCKS_COMMAND_CONNECT;
@@ -579,7 +579,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_str_op(rr.orig_address, OP_EQ, "foo.anon");
   tt_str_op(ec->socks_request->address, OP_EQ, "abcdefghijklmnop.anon");
 
-  /* Okay, resolve foo.onion */
+  /* Okay, resolve foo.anon */
   strlcpy(ec2->socks_request->address, "foo.anon",
           sizeof(ec2->socks_request->address));
   ec2->socks_request->command = SOCKS_COMMAND_RESOLVE;
@@ -604,7 +604,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_assert(!strcmpstart(ec3->socks_request->address,
                          "abcdefghijklmnop.anon"));
 
-  /* Now resolve abcefghijklmnop.onion. */
+  /* Now resolve abcefghijklmnop.anon. */
   strlcpy(ec4->socks_request->address, "abcdefghijklmnop.anon",
           sizeof(ec4->socks_request->address));
   ec4->socks_request->command = SOCKS_COMMAND_RESOLVE;

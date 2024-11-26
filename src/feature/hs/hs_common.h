@@ -75,7 +75,7 @@ struct ed25519_keypair_t;
  * with 1 byte VERSION and 2 bytes CHECKSUM. The following is 35 bytes. */
 #define HS_SERVICE_ADDR_LEN \
   (ED25519_PUBKEY_LEN + HS_SERVICE_ADDR_CHECKSUM_LEN_USED + sizeof(uint8_t))
-/** Length of 'y' portion of 'y.onion' URL. This is base32 encoded and the
+/** Length of 'y' portion of 'y.anon' URL. This is base32 encoded and the
  * length ends up to 56 bytes (not counting the terminated NUL byte.) */
 #define HS_SERVICE_ADDR_LEN_BASE32 \
   (CEIL_DIV(HS_SERVICE_ADDR_LEN * 8, 5))

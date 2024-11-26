@@ -8378,7 +8378,7 @@ Changes in version 0.3.3.11 - 2019-01-07
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.2-alpha):
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -9075,7 +9075,7 @@ Changes in version 0.3.5.7 - 2019-01-07
 
   o Minor bugfixes (onion service v2):
     - Log at level "info", not "warning", in the case that we do not
-      have a consensus when a .onion request comes in. This can happen
+      have a consensus when a .anon request comes in. This can happen
       normally while bootstrapping. Fixes bug 27040; bugfix
       on 0.2.8.2-alpha.
 
@@ -9097,7 +9097,7 @@ Changes in version 0.3.5.7 - 2019-01-07
       present. This way we avoid picking a relay that supports the v3
       rendezvous but for which we don't have the microdescriptor. Fixes
       bug 27797; bugfix on 0.3.2.1-alpha.
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -9405,7 +9405,7 @@ Changes in version 0.3.4.9 - 2018-11-02
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.2-alpha):
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -12074,7 +12074,7 @@ Changes in version 0.3.2.9 - 2018-01-09
 
       You can identify a next-generation onion address by its length:
       they are 56 characters long, as in
-      "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.onion".
+      "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.anon".
 
       In the future, we will release more options and features for v3
       onion services, but we first need a testing period, so that the
@@ -12609,7 +12609,7 @@ Changes in version 0.3.2.9 - 2018-01-09
     - Rename the consensus parameter "hsdir-interval" to "hsdir_interval"
       so it matches dir-spec.txt. Fixes bug 24262; bugfix
       on 0.3.1.1-alpha.
-    - When handling multiple SOCKS request for the same .onion address,
+    - When handling multiple SOCKS request for the same .anon address,
       only fetch the service descriptor once.
     - Avoid a possible double close of a circuit by the intro point on
       error of sending the INTRO_ESTABLISHED cell. Fixes bug 23610;
@@ -15887,7 +15887,7 @@ Changes in version 0.2.9.8 - 2016-12-19
   that were formerly optional. It includes support for a new shared-
   randomness protocol that will form the basis for next generation
   hidden services, includes a single-hop hidden service mode for
-  optimizing .onion services that don't actually want to be hidden,
+  optimizing .anon services that don't actually want to be hidden,
   tries harder not to overload the directory authorities with excessive
   downloads, and supports a better protocol versioning scheme for
   improved compatibility with other implementations of the Tor protocol.
@@ -17150,7 +17150,7 @@ Changes in version 0.2.8.6 - 2016-08-02
 
   o Minor bugfixes (hidden service, client):
     - Handle the case where the user makes several fast consecutive
-      requests to the same .onion address. Previously, the first six
+      requests to the same .anon address. Previously, the first six
       requests would each trigger a descriptor fetch, each picking a
       directory (there are 6 overall) and the seventh one would fail
       because no directories were left, thereby triggering a close on
@@ -18769,7 +18769,7 @@ Changes in version 0.2.6.6 - 2015-03-24
       "." from "AutomapHostsSuffixes". Fixes bug 12509; bugfix
       on 0.2.0.1-alpha.
     - Allow MapAddress and AutomapHostsOnResolve to work together when
-      an address is mapped into another address type (like .onion) that
+      an address is mapped into another address type (like .anon) that
       must be automapped at resolve time. Fixes bug 7555; bugfix
       on 0.2.0.1-alpha.
 
@@ -21002,10 +21002,10 @@ Changes in version 0.2.4.19 - 2013-12-11
       upon the number of hop-RTTs that a particular circuit type
       undergoes. Additionally, launch intro circuits in parallel
       if they timeout, and take the first one to reply as valid.
-    - The Tor client now ignores sub-domain components of a .onion
+    - The Tor client now ignores sub-domain components of a .anon
       address. This change makes HTTP "virtual" hosting
-      possible: http://foo.aaaaaaaaaaaaaaaa.onion/ and
-      http://bar.aaaaaaaaaaaaaaaa.onion/ can be two different websites
+      possible: http://foo.aaaaaaaaaaaaaaaa.anon/ and
+      http://bar.aaaaaaaaaaaaaaaa.anon/ can be two different websites
       hosted on the same hidden service. Implements proposal 204.
     - Enable Tor to read configuration, state, and key information from
       a FIFO. Previously Tor would only read from files with a positive
@@ -25339,7 +25339,7 @@ Changes in version 0.2.1.18 - 2009-07-24
     - Provide circuit purposes along with circuit events to the controller.
 
   o Minor features (tools):
-    - Do not have tor-resolve automatically refuse all .onion addresses;
+    - Do not have tor-resolve automatically refuse all .anon addresses;
       if AutomapHostsOnResolve is set in your torrc, this will work fine.
     - Add a -p option to tor-resolve for specifying the SOCKS port: some
       people find host:port too confusing.
@@ -25963,9 +25963,9 @@ Changes in version 0.2.0.30 - 2008-07-15
       resolve request for hosts matching a given pattern causes Tor to
       generate an internal virtual address mapping for that host. This
       allows DNSPort to work sensibly with hidden service users. By
-      default, .exit and .onion addresses are remapped; the list of
+      default, .exit and .anon addresses are remapped; the list of
       patterns can be reconfigured with AutomapHostsSuffixes.
-    - Add an "-F" option to tor-resolve to force a resolve for a .onion
+    - Add an "-F" option to tor-resolve to force a resolve for a .anon
       address. Thanks to the AutomapHostsOnResolve option, this is no
       longer a completely silly thing to do.
 
@@ -26608,7 +26608,7 @@ Changes in version 0.2.0.30 - 2008-07-15
     - Drop support for OpenSSL version 0.9.6. Just about nobody was using
       it, it had no AES, and it hasn't seen any security patches since
       2004.
-    - Stop overloading the circuit_t.onionskin field for both "onionskin
+    - Stop overloading the circuit_t.anonskin field for both "onionskin
       from a CREATE cell that we are waiting for a cpuworker to be
       assigned" and "onionskin from an EXTEND cell that we are going to
       send to an OR as soon as we are connected". Might help with bug 600.
@@ -27289,7 +27289,7 @@ Changes in version 0.1.2.13 - 2007-04-24
       new ChangeLog file now includes the notes for all development
       versions too.
     - Add a new address-spec.txt document to describe our special-case
-      addresses: .exit, .onion, and .noconnnect.
+      addresses: .exit, .anon, and .noconnnect.
     - Fork the v1 directory protocol into its own spec document,
       and mark dir-spec.txt as the currently correct (v2) spec.
 
@@ -27919,7 +27919,7 @@ Changes in version 0.1.1.20 - 2006-05-23
       latest server descriptor for every router that Tor knows about.
     - Fix the controller's "attachstream 0" command to treat conn like
       it just connected, doing address remapping, handling .exit and
-      .onion idioms, and so on. Now we're more uniform in making sure
+      .anon idioms, and so on. Now we're more uniform in making sure
       that the controller hears about new and closing connections.
     - Permit transitioning from ORPort==0 to ORPort!=0, and back, from
       the controller. Also, rotate dns and cpu workers if the controller
@@ -28522,7 +28522,7 @@ Changes in version 0.1.0.10 - 2005-06-14
       attempts to build a circuit.
     - Adjust maximum skew and age for rendezvous descriptors: let skew
       be 48 hours rather than 90 minutes.
-    - Reject malformed .onion addresses rather then passing them on as
+    - Reject malformed .anon addresses rather then passing them on as
       normal web requests.
 
   o Controller:
@@ -29372,7 +29372,7 @@ Changes in version 0.0.6.1 - 2004-05-06
 Changes in version 0.0.6 - 2004-05-02
   o Features:
     - Hidden services and rendezvous points are implemented. Go to
-      http://6sxoyfb3h2nvok2d.onion/ for an index of currently available
+      http://6sxoyfb3h2nvok2d.anon/ for an index of currently available
       hidden services. (This only works via a socks4a proxy such as
       Privoxy, and currently it's quite slow.)
     - We now rotate link (tls context) keys and onion keys.

@@ -243,7 +243,7 @@ connection_control_closed(control_connection_t *conn)
       if (hs_address_is_valid(cp)) {
         hs_service_del_ephemeral(cp);
       } else {
-        /* An invalid .onion in our list should NEVER happen */
+        /* An invalid .anon in our list should NEVER happen */
         tor_fragile_assert();
       }
     } SMARTLIST_FOREACH_END(cp);

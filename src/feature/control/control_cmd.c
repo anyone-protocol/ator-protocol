@@ -1571,7 +1571,7 @@ handle_control_hspost(control_connection_t *conn,
  * The ownership of that list is transferred to the service.
  *
  * On success (RSAE_OKAY), the address_out points to a newly allocated string
- * containing the onion address without the .onion part. On error, address_out
+ * containing the onion address without the .anon part. On error, address_out
  * is untouched. */
 STATIC hs_service_add_ephemeral_status_t
 add_onion_helper_add_service(int hs_version,

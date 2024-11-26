@@ -272,7 +272,7 @@ typedef struct hs_service_config_t {
   uint32_t pow_queue_burst;
 
   /** If set, contains the Onion Balance master ed25519 public key (taken from
-   * an .onion addresses) that this tor instance serves as backend. */
+   * an .anon addresses) that this tor instance serves as backend. */
   smartlist_t *ob_master_pubkeys;
 } hs_service_config_t;
 

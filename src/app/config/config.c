@@ -6371,7 +6371,7 @@ port_parse_config(smartlist_t *out,
             cfg->entry_cfg.onion_traffic = ! no;
             continue;
           } else if (!strcasecmp(elt, "OnionTrafficOnly")) {
-            /* Only connect to .onion addresses.  Equivalent to
+            /* Only connect to .anon addresses.  Equivalent to
              * NoDNSRequest, NoIPv4Traffic, NoIPv6Traffic. The option
              * NoOnionTrafficOnly is not supported, it's too confusing. */
             if (no) {
@@ -6468,7 +6468,7 @@ port_parse_config(smartlist_t *out,
         cfg->entry_cfg.onion_traffic == 0 &&
         listener_type != CONN_TYPE_AP_DNS_LISTENER) {
       log_warn(LD_CONFIG, "You have a %sPort entry with all of IPv4 and "
-               "IPv6 and .onion disabled; that won't work.", portname);
+               "IPv6 and .anon disabled; that won't work.", portname);
       goto err;
     }
     if (cfg->entry_cfg.dns_request == 1 &&
