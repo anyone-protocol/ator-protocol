@@ -57,13 +57,13 @@ struct ed25519_keypair_t;
 #define HS_TIME_PERIOD_LENGTH_MAX (60 * 24 * 10) /* 10 days or 14400 minutes */
 
 /** Prefix of the onion address checksum. */
-#define HS_SERVICE_ADDR_CHECKSUM_PREFIX ".onion checksum"
+#define HS_SERVICE_ADDR_CHECKSUM_PREFIX ".anon checksum"
 /** Length of the checksum prefix minus the NUL terminated byte. */
 #define HS_SERVICE_ADDR_CHECKSUM_PREFIX_LEN \
   (sizeof(HS_SERVICE_ADDR_CHECKSUM_PREFIX) - 1)
 /** Length of the resulting checksum of the address. The construction of this
  * checksum looks like:
- *   CHECKSUM = ".onion checksum" || PUBKEY || VERSION
+ *   CHECKSUM = ".anon checksum" || PUBKEY || VERSION
  * where VERSION is 1 byte. This is pre-hashing. */
 #define HS_SERVICE_ADDR_CHECKSUM_INPUT_LEN \
   (HS_SERVICE_ADDR_CHECKSUM_PREFIX_LEN + ED25519_PUBKEY_LEN + sizeof(uint8_t))

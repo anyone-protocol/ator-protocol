@@ -664,7 +664,7 @@ mock_read_file_to_str(const char *filename, int flags, struct stat *stat_out)
   if (!strcmp(filename, get_fname("auth_keys" PATH_SEPARATOR
                                               "client2.auth_private"))) {
     ret = tor_strdup(
-        "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid:descriptor:"
+        "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd:descriptor:"
         "x25519:fdreqzjqso7d2ac7qscrxfl5qfpamdvgy5d6cxejcgzc3hvhurmq");
     goto done;
   }
@@ -728,7 +728,7 @@ test_config_client_authorization(void *arg)
 
   hs_parse_address("4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad",
                    &pk1, NULL, NULL);
-  hs_parse_address("25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid",
+  hs_parse_address("25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd",
                    &pk2, NULL, NULL);
 
   tt_assert(digest256map_get(global_map, pk1.pubkey));

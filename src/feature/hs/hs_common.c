@@ -478,7 +478,7 @@ build_blinded_key_param(const ed25519_public_key_t *pubkey,
 
 /** Using an ed25519 public key and version to build the checksum of an
  * address. Put in checksum_out. Format is:
- *    SHA3-256(".onion checksum" || PUBKEY || VERSION)
+ *    SHA3-256(".anon checksum" || PUBKEY || VERSION)
  *
  * checksum_out must be large enough to receive 32 bytes (DIGEST256_LEN). */
 static void
@@ -895,7 +895,7 @@ hs_address_is_valid(const char *address)
  *
  * Format is as follows:
  *     base32(PUBKEY || CHECKSUM || VERSION)
- *     CHECKSUM = H(".onion checksum" || PUBKEY || VERSION)
+ *     CHECKSUM = H(".anon checksum" || PUBKEY || VERSION)
  * */
 void
 hs_build_address(const ed25519_public_key_t *key, uint8_t version,

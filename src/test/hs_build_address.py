@@ -28,8 +28,8 @@ if TEST_VALUE != m.hexdigest():
     sys.exit(1)
 
 # Checksum is built like so:
-#   CHECKSUM = SHA3(".onion checksum" || PUBKEY || VERSION)
-PREFIX = ".onion checksum".encode()
+#   CHECKSUM = SHA3(".anon checksum" || PUBKEY || VERSION)
+PREFIX = ".anon checksum".encode()
 # 32 bytes ed25519 pubkey from first test vector of
 # https://tools.ietf.org/html/draft-josefsson-eddsa-ed25519-02#section-6
 PUBKEY_STRING = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
@@ -40,11 +40,11 @@ else:
 # Version 3 is proposal224
 VERSION = 3
 
-data = struct.pack('15s32sb', PREFIX, PUBKEY, VERSION)
+data = struct.pack('14s32sb', PREFIX, PUBKEY, VERSION)
 checksum = hashlib.sha3_256(data).digest()
 
 # Onion address is built like so:
-#   onion_address = base32(PUBKEY || CHECKSUM || VERSION) + ".onion"
+#   onion_address = base32(PUBKEY || CHECKSUM || VERSION) + ".anon"
 address = struct.pack('!32s2sb', PUBKEY, checksum, VERSION)
 onion_addr = base64.b32encode(address).decode().lower()
 

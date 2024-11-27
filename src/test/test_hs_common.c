@@ -88,7 +88,7 @@ test_validate_address(void *arg)
 
   /* Valid address. */
   ret = hs_address_is_valid(
-           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid");
+           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
   tt_int_op(ret, OP_EQ, 1);
 
  done:
@@ -101,7 +101,7 @@ mock_write_str_to_file(const char *path, const char *str, int bin)
   (void)bin;
   tt_str_op(path, OP_EQ, "/double/five"PATH_SEPARATOR"squared");
   tt_str_op(str, OP_EQ,
-           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon\n");
+           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon\n");
 
  done:
   return 0;
@@ -127,7 +127,7 @@ test_build_address(void *arg)
   /* The following has been created with hs_build_address.py script that
    * follows proposal 224 specification to build an onion address. */
   static const char *test_addr =
-    "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid";
+    "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd";
 
   /* Let's try to build the same onion address as the script */
   base16_decode((char*)pubkey.pubkey, sizeof(pubkey.pubkey),
@@ -806,7 +806,7 @@ test_parse_extended_hostname(void *arg)
   char address6[] = "foo.bar.abcdefghijklmnop.anon";
   char address7[] = ".abcdefghijklmnop.anon";
   char address8[] =
-    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon";
+    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon";
   char address9[] =
     "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon";
   char address10[] =
@@ -814,7 +814,7 @@ test_parse_extended_hostname(void *arg)
   char address11[] = "anyone.anon";
 
   char *path = get_datadir_fname("anons");
-  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon\n", 0);
+  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon\n", 0);
 
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
@@ -837,7 +837,7 @@ test_parse_extended_hostname(void *arg)
   tt_assert(parse_extended_hostname(address8, &type));
   tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
   tt_str_op(address8, OP_EQ,
-            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid");
+            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
 
   /* Invalid v3 address. */
   tt_assert(!parse_extended_hostname(address9, &type));
@@ -850,7 +850,7 @@ test_parse_extended_hostname(void *arg)
   tt_assert(parse_extended_hostname(address11, &type));
   tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
   tt_str_op(address11, OP_EQ,
-                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid");
+                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
 
  done: ;
 }
