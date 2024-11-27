@@ -26608,7 +26608,7 @@ Changes in version 0.2.0.30 - 2008-07-15
     - Drop support for OpenSSL version 0.9.6. Just about nobody was using
       it, it had no AES, and it hasn't seen any security patches since
       2004.
-    - Stop overloading the circuit_t.anonskin field for both "onionskin
+    - Stop overloading the circuit_t.onionskin field for both "onionskin
       from a CREATE cell that we are waiting for a cpuworker to be
       assigned" and "onionskin from an EXTEND cell that we are going to
       send to an OR as soon as we are connected". Might help with bug 600.

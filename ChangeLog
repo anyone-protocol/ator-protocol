@@ -19152,7 +19152,7 @@ Changes in version 0.2.9.4-alpha - 2016-10-17
 
 Changes in version 0.2.9.3-alpha - 2016-09-23
   Tor 0.2.9.3-alpha adds improved support for entities that want to make
-  high-performance services available through the Tor .anon mechanism
+  high-performance services available through the Anyone .anon mechanism
   without themselves receiving anonymity as they host those services. It
   also tries harder to ensure that all steps on a circuit are using the
   strongest crypto possible, strengthens some TLS properties, and
@@ -34465,7 +34465,7 @@ Changes in version 0.2.0.19-alpha - 2008-02-09
   o Code simplifications and refactoring:
     - Remove some needless generality from cpuworker code, for improved
       type-safety.
-    - Stop overloading the circuit_t.anonskin field for both "onionskin
+    - Stop overloading the circuit_t.onionskin field for both "onionskin
       from a CREATE cell that we are waiting for a cpuworker to be
       assigned" and "onionskin from an EXTEND cell that we are going to
       send to an OR as soon as we are connected". Might help with bug 600.
