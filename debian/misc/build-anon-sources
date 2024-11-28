@@ -191,8 +191,7 @@ backport_all() {
 
 	# lunar (EOL: 2024-01)
 	#################################################
-	bp1 $pkg $dir $sid_debian_version lunar
-	bp2 $pkg $dir $origtar
+	# null
 
 	# mantic (EOL: 202????)
 	#################################################
