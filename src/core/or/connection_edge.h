@@ -252,7 +252,7 @@ void half_edge_free_(struct half_edge_t *he);
 
 STATIC bool parse_extended_hostname(char *address, hostname_type_t *type_out);
 
-bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out);
+bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, size_t buffer_size);
 
 /** A parsed BEGIN or BEGIN_DIR cell */
 typedef struct begin_cell_t {

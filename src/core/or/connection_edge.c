@@ -1723,7 +1723,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
 
   log_info(LD_APP, "Anon dns address lookup for: %s",address);
   char onion_address[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
-  if (lookup_anon_dns_mapping(address,onion_address)) {
+  if (lookup_anon_dns_mapping(address,onion_address,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR)) {
     log_notice(LD_APP, "Anon dns address mapping found: %s -> %s",address,onion_address);
     strlcpy(address,onion_address,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
     s = strrchr(address,'.');
@@ -1775,8 +1775,13 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
   return false;
 }
 
-bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out) {
+bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, size_t buffer_size) {
   char *file_content = NULL;
+
+  if (buffer_size != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR) {
+    log_warn(LD_APP,"Wrong onion address buffer length");
+    return false;
+  }
 
   if (!anon_address) {
     log_warn(LD_APP,"Anon address can not be null");
