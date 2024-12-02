@@ -55,6 +55,10 @@
  **/
 #define CONNECTION_EDGE_PRIVATE
 
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+
 #include "core/or/or.h"
 
 #include "lib/err/backtrace.h"
@@ -1718,10 +1722,10 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
   }
 
   log_info(LD_APP, "Anon dns address lookup for: %s",address);
-  char onion_address[HS_SERVICE_ADDR_LEN_BASE32+6+1];
+  char onion_address[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
   if (lookup_anon_dns_mapping(address,onion_address)) {
     log_notice(LD_APP, "Anon dns address mapping found: %s -> %s",address,onion_address);
-    strlcpy(address,onion_address,HS_SERVICE_ADDR_LEN_BASE32+6+1);
+    strlcpy(address,onion_address,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
     s = strrchr(address,'.');
   }
 
@@ -1774,6 +1778,17 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
 bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out) {
   char *file_content = NULL;
 
+  if (!anon_address) {
+    log_warn(LD_APP,"Anon address can not be null");
+    return false;
+  }
+
+  size_t len = strlen(anon_address);
+  if (len == 0 || len > HS_SERVICE_DNS_MAX_ADDRESS_LENGTH) {
+    log_warn(LD_APP,"Anon address length should be > 0 and <= 255");
+    return false;
+  }
+
   // Check if the file exists using `file_status`
   char *dns_fname = get_datadir_fname("anons");
   file_status_t terms_status = file_status(dns_fname);
@@ -1783,7 +1798,7 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out) 
   }
 
   // Read the entire file content using `read_file_to_str`
-  file_content = read_file_to_str(dns_fname, 0, NULL);
+  file_content = read_file_to_str(dns_fname,MAX_DNS_MAPPING_FILE_SIZE,NULL);
   if (!file_content) {
     log_notice(LD_APP,"No mapping found for %s.",anon_address);
     return false;
@@ -1792,17 +1807,20 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out) 
   // Process the file content line by line
   char *line = strtok(file_content, "\n");
   while (line != NULL) {
-    char anon[256];
-    char onion[HS_SERVICE_ADDR_LEN_BASE32 + 6 + 1];
+    char anon[HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+    char onion[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     // Parse each line into anon and onion components
-    if (sscanf(line, "%255s %62s", anon, onion) == 2) {
+    if (sscanf(line, "%260s %61s", anon, onion) == 2) {
       if (strcmp(anon, anon_address) == 0) {
-        strlcpy(onion_address_out,onion,HS_SERVICE_ADDR_LEN_BASE32 + 6 + 1);
+        if (strlen(onion) != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX) {
+          log_warn(LD_APP, "Invalid onion address length");
+          return false;
+        }
+        strlcpy(onion_address_out,onion,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
         free(file_content);
         return true;
       }
     }
-
     line = strtok(NULL, "\n");
   }
 

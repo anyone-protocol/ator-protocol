@@ -812,6 +812,7 @@ test_parse_extended_hostname(void *arg)
   char address10[] =
     "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.anon";
   char address11[] = "anyone.anon";
+  char address12[] = ".anon";
 
   char *path = get_datadir_fname("anons");
   write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon\n", 0);
@@ -851,6 +852,9 @@ test_parse_extended_hostname(void *arg)
   tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
   tt_str_op(address11, OP_EQ,
                 "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
+
+  tt_assert(!parse_extended_hostname(address12, &type));
+  tt_int_op(type, OP_EQ, BAD_HOSTNAME);
 
  done: ;
 }
