@@ -9562,7 +9562,7 @@ Changes in version 0.3.3.11 - 2019-01-07
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.2-alpha):
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -10221,7 +10221,7 @@ Changes in version 0.3.4.9 - 2018-11-02
       on 0.3.2.1-alpha.
 
   o Minor bugfixes (onion service v3, backport from 0.3.5.2-alpha):
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -10458,7 +10458,7 @@ Changes in version 0.3.5.2-alpha - 2018-09-21
       on 0.3.4.1-alpha.
 
   o Minor bugfixes (onion service v3):
-    - Close all SOCKS request (for the same .onion) if the newly fetched
+    - Close all SOCKS request (for the same .anon) if the newly fetched
       descriptor is unusable. Before that, we would close only the first
       one leaving the other hanging and let to time out by themselves.
       Fixes bug 27410; bugfix on 0.3.2.1-alpha.
@@ -10782,7 +10782,7 @@ Changes in version 0.3.5.1-alpha - 2018-09-18
 
   o Minor bugfixes (onion service v2):
     - Log at level "info", not "warning", in the case that we do not
-      have a consensus when a .onion request comes in. This can happen
+      have a consensus when a .anon request comes in. This can happen
       normally while bootstrapping. Fixes bug 27040; bugfix
       on 0.2.8.2-alpha.
 
@@ -14976,10 +14976,10 @@ Changes in version 0.3.2.3-alpha - 2017-10-27
       23862; bugfix on 0.3.0.1-alpha.
 
   o Minor bugfixes (hidden service client):
-    - When handling multiple SOCKS request for the same .onion address,
+    - When handling multiple SOCKS request for the same .anon address,
       only fetch the service descriptor once.
     - When a descriptor fetch fails with a non-recoverable error, close
-      all pending SOCKS requests for that .onion. Fixes bug 23653;
+      all pending SOCKS requests for that .anon. Fixes bug 23653;
       bugfix on 0.3.2.1-alpha.
 
   o Minor bugfixes (hidden service):
@@ -15501,7 +15501,7 @@ Changes in version 0.3.2.1-alpha - 2017-09-18
 
       You can identify a next-generation onion address by its length:
       they are 56 characters long, as in
-      "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.onion".
+      "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.anon".
 
       In the future, we will release more options and features for v3
       onion services, but we first need a testing period, so that the
@@ -18718,7 +18718,7 @@ Changes in version 0.2.9.8 - 2016-12-19
   that were formerly optional. It includes support for a new shared-
   randomness protocol that will form the basis for next generation
   hidden services, includes a single-hop hidden service mode for
-  optimizing .onion services that don't actually want to be hidden,
+  optimizing .anon services that don't actually want to be hidden,
   tries harder not to overload the directory authorities with excessive
   downloads, and supports a better protocol versioning scheme for
   improved compatibility with other implementations of the Tor protocol.
@@ -19152,7 +19152,7 @@ Changes in version 0.2.9.4-alpha - 2016-10-17
 
 Changes in version 0.2.9.3-alpha - 2016-09-23
   Tor 0.2.9.3-alpha adds improved support for entities that want to make
-  high-performance services available through the Tor .onion mechanism
+  high-performance services available through the Anyone .anon mechanism
   without themselves receiving anonymity as they host those services. It
   also tries harder to ensure that all steps on a circuit are using the
   strongest crypto possible, strengthens some TLS properties, and
@@ -20368,7 +20368,7 @@ Changes in version 0.2.8.2-alpha - 2016-03-28
 
   o Minor bugfixes (hidden service, client):
     - Handle the case where the user makes several fast consecutive
-      requests to the same .onion address. Previously, the first six
+      requests to the same .anon address. Previously, the first six
       requests would each trigger a descriptor fetch, each picking a
       directory (there are 6 overall) and the seventh one would fail
       because no directories were left, thereby triggering a close on
@@ -22370,7 +22370,7 @@ Changes in version 0.2.6.3-alpha - 2015-02-19
       "." from "AutomapHostsSuffixes". Fixes bug 12509; bugfix
       on 0.2.0.1-alpha.
     - Allow MapAddress and AutomapHostsOnResolve to work together when
-      an address is mapped into another address type (like .onion) that
+      an address is mapped into another address type (like .anon) that
       must be automapped at resolve time. Fixes bug 7555; bugfix
       on 0.2.0.1-alpha.
 
@@ -25817,10 +25817,10 @@ Changes in version 0.2.4.10-alpha - 2013-02-04
       should raise our threshold for Fast relays, possibly in turn
       improving overall network performance; see ticket 1854. Resolves
       ticket 8145.
-    - The Tor client now ignores sub-domain components of a .onion
+    - The Tor client now ignores sub-domain components of a .anon
       address. This change makes HTTP "virtual" hosting
-      possible: http://foo.aaaaaaaaaaaaaaaa.onion/ and
-      http://bar.aaaaaaaaaaaaaaaa.onion/ can be two different websites
+      possible: http://foo.aaaaaaaaaaaaaaaa.anon/ and
+      http://bar.aaaaaaaaaaaaaaaa.anon/ can be two different websites
       hosted on the same hidden service. Implements proposal 204.
     - We compute the overhead from passing onionskins back and forth to
       cpuworkers, and report it when dumping statistics in response to
@@ -32553,7 +32553,7 @@ Changes in version 0.2.1.16-rc - 2009-06-20
 
   o Minor features:
     - Update to the "June 3 2009" ip-to-country file.
-    - Do not have tor-resolve automatically refuse all .onion addresses;
+    - Do not have tor-resolve automatically refuse all .anon addresses;
       if AutomapHostsOnResolve is set in your torrc, this will work fine.
 
   o Minor bugfixes (on 0.2.0.x):
@@ -36175,9 +36175,9 @@ Changes in version 0.2.0.1-alpha - 2007-06-01
       resolve request for hosts matching a given pattern causes Tor to
       generate an internal virtual address mapping for that host. This
       allows DNSPort to work sensibly with hidden service users. By
-      default, .exit and .onion addresses are remapped; the list of
+      default, .exit and .anon addresses are remapped; the list of
       patterns can be reconfigured with AutomapHostsSuffixes.
-    - Add an "-F" option to tor-resolve to force a resolve for a .onion
+    - Add an "-F" option to tor-resolve to force a resolve for a .anon
       address. Thanks to the AutomapHostsOnResolve option, this is no
       longer a completely silly thing to do.
     - If Tor is invoked from something that isn't a shell (e.g. Vidalia),
@@ -36734,7 +36734,7 @@ Changes in version 0.1.2.5-alpha - 2007-01-06
     - Add a maintainer script to tell us which options are missing
       documentation: "make check-docs".
     - Add a new address-spec.txt document to describe our special-case
-      addresses: .exit, .onion, and .noconnnect.
+      addresses: .exit, .anon, and .noconnnect.
 
   o Minor features (DNS):
     - Ongoing work on eventdns infrastructure: now it has dns server
@@ -37825,7 +37825,7 @@ Changes in version 0.1.1.13-alpha - 2006-02-09
       established a circuit.
     - Fix the controller's "attachstream 0" command to treat conn like
       it just connected, doing address remapping, handling .exit and
-      .onion idioms, and so on. Now we're more uniform in making sure
+      .anon idioms, and so on. Now we're more uniform in making sure
       that the controller hears about new and closing connections.
 
 
@@ -38033,7 +38033,7 @@ Changes in version 0.1.1.10-alpha - 2005-12-11
       build with -ldl.
     - Give a useful message when people run Tor as the wrong user,
       rather than telling them to start chowning random directories.
-    - We were failing to inform the controller about new .onion streams.
+    - We were failing to inform the controller about new .anon streams.
 
   o Security bugfixes on 0.1.0.x:
     - Refuse server descriptors if the fingerprint line doesn't match
@@ -38063,8 +38063,8 @@ Changes in version 0.1.1.10-alpha - 2005-12-11
       flapping for people with DynDNS, and chose not to upload a new
       server descriptor sometimes.
     - Try to be compatible with OpenSSL 0.9.6 again.
-    - Log fix: when the controller is logging about .onion addresses,
-      sometimes it didn't include the ".onion" part of the address.
+    - Log fix: when the controller is logging about .anon addresses,
+      sometimes it didn't include the ".anon" part of the address.
     - Don't try to modify options->DirServers internally -- if the
       user didn't specify any, just add the default ones directly to
       the trusted dirserver list. This fixes a bug where people running
@@ -38643,7 +38643,7 @@ Changes in version 0.1.0.9-rc - 2005-06-09
       OR outbuf has a full TLS record available. Perhaps this will make
       OR outbufs not grow as huge except in rare cases, thus saving lots
       of CPU time plus memory.
-    - Reject malformed .onion addresses rather then passing them on as
+    - Reject malformed .anon addresses rather then passing them on as
       normal web requests.
     - Adapt patch from Adam Langley: fix possible memory leak in
       tor_lookup_hostname().
@@ -39059,7 +39059,7 @@ Changes in version 0.1.0.1-rc - 2005-03-28
     - Make sequence of log messages when starting on win32 with no config
       file more reasonable.
     - When choosing an exit node for a new non-internal circ, don't take
-      into account whether it'll be useful for any pending x.onion
+      into account whether it'll be useful for any pending x.anon
       addresses -- it won't.
     - Turn addr_policy_compare from a tristate to a quadstate; this should
       help address our "Ah, you allow 1.2.3.4:80. You are a good choice
@@ -39789,7 +39789,7 @@ Changes in version 0.0.8pre3 - 2004-08-09
     - Fix an assert error that was making SocksPolicy not work.
     - Be willing to expire routers that have an open dirport -- it's
       just the authoritative dirservers we want to not forget.
-    - Reject tor-resolve requests for .onion addresses early, so we
+    - Reject tor-resolve requests for .anon addresses early, so we
       don't build a whole rendezvous circuit and then fail.
     - When you're warning a server that he's unverified, don't cry
       wolf unpredictably.
@@ -40128,7 +40128,7 @@ Changes in version 0.0.6pre2 - 2004-04-08
 Changes in version 0.0.6pre1 - 2004-04-08
   o Features:
     - Hidden services and rendezvous points are implemented. Go to
-      http://6sxoyfb3h2nvok2d.onion/ for an index of currently available
+      http://6sxoyfb3h2nvok2d.anon/ for an index of currently available
       hidden services. (This only works via a socks4a proxy such as
       Privoxy, and currently it's quite slow.)
 

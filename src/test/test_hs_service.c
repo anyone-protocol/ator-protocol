@@ -1940,7 +1940,7 @@ test_rendezvous1_parsing(void *arg)
 {
   int retval;
   static const char *test_addr =
-    "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.onion";
+    "4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad.anon";
   hs_service_t *service = NULL;
   origin_circuit_t *service_circ = NULL;
   origin_circuit_t *client_circ = NULL;
