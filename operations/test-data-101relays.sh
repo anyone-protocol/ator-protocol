@@ -10,7 +10,7 @@ for i in {0..100}; do
     mkdir -p anon-family-relay-$i && cd anon-family-relay-$i
 
     #wallet
-    node create-wallet.js wallet $source_wallet_prv $tokens_to_seed
+    node ..\create-wallet.js wallet $source_wallet_prv $tokens_to_seed
     vault kv put -output-curl-string -mount=kv ator-network/stage/relay-family-$i \
             wallet_private_key="$(cat walletprv)" \
             wallet_phrase="$(cat walletmnem)" \
