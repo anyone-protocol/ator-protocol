@@ -4595,6 +4595,13 @@ options_init_from_torrc(int argc, char **argv)
     }
   }
 
+  char *anons_fname = get_datadir_fname("anons");
+  file_status_t anons_status = file_status(anons_fname);
+  if (anons_status != FN_FILE) {
+    log_info(LD_CONFIG, "Creating anons file with default mapping");
+    write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
+  }
+
   char *terms_fname = get_datadir_fname("terms-agreement");
   if (config_line_find(cmdline_only_options, "--agree-to-terms")) {
     write_str_to_file_if_not_equal(terms_fname, "agreed");
