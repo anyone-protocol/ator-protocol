@@ -47,6 +47,8 @@ int get_protocol_warning_severity_level(void);
 /** Pattern for backing up configuration files */
 #define CONFIG_BACKUP_PATTERN "%s.orig.1"
 
+#define DEFAULT_ANON_DNS_MAPPING "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon"
+
 /** An error from options_trial_assign() or options_init_from_string(). */
 typedef enum setopt_err_t {
   SETOPT_OK = 0,
