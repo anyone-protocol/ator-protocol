@@ -86,6 +86,15 @@ jobs:
             suite: bullseye
             arch: arm64
             runner: arm64
+          # Ubuntu Oracular
+          - os: ubuntu
+            suite: oracular
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: oracular
+            arch: arm64
+            runner: arm64
           # Ubuntu Noble
           - os: ubuntu
             suite: noble
