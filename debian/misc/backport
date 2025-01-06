@@ -50,6 +50,7 @@ bullseye-bpo	bpo11		1	bullseye-backports
 bookworm-bpo	bpo12		1	bookworm-backports
 trixie-bpo	bpo13		1	trixie-backports
 
+oracular oracular	1
 dapper		dapper		1
 edgy		edgy		1
 feisty		feisty		1

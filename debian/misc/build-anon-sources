@@ -166,6 +166,11 @@ backport_all() {
 	bp2 $pkg $dir $origtar
 
 
+	# oracular (EOL: 2024-07, 2029-07)
+  #################################################
+  bp1 $pkg $dir $sid_debian_version oracular
+  bp2 $pkg $dir $origtar
+
 	# xenial (EOL: Apr 2021, 2026-04)
 	#################################################
 	bp1 $pkg $dir $sid_debian_version xenial

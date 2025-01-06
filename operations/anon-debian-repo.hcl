@@ -181,53 +181,53 @@ fetchers:
       repo: ator-protocol
       assets_regexp: ^anon.+-dev-.+\.deb
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_stage_github_releases
       owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-stage-.+\.deb
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_beta_github_releases
       owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-beta-.+\.deb
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_live_github_releases
       owner: anyone-protocol
       repo: ator-protocol
       assets_regexp: ^anon.+-live-.+\.deb
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
   nginx_access_log:
     - name: anon_dev_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-dev.+\.deb HTTP\/1\.1" 200'
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_stage_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_beta_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-beta.+\.deb HTTP\/1\.1" 200'
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
     - name: anon_live_debian_repo
       access_log_path: "/alloc/data/access.log"
       access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-live.+\.deb HTTP\/1\.1" 200'
       labels:
-        os: 'anon.+(bookworm|bullseye|noble|jammy|focal).+\.deb'
+        os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
         arch: '(amd64|arm64)\.deb'
         EOH
         destination = "local/exporter.yml"
@@ -320,6 +320,15 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-live-oracular
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Oracular Live
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-live-noble
 Architectures: amd64 arm64 source
 Components: main
@@ -359,6 +368,15 @@ Codename: anon-beta-bullseye
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Bullseye Beta
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-beta-oracular
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Oracular Beta
 SignWith: YES
 
 Origin: Anon
@@ -406,6 +424,15 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-stage-oracular
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Oracular Stage
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-stage-noble
 Architectures: amd64 arm64 source
 Components: main
@@ -445,6 +472,15 @@ Codename: anon-dev-bullseye
 Architectures: amd64 arm64 source
 Components: main
 Description: Anon Debian Bullseye Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
+Codename: anon-dev-oracular
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Oracular Dev
 SignWith: YES
 
 Origin: Anon
@@ -492,6 +528,15 @@ SignWith: YES
 
 Origin: Anon
 Label: Anon
+Codename: anon-unstable-dev-oracular
+Architectures: amd64 arm64 source
+Components: main
+DDebComponents: main
+Description: Anon Ubuntu Oracular Unstable Dev
+SignWith: YES
+
+Origin: Anon
+Label: Anon
 Codename: anon-unstable-dev-noble
 Architectures: amd64 arm64 source
 Components: main
@@ -526,7 +571,7 @@ SignWith: YES
 Name: incoming
 IncomingDir: /data/debian/incoming
 TempDir: /tmp
-Allow: anon-live-bookworm anon-live-bullseye anon-live-noble anon-live-jammy anon-live-focal anon-beta-bookworm anon-beta-bullseye anon-beta-noble anon-beta-jammy anon-beta-focal anon-stage-bookworm anon-stage-bullseye anon-stage-noble anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-noble anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-noble anon-unstable-dev-jammy anon-unstable-dev-focal
+Allow: anon-live-bookworm anon-live-bullseye anon-live-oracular anon-live-noble anon-live-jammy anon-live-focal anon-beta-bookworm anon-beta-bullseye anon-beta-oracular anon-beta-noble anon-beta-jammy anon-beta-focal anon-stage-bookworm anon-stage-bullseye anon-stage-oracular anon-stage-noble anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-oracular anon-dev-noble anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-oracular anon-unstable-dev-noble anon-unstable-dev-jammy anon-unstable-dev-focal
 Cleanup: on_deny on_error unused_files
         EOH
         destination = "local/incoming"

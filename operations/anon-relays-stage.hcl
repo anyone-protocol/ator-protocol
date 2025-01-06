@@ -1,5 +1,5 @@
 locals {
-  instances_count = 4
+  instances_count = 100
   nicnname_prefix = "AnonFamilyRelay"
 	nicknames = [for i in range(0, local.instances_count) : "${local.nicnname_prefix}${i}"]
 	nicknames_string = join(",", local.nicknames)
@@ -11,15 +11,9 @@ job "relays-family-stage" {
   type = "service"
   namespace = "ator-network"
 
-  update {
-    max_parallel      = 1
-    healthy_deadline  = "15m"
-    progress_deadline = "20m"
-  }
-
   group "relay-live-group" {
     count = local.instances_count
-
+    
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
@@ -43,23 +37,21 @@ job "relays-family-stage" {
     network  {
       port "orport" {
         static = 0
-      }
+      }     
     }
 
     task "relay-live-task" {
-      driver = "docker"
+      driver = "docker"    
 
       config {
-        # todo - use latest commit tag - https://github.com/anyone-protocol/jira-confluence/issues/224
         image = "ghcr.io/anyone-protocol/ator-protocol-stage:4b413cc6c0c82e4baefeb3545efe5bc416913700"
-        image_pull_timeout = "15m"
         ports = ["orport"]
         volumes = [
           "local/anonrc:/etc/anon/anonrc",
           "secrets/anon/keys:/var/lib/anon/keys"
         ]
       }
-
+      
       env {
 				NICKNAMES_STRING = local.nicknames_string
         NICKNAME_PREFIX = local.nicnname_prefix
@@ -135,12 +127,78 @@ AgreeToTerms 1
 
 ORPort {{ env `NOMAD_PORT_orport` }}
 
+RelayBandwidthRate {{ key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/bandwidth`) }}
+ExitRelay {{ key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/isexit`) }}
+        
 Nickname {{ env `NICKNAME_PREFIX` }}{{ env `NOMAD_ALLOC_INDEX` }}
-ContactInfo anon@example.org
-MyFamily 47B1B159AFD0597DB5BA7B9F743DC57D47BE2265,AF2E54656194C619B19EAB80887F37A83E6C3E43,954BBF10940BCD4B5797558145B55824C0314EB3,639BBF0705242A244EBD2DA5418AE7B7169AF1CA
+ContactInfo anon@example.org @anon: {{ key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/wallet`) }}
         EOH
         destination = "local/anonrc"
+      }    
+    }
+    
+    task "registerhardware" {
+			driver = "docker"        
+	    lifecycle {
+  	    hook = "poststart"
+    	  sidecar = false
+    	}
+			config { 
+        image = "curlimages/curl" 
+        command = "curl"            
+        args = ["--header", "Content-Type: application/json", "--fail", "--data", "@post.json", "--location", "https://api-stage.ec.anyone.tech/hardware"] 
+  			volumes = [
+          "local/post:/home/curl_user/post.json"
+        ]        
       }
+      template {
+        change_mode = "noop"
+        data = <<EOH
+{
+    "id": "HWrelay",
+    "company": "anyone.io",
+    "format": "broadcast-type:1",
+    "wallet": "{{ key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/wallet`) }}",
+    {{ $fingerprint := key (env `NOMAD_ALLOC_INDEX` | printf `ator-network/stage/relay-family-%s/fingerprint`) | split " " }}
+	  {{- range $index, $element := $fingerprint }} {{- if eq $index 1 }}"fingerprint": "{{ $element  }}",{{- end }} {{- end }}
+    "nftid":"12345",
+    "build":"2.0.1",
+    "flags":"33",
+    "serNums": [
+        {
+            "type": "DEVICE",
+            "number": "c2eeef8a42a50073"
+        },
+        {
+            "type": "ATEC",
+            "number": "0123d4fb782ded6101"
+        }
+    ],
+    "pubKeys": [
+        {
+            "type": "DEVICE",
+            "number": "3a4a8debb486d32d438f38cf24f8b723326fb85cf9c15a2a7f9bc80916dd8d7de8b9990a8fc0a12e72fd990b3569bbbf24970b07a024a03fa51e5b719fe921bf"
+        },
+        {
+            "type": "SIGNER",
+            "number": "4aa155e5c04759c5a82cafa7657bc32cc2fecd8eba5f06d0bb2b6709901108e0958ce41737cd4fbf473f5862a81e95a23979bd9083d1c5fe4cc9ceb1ef9c3735"
+        }
+    ],
+    "certs": [
+        {
+            "type": "DEVICE",
+            "signature": "4A B7 B1 E1 7A 8F 7D 8D 68 CB 5D 42 33 B2 4C 9F 55 96 28 56 27 82 C7 DE DF 82 A5 7F 90 0C 3F 6F 1E FE 2F 5B 4F 6C 1D 96 76 54 E2 63 7E 86 8C B3 57 2D 3E 2C 28 58 51 43 23 CD 40 99 6B B4 F2 C3"
+        }
+    ]
+}
+        EOH
+        destination = "local/post"
+      }    
+      
+      resources { 
+        cpu = 100 
+        memory = 128 
+      }      
     }
   }
 }
