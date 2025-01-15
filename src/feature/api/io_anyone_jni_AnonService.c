@@ -4,6 +4,8 @@
 /* See LICENSE for licensing information */
 
 #include "tor_api.h"
+#include "tor_api_internal.h"
+#include "app/main/shutdown.h"
 #include "io_anyone_jni_AnonService.h"
 #include "orconfig.h"
 #include "lib/malloc/malloc.h"
