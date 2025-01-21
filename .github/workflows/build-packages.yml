@@ -1,6 +1,5 @@
 name: Build Anon Packages
 
-
 on:
   push:
     tags:
