@@ -1,7 +1,7 @@
 job "anon-debian-repo" {
   datacenters = ["ator-fin"]
   type = "service"
-  namespace = "ator-network"
+  namespace = "live-services"
 
   update {
     max_parallel      = 1
@@ -68,10 +68,6 @@ job "anon-debian-repo" {
         port = "nginx-http"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.deb-repo.entrypoints=https",
-          "traefik.http.routers.deb-repo.rule=Host(`deb.dmz.ator.dev`)",
-          "traefik.http.routers.deb-repo.tls=true",
-          "traefik.http.routers.deb-repo.tls.certresolver=atorresolver",
           "traefik.http.routers.deb-repo-dns.entrypoints=https",
           "traefik.http.routers.deb-repo-dns.rule=Host(`deb.en.anyone.tech`)",
           "traefik.http.routers.deb-repo-dns.tls=true",
