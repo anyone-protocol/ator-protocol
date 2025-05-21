@@ -39,6 +39,6 @@ jobs:
             -log-level="warn" \
             operations/anon-debian-repo.hcl
 
-          curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
+          curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
           unzip nomad.zip
           ./nomad job run deploy.hcl

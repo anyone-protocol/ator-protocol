@@ -39,7 +39,7 @@ runs:
         #[[ -z $(grep "stage" deploy-vars.json) && -z $(grep "dev" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-live.hcl
 
         sed -i 's/PLACEIMAGETAGHERE/${{ inputs.image-tag }}/g' operations/${{ inputs.nomad-job-file }}
-        curl -L https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip -o nomad.zip
+        curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
         unzip nomad.zip
         ./nomad job run operations/${{ inputs.nomad-job-file }}
     - name: Check health

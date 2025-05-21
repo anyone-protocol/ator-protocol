@@ -1,9 +1,9 @@
 #TODO: use templating to avoid copypaste
 
-job "ator-dir-auth-live" {
+job "anon-da-node-live" {
   datacenters = ["ator-fin"]
   type = "service"
-  namespace = "ator-network"
+  namespace = "live-network"
 
   update {
     max_parallel      = 1
@@ -88,7 +88,13 @@ job "ator-dir-auth-live" {
       }
 
       vault {
-        policies = ["ator-network-read"]
+        role = "any1-nomad-workloads-controller"
+      }
+
+      identity {
+        name = "vault_default"
+        aud  = ["any1-infra"]
+        ttl  = "1h"
       }
 
       resources {
@@ -106,43 +112,43 @@ job "ator-dir-auth-live" {
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        data = "{{ with secret (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/ator-network/live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
