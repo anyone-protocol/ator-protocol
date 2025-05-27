@@ -17,11 +17,6 @@ job "anon-debian-repo" {
   group "anon-debian-repo-group" {
     count = 1
 
-    constraint {
-      attribute = "${node.unique.id}"
-      value     = "c8e55509-a756-0aa7-563b-9665aa4915ab"
-    }
-
     volume "deb-repo" {
       type      = "host"
       read_only = false
