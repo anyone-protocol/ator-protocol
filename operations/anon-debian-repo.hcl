@@ -26,6 +26,7 @@ job "anon-debian-repo" {
     network {
       mode = "bridge"
       port "nginx-http" {
+        to = 8080
         host_network = "wireguard"
       }
     }
@@ -79,7 +80,7 @@ job "anon-debian-repo" {
         change_mode = "noop"
         data = <<EOH
 server {
-    listen       {{ env "NOMAD_PORT_http-port" }};
+    listen       8080;
     server_name  localhost;
 
     location /db/ {
@@ -255,7 +256,6 @@ fetchers:
         type     = "tcp"
         interval = "10s"
         timeout  = "10s"
-        address_mode = "alloc"
         check_restart {
           limit = 10
           grace = "30s"
