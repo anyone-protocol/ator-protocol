@@ -2,6 +2,11 @@ job "anon-debian-repo" {
   datacenters = ["ator-fin"]
   type = "service"
   namespace = "live-services"
+  
+  constraint {
+    attribute = "${meta.pool}"
+    value = "live-services"
+  }
 
   update {
     max_parallel      = 1
@@ -41,6 +46,29 @@ job "anon-debian-repo" {
       sticky  = true
     }
 
+    service {
+      name = "anon-debian-repo-nginx"
+      port = "nginx-http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.deb-repo-dns.entrypoints=https",
+        "traefik.http.routers.deb-repo-dns.rule=Host(`deb.en.anyone.tech`)",
+        "traefik.http.routers.deb-repo-dns.tls=true",
+        "traefik.http.routers.deb-repo-dns.tls.certresolver=anyoneresolver"
+      ]
+      check {
+        name     = "nginx http server alive"
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "10s"
+        address_mode = "alloc"
+        check_restart {
+          limit = 10
+          grace = "30s"
+        }
+      }
+    }
+
     task "anon-debian-repo-nginx-task" {
       driver = "docker"
 
@@ -61,28 +89,6 @@ job "anon-debian-repo" {
       resources {
         cpu = 256
         memory = 512
-      }
-
-      service {
-        name = "anon-debian-repo-nginx"
-        port = "nginx-http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.deb-repo-dns.entrypoints=https",
-          "traefik.http.routers.deb-repo-dns.rule=Host(`deb.en.anyone.tech`)",
-          "traefik.http.routers.deb-repo-dns.tls=true",
-          "traefik.http.routers.deb-repo-dns.tls.certresolver=anyoneresolver"
-        ]
-        check {
-          name     = "nginx http server alive"
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "10s"
-          check_restart {
-            limit = 10
-            grace = "30s"
-          }
-        }
       }
 
       template {
