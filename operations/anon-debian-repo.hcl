@@ -248,21 +248,6 @@ fetchers:
       }
     }
 
-    service {
-      name = "anon-debian-repo-reprepro"
-      port = "reprepro-ssh"
-      check {
-        name     = "reprepro ssh server alive"
-        type     = "tcp"
-        interval = "10s"
-        timeout  = "10s"
-        check_restart {
-          limit = 10
-          grace = "30s"
-        }
-      }
-    }
-
     task "anon-debian-repo-reprepro-task" {
       driver = "docker"
 
@@ -280,6 +265,11 @@ fetchers:
           "local/incoming:/data/debian/conf/incoming:ro",
           "secrets/config:/config:ro"
         ]
+      }
+
+      service {
+        name = "anon-debian-repo-reprepro"
+        port = "reprepro-ssh"
       }
 
       resources {
