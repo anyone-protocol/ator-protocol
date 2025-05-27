@@ -14,7 +14,7 @@ job "anon-debian-repo" {
     progress_deadline = "20m"
   }
 
-  group "anon-debian-repo-group" {
+  group "anon-debian-repo-nginx" {
     count = 1
 
     volume "deb-repo" {
@@ -23,22 +23,11 @@ job "anon-debian-repo" {
       source    = "deb-repo"
     }
 
-    network  {
-      port "reprepro-ssh" {
-        static = 22
-      }
+    network {
+      mode = "bridge"
       port "nginx-http" {
-        static = 8001
+        host_network = "wireguard"
       }
-      port "exporter-http" {
-        static = 8002
-        to = 8080
-      }
-    }
-
-    ephemeral_disk {
-      migrate = true
-      sticky  = true
     }
 
     service {
@@ -90,8 +79,7 @@ job "anon-debian-repo" {
         change_mode = "noop"
         data = <<EOH
 server {
-    listen       8001;
-    listen  [::]:8001;
+    listen       {{ env "NOMAD_PORT_http-port" }};
     server_name  localhost;
 
     location /db/ {
@@ -122,6 +110,36 @@ server {
         destination = "local/default.conf"
       }
     }
+  }
+
+  group "anon-debian-repo-package-exporter" {
+    count = 1
+
+    network {
+      mode = "bridge"
+      port "exporter-http" {
+        to = 8080
+        host_network = "wireguard"
+      }
+    }
+
+    service {
+      name = "anon-download-exporter"
+      port = "exporter-http"
+      check {
+        name     = "anon download exporter alive"
+        type     = "http"
+        port     = "exporter-http"
+        path     = "/"
+        interval = "10s"
+        timeout  = "10s"
+        address_mode = "alloc"
+        check_restart {
+          limit = 10
+          grace = "30s"
+        }
+      }
+    }
 
     task "anon-package-exporter-task" {
       driver = "docker"
@@ -133,23 +151,6 @@ server {
         volumes = [
           "local/exporter.yml:/app/config.yml:ro",
         ]
-      }
-
-      service {
-        name = "anon-download-exporter"
-        port = "exporter-http"
-        check {
-          name     = "anon download exporter alive"
-          type     = "http"
-          port     = "exporter-http"
-          path     = "/"
-          interval = "10s"
-          timeout  = "10s"
-          check_restart {
-            limit = 10
-            grace = "30s"
-          }
-        }
       }
 
       resources {
@@ -230,8 +231,39 @@ fetchers:
         destination = "local/exporter.yml"
       }
     }
+  }
 
-    task "anon-debian-repo-task" {
+  group "anon-debian-repo-reprepro" {
+
+    volume "deb-repo" {
+      type      = "host"
+      read_only = false
+      source    = "deb-repo"
+    }
+
+    network  {
+      port "reprepro-ssh" {
+        static = 22
+      }
+    }
+
+    service {
+      name = "anon-debian-repo-reprepro"
+      port = "reprepro-ssh"
+      check {
+        name     = "reprepro ssh server alive"
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "10s"
+        address_mode = "alloc"
+        check_restart {
+          limit = 10
+          grace = "30s"
+        }
+      }
+    }
+
+    task "anon-debian-repo-reprepro-task" {
       driver = "docker"
 
       volume_mount {
@@ -253,21 +285,6 @@ fetchers:
       resources {
         cpu = 256
         memory = 256
-      }
-
-      service {
-        name = "anon-debian-repo-reprepro"
-        port = "reprepro-ssh"
-        check {
-          name     = "reprepro ssh server alive"
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "10s"
-          check_restart {
-            limit = 10
-            grace = "30s"
-          }
-        }
       }
 
       template {
