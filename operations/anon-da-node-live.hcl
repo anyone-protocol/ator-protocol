@@ -17,25 +17,25 @@ job "anon-da-node-live" {
     spread {
       attribute = "${node.unique.id}"
       weight    = 100
-      target "067a42a8-d8fe-8b19-5851-43079e0eabb4" {
+      target "ee5aa04f-1ec2-832e-e706-4b3d996429f4" {
         percent = 14
       }
-      target "16be0723-edc1-83c4-6c02-193d96ec308a" {
+      target "c5c9db77-6779-bcd7-8aa5-559f03254e7f" {
         percent = 14
       }
-      target "e6e0baed-8402-fd5c-7a15-8dd49e7b60d9" {
+      target "e8c69a64-abee-23b0-8a27-04d5de1c0125" {
         percent = 14
       }
-      target "5ace4a92-63c4-ac72-3ed1-e4485fa0d4a4" {
+      target "fd1258af-0be7-7946-bccf-565243a753db" {
         percent = 14
       }
-      target "eb42c498-e7a8-415f-14e9-31e9e71e5707" {
+      target "e5e906fa-af5a-bff1-e0c5-f8e12bb385f7" {
         percent = 14
       }
-      target "4aa61f61-893a-baf4-541b-870e99ac4839" {
+      target "ababa2ce-7129-d4b9-f9c4-b0e6f9d80f7f" {
         percent = 15
       }
-      target "c2adc610-6316-cd9d-c678-cda4b0080b52" {
+      target "63fdf9a5-4ea8-4c12-5f6b-b59479d95d12" {
         percent = 15
       }
     }
