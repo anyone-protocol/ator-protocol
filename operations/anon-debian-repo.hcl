@@ -280,7 +280,9 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ base64Decode "[[.reprepro_sec]]" }}
+        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro-sec }}
+        {{ end }}
         EOH
         destination = "secrets/config/reprepro-sec.gpg"
         perms = "0600"
@@ -289,7 +291,9 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ base64Decode "[[.reprepro_pub]]" }}
+        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro-pub }}
+        {{ end }}
         EOH
         destination = "secrets/config/reprepro-pub.gpg"
         perms = "0600"
@@ -298,7 +302,9 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ base64Decode "[[.authorized_keys]]" }}
+        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro-authorized_keys }}
+        {{ end }}
         EOH
         destination = "secrets/config/reprepro-authorized_keys"
       }

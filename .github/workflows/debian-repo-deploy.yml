@@ -32,9 +32,6 @@ jobs:
           curl -L https://releases.hashicorp.com/levant/0.3.3/levant_0.3.3_linux_amd64.zip -o levant.zip
           unzip levant.zip
           ./levant render \
-            -var="reprepro_sec=${{ secrets.DEBIAN_PRIVATE_KEY }}" \
-            -var="reprepro_pub=${{ secrets.DEBIAN_PUBLIC_KEY }}" \
-            -var="authorized_keys=${{ secrets.DEBIAN_AUTHORIZED_KEYS }}" \
             -out="deploy.hcl" \
             -log-level="warn" \
             operations/anon-debian-repo.hcl
