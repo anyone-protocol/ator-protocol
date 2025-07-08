@@ -29,13 +29,6 @@ jobs:
           CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
           CONSUL_ADDR: ${{ secrets.CONSUL_DEPLOY_ADDR }}
         run: |
-          curl -L https://releases.hashicorp.com/levant/0.3.3/levant_0.3.3_linux_amd64.zip -o levant.zip
-          unzip levant.zip
-          ./levant render \
-            -out="deploy.hcl" \
-            -log-level="warn" \
-            operations/anon-debian-repo.hcl
-
           curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
           unzip nomad.zip
-          ./nomad job run deploy.hcl
+          ./nomad job run operations/anon-debian-repo.hcl
