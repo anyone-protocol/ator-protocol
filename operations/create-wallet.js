@@ -26,7 +26,7 @@ let wallet = new ethers.Wallet(from_wallet_prvkey);
 //     infura: "cfed69d3b4fd4630b1957335cdb517cb",
 // });
 
-const provider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/cfed69d3b4fd4630b1957335cdb517cb');
+const provider = new ethers.providers.JsonRpcProvider(process.env.JSON_RPC_URL);
 let signer = wallet.connect(provider);
 let transaction = signer.sendTransaction({
     to: newWallet.address,
