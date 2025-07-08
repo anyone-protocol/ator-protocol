@@ -248,6 +248,11 @@ job "anon-debian-repo" {
       }
     }
 
+    service {
+      name = "anon-debian-repo-reprepro"
+      port = "reprepro-ssh"
+    }
+
     task "anon-debian-repo-reprepro-task" {
       driver = "docker"
 
@@ -267,21 +272,26 @@ job "anon-debian-repo" {
         ]
       }
 
-      service {
-        name = "anon-debian-repo-reprepro"
-        port = "reprepro-ssh"
-      }
-
       resources {
         cpu = 256
         memory = 256
       }
 
+      vault {
+        role = "any1-nomad-workloads-controller"
+      }
+
+      identity {
+        name = "vault_default"
+        aud  = ["any1-infra"]
+        ttl  = "1h"
+      }
+
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
-        {{ base64Decode .Data.data.reprepro-sec }}
+        {{ with secret "kv/live-services/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro_sec }}
         {{ end }}
         EOH
         destination = "secrets/config/reprepro-sec.gpg"
@@ -291,8 +301,8 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
-        {{ base64Decode .Data.data.reprepro-pub }}
+        {{ with secret "kv/live-services/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro_pub }}
         {{ end }}
         EOH
         destination = "secrets/config/reprepro-pub.gpg"
@@ -302,8 +312,8 @@ job "anon-debian-repo" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        {{ with secret "kv/stage-protocol/anon-debian-repo" }}
-        {{ base64Decode .Data.data.reprepro-authorized_keys }}
+        {{ with secret "kv/live-services/anon-debian-repo" }}
+        {{ base64Decode .Data.data.reprepro_authorized_keys }}
         {{ end }}
         EOH
         destination = "secrets/config/reprepro-authorized_keys"
