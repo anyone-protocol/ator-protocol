@@ -263,7 +263,7 @@ job "anon-debian-repo" {
       }
 
       config {
-        image = "svforte/reprepro:v0.0.6"
+        image = "ghcr.io/anyone-protocol/reprepro:48f2bd4aeb7d35f18569637272978217751d754b"
         ports = ["reprepro-ssh"]
         volumes = [
           "local/distributions:/data/debian/conf/distributions:ro",
