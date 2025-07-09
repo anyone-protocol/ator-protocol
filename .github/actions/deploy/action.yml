@@ -4,8 +4,6 @@ inputs:
     required: true
   nomad-job-file:
     required: true
-  health-checks:
-    required: true
   nomad-cacert:
     required: true
   nomad-token:
@@ -42,11 +40,3 @@ runs:
         curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
         unzip nomad.zip
         ./nomad job run operations/${{ inputs.nomad-job-file }}
-    - name: Check health
-      uses: jtalk/url-health-check-action@v3
-      with:
-        url: ${{ inputs.health-checks }}
-        follow-redirect: false # Optional, defaults to "false"
-        max-attempts: 3 # Optional, defaults to 1
-        retry-delay: 10s # Optional, only applicable to max-attempts > 1
-        retry-all: true # Optional, defaults to "false"

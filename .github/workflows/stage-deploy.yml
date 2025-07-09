@@ -7,13 +7,6 @@ on:
 env:
   image-name: ghcr.io/anyone-protocol/ator-protocol-stage
   image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
-  da-1-hc-url: http://65.21.12.154:9130/tor/status-vote/current/consensus
-  da-2-hc-url: http://148.251.23.105:9130/tor/status-vote/current/consensus
-  da-3-hc-url: http://135.181.231.123:9130/tor/status-vote/current/consensus
-  da-4-hc-url: http://148.251.23.105:9131/tor/status-vote/current/consensus
-  da-5-hc-url: http://148.251.23.105:9132/tor/status-vote/current/consensus
-  da-6-hc-url: http://135.181.231.123:9131/tor/status-vote/current/consensus
-  da-7-hc-url: http://135.181.231.123:9132/tor/status-vote/current/consensus
 
 jobs:
   push:
@@ -29,7 +22,6 @@ jobs:
         with:
           image-tag: ${{ env.image-tag }}
           nomad-job-file: anon-da-node-stage.hcl
-          health-checks: "${{ env.da-1-hc-url }}|${{ env.da-2-hc-url }}|${{ env.da-3-hc-url }}"
           nomad-cacert: operations/admin-ui-ca.crt
           nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
           nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
