@@ -60,7 +60,7 @@ job "anon-da-node-live" {
       }
 
       config {
-        image = "ghcr.io/anyone-protocol/ator-protocol:PLACEIMAGETAGHERE"
+        image = "ghcr.io/anyone-protocol/ator-protocol:bd506a47f917355bbe2742418481ec53bb89b261" // v0.4.9.11
         image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
@@ -133,51 +133,51 @@ job "anon-da-node-live" {
       template {
         change_mode = "noop"
         data = <<-EOH
-        # Run Tor as a regular user (do not change this)
-        User anond
-        DataDirectory /var/lib/anon
+# Run Tor as a regular user (do not change this)
+User anond
+DataDirectory /var/lib/anon
 
-        AgreeToTerms 1
+AgreeToTerms 1
 
-        AuthoritativeDirectory 1
-        V3AuthoritativeDirectory 1
+AuthoritativeDirectory 1
+V3AuthoritativeDirectory 1
 
-        # Server's public IP Address (usually automatic)
-        Address {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/public_ipv4") }}
+# Server's public IP Address (usually automatic)
+Address {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/public_ipv4") }}
 
-        # Port to advertise for incoming Tor connections.
-        ORPort 9201                  # common ports are 9001, 443
-        #ORPort 1.1.1.1:9001
+# Port to advertise for incoming Tor connections.
+ORPort 9201                  # common ports are 9001, 443
+#ORPort 1.1.1.1:9001
 
-        # Mirror directory information for others (optional, not used on bridge)
-        DirPort 9230                 # common ports are 9030, 80
+# Mirror directory information for others (optional, not used on bridge)
+DirPort 9230                 # common ports are 9030, 80
 
-        # Run Tor only as a server (no local applications)
-        SocksPort 0
-        ControlSocket 0
+# Run Tor only as a server (no local applications)
+SocksPort 0
+ControlSocket 0
 
-        # Run as a relay only (change policy to enable exit node)
-        ExitPolicy reject *:*        # no exits allowed
-        ExitPolicy reject6 *:*
-        ExitRelay 0
-        IPv6Exit 0
+# Run as a relay only (change policy to enable exit node)
+ExitPolicy reject *:*        # no exits allowed
+ExitPolicy reject6 *:*
+ExitRelay 0
+IPv6Exit 0
 
-        AuthDirMaxServersPerAddr 8
+AuthDirMaxServersPerAddr 8
 
-        ConsensusParams "CircuitPriorityHalflifeMsec=30000 DoSCircuitCreationBurst=60 DoSCircuitCreationEnabled=1 DoSCircuitCreationMinConnections=2 DoSCircuitCreationRate=2 DoSConnectionEnabled=1 DoSConnectionMaxConcurrentCount=50 DoSRefuseSingleHopClientRendezvous=1 ExtendByEd25519ID=1 KISTSchedRunInterval=3 NumNTorsPerTAP=100 UseOptimisticData=1 bwauthpid=1 bwscanner_cc=1 cbttestfreq=10 cc_alg=2 cc_cwnd_full_gap=4 cc_cwnd_full_minpct=25 cc_cwnd_inc=1 cc_cwnd_inc_rate=31 cc_cwnd_min=124 cc_sscap_exit=600 cc_sscap_onion=475 cc_vegas_alpha_exit=186 cc_vegas_beta_onion=372 cc_vegas_delta_exit=310 cc_vegas_delta_onion=434 cc_vegas_gamma_onion=248 cfx_low_exit_threshold=5000 circ_max_cell_queue_size=1250 circ_max_cell_queue_size_out=1000 dos_num_circ_max_outq=5 guard-n-primary-dir-guards-to-use=2"
+ConsensusParams "CircuitPriorityHalflifeMsec=30000 DoSCircuitCreationBurst=60 DoSCircuitCreationEnabled=1 DoSCircuitCreationMinConnections=2 DoSCircuitCreationRate=2 DoSConnectionEnabled=1 DoSConnectionMaxConcurrentCount=50 DoSRefuseSingleHopClientRendezvous=1 ExtendByEd25519ID=1 KISTSchedRunInterval=3 NumNTorsPerTAP=100 UseOptimisticData=1 bwauthpid=1 bwscanner_cc=1 cbttestfreq=10 cc_alg=2 cc_cwnd_full_gap=4 cc_cwnd_full_minpct=25 cc_cwnd_inc=1 cc_cwnd_inc_rate=31 cc_cwnd_min=124 cc_sscap_exit=600 cc_sscap_onion=475 cc_vegas_alpha_exit=186 cc_vegas_beta_onion=372 cc_vegas_delta_exit=310 cc_vegas_delta_onion=434 cc_vegas_gamma_onion=248 cfx_low_exit_threshold=5000 circ_max_cell_queue_size=1250 circ_max_cell_queue_size_out=1000 dos_num_circ_max_outq=5 guard-n-primary-dir-guards-to-use=2"
 
-        # Set limits
-        #AccountingMax 999 GB
-        #RelayBandwidthRate 512 KB   # Throttle traffic to
-        #RelayBandwidthBurst 1024 KB # But allow bursts up to
-        #MaxMemInQueues 512 MB       # Limit Memory usage to
+# Set limits
+#AccountingMax 999 GB
+#RelayBandwidthRate 512 KB   # Throttle traffic to
+#RelayBandwidthBurst 1024 KB # But allow bursts up to
+#MaxMemInQueues 512 MB       # Limit Memory usage to
 
-        ## If no Nickname or ContactInfo is set, docker-entrypoint will use
-        ## the environment variables to add Nickname/ContactInfo below
-        Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
-        ContactInfo atorv4@example.org
+## If no Nickname or ContactInfo is set, docker-entrypoint will use
+## the environment variables to add Nickname/ContactInfo below
+Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
+ContactInfo atorv4@example.org
 
-        V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
+V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
         EOH
         destination = "local/anonrc"
       }
