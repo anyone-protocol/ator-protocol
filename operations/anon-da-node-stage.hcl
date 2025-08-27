@@ -1,7 +1,7 @@
-job "anon-da-node-live" {
+job "anon-da-node-stage" {
   datacenters = ["ator-fin"]
   type = "service"
-  namespace = "live-network"
+  namespace = "stage-network"
 
   update {
     max_parallel      = 1
@@ -11,14 +11,14 @@ job "anon-da-node-live" {
   
   constraint {
     attribute = "${meta.pool}"
-    value = "live-network-authorities"
+    value = "stage-network-authorities"
   }
 
   constraint {
     distinct_hosts = true
   }
 
-  group "dir-auth-live-group" {
+  group "dir-auth-stage-group" {
     count = 7
 
     network  {
@@ -32,29 +32,29 @@ job "anon-da-node-live" {
       }
     }
 
-    volume "dir-auth-live" {
+    volume "dir-auth-stage" {
       type      = "host"
       read_only = false
-      source    = "dir-auth-live"
+      source    = "dir-auth-stage"
     }
 
-    volume "sbws-live" {
+    volume "sbws-stage" {
       type      = "host"
       read_only = false
-      source    = "sbws-live"
+      source    = "sbws-stage"
     }
 
-    task "dir-auth-live-task" {
+    task "dir-auth-stage-task" {
       driver = "docker"
 
       volume_mount {
-        volume      = "dir-auth-live"
+        volume      = "dir-auth-stage"
         destination = "/var/lib/anon/"
         read_only   = false
       }
 
       volume_mount {
-        volume      = "sbws-live"
+        volume      = "sbws-stage"
         destination = "/var/lib/sbws/"
         read_only   = false
       }
@@ -83,50 +83,50 @@ job "anon-da-node-live" {
       template {
         change_mode = "noop"
         data = <<EOH
-           {{ key (env `node.unique.id` | printf `ator-network/live/dir-auth-%s/authority_certificate`) }}
+           {{ key (env `node.unique.id` | printf `ator-network/stage/dir-auth-%s/authority_certificate`) }}
         EOH
         destination = "secrets/anon/keys/authority_certificate"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
+        data = "{{ with secret (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ .Data.data.authority_identity_key}}{{end}}"
         destination = "secrets/anon/keys/authority_identity_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{.Data.data.authority_signing_key}}{{end}}"
         destination = "secrets/anon/keys/authority_signing_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_master_id_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_master_id_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ base64Decode .Data.data.ed25519_signing_secret_key_base64}}{{end}}"
         destination = "secrets/anon/keys/ed25519_signing_secret_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_id_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_id_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key"
       }
 
       template {
         change_mode = "noop"
-        data = "{{ with secret  (env `node.unique.id` | printf `kv/live-network/anon-da-node-live/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
+        data = "{{ with secret  (env `node.unique.id` | printf `kv/stage-network/anon-da-node-stage/dir-auth-%s`) }}{{ base64Decode .Data.data.secret_onion_key_ntor_base64}}{{end}}"
         destination = "secrets/anon/keys/secret_onion_key_ntor"
       }
 
@@ -143,7 +143,7 @@ job "anon-da-node-live" {
         V3AuthoritativeDirectory 1
 
         # Server's public IP Address (usually automatic)
-        Address {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/public_ipv4") }}
+        Address {{ key (env "node.unique.id" | printf "ator-network/stage/dir-auth-%s/public_ipv4") }}
 
         # Port to advertise for incoming Tor connections.
         ORPort 9201                  # common ports are 9001, 443
@@ -174,7 +174,7 @@ job "anon-da-node-live" {
 
         ## If no Nickname or ContactInfo is set, docker-entrypoint will use
         ## the environment variables to add Nickname/ContactInfo below
-        Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
+        Nickname {{ key (env "node.unique.id" | printf "ator-network/stage/dir-auth-%s/nickname") }}
         ContactInfo atorv4@example.org
 
         V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
@@ -183,11 +183,11 @@ job "anon-da-node-live" {
       }
 
       service {
-        name = "dir-auth-live"
+        name = "dir-auth-stage"
         port = "dirport"
         tags     = ["logging"]
         check {
-          name     = "dir auth live alive"
+          name     = "dir auth stage alive"
           type     = "tcp"
           interval = "10s"
           timeout  = "10s"
@@ -197,7 +197,7 @@ job "anon-da-node-live" {
           }
         }
         check {
-          name = "dir auth live consensus check"
+          name = "dir auth stage consensus check"
           type = "http"
           port = "dirport"
           path = "/tor/status-vote/current/consensus"
