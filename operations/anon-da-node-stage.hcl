@@ -76,7 +76,7 @@ job "anon-da-node-stage" {
       consul {}
 
       resources {
-        cpu = 2560
+        cpu = 1024
         memory = 2560
       }
 
@@ -195,14 +195,6 @@ V3BandwidthsFile /var/lib/sbws/v3bw/latest.v3bw
             limit = 10
             grace = "30s"
           }
-        }
-        check {
-          name = "dir auth stage consensus check"
-          type = "http"
-          port = "dirport"
-          path = "/tor/status-vote/current/consensus"
-          interval = "10s"
-          timeout = "10s"
         }
       }
     }
