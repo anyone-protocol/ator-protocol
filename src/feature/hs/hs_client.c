@@ -305,7 +305,7 @@ close_all_socks_conns_waiting_for_desc(const ed25519_public_key_t *identity_pk,
   if (count > 0) {
     char onion_address[HS_SERVICE_ADDR_LEN_BASE32 + 1];
     hs_build_address(identity_pk, HS_VERSION_THREE, onion_address);
-    log_notice(LD_REND, "Closed %u streams for service %s.anon "
+    log_notice(LD_REND, "Closed %u streams for service %s.anyone "
                         "for reason %s. Fetch status: %s.",
                count, safe_str_client(onion_address),
                stream_end_reason_to_string(reason),

@@ -1252,7 +1252,7 @@ connection_ap_expire_beginning(void)
       if (seconds_idle >= options->SocksTimeout) {
         log_fn(severity, LD_REND,
                "Rend stream is %d seconds late. Giving up on address"
-               " '%s.anon'.",
+               " '%s.anyone'.",
                seconds_idle,
                safe_str_client(entry_conn->socks_request->address));
         /* Roll back path bias use state so that we probe the circuit
@@ -1683,15 +1683,15 @@ consider_plaintext_ports(entry_connection_t *conn, uint16_t port)
  *
  * The possible recognized forms are (where true is returned):
  *
- *  If address is of the form "y.anon" with a well-formed handle y:
+ *  If address is of the form "y.anyone" with a well-formed handle y:
  *     Put a NUL after y, lower-case it, and return ONION_V3_HOSTNAME
  *     depending on the HS version.
  *
- *  If address is of the form "x.y.anon" with a well-formed handle x:
+ *  If address is of the form "x.y.anyone" with a well-formed handle x:
  *     Drop "x.", put a NUL after y, lower-case it, and return
  *     ONION_V3_HOSTNAME depending on the HS version.
  *
- * If address is of the form "y.anon" with a badly-formed handle y:
+ * If address is of the form "y.anyone" with a badly-formed handle y:
  *     Return BAD_HOSTNAME and log a message.
  *
  * If address is of the form "y.exit":
@@ -1717,7 +1717,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     goto success;
   }
   if (strcmp(s+1,"anon")) {
-    *type_out = NORMAL_HOSTNAME; /* neither .exit nor .anon, thus normal */
+    *type_out = NORMAL_HOSTNAME; /* neither .exit nor .anyone, thus normal */
     goto success;
   }
 
@@ -1729,7 +1729,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     s = strrchr(address,'.');
   }
 
-  /* so it is .anon */
+  /* so it is .anyone */
   *s = 0; /* NUL-terminate it */
   /* locate a 'sub-domain' component, in order to remove it */
   q = strrchr(address, '.');
@@ -1914,7 +1914,7 @@ connection_ap_handshake_rewrite(entry_connection_t *conn,
   /* First, apply MapAddress and MAPADDRESS mappings. We need to do
    * these only for non-reverse lookups, since they don't exist for those.
    * We also need to do this before we consider automapping, since we might
-   * e.g. resolve irc.oftc.net into irconionaddress.anon, at which point
+   * e.g. resolve irc.oftc.net into irconionaddress.anyone, at which point
    * we'd need to automap it. */
   if (socks->command != SOCKS_COMMAND_RESOLVE_PTR) {
     const unsigned rewrite_flags = AMR_FLAG_USE_MAPADDRESS;
@@ -1929,7 +1929,7 @@ connection_ap_handshake_rewrite(entry_connection_t *conn,
    * automapping.  Automapping happens when we're asked to resolve a
    * hostname, and AutomapHostsOnResolve is set, and the hostname has a
    * suffix listed in AutomapHostsSuffixes.  It's a handy feature
-   * that lets you have Tor assign e.g. IPv6 addresses for .anon
+   * that lets you have Tor assign e.g. IPv6 addresses for .anyone
    * names, and return them safely from DNSPort.
    */
   if (socks->command == SOCKS_COMMAND_RESOLVE &&
@@ -2071,9 +2071,9 @@ connection_ap_handle_onion(entry_connection_t *conn,
   time_t now = approx_time();
   connection_t *base_conn = ENTRY_TO_CONN(conn);
 
-  /* If .anon address requests are disabled, refuse the request */
+  /* If .anyone address requests are disabled, refuse the request */
   if (!conn->entry_cfg.onion_traffic) {
-    log_warn(LD_APP, "Onion address %s requested from a port with .anon "
+    log_warn(LD_APP, "Onion address %s requested from a port with .anyone "
              "disabled", safe_str_client(socks->address));
     connection_mark_unattached_ap(conn, END_STREAM_REASON_ENTRYPOLICY);
     return -1;
@@ -2094,11 +2094,11 @@ connection_ap_handle_onion(entry_connection_t *conn,
     return -1;
   }
 
-  /* If we were passed a circuit, then we need to fail.  .anon addresses
+  /* If we were passed a circuit, then we need to fail.  .anyone addresses
    * only work when we launch our own circuits for now. */
   if (circ) {
     log_warn(LD_CONTROL, "Attachstream to a circuit is not "
-             "supported for .anon addresses currently. Failing.");
+             "supported for .anyone addresses currently. Failing.");
     connection_mark_unattached_ap(conn, END_STREAM_REASON_TORPROTOCOL);
     return -1;
   }
@@ -2358,7 +2358,7 @@ connection_ap_handshake_rewrite_and_attach(entry_connection_t *conn,
        implies no. */
   }
 
-  /* Now, we handle everything that isn't a .anon address. */
+  /* Now, we handle everything that isn't a .anyone address. */
   if (addresstype != ONION_V3_HOSTNAME) {
     /* Not a hidden-service request.  It's either a hostname or an IP,
      * possibly with a .exit that we stripped off.  We're going to check
@@ -2643,7 +2643,7 @@ connection_ap_handshake_rewrite_and_attach(entry_connection_t *conn,
 
     return 0;
   } else {
-    /* If we get here, it's a request for a .anon address! */
+    /* If we get here, it's a request for a .anyone address! */
     tor_assert(addresstype == ONION_V3_HOSTNAME);
     tor_assert(!automap);
     return connection_ap_handle_onion(conn, socks, circ);
