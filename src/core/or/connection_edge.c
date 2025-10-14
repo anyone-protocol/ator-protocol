@@ -1716,7 +1716,7 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     *type_out = EXIT_HOSTNAME; /* .exit */
     goto success;
   }
-  if (strcmp(s+1,"anon")) {
+  if (strcmp(s+1,"anyone")) {
     *type_out = NORMAL_HOSTNAME; /* neither .exit nor .anyone, thus normal */
     goto success;
   }
