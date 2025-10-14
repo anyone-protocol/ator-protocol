@@ -4,7 +4,7 @@ AccountingStart day 05:15
 Address 128.66.8.8
 AllowNonRFC953Hostnames 1
 AutomapHostsOnResolve 1
-AutomapHostsSuffixes .anons
+AutomapHostsSuffixes .anyones
 AvoidDiskWrites 1
 BandwidthBurst 2 GB
 BandwidthRate 1.5 GB

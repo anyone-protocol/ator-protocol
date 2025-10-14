@@ -757,7 +757,7 @@ static void
 test_desc_has_arrived_cleanup(void *arg)
 {
   /* The goal of this test is to make sure we clean up everything in between
-   * two descriptors from the same .anon. Because intro points can change
+   * two descriptors from the same .anyone. Because intro points can change
    * from one descriptor to another, once we received a new descriptor, we
    * need to cleanup the remaining circuits so they aren't used or selected
    * when establishing a connection with the newly stored descriptor.
@@ -791,7 +791,7 @@ test_desc_has_arrived_cleanup(void *arg)
   parse_rfc1123_time("Sat, 26 Oct 1985 14:00:00 UTC", &mock_ns.fresh_until);
   parse_rfc1123_time("Sat, 26 Oct 1985 16:00:00 UTC", &mock_ns.valid_until);
 
-  /* Build a descriptor for a specific .anon. */
+  /* Build a descriptor for a specific .anyone. */
   ret = ed25519_keypair_generate(&signing_kp, 0);
   tt_int_op(ret, OP_EQ, 0);
   desc = hs_helper_build_hs_desc_with_ip(&signing_kp);
@@ -806,7 +806,7 @@ test_desc_has_arrived_cleanup(void *arg)
   tt_assert(cached_desc);
   hs_helper_desc_equal(desc, cached_desc);
 
-  /* Create two SOCKS connection for the same .anon both in the waiting for a
+  /* Create two SOCKS connection for the same .anyone both in the waiting for a
    * descriptor state. */
   socks1 = helper_build_socks_connection(&signing_kp.pubkey,
                                          AP_CONN_STATE_RENDDESC_WAIT);
