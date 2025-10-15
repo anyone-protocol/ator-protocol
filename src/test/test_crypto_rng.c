@@ -43,7 +43,7 @@ test_crypto_rng(void *arg)
     d = crypto_rand_double();
     tt_assert(d >= 0);
     tt_assert(d < 1.0);
-    host = crypto_random_hostname(3,9,"www.",".anyone");
+    host = crypto_random_hostname(3,8,"www.",".anyone");
     if (strcmpstart(host,"www.") ||
         strcmpend(host,".anyone") ||
         strlen(host) < 14 ||

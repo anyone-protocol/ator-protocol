@@ -40,7 +40,7 @@ else:
 # Version 3 is proposal224
 VERSION = 3
 
-data = struct.pack('14s32sb', PREFIX, PUBKEY, VERSION)
+data = struct.pack('16s32sb', PREFIX, PUBKEY, VERSION)
 checksum = hashlib.sha3_256(data).digest()
 
 # Onion address is built like so:

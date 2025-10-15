@@ -1721,10 +1721,10 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     goto success;
   }
 
-  log_info(LD_APP, "Anon dns address lookup for: %s",address);
+  log_info(LD_APP, "Anyone dns address lookup for: %s",address);
   char onion_address[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
   if (lookup_anon_dns_mapping(address,onion_address,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR)) {
-    log_notice(LD_APP, "Anon dns address mapping found: %s -> %s",address,onion_address);
+    log_notice(LD_APP, "Anyone dns address mapping found: %s -> %s",address,onion_address);
     strlcpy(address,onion_address,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
     s = strrchr(address,'.');
   }
@@ -1795,10 +1795,10 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Check if the file exists using `file_status`
-  char *dns_fname = get_datadir_fname("anons");
-  file_status_t terms_status = file_status(dns_fname);
-  if (terms_status != FN_FILE) {
-    log_notice(LD_APP,"DNS mapping file 'anons' is not found in data dir.");
+  char *dns_fname = get_datadir_fname("anyones");
+  file_status_t dns_file_status = file_status(dns_fname);
+  if (dns_file_status != FN_FILE) {
+    log_notice(LD_APP,"DNS mapping file 'anyones' is not found in data dir.");
     return false;
   }
 
@@ -1815,7 +1815,7 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
     char anon[HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     char onion[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     // Parse each line into anon and onion components
-    if (sscanf(line, "%260s %61s", anon, onion) == 2) {
+    if (sscanf(line, "%262s %63s", anon, onion) == 2) {
       if (strcmp(anon, anon_address) == 0) {
         if (strlen(onion) != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX) {
           log_warn(LD_APP, "Invalid onion address length");
