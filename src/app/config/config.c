@@ -344,7 +344,7 @@ static const config_var_t option_vars_[] = {
   OBSOLETE("AuthDirMaxServersPerAuthAddr"),
   VAR("AuthoritativeDirectory",  BOOL, AuthoritativeDir,    "0"),
   V(AutomapHostsOnResolve,       BOOL,     "0"),
-  V(AutomapHostsSuffixes,        CSV,      ".anon,.exit"),
+  V(AutomapHostsSuffixes,        CSV,      ".anyone,.exit"),
   V(AvoidDiskWrites,             BOOL,     "0"),
   V(BandwidthBurst,              MEMUNIT,  "1 GB"),
   V(BandwidthRate,               MEMUNIT,  "1 GB"),
@@ -4595,10 +4595,10 @@ options_init_from_torrc(int argc, char **argv)
     }
   }
 
-  char *anons_fname = get_datadir_fname("anons");
+  char *anons_fname = get_datadir_fname("anyones");
   file_status_t anons_status = file_status(anons_fname);
   if (anons_status != FN_FILE) {
-    log_info(LD_CONFIG, "Creating anons file with default mapping");
+    log_info(LD_CONFIG, "Creating anyones file with default mapping");
     write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
   }
 
@@ -6378,7 +6378,7 @@ port_parse_config(smartlist_t *out,
             cfg->entry_cfg.onion_traffic = ! no;
             continue;
           } else if (!strcasecmp(elt, "OnionTrafficOnly")) {
-            /* Only connect to .anon addresses.  Equivalent to
+            /* Only connect to .anyone addresses.  Equivalent to
              * NoDNSRequest, NoIPv4Traffic, NoIPv6Traffic. The option
              * NoOnionTrafficOnly is not supported, it's too confusing. */
             if (no) {
@@ -6475,7 +6475,7 @@ port_parse_config(smartlist_t *out,
         cfg->entry_cfg.onion_traffic == 0 &&
         listener_type != CONN_TYPE_AP_DNS_LISTENER) {
       log_warn(LD_CONFIG, "You have a %sPort entry with all of IPv4 and "
-               "IPv6 and .anon disabled; that won't work.", portname);
+               "IPv6 and .anyone disabled; that won't work.", portname);
       goto err;
     }
     if (cfg->entry_cfg.dns_request == 1 &&

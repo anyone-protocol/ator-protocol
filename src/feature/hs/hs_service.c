@@ -100,7 +100,7 @@
 static const char fname_keyfile_prefix[] = "hs_ed25519";
 static const char dname_client_pubkeys[] = "authorized_clients";
 static const char fname_hostname[] = "hostname";
-static const char address_tld[] = "anon";
+static const char address_tld[] = "anyone";
 
 /** Staging list of service object. When configuring service, we add them to
  * this list considered a staging area and they will get added to our global
