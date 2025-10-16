@@ -86,16 +86,7 @@ jobs:
             suite: bullseye
             arch: arm64
             runner: arm64
-          # Ubuntu Oracular
-          - os: ubuntu
-            suite: oracular
-            arch: amd64
-            runner: ubuntu-latest
-          - os: ubuntu
-            suite: oracular
-            arch: arm64
-            runner: arm64
-          # Ubuntu Noble
+          # Ubuntu Noble (Support until 2029-05-31, ESM until 2034-04-25)
           - os: ubuntu
             suite: noble
             arch: amd64
@@ -104,7 +95,7 @@ jobs:
             suite: noble
             arch: arm64
             runner: arm64
-          # Ubuntu Jammy
+          # Ubuntu Jammy (Support until 2027-06-01, ESM until 2032-04-21)
           - os: ubuntu
             suite: jammy
             arch: amd64
@@ -113,13 +104,22 @@ jobs:
             suite: jammy
             arch: arm64
             runner: arm64
-          # Ubuntu Focal
+          # Ubuntu Focal (Support until 2025-05-29, ESM until 2030-04-23)
           - os: ubuntu
             suite: focal
             arch: amd64
             runner: ubuntu-latest
           - os: ubuntu
             suite: focal
+            arch: arm64
+            runner: arm64
+          # Ubuntu Questing
+          - os: ubuntu
+            suite: questing
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: questing
             arch: arm64
             runner: arm64
     steps:
