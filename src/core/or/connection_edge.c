@@ -1795,10 +1795,10 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Check if the file exists using `file_status`
-  char *dns_fname = get_datadir_fname("anyones");
+  char *dns_fname = get_datadir_fname("anyone_hosts");
   file_status_t dns_file_status = file_status(dns_fname);
   if (dns_file_status != FN_FILE) {
-    log_notice(LD_APP,"DNS mapping file 'anyones' is not found in data dir.");
+    log_notice(LD_APP,"DNS mapping file 'anyone_hosts' is not found in data dir.");
     return false;
   }
 

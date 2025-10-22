@@ -814,7 +814,7 @@ test_parse_extended_hostname(void *arg)
   char address11[] = "anyone.anyone";
   char address12[] = ".anyone";
 
-  char *path = get_datadir_fname("anyones");
+  char *path = get_datadir_fname("anyone_hosts");
   write_str_to_file(path, "anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n", 0);
 
   tt_assert(!parse_extended_hostname(address1, &type));

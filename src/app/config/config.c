@@ -4595,10 +4595,10 @@ options_init_from_torrc(int argc, char **argv)
     }
   }
 
-  char *anons_fname = get_datadir_fname("anyones");
+  char *anons_fname = get_datadir_fname("anyone_hosts");
   file_status_t anons_status = file_status(anons_fname);
   if (anons_status != FN_FILE) {
-    log_info(LD_CONFIG, "Creating anyones file with default mapping");
+    log_info(LD_CONFIG, "Creating anyone_hosts file with default mapping");
     write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
   }
 
