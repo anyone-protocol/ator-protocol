@@ -1,0 +1,52 @@
+#
+# Development Dockerfile for building and testing Anyone Protocol Client
+#
+
+FROM debian:bookworm
+
+# Makes the default apt answers be used for all questions
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies and development tools
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install \
+        build-essential \
+        automake \
+        git \
+        libssl-dev \
+        zlib1g-dev \
+        libevent-dev \
+        ca-certificates \
+        dh-apparmor \
+        libseccomp-dev \
+        debhelper \
+        pkg-config \
+        python3 \
+        python3-pip \
+        lcov \
+        gcc \
+        valgrind \
+        gdb \
+        vim \
+        less \
+        curl \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+COPY . /workspace/
+
+# Set up build environment with test support
+RUN ./autogen.sh && \
+    ./configure \
+        --enable-unittests \
+        --enable-coverage \
+        --enable-asserts-in-tests \
+        --disable-asciidoc
+
+# Build the project
+RUN make -j$(nproc)
+
+# Default command to show help
+CMD [ "bash", "-c", "echo 'Anyone Protocol Client Development Container'; echo ''; echo 'Available commands:'; echo '  make check          - Run all tests'; echo '  make test           - Run unit tests'; echo '  make test-network   - Run network tests (requires Chutney)'; echo '  ./src/test/test     - Run unit tests directly'; echo '  bash                - Interactive shell'; echo ''; exec bash" ]
