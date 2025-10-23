@@ -31,4 +31,4 @@ jobs:
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
           environment: dev
-          push: false
+          push: true
