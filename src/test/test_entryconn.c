@@ -542,7 +542,7 @@ test_entryconn_rewrite_mapaddress_exit(void *arg)
   ;
 }
 
-/* Map foo.anon to longthing.anon, and also automap. */
+/* Map foo.anyone to longthing.anyone, and also automap. */
 static void
 test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
 {
@@ -559,14 +559,14 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
 
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".anon");
+                ".anyone");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "foo.anon abcdefghijklmnop.anon");
+                     "MapAddress", "foo.anyone abcdefghijklmnop.anyone");
   config_register_addressmaps(get_options());
 
-  /* Connect to foo.anon. */
-  strlcpy(ec->socks_request->address, "foo.anon",
+  /* Connect to foo.anyone. */
+  strlcpy(ec->socks_request->address, "foo.anyone",
           sizeof(ec->socks_request->address));
   ec->socks_request->command = SOCKS_COMMAND_CONNECT;
   connection_ap_handshake_rewrite(ec, &rr);
@@ -576,11 +576,11 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "foo.anon");
-  tt_str_op(ec->socks_request->address, OP_EQ, "abcdefghijklmnop.anon");
+  tt_str_op(rr.orig_address, OP_EQ, "foo.anyone");
+  tt_str_op(ec->socks_request->address, OP_EQ, "abcdefghijklmnop.anyone");
 
-  /* Okay, resolve foo.anon */
-  strlcpy(ec2->socks_request->address, "foo.anon",
+  /* Okay, resolve foo.anyone */
+  strlcpy(ec2->socks_request->address, "foo.anyone",
           sizeof(ec2->socks_request->address));
   ec2->socks_request->command = SOCKS_COMMAND_RESOLVE;
   connection_ap_handshake_rewrite(ec2, &rr);
@@ -590,7 +590,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "foo.anon");
+  tt_str_op(rr.orig_address, OP_EQ, "foo.anyone");
   tt_assert(!strcmpstart(ec2->socks_request->address, "192.168."));
 
   /* Now connect */
@@ -602,10 +602,10 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.should_close, OP_EQ, 0);
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_assert(!strcmpstart(ec3->socks_request->address,
-                         "abcdefghijklmnop.anon"));
+                         "abcdefghijklmnop.anyone"));
 
-  /* Now resolve abcefghijklmnop.anon. */
-  strlcpy(ec4->socks_request->address, "abcdefghijklmnop.anon",
+  /* Now resolve abcefghijklmnop.anyone. */
+  strlcpy(ec4->socks_request->address, "abcdefghijklmnop.anyone",
           sizeof(ec4->socks_request->address));
   ec4->socks_request->command = SOCKS_COMMAND_RESOLVE;
   connection_ap_handshake_rewrite(ec4, &rr);
@@ -615,7 +615,7 @@ test_entryconn_rewrite_mapaddress_automap_onion(void *arg)
   tt_int_op(rr.end_reason, OP_EQ, 0);
   tt_i64_op(rr.map_expires, OP_EQ, TIME_MAX);
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
-  tt_str_op(rr.orig_address, OP_EQ, "abcdefghijklmnop.anon");
+  tt_str_op(rr.orig_address, OP_EQ, "abcdefghijklmnop.anyone");
   tt_assert(!strcmpstart(ec4->socks_request->address, "192.168."));
   /* XXXX doesn't work
    tt_str_op(ec4->socks_request->address, OP_EQ, ec2->socks_request->address);
@@ -652,7 +652,7 @@ test_entryconn_rewrite_mapaddress_automap_onion_common(entry_connection_t *ec,
   tt_int_op(rr.exit_source, OP_EQ, ADDRMAPSRC_NONE);
   tt_str_op(rr.orig_address, OP_EQ, "irc.example.com");
   tt_str_op(ec->socks_request->address, OP_EQ,
-            map_to_onion ? "abcdefghijklmnop.anon" : "irc.example.com");
+            map_to_onion ? "abcdefghijklmnop.anyone" : "irc.example.com");
 
   /* Okay, resolve irc.example.com */
   strlcpy(ec2->socks_request->address, "irc.example.com",
@@ -679,7 +679,7 @@ test_entryconn_rewrite_mapaddress_automap_onion_common(entry_connection_t *ec,
   tt_int_op(rr.end_reason, OP_EQ, 0);
   if (map_to_onion)
     tt_assert(!strcmpstart(ec3->socks_request->address,
-                           "abcdefghijklmnop.anon"));
+                           "abcdefghijklmnop.anyone"));
 
  done:
   connection_free_minimal(ENTRY_TO_CONN(ec2));
@@ -694,10 +694,10 @@ test_entryconn_rewrite_mapaddress_automap_onion2(void *arg)
   char *msg = NULL;
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".anon");
+                ".anyone");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "irc.example.com abcdefghijklmnop.anon");
+                     "MapAddress", "irc.example.com abcdefghijklmnop.anyone");
   config_register_addressmaps(get_options());
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 1, 1);
@@ -708,7 +708,7 @@ static void
 test_entryconn_rewrite_mapaddress_automap_onion3(void *arg)
 {
   config_line_append(&get_options_mutable()->AddressMap,
-                     "MapAddress", "irc.example.com abcdefghijklmnop.anon");
+                     "MapAddress", "irc.example.com abcdefghijklmnop.anyone");
   config_register_addressmaps(get_options());
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 1, 0);
@@ -721,7 +721,7 @@ test_entryconn_rewrite_mapaddress_automap_onion4(void *arg)
   char *msg = NULL;
   get_options_mutable()->AutomapHostsOnResolve = 1;
   smartlist_add_strdup(get_options_mutable()->AutomapHostsSuffixes,
-                ".anon");
+                ".anyone");
   parse_virtual_addr_network("192.168.0.0/16", AF_INET, 0, &msg);
 
   test_entryconn_rewrite_mapaddress_automap_onion_common(arg, 0, 1);
@@ -741,7 +741,7 @@ test_entryconn_rewrite_onion_v3(void *arg)
   /* Make a SOCKS request */
   conn->socks_request->command = SOCKS_COMMAND_CONNECT;
   strlcpy(conn->socks_request->address,
-          "git.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon",
+          "git.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone",
           sizeof(conn->socks_request->address));
 
   /* Make an onion connection using the SOCKS request */
@@ -758,7 +758,7 @@ test_entryconn_rewrite_onion_v3(void *arg)
   tt_int_op(ENTRY_TO_CONN(conn)->state, OP_EQ, AP_CONN_STATE_RENDDESC_WAIT);
   /* check that the address got rewritten */
   tt_str_op(conn->socks_request->address, OP_EQ,
-            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
+            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
   /* check that HS information got attached to the connection */
   tt_assert(ENTRY_TO_EDGE_CONN(conn)->hs_ident);
 

@@ -232,19 +232,19 @@ test_hs_control_good_onion_client_auth_add(void *arg)
 
   { /* Setup the services */
     retval = hs_parse_address(
-                 "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id",
+                 "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd",
                  &service_identity_pk_2fv,
                  NULL, NULL);
     tt_int_op(retval, OP_EQ, 0);
 
     retval = hs_parse_address(
-                 "jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad",
+                 "jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid",
                  &service_identity_pk_jt4,
                  NULL, NULL);
     tt_int_op(retval, OP_EQ, 0);
 
     retval = hs_parse_address(
-                 "jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4cpvyd",
+                 "jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4mwdqd",
                  &service_identity_pk_jam,
                  NULL, NULL);
     tt_int_op(retval, OP_EQ, 0);
@@ -254,7 +254,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   tt_assert(!client_auths);
 
   /* Register first service */
-  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id "
+  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd "
                     "x25519:iJ1tjKCrMAbiFT2bVrCjhbfMDnE1fpaRbIS5ZHKUvEQ= ");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -268,7 +268,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   tor_free(args);
 
   /* Register second service (even with an unrecognized argument) */
-  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad "
+  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid "
            "x25519:eIIdIGoSZwI2Q/lSzpf92akGki5I+PZIDz37MA5BhlA= DropSound=No");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -281,7 +281,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   tor_free(args);
 
   /* Register second service (even with an unrecognized argument) */
-  args = tor_strdup("jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4cpvyd "
+  args = tor_strdup("jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4mwdqd "
            "x25519:FCV0c0ELDKKDpSFgVIB8Yow8Evj5iD+GoiTtK878NkQ= "
            "ClientName=MeganNicole ");
 
@@ -321,12 +321,12 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   args = tor_strdup("");
 
 #define VIEW_CORRECT_REPLY_NO_ADDR "250-ONION_CLIENT_AUTH_VIEW\r\n"   \
-  "250-CLIENT 2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id "  \
+  "250-CLIENT 2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd "  \
     "x25519:iJ1tjKCrMAbiFT2bVrCjhbfMDnE1fpaRbIS5ZHKUvEQ=\r\n"   \
-  "250-CLIENT jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4cpvyd " \
+  "250-CLIENT jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4mwdqd " \
     "x25519:FCV0c0ELDKKDpSFgVIB8Yow8Evj5iD+GoiTtK878NkQ= " \
     "ClientName=MeganNicole\r\n" \
-  "250-CLIENT jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad " \
+  "250-CLIENT jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid " \
     "x25519:eIIdIGoSZwI2Q/lSzpf92akGki5I+PZIDz37MA5BhlA=\r\n"             \
   "250 OK\r\n"
 
@@ -339,11 +339,11 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   /* Now specify an HS addr, and see that we only view those creds */
   tor_free(args);
   args =
-    tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad");
+    tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid");
 
 #define VIEW_CORRECT_REPLY_JT4 "250-ONION_CLIENT_AUTH_VIEW " \
-    "jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad\r\n"   \
-  "250-CLIENT jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad " \
+    "jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid\r\n"   \
+  "250-CLIENT jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid " \
     "x25519:eIIdIGoSZwI2Q/lSzpf92akGki5I+PZIDz37MA5BhlA=\r\n" \
   "250 OK\r\n"
 
@@ -372,7 +372,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
 
   /* Now actually remove them. */
   tor_free(args);
-  args =tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad");
+  args =tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
   tt_int_op(retval, OP_EQ, 0);
@@ -388,7 +388,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   tt_int_op(retval, OP_EQ, 0);
   cp1 = buf_get_contents(TO_CONN(&conn)->outbuf, &sz);
   tt_str_op(cp1, OP_EQ, "251 No credentials for "
-           "\"jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad\"\r\n");
+           "\"jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid\"\r\n");
   tor_free(cp1);
 
   client_jt4 = digest256map_get(client_auths, service_identity_pk_jt4.pubkey);
@@ -397,7 +397,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   /* Now also remove the other one */
   tor_free(args);
   args =
-    tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id");
+    tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
   tt_int_op(retval, OP_EQ, 0);
@@ -408,7 +408,7 @@ test_hs_control_good_onion_client_auth_add(void *arg)
   /* Now also remove the other one */
   tor_free(args);
   args =
-    tor_strdup("jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4cpvyd");
+    tor_strdup("jamie3vkiwibfiwucd6vxijskbhpjdyajmzeor4mc4i7yopvpo4mwdqd");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
   tt_int_op(retval, OP_EQ, 0);
@@ -487,7 +487,7 @@ test_hs_control_bad_onion_client_auth_add(void *arg)
   tor_free(args);
 
   /* Register second service (even with an unrecognized argument) */
-  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad "
+  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid "
                     "love:eIIdIGoSZwI2Q/lSzpf92akGki5I+PZIDz37MA5BhlA=");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -501,7 +501,7 @@ test_hs_control_bad_onion_client_auth_add(void *arg)
   tor_free(args);
 
   /* Register second service (even with an unrecognized argument) */
-  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad "
+  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid "
                     "x25519:QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUEK");
 
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -515,7 +515,7 @@ test_hs_control_bad_onion_client_auth_add(void *arg)
   tor_free(args);
 
   /* Register with an all zero client key */
-  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvsshad "
+  args = tor_strdup("jt4grrjwzyz3pjkylwfau5xnjaj23vxmhskqaeyfhrfylelw4hvtvhid "
                     "x25519:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=");
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
   tt_int_op(retval, OP_EQ, 0);
@@ -565,7 +565,7 @@ test_hs_control_store_permanent_creds(void *arg)
 
   { /* Setup the services */
     retval = hs_parse_address(
-                 "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id",
+                 "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd",
                  &service_identity_pk_2fv,
                  NULL, NULL);
     tt_int_op(retval, OP_EQ, 0);
@@ -575,7 +575,7 @@ test_hs_control_store_permanent_creds(void *arg)
   tt_assert(!client_auths);
 
   /* Try registering first service with no ClientOnionAuthDir set */
-  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id "
+  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd "
                     "x25519:iJ1tjKCrMAbiFT2bVrCjhbfMDnE1fpaRbIS5ZHKUvEQ= "
                     "Flags=Permanent");
 
@@ -585,7 +585,7 @@ test_hs_control_store_permanent_creds(void *arg)
   /* Check control port response. This one should fail. */
   cp1 = buf_get_contents(TO_CONN(&conn)->outbuf, &sz);
   tt_str_op(cp1, OP_EQ, "553 Unable to store creds for "
-        "\"2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id\"\r\n");
+        "\"2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd\"\r\n");
 
   { /* Setup ClientOnionAuthDir */
     int ret;
@@ -604,7 +604,7 @@ test_hs_control_store_permanent_creds(void *arg)
   tor_free(cp1);
 
   /* Try the control port command again. This time it should work! */
-  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id "
+  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd "
                     "x25519:iJ1tjKCrMAbiFT2bVrCjhbfMDnE1fpaRbIS5ZHKUvEQ= "
                     "Flags=Permanent");
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -616,12 +616,12 @@ test_hs_control_store_permanent_creds(void *arg)
 
   /* Check file contents! */
   creds_fname = tor_strdup(get_fname("permanent_credentials/"
-     "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id.auth_private"));
+     "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd.auth_private"));
   creds_file_str = read_file_to_str(creds_fname, RFTS_BIN, NULL);
 
   tt_assert(creds_file_str);
   tt_str_op(creds_file_str, OP_EQ,
-         "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id:descriptor:"
+         "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd:descriptor:"
          /* base32 representation of the base64 iJ1t... key above */
          "x25519:rcow3dfavmyanyqvhwnvnmfdqw34ydtrgv7jnelmqs4wi4uuxrca");
 
@@ -629,7 +629,7 @@ test_hs_control_store_permanent_creds(void *arg)
   tor_free(cp1);
 
   /* Overwrite the credentials and check that they got overwritten. */
-  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id "
+  args = tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd "
                     "x25519:UDRvZLvcJo0QRLvDfkpgbtsqbkhIUQZyeo2FNBrgS18= "
                     "Flags=Permanent");
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
@@ -645,7 +645,7 @@ test_hs_control_store_permanent_creds(void *arg)
   creds_file_str = read_file_to_str(creds_fname, RFTS_BIN, NULL);
   tt_assert(creds_file_str);
   tt_str_op(creds_file_str, OP_EQ,
-         "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id:descriptor:"
+         "2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd:descriptor:"
          /* base32 representation of the base64 UDRv... key above */
          "x25519:ka2g6zf33qti2ecexpbx4stan3nsu3sijbiqm4t2rwctigxajnpq");
 
@@ -675,7 +675,7 @@ test_hs_control_store_permanent_creds(void *arg)
 
   /* Do the REMOVE */
   conn.current_cmd = tor_strdup("ONION_CLIENT_AUTH_REMOVE");
-  args =tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4de3id");
+  args =tor_strdup("2fvhjskjet3n5syd6yfg5lhvwcs62bojmthr35ko5bllr3iqdb4aldqd");
   retval = handle_control_command(&conn, (uint32_t) strlen(args), args);
   tt_int_op(retval, OP_EQ, 0);
   cp1 = buf_get_contents(TO_CONN(&conn)->outbuf, &sz);
@@ -760,7 +760,7 @@ test_hs_control_add_auth_onion_service(void *arg)
   handle_control_command(&conn, (uint32_t) strlen(args), args);
   cp1 = buf_get_contents(TO_CONN(&conn)->outbuf, &sz);
   tt_str_op(cp1, OP_EQ,
-   "250-ServiceID=n35etu3yjxrqjpntmfziom5sjwspoydchmelc4xleoy4jk2u4lzev6id\r\n"
+   "250-ServiceID=n35etu3yjxrqjpntmfziom5sjwspoydchmelc4xleoy4jk2u4lzfwwqd\r\n"
    "250-ClientAuthV3=dz4q5xqlb4ldnbs72iarrml4ephk3du4i7o2cgiva5lwr6wkquja\r\n"
    "250 OK\r\n");
   tor_free(args);

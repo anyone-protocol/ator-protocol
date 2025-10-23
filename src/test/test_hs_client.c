@@ -664,7 +664,7 @@ mock_read_file_to_str(const char *filename, int flags, struct stat *stat_out)
   if (!strcmp(filename, get_fname("auth_keys" PATH_SEPARATOR
                                               "client2.auth_private"))) {
     ret = tor_strdup(
-        "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd:descriptor:"
+        "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid:descriptor:"
         "x25519:fdreqzjqso7d2ac7qscrxfl5qfpamdvgy5d6cxejcgzc3hvhurmq");
     goto done;
   }
@@ -728,7 +728,7 @@ test_config_client_authorization(void *arg)
 
   hs_parse_address("4acth47i6kxnvkewtm6q7ib2s3ufpo5sqbsnzjpbi7utijcltosqemad",
                    &pk1, NULL, NULL);
-  hs_parse_address("25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd",
+  hs_parse_address("25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid",
                    &pk2, NULL, NULL);
 
   tt_assert(digest256map_get(global_map, pk1.pubkey));
@@ -757,7 +757,7 @@ static void
 test_desc_has_arrived_cleanup(void *arg)
 {
   /* The goal of this test is to make sure we clean up everything in between
-   * two descriptors from the same .anon. Because intro points can change
+   * two descriptors from the same .anyone. Because intro points can change
    * from one descriptor to another, once we received a new descriptor, we
    * need to cleanup the remaining circuits so they aren't used or selected
    * when establishing a connection with the newly stored descriptor.
@@ -791,7 +791,7 @@ test_desc_has_arrived_cleanup(void *arg)
   parse_rfc1123_time("Sat, 26 Oct 1985 14:00:00 UTC", &mock_ns.fresh_until);
   parse_rfc1123_time("Sat, 26 Oct 1985 16:00:00 UTC", &mock_ns.valid_until);
 
-  /* Build a descriptor for a specific .anon. */
+  /* Build a descriptor for a specific .anyone. */
   ret = ed25519_keypair_generate(&signing_kp, 0);
   tt_int_op(ret, OP_EQ, 0);
   desc = hs_helper_build_hs_desc_with_ip(&signing_kp);
@@ -806,7 +806,7 @@ test_desc_has_arrived_cleanup(void *arg)
   tt_assert(cached_desc);
   hs_helper_desc_equal(desc, cached_desc);
 
-  /* Create two SOCKS connection for the same .anon both in the waiting for a
+  /* Create two SOCKS connection for the same .anyone both in the waiting for a
    * descriptor state. */
   socks1 = helper_build_socks_connection(&signing_kp.pubkey,
                                          AP_CONN_STATE_RENDDESC_WAIT);
