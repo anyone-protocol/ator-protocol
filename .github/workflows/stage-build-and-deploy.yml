@@ -65,7 +65,7 @@ jobs:
           nomad-job-file: anon-da-node-stage.hcl
           nomad-cacert: operations/admin-ui-ca.crt
           nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
-          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          nomad-addr: ${{ secrets.NOMAD_ADDR }}
           consul-cacert: operations/admin-ui-ca.crt
           consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
           consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}
