@@ -261,12 +261,12 @@ jobs:
         build:
 
           # MacOS Intel
-          - runner: macos-13
-            arch: amd64
+          - runner: macos-15
+            # arch: amd64
 
           # MacOS Apple Silicon
-          - runner: macos-14
-            arch: arm64
+          - runner: macos-15-arm64
+            # arch: arm64
 
     steps:
       - name: Checkout Repository
