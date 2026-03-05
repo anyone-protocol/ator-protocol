@@ -86,6 +86,15 @@ jobs:
             suite: bullseye
             arch: arm64
             runner: arm64
+          # Debian Trixie
+          - os: debian
+            suite: trixie
+            arch: amd64
+            runner: ubuntu-latest
+          - os: debian
+            suite: trixie
+            arch: arm64
+            runner: arm64
           # Ubuntu Noble (Support until 2029-05-31, ESM until 2034-04-25)
           - os: ubuntu
             suite: noble
