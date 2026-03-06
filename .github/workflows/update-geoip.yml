@@ -23,6 +23,7 @@ jobs:
             curl \
             xz-utils \
             git \
+            gpg \
             python3-location \
             ca-certificates
 
