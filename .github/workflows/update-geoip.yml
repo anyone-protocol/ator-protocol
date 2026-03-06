@@ -24,6 +24,7 @@ jobs:
             xz-utils \
             git \
             location \
+            build-essential \
             ca-certificates
 
       - name: Install Rust toolchain
