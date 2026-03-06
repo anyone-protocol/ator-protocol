@@ -23,9 +23,19 @@ jobs:
             curl \
             xz-utils \
             git \
-            libloc-dev \
             python3-location \
             ca-certificates
+
+      - name: Install location CLI
+        run: |
+          # python3-location provides the Python C module but not the
+          # `location` CLI binary in Debian bookworm. Install from IPFire repo.
+          curl -sSL "https://location.ipfire.org/keys/signing-key.asc" \
+            | gpg --dearmor -o /usr/share/keyrings/ipfire-location.gpg
+          echo "deb [signed-by=/usr/share/keyrings/ipfire-location.gpg] https://packages.ipfire.org/repos/location bookworm/" \
+            > /etc/apt/sources.list.d/ipfire-location.list
+          apt-get -y update
+          apt-get -y install location
 
       - name: Install Rust toolchain
         run: |
@@ -54,8 +64,8 @@ jobs:
           BRANCH="auto/update-geoip"
           DATE="$(date -u +%Y/%m/%d)"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
           git checkout -B "$BRANCH"
           git add src/config/geoip src/config/geoip6
