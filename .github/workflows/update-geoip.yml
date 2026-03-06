@@ -23,20 +23,8 @@ jobs:
             curl \
             xz-utils \
             git \
-            gpg \
-            python3-location \
+            location \
             ca-certificates
-
-      - name: Install location CLI
-        run: |
-          # python3-location provides the Python C module but not the
-          # `location` CLI binary in Debian bookworm. Install from IPFire repo.
-          curl -sSL "https://location.ipfire.org/keys/signing-key.asc" \
-            | gpg --dearmor -o /usr/share/keyrings/ipfire-location.gpg
-          echo "deb [signed-by=/usr/share/keyrings/ipfire-location.gpg] https://packages.ipfire.org/repos/location bookworm/" \
-            > /etc/apt/sources.list.d/ipfire-location.list
-          apt-get -y update
-          apt-get -y install location
 
       - name: Install Rust toolchain
         run: |

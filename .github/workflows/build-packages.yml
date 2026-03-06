@@ -1,15 +1,16 @@
 name: Build Anon Packages
 
 on:
-  push:
-    tags:
-      - 'v*'
-      - '*beta*'
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  # push:
+  #   tags:
+  #     - 'v*'
+  #     - '*beta*'
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
+  workflow_dispatch:
 
 env:
   DEBIAN_FRONTEND: noninteractive
