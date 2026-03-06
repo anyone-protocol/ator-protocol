@@ -54,6 +54,7 @@ jobs:
           BRANCH="auto/update-geoip"
           DATE="$(date -u +%Y/%m/%d)"
 
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
