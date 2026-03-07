@@ -48,6 +48,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          sign-commits: true
           branch: auto/update-geoip
           commit-message: "Update geoip files to match IPFire Location Database"
           title: "Update geoip files to match IPFire Location Database"
