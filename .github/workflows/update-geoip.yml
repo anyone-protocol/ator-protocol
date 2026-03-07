@@ -41,6 +41,9 @@ jobs:
           cd src/config
           ../../scripts/maint/geoip/update_geoip.sh
 
+      - name: Mark workspace as safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Create pull request if changed
         uses: peter-evans/create-pull-request@v8
         with:
