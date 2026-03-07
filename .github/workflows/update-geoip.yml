@@ -1,9 +1,9 @@
 name: Update GeoIP Database
 
 on:
-  # schedule:
-  #   # Weekly on Monday at 04:00 UTC
-  #   - cron: '0 4 * * 1'
+  schedule:
+    # Weekly on Monday at 04:00 UTC
+    - cron: '0 4 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -42,47 +42,16 @@ jobs:
           ../../scripts/maint/geoip/update_geoip.sh
 
       - name: Create pull request if changed
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if git diff --quiet src/config/geoip src/config/geoip6; then
-            echo "GeoIP files are already up to date."
-            exit 0
-          fi
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/update-geoip
+          commit-message: "Update geoip files to match IPFire Location Database"
+          title: "Update geoip files to match IPFire Location Database"
+          body: |
+            Automated weekly update of GeoIP database files.
 
-          echo "GeoIP files have been updated."
-          BRANCH="auto/update-geoip"
-          DATE="$(date -u +%Y/%m/%d)"
-
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-
-          git checkout -B "$BRANCH"
-          git add src/config/geoip src/config/geoip6
-          git commit -m "Update geoip files to match IPFire Location Database, $DATE"
-          git push --force origin "$BRANCH"
-
-          # Check if a PR already exists for this branch
-          EXISTING_PR=$(curl -s -H "Authorization: token $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${BRANCH}&state=open" \
-            | grep -c '"number"' || true)
-
-          if [ "$EXISTING_PR" -gt 0 ]; then
-            echo "Pull request already exists for branch $BRANCH, updated with force push."
-          else
-            curl -s -X POST \
-              -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls" \
-              -d "$(cat <<EOF
-          {
-            "title": "Update geoip files to match IPFire Location Database",
-            "head": "$BRANCH",
-            "base": "${{ github.event.repository.default_branch }}",
-            "body": "Automated weekly update of GeoIP database files.\n\nUpdates src/config/geoip and src/config/geoip6 from the [IPFire Location Database](https://location.ipfire.org/)."
-          }
-          EOF
-          )"
-          fi
+            Updates src/config/geoip and src/config/geoip6 from the [IPFire Location Database](https://location.ipfire.org/).
+          add-paths: |
+            src/config/geoip
+            src/config/geoip6
