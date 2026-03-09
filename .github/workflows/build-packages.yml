@@ -279,45 +279,11 @@ jobs:
             arch: arm64
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Build Anon Client for MacOS
+        uses: ./.github/actions/build/build-macos
         with:
-          path: ator-protocol
-          fetch-depth: 1
-      - name: Set variables
-        run: |
-          echo "ANON_BREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: |
-          brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
-      - name: Build anon
-        run: |
-          cd ator-protocol
-          ./scripts/ci/update-env.sh ${{ env.PKG_ENV }}
-          ./autogen.sh
-          ./configure --prefix=/usr/local \
-            --disable-asciidoc \
-            --disable-zstd \
-            --disable-lzma \
-            --with-zlib-dir=${{ env.ANON_BREW_PREFIX }}/opt/zlib \
-            --with-libevent-dir=${{ env.ANON_BREW_PREFIX }}/opt/libevent \
-            --with-openssl-dir=${{ env.ANON_BREW_PREFIX }}/opt/openssl@3 \
-            --enable-static-zlib \
-            --enable-static-libevent \
-            --enable-static-openssl \
-            --disable-tool-name-check \
-            --disable-gcc-hardening
-          make
-      - name: Copy executables to artifact directory
-        run: |
-          mkdir -p package
-          cp ator-protocol/src/app/anon package
-          cp ator-protocol/src/tools/anon-gencert package
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: anon-${{ env.PKG_ENV }}-macos-${{ matrix.build.arch }}
-          path: package/
+          build-arch: ${{ matrix.build.arch }}
+          release-phase: ${{ env.PKG_ENV }}
 
   #
   # Windows Build

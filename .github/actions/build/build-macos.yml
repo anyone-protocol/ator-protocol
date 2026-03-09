@@ -1,0 +1,48 @@
+name: 'Build Anon Client for MacOS'
+description: 'Builds the Anon client for MacOS and uploads the executables as an artifact.'
+inputs:
+  build-arch:
+    required: true
+    description: The architecture to build for (amd64 or arm64).
+  release-phase:
+    required: true
+    description: The release phase (beta, live, stage, dev, or unstable-dev).
+runs:
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        path: ator-protocol
+        fetch-depth: 1
+    - name: Install dependencies
+      run: |
+        brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
+    - name: Build anon
+      run: |
+        cd ator-protocol
+        BREW_PREFIX=$(brew --prefix)
+        ./scripts/ci/update-env.sh ${{ inputs.release-phase }}
+        ./autogen.sh
+        ./configure --prefix=/usr/local \
+          --disable-asciidoc \
+          --disable-zstd \
+          --disable-lzma \
+          --with-zlib-dir=$BREW_PREFIX/opt/zlib \
+          --with-libevent-dir=$BREW_PREFIX/opt/libevent \
+          --with-openssl-dir=$BREW_PREFIX/opt/openssl@3 \
+          --enable-static-zlib \
+          --enable-static-libevent \
+          --enable-static-openssl \
+          --disable-tool-name-check \
+          --disable-gcc-hardening
+        make
+    - name: Copy executables to artifact directory
+      run: |
+        mkdir -p package
+        cp ator-protocol/src/app/anon package
+        cp ator-protocol/src/tools/anon-gencert package
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-macos-${{ inputs.build-arch }}
+        path: package/

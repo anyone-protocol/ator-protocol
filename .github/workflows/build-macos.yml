@@ -1,0 +1,33 @@
+name: Build Anon Package for MacOS
+description: Builds the Anon client for MacOS and uploads the executables as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      build-arch:
+        description: Architecture to build for (amd64 or arm64).
+        required: true
+        default: 'amd64'
+        type: choice
+        options:
+          - amd64
+          - arm64
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - beta
+          - live
+          - stage
+          - dev
+          - unstable-dev
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Build Anon for MacOS ${{ inputs.build-arch }}
+        uses: ./.github/actions/build/build-macos
+        with:
+          build-arch: ${{ inputs.build-arch }}
+          release-phase: ${{ github.event.inputs.release-phase }}
