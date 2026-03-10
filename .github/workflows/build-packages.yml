@@ -24,10 +24,9 @@ env:
 
 jobs:
 
-  #
-  # Debian Packages
-  #
-
+  #####################
+  ## Debian Packages ##
+  #####################
   build-deb-source:
     runs-on: ubuntu-latest
     container:
@@ -59,7 +58,6 @@ jobs:
         with:
           name: anon-${{ env.PKG_ENV }}-source-packages
           path: source-packages/
-
   build-deb-package:
     runs-on: ${{ matrix.build.runner }}
     needs: build-deb-source
@@ -191,10 +189,9 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-${{ matrix.build.os }}-${{ matrix.build.suite }}-${{ matrix.build.arch }}
           path: binary-packages/
 
-  #
-  # Linux Build
-  #
-
+  #################
+  ## Linux Build ##
+  #################
   build-linux-binary:
     runs-on: ${{ matrix.build.runner }}
     container:
@@ -259,41 +256,31 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-linux-${{ matrix.build.arch }}
           path: package/
 
-  #
-  # MacOS Build
-  #
-
+  #################
+  ## MacOS Build ##
+  #################
   build-macos-binary:
     runs-on: ${{ matrix.build.runner }}
     strategy:
       fail-fast: false
       matrix:
         build:
-
-          # MacOS Intel
-          # - runner: macos-13
-          #   arch: amd64
-
-          # MacOS Apple Silicon
-          - runner: macos-15
+          - runner: macos-15-intel
+            arch: amd64
+          - runner: macos-14
             arch: arm64
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: ator-protocol
-          fetch-depth: 1
       - name: Build Anon Client for MacOS ${{ matrix.build.arch }}
         uses: ./.github/actions/build/build-macos
         with:
           build-arch: ${{ matrix.build.arch }}
           release-phase: ${{ env.PKG_ENV }}
 
-  #
-  # Windows Build
-  #
-
+  ###################
+  ## Windows Build ##
+  ###################
   build-windows-64-binary:
     runs-on: ubuntu-latest
     container:
@@ -326,39 +313,33 @@ jobs:
           wget --quiet https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
           tar zxf openssl-${OPENSSL_VERSION}.tar.gz
           rm openssl-${OPENSSL_VERSION}.tar.gz
-
           cd openssl-${OPENSSL_VERSION}
           ./Configure ${MINGW} shared --cross-compile-prefix=${CROSS_HOST}- --prefix="/build/openssl-${BUILD_TYPE}-prefix/"
           make -j${{ env.ANON_JOBS }}
           make install
           cd ..
-
           rm -rf openssl-${OPENSSL_VERSION}
       - name: Build libevent
         run: |
           wget --quiet https://github.com/libevent/libevent/releases/download/release-${LIBEVENT_VERSION}/libevent-${LIBEVENT_VERSION}.tar.gz
           tar zxf libevent-${LIBEVENT_VERSION}.tar.gz
           rm libevent-${LIBEVENT_VERSION}.tar.gz
-
           cd libevent-${LIBEVENT_VERSION}
           ./configure --host=${CROSS_HOST} --disable-openssl --disable-shared --disable-samples --disable-libevent-regress --enable-static --prefix="/build/libevent-${BUILD_TYPE}-prefix/"
           make -j${{ env.ANON_JOBS }}
           make install
           cd ..
-
           rm -rf libevent-${LIBEVENT_VERSION}
       - name: Build zlib
         run: |
           wget --quiet https://www.zlib.net/fossils/zlib-${ZLIB_VERSION}.tar.gz
           tar zxf zlib-${ZLIB_VERSION}.tar.gz
           rm zlib-${ZLIB_VERSION}.tar.gz
-
           cd zlib-${ZLIB_VERSION}
           CHOST=${CROSS_HOST} ./configure --static --prefix="/build/zlib-${BUILD_TYPE}-prefix/"
           make -j${{ env.ANON_JOBS }}
           make install
           cd ..
-
           rm -rf zlib-${ZLIB_VERSION}
       - name: Build anon
         run: |
@@ -388,7 +369,6 @@ jobs:
         with:
           name: anon-${{ env.PKG_ENV }}-windows-amd64
           path: package/
-
   sign-windows-64-binary:
     runs-on: windows-latest
     needs: build-windows-64-binary
@@ -409,10 +389,9 @@ jobs:
           name: anon-${{ env.PKG_ENV }}-windows-signed-amd64
           path: build/
 
-  #
-  # Release
-  #
-
+  #############
+  ## Release ##
+  #############
   release-deb:
     runs-on: ubuntu-latest
     needs: build-deb-package
@@ -453,7 +432,6 @@ jobs:
 
           echo "Processing incoming packages"
           ssh reprepro@${{ secrets.DEBIAN_HOST }} "reprepro processincoming incoming || exit 1"
-
   release-github:
     runs-on: ubuntu-latest
     needs: [build-deb-package, build-macos-binary, sign-windows-64-binary]
