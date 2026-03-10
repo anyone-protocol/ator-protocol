@@ -37,13 +37,13 @@ fi
 
 auth_dirs_file="auth_dirs.inc"
 
-if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
-  # auth_dirs_file="auth_dirs_dev.inc"
-fi
+# if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
+#   auth_dirs_file="auth_dirs_dev.inc"
+# fi
 
-if [ "$pkg_env" = "stage" ]; then
-  # auth_dirs_file="auth_dirs_stage.inc"
-fi
+# if [ "$pkg_env" = "stage" ]; then
+#   auth_dirs_file="auth_dirs_stage.inc"
+# fi
 
 if [ "$auth_dirs_file" != "auth_dirs.inc" ]; then
     cp "src/app/config/${auth_dirs_file}" src/app/config/auth_dirs.inc
