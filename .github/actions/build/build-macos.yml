@@ -9,11 +9,6 @@ inputs:
     description: The release phase (beta, live, stage, dev, or unstable-dev).
 runs:
   steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        path: ator-protocol
-        fetch-depth: 1
     - name: Install dependencies
       run: |
         brew install gsed automake docbook docbook-xsl zlib libevent openssl@3

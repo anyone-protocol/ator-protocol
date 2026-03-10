@@ -279,7 +279,12 @@ jobs:
             arch: arm64
 
     steps:
-      - name: Build Anon Client for MacOS
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: ator-protocol
+          fetch-depth: 1
+      - name: Build Anon Client for MacOS ${{ matrix.build.arch }}
         uses: ./.github/actions/build/build-macos
         with:
           build-arch: ${{ matrix.build.arch }}
