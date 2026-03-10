@@ -6,9 +6,12 @@ on:
       runner:
         description: The runner to use for the build.
         required: true
-        default: 'macos-15'
+        default: 'macos-15-intel'
         type: choice
         options:
+          - macos-15-intel
+          - macos-26-intel
+          - macos-14
           - macos-15
           - macos-26
           - macos-latest
