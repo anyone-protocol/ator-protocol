@@ -38,11 +38,11 @@ fi
 auth_dirs_file="auth_dirs.inc"
 
 if [ "$pkg_env" = "dev" ] || [ "$pkg_env" = "unstable-dev" ]; then
-  auth_dirs_file="auth_dirs_dev.inc"
+  # auth_dirs_file="auth_dirs_dev.inc"
 fi
 
 if [ "$pkg_env" = "stage" ]; then
-  auth_dirs_file="auth_dirs_stage.inc"
+  # auth_dirs_file="auth_dirs_stage.inc"
 fi
 
 if [ "$auth_dirs_file" != "auth_dirs.inc" ]; then
