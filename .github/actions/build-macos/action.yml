@@ -12,11 +12,10 @@ runs:
   steps:
     - name: Install dependencies
       shell: bash
-      run: brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
+      run: brew install gsed automake docbook docbook-xsl zlib # libevent openssl@3
     - name: Build anon
       shell: bash
       run: |
-        cd ator-protocol
         BREW_PREFIX=$(brew --prefix)
         ./scripts/ci/update-env.sh ${{ inputs.release-phase }}
         ./autogen.sh
@@ -37,8 +36,8 @@ runs:
       shell: bash
       run: |
         mkdir -p package
-        cp ator-protocol/src/app/anon package
-        cp ator-protocol/src/tools/anon-gencert package
+        cp src/app/anon package
+        cp src/tools/anon-gencert package
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
