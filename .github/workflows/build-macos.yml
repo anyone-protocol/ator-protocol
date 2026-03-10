@@ -3,6 +3,15 @@ description: Builds the Anon client for MacOS and uploads the executables as an 
 on:
   workflow_dispatch:
     inputs:
+      runner:
+        description: The runner to use for the build.
+        required: true
+        default: 'macos-15'
+        type: choice
+        options:
+          - macos-15
+          - macos-26
+          - macos-latest
       build-arch:
         description: Architecture to build for (amd64 or arm64).
         required: true
@@ -24,7 +33,7 @@ on:
           - unstable-dev
 jobs:
   build-macos:
-    runs-on: macos-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Build Anon for MacOS ${{ inputs.build-arch }}
         uses: ./.github/actions/build/build-macos
