@@ -267,7 +267,7 @@ jobs:
         build:
           - runner: macos-15-intel
             arch: amd64
-          - runner: macos-14
+          - runner: macos-15
             arch: arm64
     steps:
       - name: Checkout Repository
