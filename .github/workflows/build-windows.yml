@@ -17,6 +17,8 @@ on:
 jobs:
   build-windows-64-binary:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
