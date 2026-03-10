@@ -92,7 +92,6 @@ runs:
     - name: Build anon
       shell: bash
       run: |
-        cd ator-protocol
         ./scripts/ci/update-env.sh ${{ inputs.release-phase }}
         ./autogen.sh
         ./configure --host=${{ inputs.cross-host }} \
@@ -112,8 +111,8 @@ runs:
       shell: bash
       run: |
         mkdir -p package
-        cp ator-protocol/src/app/anon.exe package
-        cp ator-protocol/src/tools/anon-gencert.exe package
+        cp src/app/anon.exe package
+        cp src/tools/anon-gencert.exe package
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
