@@ -38,21 +38,21 @@ jobs:
       - name: Sign
         run: |
           dotnet tool install --global AzureSignTool
-          AzureSignTool sign \
-            -kvu "${{ secrets.AZURE_KEY_VAULT_URI }}" \
-            -kvi "${{ secrets.AZURE_CLIENT_ID }}" \
-            -kvt "${{ secrets.AZURE_TENANT_ID }}" \
-            -kvs "${{ secrets.AZURE_CLIENT_SECRET }}" \
-            -kvc ${{ secrets.AZURE_CERT_NAME }} \
-            -tr http://timestamp.digicert.com \
+          AzureSignTool sign `
+            -kvu "${{ secrets.AZURE_KEY_VAULT_URI }}" `
+            -kvi "${{ secrets.AZURE_CLIENT_ID }}" `
+            -kvt "${{ secrets.AZURE_TENANT_ID }}" `
+            -kvs "${{ secrets.AZURE_CLIENT_SECRET }}" `
+            -kvc ${{ secrets.AZURE_CERT_NAME }} `
+            -tr http://timestamp.digicert.com `
             -v "build/anon.exe"
-          AzureSignTool sign \
-            -kvu "${{ secrets.AZURE_KEY_VAULT_URI }}" \
-            -kvi "${{ secrets.AZURE_CLIENT_ID }}" \
-            -kvt "${{ secrets.AZURE_TENANT_ID }}" \
-            -kvs "${{ secrets.AZURE_CLIENT_SECRET }}" \
-            -kvc ${{ secrets.AZURE_CERT_NAME }} \
-            -tr http://timestamp.digicert.com \
+          AzureSignTool sign `
+            -kvu "${{ secrets.AZURE_KEY_VAULT_URI }}" `
+            -kvi "${{ secrets.AZURE_CLIENT_ID }}" `
+            -kvt "${{ secrets.AZURE_TENANT_ID }}" `
+            -kvs "${{ secrets.AZURE_CLIENT_SECRET }}" `
+            -kvc ${{ secrets.AZURE_CERT_NAME }} `
+            -tr http://timestamp.digicert.com `
             -v "build/anon-gencert.exe"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
