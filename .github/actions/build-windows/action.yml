@@ -1,5 +1,5 @@
-name: 'Build Anon Client for Windows'
-description: 'Builds the Anon client for Windows and uploads the executables as an artifact'
+name: Build Anon Client for Windows
+description: Builds the Anon client for Windows and uploads the executables as an artifact
 inputs:
   release-phase:
     description: The release phase (beta, live, stage, dev, or unstable-dev).
