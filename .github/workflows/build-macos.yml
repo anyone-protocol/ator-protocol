@@ -40,8 +40,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Build Anon for MacOS ${{ inputs.build-arch }}
+      - name: Build Anon for MacOS ${{ inputs.release-phase }} ${{ inputs.build-arch }}
         uses: ./.github/actions/build-macos
         with:
           build-arch: ${{ inputs.build-arch }}
-          release-phase: ${{ github.event.inputs.release-phase }}
+          release-phase: ${{ inputs.release-phase }}
