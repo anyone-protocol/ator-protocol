@@ -8,11 +8,13 @@ inputs:
     required: true
     description: The release phase (beta, live, stage, dev, or unstable-dev).
 runs:
+  using: composite
   steps:
     - name: Install dependencies
-      run: |
-        brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
+      shell: bash
+      run: brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
     - name: Build anon
+      shell: bash
       run: |
         cd ator-protocol
         BREW_PREFIX=$(brew --prefix)
@@ -32,6 +34,7 @@ runs:
           --disable-gcc-hardening
         make
     - name: Copy executables to artifact directory
+      shell: bash
       run: |
         mkdir -p package
         cp ator-protocol/src/app/anon package

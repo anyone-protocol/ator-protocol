@@ -41,7 +41,7 @@ jobs:
           path: ator-protocol
           fetch-depth: 1
       - name: Build Anon for MacOS ${{ inputs.build-arch }}
-        uses: ./.github/actions/build/build-macos
+        uses: ./.github/actions/build-macos
         with:
           build-arch: ${{ inputs.build-arch }}
           release-phase: ${{ github.event.inputs.release-phase }}
