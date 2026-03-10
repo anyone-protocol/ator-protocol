@@ -37,9 +37,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: ator-protocol
-          fetch-depth: 1
       - name: Build Anon for MacOS ${{ inputs.build-arch }}
         uses: ./.github/actions/build-macos
         with:
