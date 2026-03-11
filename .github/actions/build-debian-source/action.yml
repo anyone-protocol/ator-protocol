@@ -30,6 +30,7 @@ runs:
     - name: Build Source
       shell: bash
       run: |
+        PKG_ENV=${{ inputs.release-phase }}
         $(pwd)/debian/.debian-ci/build_source/build-script
     - name: Sign Source Package
       shell: bash
