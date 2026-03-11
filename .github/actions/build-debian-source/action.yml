@@ -16,12 +16,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Dependencies
-      shell: bash
-      run: |
-        apt-get -y update
-        apt-get -y dist-upgrade
-        apt-get -y install sudo git build-essential devscripts gpg
     - name: Setup
       shell: bash
       run: |

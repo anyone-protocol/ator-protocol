@@ -51,6 +51,11 @@ jobs:
     env:
       BUILD_ARCH: ${{ inputs.runner == 'arm64' && 'arm64' || 'amd64' }}
     steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential devscripts gpg
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Build Anon Source for Debian ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
