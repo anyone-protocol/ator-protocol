@@ -44,7 +44,7 @@ on:
           - dev
           - unstable-dev
 jobs:
-  build-linux:
+  build-debian:
     runs-on: ${{ inputs.runner }}
     container:
       image: '${{ inputs.os }}:${{ inputs.suite }}'
