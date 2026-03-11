@@ -15,14 +15,6 @@ on:
           - macos-15
           - macos-26
           - macos-latest
-      build-arch:
-        description: Architecture to build for (amd64 or arm64).
-        required: true
-        default: 'amd64'
-        type: choice
-        options:
-          - amd64
-          - arm64
       release-phase:
         description: The release phase (beta, live, stage, dev, or unstable-dev).
         required: true
@@ -37,11 +29,13 @@ on:
 jobs:
   build-macos:
     runs-on: ${{ inputs.runner }}
+    env:
+      BUILD_ARCH: ${{ endsWith(inputs.runner, 'intel') && 'amd64' || 'arm64' }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Build Anon for MacOS ${{ inputs.release-phase }} ${{ inputs.build-arch }}
+      - name: Build Anon for MacOS ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
         uses: ./.github/actions/build-macos
         with:
-          build-arch: ${{ inputs.build-arch }}
+          build-arch: ${{ env.BUILD_ARCH }}
           release-phase: ${{ inputs.release-phase }}
