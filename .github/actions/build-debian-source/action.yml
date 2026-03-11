@@ -1,0 +1,39 @@
+name: Build & Sign Anon Client Source for Debian
+description: Builds and signs the Anon client source for Debian and uploads the executables as an artifact.
+inputs:
+  build-arch:
+    required: true
+    description: The architecture to build for (amd64 or arm64).
+  release-phase:
+    required: true
+    description: The release phase (beta, live, stage, dev, or unstable-dev).
+  debian-private-key:
+    required: true
+    description: The base64-encoded GPG private key to sign the Debian package with.
+  debian-fingerprint:
+    required: true
+    description: The GPG fingerprint of the key to sign the Debian package with.
+runs:
+  using: composite
+  steps:
+    - name: Setup
+      shell: bash
+      run: |
+        apt-get -y install $(cat debian/.debian-ci/build_source/build-depends)
+        git config --global --add safe.directory $(realpath .)
+    - name: Build Source
+      shell: bash
+      run: |
+        PKG_ENV=${{ inputs.release-phase }}
+        $(pwd)/debian/.debian-ci/build_source/build-script
+    - name: Sign Source Package
+      shell: bash
+      run: |
+        echo "${{ inputs.debian-private-key }}" | base64 -d > debian-private.gpg
+        gpg --allow-secret-key-import --import debian-private.gpg
+        debsign -k ${{ inputs.debian-fingerprint }} source-packages/anon_*.changes
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-source-packages
+        path: source-packages/

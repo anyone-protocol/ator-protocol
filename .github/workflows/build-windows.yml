@@ -1,0 +1,41 @@
+name: Build & Sign Anon Package for Windows
+description: Builds and signs the Anon client for Windows and uploads the executables as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - unstable-dev
+          - dev
+          - beta
+          - stage
+          - live
+jobs:
+  build-windows-64-binary:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Anon for Windows 64-bit
+        uses: ./.github/actions/build-windows
+        with:
+          release-phase: ${{ inputs.release-phase }}
+  sign-windows-64-binary:
+    runs-on: windows-latest
+    needs: build-windows-64-binary
+    steps:
+      - name: Sign Anon for Windows 64-bit
+        uses: ./.github/actions/sign-windows
+        with:
+          azure-key-vault-uri: ${{ secrets.AZURE_KEY_VAULT_URI }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          azure-cert-name: ${{ secrets.AZURE_CERT_NAME }}
+          release-phase: ${{ inputs.release-phase }}
