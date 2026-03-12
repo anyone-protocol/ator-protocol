@@ -28,9 +28,9 @@ jobs:
     container:
       image: debian:bookworm
     env:
+      OPENSSL_VERSION: 1.1.1w
       BUILD_ARCH: ${{ inputs.runner == 'arm64' && 'arm64' || 'amd64' }}
       LIB_ARCH: ${{ inputs.runner == 'arm64' && 'aarch64' || 'x86_64' }}
-      OPENSSL_VERSION: 1.1.1w
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

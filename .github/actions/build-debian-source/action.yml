@@ -1,9 +1,6 @@
 name: Build & Sign Anon Client Source for Debian
 description: Builds and signs the Anon client source for Debian and uploads the executables as an artifact.
 inputs:
-  build-arch:
-    required: true
-    description: The architecture to build for (amd64 or arm64).
   release-phase:
     required: true
     description: The release phase (beta, live, stage, dev, or unstable-dev).
