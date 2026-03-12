@@ -183,7 +183,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Build Anon Client for MacOS ${{ matrix.build.arch }}
-        uses: ./.github/actions/build/build-macos
+        uses: ./.github/actions/build-macos
         with:
           build-arch: ${{ matrix.build.arch }}
           release-phase: ${{ env.PKG_ENV }}
