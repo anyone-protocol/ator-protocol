@@ -113,6 +113,8 @@ runs:
         mkdir -p package
         cp src/app/anon.exe package
         cp src/tools/anon-gencert.exe package
+        cp src/config/geoip package
+        cp src/config/geoip6 package
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
