@@ -118,6 +118,13 @@ jobs:
             arch: arm64
             runner: arm64
     steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential devscripts gpg
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Build & Sign Anon Package for Debian ${{ env.PKG_ENV }} ${{ matrix.build.os }}:${{ matrix.build.suite }} for ${{ matrix.build.arch }} 
         uses: ./.github/actions/build-debian-package
         with:
@@ -152,9 +159,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: ator-protocol
-          fetch-depth: 1
       - name: Build Anon for Linux ${{ env.PKG_ENV }} ${{ env.BUILD_ARCH }}
         uses: ./.github/actions/build-linux
         with:
@@ -179,7 +183,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Build Anon Client for MacOS ${{ matrix.build.arch }}
-        uses: ./.github/actions/build/build-macos
+        uses: ./.github/actions/build-macos
         with:
           build-arch: ${{ matrix.build.arch }}
           release-phase: ${{ env.PKG_ENV }}
