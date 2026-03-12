@@ -118,6 +118,13 @@ jobs:
             arch: arm64
             runner: arm64
     steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential devscripts gpg
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Build & Sign Anon Package for Debian ${{ env.PKG_ENV }} ${{ matrix.build.os }}:${{ matrix.build.suite }} for ${{ matrix.build.arch }} 
         uses: ./.github/actions/build-debian-package
         with:
