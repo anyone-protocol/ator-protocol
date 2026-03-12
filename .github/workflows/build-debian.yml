@@ -20,7 +20,7 @@ on:
           - debian
           - ubuntu
       suite:
-        description: The Debian suite to build for (e.g. bookworm).
+        description: The Debian or Ubuntu target to build for (e.g. bookworm).
         required: true
         default: 'bookworm'
         type: choice
