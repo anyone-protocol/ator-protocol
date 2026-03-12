@@ -152,9 +152,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: ator-protocol
-          fetch-depth: 1
       - name: Build Anon for Linux ${{ env.PKG_ENV }} ${{ env.BUILD_ARCH }}
         uses: ./.github/actions/build-linux
         with:
