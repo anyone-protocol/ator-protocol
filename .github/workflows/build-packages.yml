@@ -206,6 +206,8 @@ jobs:
     runs-on: windows-latest
     needs: build-windows-64-binary
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Sign Anon for Windows 64-bit
         uses: ./.github/actions/sign-windows
         with:
