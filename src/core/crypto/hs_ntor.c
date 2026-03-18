@@ -129,7 +129,7 @@ get_rendezvous1_key_material(const uint8_t *rend_secret_hs_input,
   crypto_mac_sha3_256(rend_cell_auth, sizeof(rend_cell_auth),
                       rend_auth_input, sizeof(rend_auth_input),
                       (const uint8_t *)T_HSMAC, strlen(T_HSMAC));
-  bad |= safe_mem_is_zero(ntor_verify, DIGEST256_LEN);
+  bad |= safe_mem_is_zero(rend_cell_auth, DIGEST256_LEN);
 
   { /* Get the computed RENDEZVOUS1 material! */
     memcpy(&hs_ntor_rend_cell_keys_out->rend_cell_auth_mac,
