@@ -1,0 +1,1528 @@
+diff --git a/contrib/client-tools/tor-resolve.py b/contrib/client-tools/anon-resolve.py
+similarity index 100%
+rename from contrib/client-tools/tor-resolve.py
+rename to contrib/client-tools/anon-resolve.py
+diff --git a/contrib/client-tools/torify b/contrib/client-tools/anonify
+similarity index 91%
+rename from contrib/client-tools/torify
+rename to contrib/client-tools/anonify
+index 94640c0fa..48b5bc408 100755
+--- a/contrib/client-tools/torify
++++ b/contrib/client-tools/anonify
+@@ -12,7 +12,7 @@
+ 
+ 
+ compat() {
+-	echo "torify is now just a wrapper around torsocks(1) for backwards compatibility."
++	echo "anonify is now just a wrapper around torsocks(1) for backwards compatibility."
+ }
+ 
+ usage() {
+diff --git a/contrib/win32build/tor-mingw.nsi.in b/contrib/win32build/anon-mingw.nsi.in
+similarity index 92%
+rename from contrib/win32build/tor-mingw.nsi.in
+rename to contrib/win32build/anon-mingw.nsi.in
+index 165f4e2fe..5e4e239ac 100644
+--- a/contrib/win32build/tor-mingw.nsi.in
++++ b/contrib/win32build/anon-mingw.nsi.in
+@@ -8,11 +8,11 @@
+ !include "LogicLib.nsh"
+ !include "FileFunc.nsh"
+ !insertmacro GetParameters
+-!define VERSION "0.4.9.0-alpha-dev"
++!define VERSION "0.4.9.12-git"
+ !define INSTALLER "tor-${VERSION}-win32.exe"
+ !define WEBSITE "https://www.torproject.org/"
+ !define LICENSE "LICENSE"
+-!define BIN "..\bin" ;BIN is where it expects to find tor.exe, tor-resolve.exe
++!define BIN "..\bin" ;BIN is where it expects to find tor.exe, anon-resolve.exe
+ 
+ 
+ SetCompressor /SOLID LZMA ;Tighter compression
+@@ -76,25 +76,25 @@ Section "Tor" Tor
+ 	Call ExtractIcon
+ 	WriteINIStr "$INSTDIR\Tor Website.url" "InternetShortcut" "URL" ${WEBSITE}
+ 
+-	StrCpy $CONFIGFILE "torrc"
++	StrCpy $CONFIGFILE "anonrc"
+ 	StrCpy $CONFIGDIR $APPDATA\Tor
+ ;   ;If $APPDATA isn't valid here (Early win95 releases with no updated
+ ;   ; shfolder.dll) then we put it in the program directory instead.
+ ;   StrCmp $APPDATA "" "" +2
+ ;      StrCpy $CONFIGDIR $INSTDIR
+ 	SetOutPath $CONFIGDIR
+-	;If there's already a torrc config file, ask if they want to
++	;If there's already a anonrc config file, ask if they want to
+ 	;overwrite it with the new one.
+-	${If} ${FileExists} "$CONFIGDIR\torrc"
++	${If} ${FileExists} "$CONFIGDIR\anonrc"
+ 		MessageBox MB_ICONQUESTION|MB_YESNO "You already have a Tor config file.$\r$\nDo you want to overwrite it with the default sample config file?" IDYES Yes IDNO No
+ 		Yes:
+-			Delete $CONFIGDIR\torrc
++			Delete $CONFIGDIR\anonrc
+ 			Goto Next
+ 		No:
+-			StrCpy $CONFIGFILE "torrc.sample"
++			StrCpy $CONFIGFILE "anonrc.sample"
+ 		Next:
+ 	${EndIf}
+-	File /oname=$CONFIGFILE "..\src\config\torrc.sample"
++	File /oname=$CONFIGFILE "..\src\config\anonrc.sample"
+ 
+ ; the geoip file needs to be included and stuffed into the right directory
+ ; otherwise tor is unhappy
+@@ -156,7 +156,7 @@ SectionEnd
+ 
+ Function ExtractBinaries
+ 	File "${BIN}\tor.exe"
+-	File "${BIN}\tor-resolve.exe"
++	File "${BIN}\anon-resolve.exe"
+ FunctionEnd
+ 
+ Function ExtractGEOIP
+@@ -182,9 +182,9 @@ FunctionEnd
+ 
+ Function ExtractHTML
+ 	File "..\doc\tor.html"
+-	File "..\doc\torify.html"
+-	File "..\doc\tor-resolve.html"
+-	File "..\doc\tor-gencert.html"
++	File "..\doc\anonify.html"
++	File "..\doc\anon-resolve.html"
++	File "..\doc\anon-gencert.html"
+ FunctionEnd
+ 
+ Function ExtractReleaseDocs
+@@ -203,10 +203,10 @@ FunctionEnd
+ Function un.InstallFiles
+ 	Delete "$DESKTOP\Tor.lnk"
+ 	Delete "$INSTDIR\tor.exe"
+-	Delete "$INSTDIR\tor-resolve.exe"
++	Delete "$INSTDIR\anon-resolve.exe"
+ 	Delete "$INSTDIR\Tor Website.url"
+-	Delete "$INSTDIR\torrc"
+-	Delete "$INSTDIR\torrc.sample"
++	Delete "$INSTDIR\anonrc"
++	Delete "$INSTDIR\anonrc.sample"
+ 	Delete "$INSTDIR\tor.ico"
+ 	Delete "$SMSTARTUP\Tor.lnk"
+ 	Delete "$INSTDIR\Uninstall.exe"
+@@ -236,7 +236,7 @@ FunctionEnd
+ Function CreateTorLinks
+ 	CreateDirectory "$SMPROGRAMS\Tor"
+ 	CreateShortCut "$SMPROGRAMS\Tor\Tor.lnk" "$INSTDIR\tor.exe" "" "$INSTDIR\tor.ico"
+-	CreateShortCut "$SMPROGRAMS\Tor\Torrc.lnk" "Notepad.exe" "$CONFIGDIR\torrc"
++	CreateShortCut "$SMPROGRAMS\Tor\Anonrc.lnk" "Notepad.exe" "$CONFIGDIR\anonrc"
+ 	CreateShortCut "$SMPROGRAMS\Tor\Tor Website.lnk" "$INSTDIR\Tor Website.url"
+ 	CreateShortCut "$SMPROGRAMS\Tor\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+ FunctionEnd
+diff --git a/contrib/win32build/tor.ico b/contrib/win32build/anon.ico
+similarity index 100%
+rename from contrib/win32build/tor.ico
+rename to contrib/win32build/anon.ico
+diff --git a/contrib/win32build/tor.nsi.in b/contrib/win32build/anon.nsi.in
+similarity index 88%
+rename from contrib/win32build/tor.nsi.in
+rename to contrib/win32build/anon.nsi.in
+index 2d8c2b9ad..be6cae236 100644
+--- a/contrib/win32build/tor.nsi.in
++++ b/contrib/win32build/anon.nsi.in
+@@ -12,14 +12,14 @@
+ ;   Step 2. Download and install NSIS (http://nsis.sourceforge.net)
+ ;   Step 3. Make a directory under the main tor directory called "bin".
+ ;   Step 4. Copy ssleay32.dll and libeay32.dll from OpenSSL into "bin".
+-;   Step 5. Run man2html on tor.1.in; call the result tor-reference.html
+-;           Run man2html on tor-resolve.1; call the result tor-resolve.html
+-;   Step 6. Copy torrc.sample.in to torrc.sample.
+-;   Step 7. Build tor.exe and tor_resolve.exe; save the result into bin.
++;   Step 5. Run man2html on anon.1.in; call the result tor-reference.html
++;           Run man2html on anon-resolve.1; call the result anon-resolve.html
++;   Step 6. Copy anonrc.sample.in to anonrc.sample.
++;   Step 7. Build tor.exe and anon_resolve.exe; save the result into bin.
+ ;   Step 8. cd into contrib and run "makensis tor.nsi".
+ ;
+ ; Problems:
+-;   - Copying torrc.sample.in to torrc.sample and tor.1.in (implicitly)
++;   - Copying anonrc.sample.in to anonrc.sample and anon.1.in (implicitly)
+ ;     to tor.1 is a Bad Thing, and leaves us with @autoconf@ vars in the final
+ ;     result.
+ ;   - Building Tor requires too much windows C clue.
+@@ -37,7 +37,7 @@
+ !define WEBSITE "https://www.torproject.org/"
+ 
+ !define LICENSE "..\LICENSE"
+-;BIN is where it expects to find tor.exe, tor_resolve.exe, libeay32.dll and
++;BIN is where it expects to find tor.exe, anon_resolve.exe, libeay32.dll and
+ ;  ssleay32.dll
+ !define BIN "..\bin"
+ 
+@@ -92,26 +92,26 @@ Section "Tor" Tor
+    SectionIn RO
+    SetOutPath $INSTDIR
+    File "${BIN}\tor.exe"
+-   File "${BIN}\tor_resolve.exe"
++   File "${BIN}\anon_resolve.exe"
+    WriteIniStr "$INSTDIR\Tor Website.url" "InternetShortcut" "URL" ${WEBSITE}
+ 
+-   StrCpy $configfile "torrc"
++   StrCpy $configfile "anonrc"
+    StrCpy $configdir $APPDATA\Tor
+ ;   ;If $APPDATA isn't valid here (Early win95 releases with no updated
+ ;   ; shfolder.dll) then we put it in the program directory instead.
+ ;   StrCmp $APPDATA "" "" +2
+ ;      StrCpy $configdir $INSTDIR
+    SetOutPath $configdir
+-   ;If there's already a torrc config file, ask if they want to
++   ;If there's already a anonrc config file, ask if they want to
+    ;overwrite it with the new one.
+-   IfFileExists "$configdir\torrc" "" endiftorrc
++   IfFileExists "$configdir\anonrc" "" endifanonrc
+       MessageBox MB_ICONQUESTION|MB_YESNO "You already have a Tor config file.$\r$\nDo you want to overwrite it with the default sample config file?" IDNO yesreplace
+-      Delete $configdir\torrc
+-      Goto endiftorrc
++      Delete $configdir\anonrc
++      Goto endifanonrc
+      yesreplace:
+-      StrCpy $configfile "torrc.sample"
+-   endiftorrc:
+-   File /oname=$configfile "..\src\config\torrc.sample"
++      StrCpy $configfile "anonrc.sample"
++   endifanonrc:
++   File /oname=$configfile "..\src\config\anonrc.sample"
+ SectionEnd
+ 
+ Section "OpenSSL 0.9.8a" OpenSSL
+@@ -133,7 +133,7 @@ Section "Documents" Docs
+    ;
+    ; WEBSITE-FILES-HERE
+    ;
+-   File "..\doc\tor-resolve.html"
++   File "..\doc\anon-resolve.html"
+    File "..\doc\tor-reference.html"
+    ;
+    File "..\doc\design-paper\tor-design.pdf"
+@@ -152,7 +152,7 @@ Section "Start Menu" StartMenu
+       RMDir /r "$SMPROGRAMS\Tor"
+    CreateDirectory "$SMPROGRAMS\Tor"
+    CreateShortCut "$SMPROGRAMS\Tor\Tor.lnk" "$INSTDIR\tor.exe"
+-   CreateShortCut "$SMPROGRAMS\Tor\Torrc.lnk" "Notepad.exe" "$configdir\torrc"
++   CreateShortCut "$SMPROGRAMS\Tor\Anonrc.lnk" "Notepad.exe" "$configdir\anonrc"
+    CreateShortCut "$SMPROGRAMS\Tor\Tor Website.lnk" "$INSTDIR\Tor Website.url"
+    CreateShortCut "$SMPROGRAMS\Tor\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+    IfFileExists "$INSTDIR\Documents\*.*" "" endifdocs
+@@ -180,10 +180,10 @@ Section "Uninstall"
+    Delete "$INSTDIR\libeay32.dll"
+    Delete "$INSTDIR\ssleay32.dll"
+    Delete "$INSTDIR\tor.exe"
+-   Delete "$INSTDIR\tor_resolve.exe"
++   Delete "$INSTDIR\anon_resolve.exe"
+    Delete "$INSTDIR\Tor Website.url"
+-   Delete "$INSTDIR\torrc"
+-   Delete "$INSTDIR\torrc.sample"
++   Delete "$INSTDIR\anonrc"
++   Delete "$INSTDIR\anonrc.sample"
+    StrCmp $configdir $INSTDIR +2 ""
+       RMDir /r $configdir
+    Delete "$INSTDIR\Uninstall.exe"
+diff --git a/doc/torrc_format.txt b/doc/anonrc_format.txt
+similarity index 98%
+rename from doc/torrc_format.txt
+rename to doc/anonrc_format.txt
+index 7a4a92a66..95dcb9275 100644
+--- a/doc/torrc_format.txt
++++ b/doc/anonrc_format.txt
+@@ -1,5 +1,5 @@
+ 
+-This document specifies the current format and semantics of the torrc
++This document specifies the current format and semantics of the anonrc
+ file, as of July 2015.  Note that we make no guarantee about the
+ stability of this format.  If you write something designed for strict
+ compatibility with this document, please expect us to break it sooner or
+@@ -18,7 +18,7 @@ does, not what it should do.
+    ; specified in RFC5234.
+ 
+    ; A file is interpreted as every Entry in the file, in order.
+-   TorrcFile = *Line [ UnterminatedLine ]
++   AnonrcFile = *Line [ UnterminatedLine ]
+ 
+    Line = BlankLine LF / Entry LF
+    UnterminatedLine = BlankLine / Entry
+@@ -88,8 +88,8 @@ does, not what it should do.
+    There are four configuration "domains", from lowest to highest priority:
+ 
+       * Built-in defaults
+-      * The "torrc_defaults" file, if any
+-      * The "torrc" file, if any
++      * The "anonrc_defaults" file, if any
++      * The "anonrc" file, if any
+       * Arguments provided on the command line, if any.
+ 
+    Normally, values from high-priority domains override low-priority
+diff --git a/doc/man/tor-gencert.1.txt b/doc/man/anon-gencert.1.txt
+similarity index 72%
+rename from doc/man/tor-gencert.1.txt
+rename to doc/man/anon-gencert.1.txt
+index b9ef94d67..1267e516e 100644
+--- a/doc/man/tor-gencert.1.txt
++++ b/doc/man/anon-gencert.1.txt
+@@ -2,37 +2,37 @@
+ // See LICENSE for licensing information
+ // This is an asciidoc file used to generate the manpage/html reference.
+ // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+-:man source:   Tor
+-:man manual:   Tor Manual
+-tor-gencert(1)
++:man source:   Anon
++:man manual:   Anon Manual
++anon-gencert(1)
+ ==============
+-Tor Project, Inc.
++Anon
+ 
+ NAME
+ ----
+-tor-gencert - Generate certs and keys for Tor directory authorities
++anon-gencert - Generate certs and keys for Anon directory authorities
+ 
+ SYNOPSIS
+ --------
+-**tor-gencert** [-h|--help] [-v] [-r|--reuse] [--create-identity-key] [-i __id_file__] [-c
++**anon-gencert** [-h|--help] [-v] [-r|--reuse] [--create-identity-key] [-i __id_file__] [-c
+ __cert_file__] [-m __num__] [-a __address__:__port__]
+ 
+ DESCRIPTION
+ -----------
+-**tor-gencert** generates certificates and private keys for use by Tor
+-directory authorities running the v3 Tor directory protocol, as used by
+-Tor 0.2.0 and later. If you are not running a directory authority, you
+-don't need to use tor-gencert. +
++**anon-gencert** generates certificates and private keys for use by Anon
++directory authorities running the v3 Anon directory protocol, as used by
++Anon 0.2.0 and later. If you are not running a directory authority, you
++don't need to use anon-gencert. +
+ 
+ Every directory authority has a long term authority __identity__ __key__ (which
+-is distinct from the identity key it uses as a Tor server); this key
++is distinct from the identity key it uses as a Anon server); this key
+ should be kept offline in a secure location. It is used to certify
+ shorter-lived __signing__ __keys__, which are kept online and used by the
+ directory authority to sign votes and consensus documents. +
+ 
+ After you use this program to generate a signing key and a certificate,
+-copy those files to the keys subdirectory of your Tor process, and send
+-Tor a SIGHUP signal. DO NOT COPY THE IDENTITY KEY.
++copy those files to the keys subdirectory of your Anon process, and send
++Anon a SIGHUP signal. DO NOT COPY THE IDENTITY KEY.
+ 
+ OPTIONS
+ -------
+@@ -48,7 +48,7 @@ OPTIONS
+ 
+ **--create-identity-key**::
+     Generate a new identity key. You should only use this option the first time
+-    you run tor-gencert; in the future, you should use the identity key that's
++    you run anon-gencert; in the future, you should use the identity key that's
+     already there.
+ 
+ **-i** __FILENAME__::
+@@ -83,6 +83,6 @@ really want authorities to be running on Windows anyway.
+ 
+ SEE ALSO
+ --------
+-**tor**(1) +
++**anon**(1) +
+ 
+-See also the "dir-spec.txt" file, distributed with Tor.
++See also the "dir-spec.txt" file, distributed with Anon.
+diff --git a/doc/man/tor-print-ed-signing-cert.1.txt b/doc/man/anon-print-ed-signing-cert.1.txt
+similarity index 63%
+rename from doc/man/tor-print-ed-signing-cert.1.txt
+rename to doc/man/anon-print-ed-signing-cert.1.txt
+index 2ce10d7cb..6e5aa9dd8 100644
+--- a/doc/man/tor-print-ed-signing-cert.1.txt
++++ b/doc/man/anon-print-ed-signing-cert.1.txt
+@@ -2,23 +2,23 @@
+ // See LICENSE for licensing information
+ // This is an asciidoc file used to generate the manpage/html reference.
+ // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+-:man source:   Tor
+-:man manual:   Tor Manual
+-tor-print-ed-signing-cert(1)
++:man source:   Anon
++:man manual:   Anon Manual
++anon-print-ed-signing-cert(1)
+ ============================
+-Tor Project, Inc.
++Anon
+ 
+ NAME
+ ----
+-tor-print-ed-signing-cert - print expiration date of ed25519 signing certificate
++anon-print-ed-signing-cert - print expiration date of ed25519 signing certificate
+ 
+ SYNOPSIS
+ --------
+-**tor-print-ed-signing-cert** __<path to ed25519_signing_cert file>__
++**anon-print-ed-signing-cert** __<path to ed25519_signing_cert file>__
+ 
+ DESCRIPTION
+ -----------
+-**tor-print-ed-signing-cert** is utility program for Tor relay operators to
++**anon-print-ed-signing-cert** is utility program for Anon relay operators to
+ check expiration date of ed25519 signing certificate.
+ 
+ Expiration date is printed in three formats:
+@@ -29,6 +29,6 @@ Expiration date is printed in three formats:
+ 
+ SEE ALSO
+ --------
+-**tor**(1) +
++**anon**(1) +
+ 
+ https://spec.torproject.org/cert-spec
+diff --git a/doc/man/tor-resolve.1.txt b/doc/man/anon-resolve.1.txt
+similarity index 70%
+rename from doc/man/tor-resolve.1.txt
+rename to doc/man/anon-resolve.1.txt
+index c944d7565..8fb7ed81b 100644
+--- a/doc/man/tor-resolve.1.txt
++++ b/doc/man/anon-resolve.1.txt
+@@ -2,26 +2,26 @@
+ // See LICENSE for licensing information
+ // This is an asciidoc file used to generate the manpage/html reference.
+ // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+-:man source:   Tor
+-:man manual:   Tor Manual
+-tor-resolve(1)
++:man source:   Anon
++:man manual:   Anon Manual
++anon-resolve(1)
+ ==============
+ Peter Palfrader
+ 
+ NAME
+ ----
+-tor-resolve - resolve a hostname to an IP address via tor
++anon-resolve - resolve a hostname to an IP address via anon
+ 
+ SYNOPSIS
+ --------
+-**tor-resolve** [-4|-5] [-v] [-x] [-p __socksport__] __hostname__ [__sockshost__[:__socksport__]]
++**anon-resolve** [-4|-5] [-v] [-x] [-p __socksport__] __hostname__ [__sockshost__[:__socksport__]]
+ 
+ DESCRIPTION
+ -----------
+-**tor-resolve** is a simple script to connect to a SOCKS proxy that knows about
++**anon-resolve** is a simple script to connect to a SOCKS proxy that knows about
+ the SOCKS RESOLVE command, hand it a hostname, and return an IP address.
+ 
+-By default, **tor-resolve** uses the Tor server running on 127.0.0.1 on SOCKS
++By default, **anon-resolve** uses the Anon server running on 127.0.0.1 on SOCKS
+ port 9050.  If this isn't what you want, you should specify an explicit
+ __sockshost__ and/or __socksport__ on the command line.
+ 
+@@ -45,6 +45,6 @@ OPTIONS
+ 
+ SEE ALSO
+ --------
+-**tor**(1), **torify**(1). +
++**tor**(1), **anonify**(1). +
+ 
+ For protocol details, see: https://spec.torproject.org/socks-extensions
+diff --git a/doc/man/tor.1.txt b/doc/man/anon.1.txt
+similarity index 98%
+rename from doc/man/tor.1.txt
+rename to doc/man/anon.1.txt
+index d98f24626..516601555 100644
+--- a/doc/man/tor.1.txt
++++ b/doc/man/anon.1.txt
+@@ -2,22 +2,22 @@
+ // See LICENSE for licensing information
+ // This is an asciidoc file used to generate the manpage/html reference.
+ // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+-:man source:   Tor
+-:man manual:   Tor Manual
++:man source:   Anon
++:man manual:   Anon Manual
+ // compat-mode tells Asciidoctor tools to process this as legacy AsciiDoc
+ :compat-mode:
+ // attribute to make it easier to write names containing double underscores
+ :dbl_: __
+-= TOR(1)
++= ANON(1)
+ :toc:
+ 
+ == NAME
+ 
+-tor - The second-generation onion router
++anon - The second-generation onion router
+ 
+ == SYNOPSIS
+ 
+-**tor** [__OPTION__ __value__]...
++**anon** [__OPTION__ __value__]...
+ 
+ == DESCRIPTION
+ 
+@@ -35,7 +35,7 @@ observers, and even the relays themselves have difficulty tracking the
+ source of the stream.
+ 
+ [NOTE]
+-By default, **tor** acts as a client only.  To help the network by
++By default, **anon** acts as a client only.  To help the network by
+ providing bandwidth as a relay, change the **ORPort** configuration
+ option as mentioned below.  Please also consult the documentation on
+ the Tor Project's website.
+@@ -43,7 +43,7 @@ the Tor Project's website.
+ == COMMAND-LINE OPTIONS
+ 
+ Tor has a powerful command-line interface. This section lists optional
+-arguments you can specify at the command line using the **`tor`**
++arguments you can specify at the command line using the **`anon`**
+ command.
+ 
+ Configuration options can be specified on the command line in the
+@@ -62,30 +62,33 @@ configuration files.  See **<<conf-format,THE CONFIGURATION FILE
+ FORMAT>>** for more information.
+ 
+ The following options in this section are only recognized on the
+-**`tor`** command line, not in a configuration file.
++**`anon`** command line, not in a configuration file.
+ 
+ [[opt-h]] **`-h`**, **`--help`**::
+     Display a short help message and exit.
+ 
+-[[opt-f]] **`-f`**, **`--torrc-file`** __FILE__::
++[[opt-agree-to-terms]] **`--agree-to-terms`**::
++    Agree to Anyone terms and conditions (https://www.anyone.io/terms).
++
++[[opt-f]] **`-f`**, **`--anonrc-file`** __FILE__::
+     Specify a new configuration file to contain further Tor configuration
+     options, or pass *-* to make Tor read its configuration from standard
+-    input. (Default: **`@CONFDIR@/torrc`**, or **`$HOME/.torrc`** if
++    input. (Default: **`@CONFDIR@/anonrc`**, or **`$HOME/.anonrc`** if
+     that file is not found.)
+ 
+-[[opt-allow-missing-torrc]] **`--allow-missing-torrc`**::
++[[opt-allow-missing-anonrc]] **`--allow-missing-anonrc`**::
+     Allow the configuration file specified by **`-f`** to be missing,
+-    if the defaults-torrc file (see below) is accessible.
++    if the defaults-anonrc file (see below) is accessible.
+ 
+-[[opt-defaults-torrc]] **`--defaults-torrc`** __FILE__::
++[[opt-defaults-anonrc]] **`--defaults-anonrc`** __FILE__::
+     Specify a file in which to find default values for Tor options.  The
+     contents of this file are overridden by those in the regular
+     configuration file, and by those on the command line. (Default:
+-    **`@CONFDIR@/torrc-defaults`**.)
++    **`@CONFDIR@/anonrc-defaults`**.)
+ 
+-[[opt-ignore-missing-torrc]] **`--ignore-missing-torrc`**::
+-    Specify that Tor should treat a missing torrc file as though it
+-    were empty. Ordinarily, Tor does this for missing default torrc files,
++[[opt-ignore-missing-anonrc]] **`--ignore-missing-anonrc`**::
++    Specify that Tor should treat a missing anonrc file as though it
++    were empty. Ordinarily, Tor does this for missing default anonrc files,
+     but not for those specified on the command line.
+ 
+ [[opt-hash-password]] **`--hash-password`** __PASSWORD__::
+@@ -115,7 +118,7 @@ The following options in this section are only recognized on the
+ [[opt-nt-service]] **`--nt-service`**::
+     Used internally to implement a Windows service.
+ 
+-[[opt-list-torrc-options]] **`--list-torrc-options`**::
++[[opt-list-anonrc-options]] **`--list-anonrc-options`**::
+     List all valid options.
+ 
+ [[opt-list-deprecated-options]] **`--list-deprecated-options`**::
+@@ -142,7 +145,7 @@ The following options in this section are only recognized on the
+     Tor not to log to the console at all.
+ 
+ [[opt-keygen]] **`--keygen`** [**`--newpass`**]::
+-    Running **`tor --keygen`** creates a new ed25519 master identity key
++    Running **`anon --keygen`** creates a new ed25519 master identity key
+     for a relay, or only a fresh temporary signing key and
+     certificate, if you already have a master key.  Optionally, you
+     can encrypt the master identity key with a passphrase.  When Tor
+@@ -170,7 +173,7 @@ The following options in this section are only recognized on the
+ 
+ **`--passphrase-fd`** __FILEDES__::
+     File descriptor to read the passphrase from.  Note that unlike with the
+-    tor-gencert program, the entire file contents are read and used as
++    anon-gencert program, the entire file contents are read and used as
+     the passphrase, including any trailing newlines.
+     If the file descriptor is not specified, the passphrase is read
+     from the terminal by default.
+@@ -180,7 +183,7 @@ The following options in this section are only recognized on the
+     the expiration of.  The only currently recognised __purpose__ is
+     "sign". +
+      +
+-    Running **`tor --key-expiration sign`** will attempt to find your
++    Running **`anon --key-expiration sign`** will attempt to find your
+     signing key certificate and will output, both in the logs as well
+     as to stdout.  The optional **`--format`** argument lets you specify
+     the time format.  Currently, **`iso8601`** and **`timestamp`** are
+@@ -474,8 +477,8 @@ forward slash (/) in the configuration file and on the command line.
+ 
+ [[DataDirectory]] **DataDirectory** __DIR__::
+     Store working data in DIR. Can not be changed while tor is running.
+-    (Default: ~/.tor if your home directory is not /; otherwise,
+-    @LOCALSTATEDIR@/lib/tor.  On Windows, the default is
++    (Default: ~/.anon if your home directory is not /; otherwise,
++    @LOCALSTATEDIR@/lib/anon.  On Windows, the default is
+     your ApplicationData folder.)
+ 
+ [[DataDirectoryGroupReadable]] **DataDirectoryGroupReadable** **0**|**1**::
+@@ -890,6 +893,10 @@ forward slash (/) in the configuration file and on the command line.
+     that fine-grained information about nodes can be discarded when it hasn't
+     changed for a given amount of time.  (Default: 24 hours)
+ 
++[[AgreeToTerms]] **AgreeToTerms** **0**|**1**::
++    If 1, agree to Anyone terms and conditions (https://www.anyone.io/terms).
++    (Default: 0)
++
+ [[RunAsDaemon]] **RunAsDaemon** **0**|**1**::
+     If 1, Tor forks and daemonizes to the background. This option has no effect
+     on Windows; instead you should use the --service command-line option.
+@@ -1010,7 +1017,7 @@ forward slash (/) in the configuration file and on the command line.
+     equivalent option for directory connections, because all Tor client versions
+     that support this option download directory documents via OR connections. +
+ +
+-    The only protocol supported right now 'haproxy'. This option is only for
++    The only protocol supported right now is 'haproxy'. This option is only for
+     clients. (Default: none) +
+ +
+     The HAProxy version 1 proxy protocol is described in detail at
+@@ -1055,12 +1062,12 @@ The following options are useful only for clients (that is, if
+     When this option is enabled, and we get a request to resolve an address
+     that ends with one of the suffixes in **AutomapHostsSuffixes**, we map an
+     unused virtual address to that address, and return the new virtual address.
+-    This is handy for making ".onion" addresses work with applications that
++    This is handy for making ".anon" addresses work with applications that
+     resolve an address and then connect to it. (Default: 0)
+ 
+ [[AutomapHostsSuffixes]] **AutomapHostsSuffixes** __SUFFIX__,__SUFFIX__,__...__::
+     A comma-separated list of suffixes to use with **AutomapHostsOnResolve**.
+-    The "." suffix is equivalent to "all addresses." (Default: .exit,.onion).
++    The "." suffix is equivalent to "all addresses." (Default: .exit,.anon).
+ 
+ [[Bridge]] **Bridge** [__transport__] __IP__:__ORPort__ [__fingerprint__]::
+     When set along with UseBridges, instructs Tor to use the relay at
+@@ -1138,7 +1145,7 @@ The following options are useful only for clients (that is, if
+      +
+       <onion-address>:descriptor:x25519:<base32-encoded-privkey>
+      +
+-    The <onion-address> MUST NOT have the ".onion" suffix. The
++    The <onion-address> MUST NOT have the ".anon" suffix. The
+     <base32-encoded-privkey> is the base32 representation of the raw key bytes
+     only (32 bytes for x25519). See Appendix G in the rend-spec-v3.txt file of
+     https://spec.torproject.org/[torspec] for more information.
+@@ -1279,14 +1286,14 @@ The following options are useful only for clients (that is, if
+ 
+     1. When evaluating MapAddress expressions Tor stops when it hits the most
+     recently added expression that matches the requested address. So if you
+-    have the following in your torrc, www.torproject.org will map to
++    have the following in your anonrc, www.torproject.org will map to
+     198.51.100.1:
+ 
+      MapAddress www.torproject.org 192.0.2.1
+      MapAddress www.torproject.org 198.51.100.1
+ 
+     2. Tor evaluates the MapAddress configuration until it finds no matches. So
+-    if you have the following in your torrc, www.torproject.org will map to
++    if you have the following in your anonrc, www.torproject.org will map to
+     203.0.113.1:
+ 
+       MapAddress 198.51.100.1 203.0.113.1
+@@ -1545,11 +1552,11 @@ The following options are useful only for clients (that is, if
+     **NoDNSRequest**;;
+         Do not ask exits to resolve DNS addresses in SOCKS5 requests. Tor will
+         connect to IPv4 addresses, IPv6 addresses (if IPv6Traffic is set) and
+-        .onion addresses.
++        .anon addresses.
+     **NoOnionTraffic**;;
+-        Do not connect to .onion addresses in SOCKS5 requests.
++        Do not connect to .anon addresses in SOCKS5 requests.
+     **OnionTrafficOnly**;;
+-        Tell the tor client to only connect to .onion addresses in response to
++        Tell the tor client to only connect to .anon addresses in response to
+         SOCKS5 requests on this connection. This is equivalent to NoDNSRequest,
+         NoIPv4Traffic, NoIPv6Traffic. The corresponding NoOnionTrafficOnly
+         flag is not supported.
+@@ -1632,7 +1639,7 @@ The following options are useful only for clients (that is, if
+ 
+           X'F6' Onion Service Invalid Address
+ 
+-            The given .onion address is invalid. In one of these cases this
++            The given .anon address is invalid. In one of these cases this
+             error is returned: address checksum doesn't match, ed25519 public
+             key is invalid or the encoding is invalid. (v3 only)
+ 
+@@ -2240,7 +2247,7 @@ is non-zero):
+     server descriptor to the bridge database, rather than
+     to the public directory authorities. +
+      +
+-    Note: make sure that no MyFamily lines are present in your torrc when
++    Note: make sure that no MyFamily lines are present in your anonrc when
+     relay is configured in bridge mode.
+ 
+ //Out of order because it logically belongs after BridgeRelay.
+@@ -2692,7 +2699,7 @@ is non-zero):
+ [[ServerTransportOptions]] **ServerTransportOptions** __transport__ __k=v__ __k=v__ ...::
+     When this option is set, Tor will pass the __k=v__ parameters to
+     any pluggable transport proxy that tries to launch __transport__. +
+-    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/tor/cache) (Default: none)
++    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/anon/cache) (Default: none)
+ 
+ [[ServerTransportPlugin]] **ServerTransportPlugin** __transport__ exec __path-to-binary__ [options]::
+     The Tor relay launches the pluggable transport proxy in __path-to-binary__
+@@ -2805,17 +2812,16 @@ types of statistics that Tor relays collect and publish:
+      +
+     A relay is considered overloaded if at least one of these conditions is
+     met:
+-        - Onionskins are starting to be dropped.
++        - A certain ratio of ntor onionskins are dropped.
+         - The OOM was invoked.
++        - TCP Port exhaustion.
+ 
+-        - (Exit only) DNS timeout occurs X% of the time over Y seconds (values
+-          controlled by consensus parameters, see param-spec.txt).
+      +
+     If ExtraInfoStatistics is enabled, it can also put two more specific
+     overload lines in the extra-info document if at least one of these
+     conditions is met:
+-        - TCP Port exhaustion.
+         - Connection rate limits have been reached (read and write side).
++        - File descriptors are exhausted.
+ 
+ [[PaddingStatistics]] **PaddingStatistics** **0**|**1**::
+     Relays and bridges only.
+@@ -2858,13 +2864,13 @@ details.)
+     As of Tor 0.4.6.1-alpha, non-authoritative relays (see
+     AuthoritativeDirectory) will not publish the DirPort but will still listen
+     on it. Clients don't use the DirPorts on relays, so it is safe for you
+-    to remove the DirPort from your torrc configuration.
++    to remove the DirPort from your anonrc configuration.
+ 
+ [[DirPortFrontPage]] **DirPortFrontPage** __FILENAME__::
+     When this option is set, it takes an HTML file and publishes it as "/" on
+     the DirPort. Now relay operators can provide a disclaimer without needing
+     to set up a separate webserver. There's a sample disclaimer in
+-    contrib/operator-tools/tor-exit-notice.html.
++    contrib/operator-tools/anon-exit-notice.html.
+ 
+ [[MaxConsensusAgeForDiffs]] **MaxConsensusAgeForDiffs**  __N__ **minutes**|**hours**|**days**|**weeks**::
+     When this option is nonzero, Tor caches will not try to generate
+@@ -2905,7 +2911,7 @@ The mitigations take place at relays, and are as follows:
+   3. If a client asks to establish a rendezvous point to you directly (ex:
+      Tor2Web client), ignore the request.
+ 
+-These defenses can be manually controlled by torrc options, but relays will
++These defenses can be manually controlled by anonrc options, but relays will
+ also take guidance from consensus parameters using these same names, so there's
+ no need to configure anything manually. In doubt, do not change those values.
+ 
+@@ -3129,7 +3135,7 @@ hard and are likely different for each service operator.
+ Why is this not helping reachability of the service? Because the defenses are
+ at the introduction point, an attacker can easily flood all introduction point
+ rendering the service unavailable due to no client being able to pass through.
+-But, the service itself is not overwhelmed with connetions allowing it to
++But, the service itself is not overwhelmed with connections allowing it to
+ function properly for the few clients that were able to go through or other any
+ services running on the same tor instance.
+ 
+@@ -3543,7 +3549,7 @@ The next section describes the per service options that can only be set
+       MasterOnionAddress <frontend_onion_address>
+      +
+    where <frontend_onion_address> is the onion address of the OnionBalance
+-   frontend (e.g. wrxdvcaqpuzakbfww5sxs6r2uybczwijzfn2ezy2osaj7iox7kl7nhad.onion).
++   frontend (e.g. wrxdvcaqpuzakbfww5sxs6r2uybczwijzfn2ezy2osaj7iox7kl7nhad.anon).
+ 
+ 
+ [[HiddenServiceMaxStreams]] **HiddenServiceMaxStreams** __N__::
+@@ -3651,12 +3657,12 @@ Service side:
+ Client side:
+ 
+   To access a v3 onion service with client authorization as a client, make sure
+-  you have ClientOnionAuthDir set in your torrc. Then, in the
++  you have ClientOnionAuthDir set in your anonrc. Then, in the
+   <ClientOnionAuthDir> directory, create an .auth_private file for the onion
+   service corresponding to this key (i.e. 'bob_onion.auth_private').  The
+   contents of the <ClientOnionAuthDir>/<user>.auth_private file should look like:
+ 
+-      <56-char-onion-addr-without-.onion-part>:descriptor:x25519:<x25519 private key in base32>
++      <56-char-onion-addr-without-.anon-part>:descriptor:x25519:<x25519 private key in base32>
+ 
+ For more information, please see https://2019.www.torproject.org/docs/tor-onion-service.html.en#ClientAuthorization .
+ 
+@@ -3860,14 +3866,14 @@ The following options are used for running a testing Tor network.
+ 
+ == NON-PERSISTENT OPTIONS
+ 
+-These options are not saved to the torrc file by the "SAVECONF" controller
++These options are not saved to the anonrc file by the "SAVECONF" controller
+ command.  Other options of this type are documented in control-spec.txt,
+ section 5.4. End-users should mostly ignore them.
+ 
+ [[UnderscorePorts]] **{dbl_}ControlPort**, **{dbl_}DirPort**, **{dbl_}DNSPort**, **{dbl_}ExtORPort**, **{dbl_}NATDPort**, **{dbl_}ORPort**, **{dbl_}SocksPort**, **{dbl_}TransPort**::
+     These underscore-prefixed options are variants of the regular Port
+     options.  They behave the same, except they are not saved to the
+-    torrc file by the controller's SAVECONF command.
++    anonrc file by the controller's SAVECONF command.
+ 
+ 
+ == SIGNALS
+@@ -3905,13 +3911,13 @@ Tor catches the following signals:
+ 
+ == FILES
+ 
+-**`@CONFDIR@/torrc`**::
++**`@CONFDIR@/anonrc`**::
+     Default location of the configuration file.
+ 
+-**`$HOME/.torrc`**::
+-    Fallback location for torrc, if @CONFDIR@/torrc is not found.
++**`$HOME/.anonrc`**::
++    Fallback location for anonrc, if @CONFDIR@/anonrc is not found.
+ 
+-**`@LOCALSTATEDIR@/lib/tor/`**::
++**`@LOCALSTATEDIR@/lib/anon/`**::
+     The tor process stores keys and other data here.
+ 
+ __CacheDirectory__/**`cached-certs`**::
+@@ -3985,7 +3991,7 @@ __DataDirectory__/**`key-pinning-journal`**::
+ 
+ __KeyDirectory__/**`authority_identity_key`**::
+     A v3 directory authority's master identity key, used to authenticate its
+-    signing key. Tor doesn't use this while it's running. The tor-gencert
++    signing key. Tor doesn't use this while it's running. The anon-gencert
+     program uses this. If you're running an authority, you should keep this key
+     offline, and not put it in this file.
+ 
+@@ -4018,7 +4024,7 @@ __KeyDirectory__/**`ed25519_master_id_secret_key`**::
+     The private part of a relay's Ed25519 permanent identity key.  This key is
+     used to sign the medium-term ed25519 signing key.  This file can be kept
+     offline or encrypted. If so, Tor will not be able to generate new signing
+-    keys automatically; you'll need to use `tor --keygen` to do so.
++    keys automatically; you'll need to use `anon --keygen` to do so.
+ 
+ __KeyDirectory__/**`ed25519_signing_secret_key`**::
+     The private and public components of a relay's medium-term Ed25519 signing
+@@ -4118,20 +4124,20 @@ __DataDirectory__/**`stats/hidserv-stats`**::
+     of what fraction of the traffic is hidden service rendezvous traffic, and
+     approximately how many hidden services the relay has seen.
+ 
+-__DataDirectory__/**networkstatus-bridges`**::
++__DataDirectory__/**`networkstatus-bridges`**::
+     Only used by authoritative bridge directories. Contains information
+     about bridges that have self-reported themselves to the bridge
+     authority.
+ 
+ __HiddenServiceDirectory__/**`hostname`**::
+-    The <base32-encoded-fingerprint>.onion domain name for this hidden service.
++    The <base32-encoded-fingerprint>.anon domain name for this hidden service.
+     If the hidden service is restricted to authorized clients only, this file
+     also contains authorization data for all clients.
+ +
+ [NOTE]
+     The clients will ignore any extra subdomains prepended to a hidden
+-    service hostname. Supposing you have "xyz.onion" as your hostname, you
+-    can ask your clients to connect to "www.xyz.onion" or "irc.xyz.onion"
++    service hostname. Supposing you have "xyz.anon" as your hostname, you
++    can ask your clients to connect to "www.xyz.anon" or "irc.xyz.anon"
+     for virtual-hosting purposes.
+ 
+ __HiddenServiceDirectory__/**`private_key`**::
+@@ -4149,9 +4155,9 @@ __HiddenServiceDirectory__/**`onion_service_non_anonymous`**::
+ 
+ For more information, refer to the Tor Project website at
+ https://www.torproject.org/ and the Tor specifications at
+-https://spec.torproject.org. See also **torsocks**(1) and **torify**(1).
++https://spec.torproject.org. See also **torsocks**(1) and **anonify**(1).
+ 
+ == BUGS
+ 
+-Because Tor is still under development, there may be plenty of bugs. Please
++Because Anon is still under development, there may be plenty of bugs. Please
+ report them at https://bugs.torproject.org/.
+diff --git a/doc/man/torify.1.txt b/doc/man/anonify.1.txt
+similarity index 50%
+rename from doc/man/torify.1.txt
+rename to doc/man/anonify.1.txt
+index 30e4a4275..e1f45769c 100644
+--- a/doc/man/torify.1.txt
++++ b/doc/man/anonify.1.txt
+@@ -2,36 +2,36 @@
+ // See LICENSE for licensing information
+ // This is an asciidoc file used to generate the manpage/html reference.
+ // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
+-:man source:   Tor
+-:man manual:   Tor Manual
+-torify(1)
++:man source:   Anon
++:man manual:   Anon Manual
++anonify(1)
+ =========
+-Tor Project, Inc.
++Anon
+ 
+ NAME
+ ----
+-torify - wrapper for torsocks and tor
++anonify - wrapper for torsocks and anon
+ 
+ SYNOPSIS
+ --------
+-**torify** __application__ [__application's__ __arguments__]
++**anonify** __application__ [__application's__ __arguments__]
+ 
+ DESCRIPTION
+ -----------
+-**torify** is a simple wrapper that calls torsocks with a tor-specific
++**anonify** is a simple wrapper that calls torsocks with a anon-specific
+ configuration file.
+ 
+ It is provided for backward compatibility; instead you should use torsocks.
+ 
+ WARNING
+ -------
+-When used with torsocks, torify should not leak DNS requests or UDP data.
++When used with torsocks, anonify should not leak DNS requests or UDP data.
+ 
+-torify can leak ICMP data.
++anonify can leak ICMP data.
+ 
+-torify will not ensure that different requests are processed on
++anonify will not ensure that different requests are processed on
+ different circuits.
+ 
+ SEE ALSO
+ --------
+-**tor**(1), **torsocks**(1)
++**anon**(1), **torsocks**(1)
+diff --git a/src/app/main/tor_main.c b/src/app/main/anon_main.c
+similarity index 100%
+rename from src/app/main/tor_main.c
+rename to src/app/main/anon_main.c
+diff --git a/src/config/torrc.minimal.in b/src/config/anonrc.minimal.in
+similarity index 94%
+rename from src/config/torrc.minimal.in
+rename to src/config/anonrc.minimal.in
+index d842fbcaf..c54c5a99f 100644
+--- a/src/config/torrc.minimal.in
++++ b/src/config/anonrc.minimal.in
+@@ -10,7 +10,7 @@
+ ## for more options you can use in this file.
+ ##
+ ## Tor will look for this file in various places based on your platform:
+-## https://www.torproject.org/docs/faq#torrc
++## https://www.torproject.org/docs/faq#anonrc
+ 
+ ## Tor opens a socks proxy on port 9050 by default -- even if you don't
+ ## configure one below. Set "SocksPort 0" if you plan to run Tor only
+@@ -33,10 +33,10 @@
+ ## We advise using "notice" in most cases, since anything more verbose
+ ## may provide sensitive information to an attacker who obtains the logs.
+ ##
+-## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/tor/notices.log
+-#Log notice file @LOCALSTATEDIR@/log/tor/notices.log
+-## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
+-#Log debug file @LOCALSTATEDIR@/log/tor/debug.log
++## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/anon/notices.log
++#Log notice file @LOCALSTATEDIR@/log/anon/notices.log
++## Send every possible message to @LOCALSTATEDIR@/log/anon/debug.log
++#Log debug file @LOCALSTATEDIR@/log/anon/debug.log
+ ## Use the system log instead of Tor's logfiles
+ #Log notice syslog
+ ## To send all messages to stderr:
+@@ -48,8 +48,8 @@
+ #RunAsDaemon 1
+ 
+ ## The directory for keeping all the keys/etc. By default, we store
+-## things in $HOME/.tor on Unix, and in Application Data\tor on Windows.
+-#DataDirectory @LOCALSTATEDIR@/lib/tor
++## things in $HOME/.anon on Unix, and in Application Data\tor on Windows.
++#DataDirectory @LOCALSTATEDIR@/lib/anon
+ 
+ ## The port on which Tor will listen for local connections from Tor
+ ## controller applications, as documented in control-spec.txt.
+@@ -68,10 +68,10 @@
+ ## HiddenServicePort x y:z says to redirect requests on port x to the
+ ## address y:z.
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/other_hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/other_hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ #HiddenServicePort 22 127.0.0.1:22
+ 
+diff --git a/src/config/torrc.minimal.in-staging b/src/config/anonrc.minimal.in-staging
+similarity index 95%
+rename from src/config/torrc.minimal.in-staging
+rename to src/config/anonrc.minimal.in-staging
+index 667ab294b..9a29cb670 100644
+--- a/src/config/torrc.minimal.in-staging
++++ b/src/config/anonrc.minimal.in-staging
+@@ -10,7 +10,7 @@
+ ## for more options you can use in this file.
+ ##
+ ## Tor will look for this file in various places based on your platform:
+-## https://www.torproject.org/docs/faq#torrc
++## https://www.torproject.org/docs/faq#anonrc
+ 
+ ## Tor opens a SOCKS proxy on port 9050 by default -- even if you don't
+ ## configure one below. Set "SOCKSPort 0" if you plan to run Tor only
+@@ -34,10 +34,10 @@
+ ## We advise using "notice" in most cases, since anything more verbose
+ ## may provide sensitive information to an attacker who obtains the logs.
+ ##
+-## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/tor/notices.log
+-#Log notice file @LOCALSTATEDIR@/log/tor/notices.log
+-## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
+-#Log debug file @LOCALSTATEDIR@/log/tor/debug.log
++## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/anon/notices.log
++#Log notice file @LOCALSTATEDIR@/log/anon/notices.log
++## Send every possible message to @LOCALSTATEDIR@/log/anon/debug.log
++#Log debug file @LOCALSTATEDIR@/log/anon/debug.log
+ ## Use the system log instead of Tor's logfiles
+ #Log notice syslog
+ ## To send all messages to stderr:
+@@ -49,8 +49,8 @@
+ #RunAsDaemon 1
+ 
+ ## The directory for keeping all the keys/etc. By default, we store
+-## things in $HOME/.tor on Unix, and in Application Data\tor on Windows.
+-#DataDirectory @LOCALSTATEDIR@/lib/tor
++## things in $HOME/.anon on Unix, and in Application Data\tor on Windows.
++#DataDirectory @LOCALSTATEDIR@/lib/anon
+ 
+ ## The port on which Tor will listen for local connections from Tor
+ ## controller applications, as documented in control-spec.txt.
+@@ -69,10 +69,10 @@
+ ## HiddenServicePort x y:z says to redirect requests on port x to the
+ ## address y:z.
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/other_hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/other_hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ #HiddenServicePort 22 127.0.0.1:22
+ 
+diff --git a/src/config/torrc.sample.in b/src/config/anonrc.sample.in
+similarity index 95%
+rename from src/config/torrc.sample.in
+rename to src/config/anonrc.sample.in
+index 97ff94145..9a329d154 100644
+--- a/src/config/torrc.sample.in
++++ b/src/config/anonrc.sample.in
+@@ -10,7 +10,7 @@
+ ## for more options you can use in this file.
+ ##
+ ## Tor will look for this file in various places based on your platform:
+-## https://support.torproject.org/tbb/tbb-editing-torrc/
++## https://support.torproject.org/tbb/tbb-editing-anonrc/
+ 
+ ## Tor opens a SOCKS proxy on port 9050 by default -- even if you don't
+ ## configure one below. Set "SOCKSPort 0" if you plan to run Tor only
+@@ -34,10 +34,10 @@
+ ## We advise using "notice" in most cases, since anything more verbose
+ ## may provide sensitive information to an attacker who obtains the logs.
+ ##
+-## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/tor/notices.log
+-#Log notice file @LOCALSTATEDIR@/log/tor/notices.log
+-## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
+-#Log debug file @LOCALSTATEDIR@/log/tor/debug.log
++## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/anon/notices.log
++#Log notice file @LOCALSTATEDIR@/log/anon/notices.log
++## Send every possible message to @LOCALSTATEDIR@/log/anon/debug.log
++#Log debug file @LOCALSTATEDIR@/log/anon/debug.log
+ ## Use the system log instead of Tor's logfiles
+ #Log notice syslog
+ ## To send all messages to stderr:
+@@ -49,8 +49,8 @@
+ #RunAsDaemon 1
+ 
+ ## The directory for keeping all the keys/etc. By default, we store
+-## things in $HOME/.tor on Unix, and in Application Data\tor on Windows.
+-#DataDirectory @LOCALSTATEDIR@/lib/tor
++## things in $HOME/.anon on Unix, and in Application Data\tor on Windows.
++#DataDirectory @LOCALSTATEDIR@/lib/anon
+ 
+ ## The port on which Tor will listen for local connections from Tor
+ ## controller applications, as documented in control-spec.txt.
+@@ -69,10 +69,10 @@
+ ## HiddenServicePort x y:z says to redirect requests on port x to the
+ ## address y:z.
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ 
+-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/other_hidden_service/
++#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/other_hidden_service/
+ #HiddenServicePort 80 127.0.0.1:80
+ #HiddenServicePort 22 127.0.0.1:22
+ 
+@@ -253,5 +253,5 @@
+ ## folder will be parsed following lexical order. Files starting with a dot are ignored. Files
+ ## on subfolders are ignored.
+ ## The %include option can be used recursively.
+-#%include /etc/torrc.d/*.conf
++#%include /etc/anonrc.d/*.conf
+ 
+diff --git a/src/test/conf_examples/badnick_1/torrc b/src/test/conf_examples/badnick_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/badnick_1/torrc
+rename to src/test/conf_examples/badnick_1/anonrc
+diff --git a/src/test/conf_examples/badnick_2/torrc b/src/test/conf_examples/badnick_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/badnick_2/torrc
+rename to src/test/conf_examples/badnick_2/anonrc
+diff --git a/src/test/conf_examples/bridgeauth_1/torrc b/src/test/conf_examples/bridgeauth_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/bridgeauth_1/torrc
+rename to src/test/conf_examples/bridgeauth_1/anonrc
+diff --git a/src/test/conf_examples/bug_31495_1/torrc b/src/test/conf_examples/bug_31495_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/bug_31495_1/torrc
+rename to src/test/conf_examples/bug_31495_1/anonrc
+diff --git a/src/test/conf_examples/bug_31495_2/torrc b/src/test/conf_examples/bug_31495_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/bug_31495_2/torrc
+rename to src/test/conf_examples/bug_31495_2/anonrc
+diff --git a/src/test/conf_examples/bug_31495_3/torrc b/src/test/conf_examples/bug_31495_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/bug_31495_3/torrc
+rename to src/test/conf_examples/bug_31495_3/anonrc
+diff --git a/src/test/conf_examples/contactinfo_notutf8/torrc b/src/test/conf_examples/contactinfo_notutf8/anonrc
+similarity index 100%
+rename from src/test/conf_examples/contactinfo_notutf8/torrc
+rename to src/test/conf_examples/contactinfo_notutf8/anonrc
+diff --git a/src/test/conf_examples/controlsock/torrc b/src/test/conf_examples/controlsock/anonrc
+similarity index 100%
+rename from src/test/conf_examples/controlsock/torrc
+rename to src/test/conf_examples/controlsock/anonrc
+diff --git a/src/test/conf_examples/crypto_accel/torrc b/src/test/conf_examples/crypto_accel/anonrc
+similarity index 100%
+rename from src/test/conf_examples/crypto_accel/torrc
+rename to src/test/conf_examples/crypto_accel/anonrc
+diff --git a/src/test/conf_examples/crypto_accel_req/torrc b/src/test/conf_examples/crypto_accel_req/anonrc
+similarity index 100%
+rename from src/test/conf_examples/crypto_accel_req/torrc
+rename to src/test/conf_examples/crypto_accel_req/anonrc
+diff --git a/src/test/conf_examples/dirauth_1/torrc b/src/test/conf_examples/dirauth_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/dirauth_1/torrc
+rename to src/test/conf_examples/dirauth_1/anonrc
+diff --git a/src/test/conf_examples/dirauth_2/torrc b/src/test/conf_examples/dirauth_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/dirauth_2/torrc
+rename to src/test/conf_examples/dirauth_2/anonrc
+diff --git a/src/test/conf_examples/dirauth_3/torrc b/src/test/conf_examples/dirauth_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/dirauth_3/torrc
+rename to src/test/conf_examples/dirauth_3/anonrc
+diff --git a/src/test/conf_examples/empty_1/torrc b/src/test/conf_examples/empty_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/empty_1/torrc
+rename to src/test/conf_examples/empty_1/anonrc
+diff --git a/src/test/conf_examples/empty_2/torrc b/src/test/conf_examples/empty_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/empty_2/torrc
+rename to src/test/conf_examples/empty_2/anonrc
+diff --git a/src/test/conf_examples/empty_2/torrc.defaults b/src/test/conf_examples/empty_2/anonrc.defaults
+similarity index 100%
+rename from src/test/conf_examples/empty_2/torrc.defaults
+rename to src/test/conf_examples/empty_2/anonrc.defaults
+diff --git a/src/test/conf_examples/empty_3/torrc b/src/test/conf_examples/empty_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/empty_3/torrc
+rename to src/test/conf_examples/empty_3/anonrc
+diff --git a/src/test/conf_examples/example_1/torrc b/src/test/conf_examples/example_1/anonrc
+similarity index 61%
+rename from src/test/conf_examples/example_1/torrc
+rename to src/test/conf_examples/example_1/anonrc
+index bff7fa0aa..b7a12e524 100644
+--- a/src/test/conf_examples/example_1/torrc
++++ b/src/test/conf_examples/example_1/anonrc
+@@ -1,5 +1,5 @@
+ 
+-# Here is a simple example torrc.
++# Here is a simple example anonrc.
+   SocksPort  80
+ 
+ ContactInfo "tor_tellini@example.com"
+diff --git a/src/test/conf_examples/example_2/torrc b/src/test/conf_examples/example_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/example_2/torrc
+rename to src/test/conf_examples/example_2/anonrc
+diff --git a/src/test/conf_examples/example_3/torrc b/src/test/conf_examples/example_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/example_3/torrc
+rename to src/test/conf_examples/example_3/anonrc
+diff --git a/src/test/conf_examples/include_1/torrc b/src/test/conf_examples/include_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/include_1/torrc
+rename to src/test/conf_examples/include_1/anonrc
+diff --git a/src/test/conf_examples/include_bug_31408/torrc b/src/test/conf_examples/include_bug_31408/anonrc
+similarity index 100%
+rename from src/test/conf_examples/include_bug_31408/torrc
+rename to src/test/conf_examples/include_bug_31408/anonrc
+diff --git a/src/test/conf_examples/large_1/torrc b/src/test/conf_examples/large_1/anonrc
+similarity index 99%
+rename from src/test/conf_examples/large_1/torrc
+rename to src/test/conf_examples/large_1/anonrc
+index ebf4a3fb9..955bcc15d 100644
+--- a/src/test/conf_examples/large_1/torrc
++++ b/src/test/conf_examples/large_1/anonrc
+@@ -4,7 +4,7 @@ AccountingStart day 05:15
+ Address 128.66.8.8
+ AllowNonRFC953Hostnames 1
+ AutomapHostsOnResolve 1
+-AutomapHostsSuffixes .onions
++AutomapHostsSuffixes .anons
+ AvoidDiskWrites 1
+ BandwidthBurst 2 GB
+ BandwidthRate 1.5 GB
+diff --git a/src/test/conf_examples/lzma_zstd_1/torrc b/src/test/conf_examples/lzma_zstd_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/lzma_zstd_1/torrc
+rename to src/test/conf_examples/lzma_zstd_1/anonrc
+diff --git a/src/test/conf_examples/missing_cl_arg/torrc b/src/test/conf_examples/missing_cl_arg/anonrc
+similarity index 100%
+rename from src/test/conf_examples/missing_cl_arg/torrc
+rename to src/test/conf_examples/missing_cl_arg/anonrc
+diff --git a/src/test/conf_examples/multiple_routerset_1/torrc b/src/test/conf_examples/multiple_routerset_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/multiple_routerset_1/torrc
+rename to src/test/conf_examples/multiple_routerset_1/anonrc
+diff --git a/src/test/conf_examples/multiple_routerset_2/torrc b/src/test/conf_examples/multiple_routerset_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/multiple_routerset_2/torrc
+rename to src/test/conf_examples/multiple_routerset_2/anonrc
+diff --git a/src/test/conf_examples/multiple_routerset_3/torrc b/src/test/conf_examples/multiple_routerset_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/multiple_routerset_3/torrc
+rename to src/test/conf_examples/multiple_routerset_3/anonrc
+diff --git a/src/test/conf_examples/multiple_routerset_4/torrc b/src/test/conf_examples/multiple_routerset_4/anonrc
+similarity index 100%
+rename from src/test/conf_examples/multiple_routerset_4/torrc
+rename to src/test/conf_examples/multiple_routerset_4/anonrc
+diff --git a/src/test/conf_examples/nss_1/torrc b/src/test/conf_examples/nss_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/nss_1/torrc
+rename to src/test/conf_examples/nss_1/anonrc
+diff --git a/src/test/conf_examples/obsolete_1/torrc b/src/test/conf_examples/obsolete_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/obsolete_1/torrc
+rename to src/test/conf_examples/obsolete_1/anonrc
+diff --git a/src/test/conf_examples/obsolete_2/torrc b/src/test/conf_examples/obsolete_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/obsolete_2/torrc
+rename to src/test/conf_examples/obsolete_2/anonrc
+diff --git a/src/test/conf_examples/obsolete_3/torrc b/src/test/conf_examples/obsolete_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/obsolete_3/torrc
+rename to src/test/conf_examples/obsolete_3/anonrc
+diff --git a/src/test/conf_examples/ops_1/torrc b/src/test/conf_examples/ops_1/anonrc
+similarity index 100%
+rename from src/test/conf_examples/ops_1/torrc
+rename to src/test/conf_examples/ops_1/anonrc
+diff --git a/src/test/conf_examples/ops_2/torrc b/src/test/conf_examples/ops_2/anonrc
+similarity index 100%
+rename from src/test/conf_examples/ops_2/torrc
+rename to src/test/conf_examples/ops_2/anonrc
+diff --git a/src/test/conf_examples/ops_3/torrc b/src/test/conf_examples/ops_3/anonrc
+similarity index 100%
+rename from src/test/conf_examples/ops_3/torrc
+rename to src/test/conf_examples/ops_3/anonrc
+diff --git a/src/test/conf_examples/ops_4/torrc.defaults b/src/test/conf_examples/ops_4/anonrc.defaults
+similarity index 100%
+rename from src/test/conf_examples/ops_4/torrc.defaults
+rename to src/test/conf_examples/ops_4/anonrc.defaults
+diff --git a/src/test/conf_examples/ops_5/torrc.defaults b/src/test/conf_examples/ops_5/anonrc.defaults
+similarity index 100%
+rename from src/test/conf_examples/ops_5/torrc.defaults
+rename to src/test/conf_examples/ops_5/anonrc.defaults
+diff --git a/src/test/conf_examples/ops_6/torrc.defaults b/src/test/conf_examples/ops_6/anonrc.defaults
+similarity index 100%
+rename from src/test/conf_examples/ops_6/torrc.defaults
+rename to src/test/conf_examples/ops_6/anonrc.defaults
+diff --git a/src/test/conf_examples/pt_01/torrc b/src/test/conf_examples/pt_01/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_01/torrc
+rename to src/test/conf_examples/pt_01/anonrc
+diff --git a/src/test/conf_examples/pt_02/torrc b/src/test/conf_examples/pt_02/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_02/torrc
+rename to src/test/conf_examples/pt_02/anonrc
+diff --git a/src/test/conf_examples/pt_03/torrc b/src/test/conf_examples/pt_03/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_03/torrc
+rename to src/test/conf_examples/pt_03/anonrc
+diff --git a/src/test/conf_examples/pt_04/torrc b/src/test/conf_examples/pt_04/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_04/torrc
+rename to src/test/conf_examples/pt_04/anonrc
+diff --git a/src/test/conf_examples/pt_05/torrc b/src/test/conf_examples/pt_05/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_05/torrc
+rename to src/test/conf_examples/pt_05/anonrc
+diff --git a/src/test/conf_examples/pt_06/torrc b/src/test/conf_examples/pt_06/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_06/torrc
+rename to src/test/conf_examples/pt_06/anonrc
+diff --git a/src/test/conf_examples/pt_07/torrc b/src/test/conf_examples/pt_07/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_07/torrc
+rename to src/test/conf_examples/pt_07/anonrc
+diff --git a/src/test/conf_examples/pt_08/torrc b/src/test/conf_examples/pt_08/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_08/torrc
+rename to src/test/conf_examples/pt_08/anonrc
+diff --git a/src/test/conf_examples/pt_09/torrc b/src/test/conf_examples/pt_09/anonrc
+similarity index 100%
+rename from src/test/conf_examples/pt_09/torrc
+rename to src/test/conf_examples/pt_09/anonrc
+diff --git a/src/test/conf_examples/relay_01/torrc b/src/test/conf_examples/relay_01/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_01/torrc
+rename to src/test/conf_examples/relay_01/anonrc
+diff --git a/src/test/conf_examples/relay_02/torrc b/src/test/conf_examples/relay_02/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_02/torrc
+rename to src/test/conf_examples/relay_02/anonrc
+diff --git a/src/test/conf_examples/relay_03/torrc b/src/test/conf_examples/relay_03/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_03/torrc
+rename to src/test/conf_examples/relay_03/anonrc
+diff --git a/src/test/conf_examples/relay_04/torrc b/src/test/conf_examples/relay_04/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_04/torrc
+rename to src/test/conf_examples/relay_04/anonrc
+diff --git a/src/test/conf_examples/relay_05/torrc b/src/test/conf_examples/relay_05/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_05/torrc
+rename to src/test/conf_examples/relay_05/anonrc
+diff --git a/src/test/conf_examples/relay_06/torrc b/src/test/conf_examples/relay_06/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_06/torrc
+rename to src/test/conf_examples/relay_06/anonrc
+diff --git a/src/test/conf_examples/relay_07/torrc b/src/test/conf_examples/relay_07/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_07/torrc
+rename to src/test/conf_examples/relay_07/anonrc
+diff --git a/src/test/conf_examples/relay_08/torrc b/src/test/conf_examples/relay_08/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_08/torrc
+rename to src/test/conf_examples/relay_08/anonrc
+diff --git a/src/test/conf_examples/relay_09/torrc b/src/test/conf_examples/relay_09/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_09/torrc
+rename to src/test/conf_examples/relay_09/anonrc
+diff --git a/src/test/conf_examples/relay_10/torrc b/src/test/conf_examples/relay_10/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_10/torrc
+rename to src/test/conf_examples/relay_10/anonrc
+diff --git a/src/test/conf_examples/relay_11/torrc b/src/test/conf_examples/relay_11/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_11/torrc
+rename to src/test/conf_examples/relay_11/anonrc
+diff --git a/src/test/conf_examples/relay_12/torrc b/src/test/conf_examples/relay_12/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_12/torrc
+rename to src/test/conf_examples/relay_12/anonrc
+diff --git a/src/test/conf_examples/relay_13/torrc b/src/test/conf_examples/relay_13/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_13/torrc
+rename to src/test/conf_examples/relay_13/anonrc
+diff --git a/src/test/conf_examples/relay_14/torrc b/src/test/conf_examples/relay_14/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_14/torrc
+rename to src/test/conf_examples/relay_14/anonrc
+diff --git a/src/test/conf_examples/relay_15/torrc b/src/test/conf_examples/relay_15/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_15/torrc
+rename to src/test/conf_examples/relay_15/anonrc
+diff --git a/src/test/conf_examples/relay_16/torrc b/src/test/conf_examples/relay_16/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_16/torrc
+rename to src/test/conf_examples/relay_16/anonrc
+diff --git a/src/test/conf_examples/relay_17/torrc b/src/test/conf_examples/relay_17/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_17/torrc
+rename to src/test/conf_examples/relay_17/anonrc
+diff --git a/src/test/conf_examples/relay_18/torrc b/src/test/conf_examples/relay_18/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_18/torrc
+rename to src/test/conf_examples/relay_18/anonrc
+diff --git a/src/test/conf_examples/relay_19/torrc b/src/test/conf_examples/relay_19/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_19/torrc
+rename to src/test/conf_examples/relay_19/anonrc
+diff --git a/src/test/conf_examples/relay_20/torrc b/src/test/conf_examples/relay_20/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_20/torrc
+rename to src/test/conf_examples/relay_20/anonrc
+diff --git a/src/test/conf_examples/relay_21/torrc b/src/test/conf_examples/relay_21/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_21/torrc
+rename to src/test/conf_examples/relay_21/anonrc
+diff --git a/src/test/conf_examples/relay_22/torrc b/src/test/conf_examples/relay_22/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_22/torrc
+rename to src/test/conf_examples/relay_22/anonrc
+diff --git a/src/test/conf_examples/relay_23/torrc b/src/test/conf_examples/relay_23/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_23/torrc
+rename to src/test/conf_examples/relay_23/anonrc
+diff --git a/src/test/conf_examples/relay_24/torrc b/src/test/conf_examples/relay_24/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_24/torrc
+rename to src/test/conf_examples/relay_24/anonrc
+diff --git a/src/test/conf_examples/relay_25/torrc b/src/test/conf_examples/relay_25/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_25/torrc
+rename to src/test/conf_examples/relay_25/anonrc
+diff --git a/src/test/conf_examples/relay_26/torrc b/src/test/conf_examples/relay_26/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_26/torrc
+rename to src/test/conf_examples/relay_26/anonrc
+diff --git a/src/test/conf_examples/relay_27/torrc b/src/test/conf_examples/relay_27/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_27/torrc
+rename to src/test/conf_examples/relay_27/anonrc
+diff --git a/src/test/conf_examples/relay_28/torrc b/src/test/conf_examples/relay_28/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_28/torrc
+rename to src/test/conf_examples/relay_28/anonrc
+diff --git a/src/test/conf_examples/relay_29/torrc b/src/test/conf_examples/relay_29/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_29/torrc
+rename to src/test/conf_examples/relay_29/anonrc
+diff --git a/src/test/conf_examples/relay_30/torrc b/src/test/conf_examples/relay_30/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_30/torrc
+rename to src/test/conf_examples/relay_30/anonrc
+diff --git a/src/test/conf_examples/relay_31/torrc b/src/test/conf_examples/relay_31/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_31/torrc
+rename to src/test/conf_examples/relay_31/anonrc
+diff --git a/src/test/conf_examples/relay_32/torrc b/src/test/conf_examples/relay_32/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_32/torrc
+rename to src/test/conf_examples/relay_32/anonrc
+diff --git a/src/test/conf_examples/relay_33/torrc b/src/test/conf_examples/relay_33/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_33/torrc
+rename to src/test/conf_examples/relay_33/anonrc
+diff --git a/src/test/conf_examples/relay_34/torrc b/src/test/conf_examples/relay_34/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relay_34/torrc
+rename to src/test/conf_examples/relay_34/anonrc
+diff --git a/src/test/conf_examples/relpath_rad/torrc b/src/test/conf_examples/relpath_rad/anonrc
+similarity index 100%
+rename from src/test/conf_examples/relpath_rad/torrc
+rename to src/test/conf_examples/relpath_rad/anonrc
+diff --git a/src/test/conf_failures/fail-error-success/torrc b/src/test/conf_failures/fail-error-success/anonrc
+similarity index 100%
+rename from src/test/conf_failures/fail-error-success/torrc
+rename to src/test/conf_failures/fail-error-success/anonrc
+diff --git a/src/test/conf_failures/fail-error/torrc b/src/test/conf_failures/fail-error/anonrc
+similarity index 100%
+rename from src/test/conf_failures/fail-error/torrc
+rename to src/test/conf_failures/fail-error/anonrc
+diff --git a/src/test/conf_failures/fail-expected-error/torrc b/src/test/conf_failures/fail-expected-error/anonrc
+similarity index 100%
+rename from src/test/conf_failures/fail-expected-error/torrc
+rename to src/test/conf_failures/fail-expected-error/anonrc
+diff --git a/src/test/conf_failures/fail-expected-log/torrc b/src/test/conf_failures/fail-expected-log/anonrc
+similarity index 100%
+rename from src/test/conf_failures/fail-expected-log/torrc
+rename to src/test/conf_failures/fail-expected-log/anonrc
+diff --git a/src/test/conf_failures/fail-expected/torrc b/src/test/conf_failures/fail-expected/anonrc
+similarity index 100%
+rename from src/test/conf_failures/fail-expected/torrc
+rename to src/test/conf_failures/fail-expected/anonrc
+diff --git a/src/tools/tor-gencert.c b/src/tools/anon-gencert.c
+similarity index 99%
+rename from src/tools/tor-gencert.c
+rename to src/tools/anon-gencert.c
+index efd4d000f..e57673275 100644
+--- a/src/tools/tor-gencert.c
++++ b/src/tools/anon-gencert.c
+@@ -76,7 +76,8 @@ static void
+ show_help(void)
+ {
+   fprintf(stderr, "Syntax:\n"
+-          "tor-gencert [-h|--help] [-v] [-r|--reuse] [--create-identity-key]\n"
++          "anon-gencert "
++          "[-h|--help] [-v] [-r|--reuse] [--create-identity-key]\n"
+           "        [-i identity_key_file] [-s signing_key_file] "
+           "[-c certificate_file]\n"
+           "        [-m lifetime_in_months] [-a address:port] "
+diff --git a/src/tools/tor-print-ed-signing-cert.c b/src/tools/anon-print-ed-signing-cert.c
+similarity index 100%
+rename from src/tools/tor-print-ed-signing-cert.c
+rename to src/tools/anon-print-ed-signing-cert.c
+diff --git a/src/tools/tor-resolve.c b/src/tools/anon-resolve.c
+similarity index 98%
+rename from src/tools/tor-resolve.c
+rename to src/tools/anon-resolve.c
+index ad52fdaa2..773a93f36 100644
+--- a/src/tools/tor-resolve.c
++++ b/src/tools/anon-resolve.c
+@@ -257,9 +257,9 @@ onion_hs_warning(const char *hostname)
+ {
+   log_warn(LD_NET,
+         "%s is a hidden service; those don't have IP addresses. "
+-        "You can use the AutomapHostsOnResolve option to have Tor return a "
++        "You can use the AutomapHostsOnResolve option to have Anon return a "
+         "fake address for hidden services.  Or you can have your "
+-        "application send the address to Tor directly; we recommend an "
++        "application send the address to Anon directly; we recommend an "
+         "application that uses SOCKS 5 with hostnames.",
+            hostname);
+ }
+@@ -314,7 +314,7 @@ parse_socks4a_resolve_response(const char *hostname,
+   status = socks4_server_reply_get_status(reply);
+   if (status != 90) {
+     log_warn(LD_NET,"Got status response '%d': socks request failed.", status);
+-    if (!strcasecmpend(hostname, ".onion")) {
++    if (!strcasecmpend(hostname, ".anon")) {
+       onion_hs_warning(hostname);
+       result = -1; goto cleanup;
+     }
+@@ -507,7 +507,7 @@ do_resolve(const char *hostname,
+       log_warn(LD_NET,"Got SOCKS5 status response '%u': %s",
+                (unsigned)reply_field,
+                socks5_reason_to_string(reply_field));
+-      if (reply_field == 4 && !strcasecmpend(hostname, ".onion")) {
++      if (reply_field == 4 && !strcasecmpend(hostname, ".anon")) {
+         onion_hs_warning(hostname);
+       }
+ 
+@@ -551,7 +551,7 @@ do_resolve(const char *hostname,
+ static void
+ usage(void)
+ {
+-  puts("Syntax: tor-resolve [-4] [-5] [-v] [-x] [-p port] "
++  puts("Syntax: anon-resolve [-4] [-5] [-v] [-x] [-p port] "
+        "hostname [sockshost[:socksport]]");
+   exit(1);
+ }
+@@ -578,7 +578,7 @@ main(int argc, char **argv)
+     usage();
+ 
+   if (!strcmp(arg[0],"--version")) {
+-    printf("Tor version %s.\n",VERSION);
++    printf("Anon version %s.\n",VERSION);
+     return 0;
+   }
+   while (n_args && *arg[0] == '-') {
