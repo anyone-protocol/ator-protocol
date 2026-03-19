@@ -35,9 +35,9 @@ jobs:
       - name: Sign Anon for Windows 64-bit
         uses: ./.github/actions/sign-windows
         with:
-          azure-key-vault-uri: ${{ secrets.AZURE_KEY_VAULT_URI }}
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          azure-cert-name: ${{ secrets.AZURE_CERT_NAME }}
+          azure-key-vault-uri: ${{ secrets.ANYONE_AZURE_KEY_VAULT_URI }}
+          azure-client-id: ${{ secrets.ANYONE_AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.ANYONE_AZURE_TENANT_ID }}
+          azure-client-secret: ${{ secrets.ANYONE_AZURE_CLIENT_SECRET }}
+          azure-cert-name: ${{ secrets.ANYONE_AZURE_CERT_NAME }}
           release-phase: ${{ inputs.release-phase }}
