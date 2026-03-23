@@ -400,7 +400,7 @@ conflux_decide_circ_cwndrtt(const conflux_t *cfx)
   const conflux_leg_t *leg = NULL;
 
   /* Can't get here without any legs. */
-  tor_assert(!CONFLUX_NUM_LEGS(cfx));
+  tor_assert(CONFLUX_NUM_LEGS(cfx));
 
   /* Find the leg with the minimum RTT.*/
   CONFLUX_FOR_EACH_LEG_BEGIN(cfx, l) {
