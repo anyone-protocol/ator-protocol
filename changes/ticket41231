@@ -1,0 +1,5 @@
+  o Major bugfix (security):
+    - Fix a stack overflow of 11 bytes on malicious CREATED2. This lead to a
+      remote crash. TROVE-2026-003. Reported-by: Anas Cherni of Calif.io. Fixes
+      bug 41231; bugfix on 0.4.9.1-alpha.
+
