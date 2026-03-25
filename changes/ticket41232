@@ -1,0 +1,4 @@
+  o Major bugfix (security, conflux):
+    - Fix a memory compare using the wrong length. This could lead to a remote
+      crash when using the conflux subsystem. TROVE-2026-004. Fixes bug 41232;
+      bugfix on 0.4.8.1-alpha.
