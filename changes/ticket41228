@@ -1,4 +1,0 @@
-  o Minor bugfixes (security):
-    - Fix a series of defense in depth security issues found across the
-      codebase. Fixes bug 41228; bugfix on 0.3.5.1-alpha.
-
