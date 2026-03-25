@@ -1,0 +1,3 @@
+  o Minor bugfixes (portability):
+    - (Hopefully) fix our polyval implementation on big-endian platforms.
+      Fixes bug 41215; bugfix on 0.4.9.3-alpha.
