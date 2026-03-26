@@ -40,7 +40,7 @@ const entry_connection_t *CONST_EDGE_TO_ENTRY_CONN(const edge_connection_t *);
 #define AP_CONN_STATE_MIN_ 5
 /** State for a SOCKS connection: waiting for SOCKS request. */
 #define AP_CONN_STATE_SOCKS_WAIT 5
-/** State for a SOCKS connection: got a y.anon URL; waiting to receive
+/** State for a SOCKS connection: got a y.anyone URL; waiting to receive
  * rendezvous descriptor. */
 #define AP_CONN_STATE_RENDDESC_WAIT 6
 /** The controller will attach this connection to a circuit; it isn't our

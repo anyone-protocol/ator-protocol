@@ -1,9 +1,12 @@
 # ATOR Protocol Docker
+This directory contains configs to build and run ATOR protocol binaries using
+docker
 
-This directory contains configs to build and run ATOR protocol binaries using docker
+**Important!**
 
-**Important!** 
-`This docker image will be built with dummy directory authorities, production ready DAs will be introduced later.`
+This docker image will be built with dummy directory authorities.  To build with
+live directory authorities, run with `--build-arg ANON_ENV=blah` or any value
+other than `stage` (default) or `dev`.
 
 ## Building Docker Image
 

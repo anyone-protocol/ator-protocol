@@ -1,4 +1,4 @@
-##=================== /etc/anonrc =====================##
+##=================== /etc/anon/anonrc =====================##
 
 # Run Tor as a regular user (do not change this)
 User anond
