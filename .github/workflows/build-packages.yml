@@ -19,8 +19,18 @@ env:
   # tags (*beta*): beta
   # main: stage
   # development: dev
+  # dev-* branches: use branch name as env
   # everything else (pull request, etc.): unstable-dev
-  PKG_ENV: ${{ github.ref_type == 'tag' && (contains(github.ref, 'beta') && 'beta' || 'live') || github.ref == 'refs/heads/main' && 'stage' || github.ref == 'refs/heads/development' && 'dev' || 'unstable-dev' }}
+  PKG_ENV: >-
+    ${{
+      github.ref_type == 'tag' && (
+        contains(github.ref, 'beta') && 'beta' || 'live'
+      )
+      || github.ref == 'refs/heads/main' && 'stage'
+      || github.ref == 'refs/heads/development' && 'dev'
+      || startsWith(github.ref, 'refs/heads/dev-') && github.ref_name
+      || 'unstable-dev'
+    }}
 
 jobs:
 
