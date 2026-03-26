@@ -1,0 +1,54 @@
+name: Sign Anon Client for Windows
+description: Signs the Anon client for Windows executables
+inputs:
+  azure-key-vault-uri:
+    description: The URI of the Azure Key Vault containing the signing certificate.
+    required: true
+  azure-client-id:
+    description: The client ID of the Azure AD application with access to the Key Vault.
+    required: true
+  azure-tenant-id:
+    description: The tenant ID of the Azure AD application with access to the Key Vault.
+    required: true
+  azure-client-secret:
+    description: The client secret of the Azure AD application with access to the Key Vault.
+    required: true
+  azure-cert-name:
+    description: The name of the certificate in the Azure Key Vault to use for signing.
+    required: true
+  release-phase:
+    description: The release phase (beta, live, stage, dev, or unstable-dev).
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download raw artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-windows-amd64
+        path: build/
+    - name: Sign
+      shell: powershell
+      run: |
+        dotnet tool install --global AzureSignTool
+        AzureSignTool sign `
+          -kvu "${{ inputs.azure-key-vault-uri }}" `
+          -kvi "${{ inputs.azure-client-id }}" `
+          -kvt "${{ inputs.azure-tenant-id }}" `
+          -kvs "${{ inputs.azure-client-secret }}" `
+          -kvc ${{ inputs.azure-cert-name }} `
+          -tr http://timestamp.digicert.com `
+          -v "build/anon.exe"
+        AzureSignTool sign `
+          -kvu "${{ inputs.azure-key-vault-uri }}" `
+          -kvi "${{ inputs.azure-client-id }}" `
+          -kvt "${{ inputs.azure-tenant-id }}" `
+          -kvs "${{ inputs.azure-client-secret }}" `
+          -kvc ${{ inputs.azure-cert-name }} `
+          -tr http://timestamp.digicert.com `
+          -v "build/anon-gencert.exe"
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-windows-signed-amd64
+        path: build/

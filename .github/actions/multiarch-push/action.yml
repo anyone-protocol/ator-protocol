@@ -1,4 +1,5 @@
 name: 'Create Multiarch Image and Push (amd64, arm64)'
+description: 'Creates a multiarch Docker image manifest for the specified tag and pushes it to the GitHub Container Registry.'
 inputs:
   docker-username:
     required: true

@@ -1,4 +1,5 @@
 name: 'Build and Push Docker Image'
+description: 'Builds a Docker image for the specified platform and pushes it to the GitHub Container Registry.'
 inputs:
   docker-username:
     required: true

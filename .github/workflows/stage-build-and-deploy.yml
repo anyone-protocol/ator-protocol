@@ -1,9 +1,9 @@
 name: Stage Build Image and Deploy
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 env:
@@ -52,20 +52,20 @@ jobs:
           docker-tag: ${{ env.image-tag }}
           event-name: ${{ github.event_name }}
 
-  deploy:
-    needs: multiarch-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-      - name: Deploy new version
-        uses: ./.github/actions/deploy
-        with:
-          image-tag: ${{ env.image-tag }}
-          nomad-job-file: anon-da-node-stage.hcl
-          nomad-cacert: operations/admin-ui-ca.crt
-          nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
-          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
-          consul-cacert: operations/admin-ui-ca.crt
-          consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
-          consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}
+  # deploy:
+  #   needs: multiarch-push
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out the repo
+  #       uses: actions/checkout@v4
+  #     - name: Deploy new version
+  #       uses: ./.github/actions/deploy
+  #       with:
+  #         image-tag: ${{ env.image-tag }}
+  #         nomad-job-file: anon-da-node-stage.hcl
+  #         nomad-cacert: operations/admin-ui-ca.crt
+  #         nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+  #         nomad-addr: ${{ secrets.NOMAD_ADDR }}
+  #         consul-cacert: operations/admin-ui-ca.crt
+  #         consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+  #         consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}

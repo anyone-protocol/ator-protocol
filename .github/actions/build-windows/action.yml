@@ -1,0 +1,122 @@
+name: Build Anon Client for Windows
+description: Builds the Anon client for Windows and uploads the executables as an artifact
+inputs:
+  release-phase:
+    description: The release phase (beta, live, stage, dev, or unstable-dev).
+    required: true
+  openssl-version:
+    description: The version of OpenSSL to build (default 1.1.1w)
+    required: false
+    default: 1.1.1w
+  libevent-version:
+    description: The version of libevent to build (default 2.1.12-stable)
+    required: false
+    default: 2.1.12-stable
+  zlib-version:
+    description: The version of zlib to build (default 1.3.1)
+    required: false
+    default: 1.3.1
+  build-type:
+    description: The type of build (default 64)
+    required: false
+    default: 64
+  cross-host:
+    description: The cross-compilation host (default x86_64-w64-mingw32)
+    required: false
+    default: x86_64-w64-mingw32
+  mingw:
+    description: The mingw package to install (default mingw64)
+    required: false
+    default: mingw64
+  mingw-deb:
+    description: The mingw deb package to install (default gcc-mingw-w64-x86-64)
+    required: false
+    default: gcc-mingw-w64-x86-64
+runs:
+  using: composite
+  steps:
+    - name: Set up build environment variables
+      id: build-vars
+      shell: bash
+      run: |
+        echo "Setting up environment variables for Windows build..."
+        echo "CORE_COUNT=$((`nproc`+1))" >> "${GITHUB_OUTPUT}"
+    - name: Install dependencies
+      shell: bash
+      run: |
+        apt-get update -qq
+        apt-get upgrade -qy
+        apt-get install -qy autoconf automake libtool make wget git
+        apt-get install -qy ${{ inputs.mingw-deb }}
+    - name: Build openssl
+      shell: bash
+      run: |
+        wget --quiet https://www.openssl.org/source/openssl-${{ inputs.openssl-version }}.tar.gz
+        tar zxf openssl-${{ inputs.openssl-version }}.tar.gz
+        rm openssl-${{ inputs.openssl-version }}.tar.gz
+        cd openssl-${{ inputs.openssl-version }}
+        ./Configure ${{ inputs.mingw }} shared \
+          --cross-compile-prefix=${{ inputs.cross-host }}- \
+          --prefix="/build/openssl-${{ inputs.build-type }}-prefix/"
+        make -j${{ steps.build-vars.outputs.CORE_COUNT }}
+        make install
+        cd ..
+        rm -rf openssl-${{ inputs.openssl-version }}
+    - name: Build libevent
+      shell: bash
+      run: |
+        wget --quiet https://github.com/libevent/libevent/releases/download/release-${{ inputs.libevent-version }}/libevent-${{ inputs.libevent-version }}.tar.gz
+        tar zxf libevent-${{ inputs.libevent-version }}.tar.gz
+        rm libevent-${{ inputs.libevent-version }}.tar.gz
+        cd libevent-${{ inputs.libevent-version }}
+        ./configure --host=${{ inputs.cross-host }} \
+          --disable-openssl --disable-shared --disable-samples \
+          --disable-libevent-regress --enable-static \
+          --prefix="/build/libevent-${{ inputs.build-type }}-prefix/"
+        make -j${{ steps.build-vars.outputs.CORE_COUNT }}
+        make install
+        cd ..
+        rm -rf libevent-${{ inputs.libevent-version }}
+    - name: Build zlib
+      shell: bash
+      run: |
+        wget --quiet https://www.zlib.net/fossils/zlib-${{ inputs.zlib-version }}.tar.gz
+        tar zxf zlib-${{ inputs.zlib-version }}.tar.gz
+        rm zlib-${{ inputs.zlib-version }}.tar.gz
+        cd zlib-${{ inputs.zlib-version }}
+        CHOST=${{ inputs.cross-host }} ./configure --static --prefix="/build/zlib-${{ inputs.build-type }}-prefix/"
+        make -j${{ steps.build-vars.outputs.CORE_COUNT }}
+        make install
+        cd ..
+        rm -rf zlib-${{ inputs.zlib-version }}
+    - name: Build anon
+      shell: bash
+      run: |
+        ./scripts/ci/update-env.sh ${{ inputs.release-phase }}
+        ./autogen.sh
+        ./configure --host=${{ inputs.cross-host }} \
+          --disable-asciidoc \
+          --disable-zstd \
+          --disable-lzma \
+          --enable-static-libevent --with-libevent-dir="/build/libevent-${{ inputs.build-type }}-prefix/" \
+          --enable-static-openssl --with-openssl-dir="/build/openssl-${{ inputs.build-type }}-prefix/" \
+          --enable-static-zlib --with-zlib-dir="/build/zlib-${{ inputs.build-type }}-prefix/" \
+          --disable-tool-name-check \
+          --disable-gcc-hardening \
+          --enable-static-tor \
+          --prefix="/build/anon-prefix"
+        make -j1
+        make install
+    - name: Copy executables to artifact directory
+      shell: bash
+      run: |
+        mkdir -p package
+        cp src/app/anon.exe package
+        cp src/tools/anon-gencert.exe package
+        cp src/config/geoip package
+        cp src/config/geoip6 package
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-windows-amd64
+        path: package/

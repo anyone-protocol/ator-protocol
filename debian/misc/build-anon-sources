@@ -171,6 +171,11 @@ backport_all() {
   bp1 $pkg $dir $sid_debian_version oracular
   bp2 $pkg $dir $origtar
 
+	# questing (EOL: 2026-07)
+  #################################################
+  bp1 $pkg $dir $sid_debian_version questing
+  bp2 $pkg $dir $origtar
+
 	# xenial (EOL: Apr 2021, 2026-04)
 	#################################################
 	bp1 $pkg $dir $sid_debian_version xenial

@@ -1,0 +1,76 @@
+name: Build Anon Package for Debian
+description: Builds the Anon client for Debian and uploads the executables as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: The runner to use for the build.
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - arm64
+      os:
+        description: The operating system to build for (e.g. debian).
+        required: true
+        default: 'debian'
+        type: choice
+        options:
+          - debian
+          - ubuntu
+      suite:
+        description: The Debian or Ubuntu target to build for (e.g. bookworm).
+        required: true
+        default: 'bookworm'
+        type: choice
+        options:
+          - bookworm
+          - bullseye
+          - trixie
+          - noble
+          - jammy
+          - focal
+          - questing
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - beta
+          - live
+          - stage
+          - dev
+          - unstable-dev
+jobs:
+  build-debian:
+    runs-on: ${{ inputs.runner }}
+    container:
+      image: '${{ inputs.os }}:${{ inputs.suite }}'
+    env:
+      BUILD_ARCH: ${{ inputs.runner == 'arm64' && 'arm64' || 'amd64' }}
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y dist-upgrade
+          apt-get -y install sudo git build-essential devscripts gpg
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Anon Source for Debian ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
+        uses: ./.github/actions/build-debian-source
+        with:
+          build-arch: ${{ env.BUILD_ARCH }}
+          release-phase: ${{ inputs.release-phase }}
+          debian-private-key: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+          debian-fingerprint: ${{ secrets.DEBIAN_FINGERPRINT }}
+      - name: Build & Sign Anon Package for Debian ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
+        uses: ./.github/actions/build-debian-package
+        with:
+          build-arch: ${{ env.BUILD_ARCH }}
+          release-phase: ${{ inputs.release-phase }}
+          debian-private-key: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+          debian-fingerprint: ${{ secrets.DEBIAN_FINGERPRINT }}
+          os: ${{ inputs.os }}
+          suite: ${{ inputs.suite }}

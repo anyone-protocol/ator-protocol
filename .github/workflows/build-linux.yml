@@ -1,0 +1,42 @@
+name: Build Anon Package for Linux
+description: Builds the Anon client for Linux and uploads the executables as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: The runner to use for the build.
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - arm64
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - beta
+          - live
+          - stage
+          - dev
+          - unstable-dev
+jobs:
+  build-linux:
+    runs-on: ${{ inputs.runner }}
+    container:
+      image: debian:bookworm
+    env:
+      OPENSSL_VERSION: 1.1.1w
+      BUILD_ARCH: ${{ inputs.runner == 'arm64' && 'arm64' || 'amd64' }}
+      LIB_ARCH: ${{ inputs.runner == 'arm64' && 'aarch64' || 'x86_64' }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Anon for Linux ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
+        uses: ./.github/actions/build-linux
+        with:
+          build-arch: ${{ env.BUILD_ARCH }}
+          lib-arch: ${{ env.LIB_ARCH }}
+          release-phase: ${{ inputs.release-phase }}

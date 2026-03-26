@@ -1,0 +1,47 @@
+name: Build Anon Client for MacOS
+description: Builds the Anon client for MacOS and uploads the executables as an artifact.
+inputs:
+  build-arch:
+    required: true
+    description: The architecture to build for (amd64 or arm64).
+  release-phase:
+    required: true
+    description: The release phase (beta, live, stage, dev, or unstable-dev).
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies
+      shell: bash
+      run: brew install gsed automake docbook docbook-xsl zlib # libevent openssl@3
+    - name: Build anon
+      shell: bash
+      run: |
+        BREW_PREFIX=$(brew --prefix)
+        ./scripts/ci/update-env.sh ${{ inputs.release-phase }}
+        ./autogen.sh
+        ./configure --prefix=/usr/local \
+          --disable-asciidoc \
+          --disable-zstd \
+          --disable-lzma \
+          --with-zlib-dir=$BREW_PREFIX/opt/zlib \
+          --with-libevent-dir=$BREW_PREFIX/opt/libevent \
+          --with-openssl-dir=$BREW_PREFIX/opt/openssl@3 \
+          --enable-static-zlib \
+          --enable-static-libevent \
+          --enable-static-openssl \
+          --disable-tool-name-check \
+          --disable-gcc-hardening
+        make
+    - name: Copy executables to artifact directory
+      shell: bash
+      run: |
+        mkdir -p package
+        cp src/app/anon package
+        cp src/tools/anon-gencert package
+        cp src/config/geoip package
+        cp src/config/geoip6 package
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: anon-${{ inputs.release-phase }}-macos-${{ inputs.build-arch }}
+        path: package/

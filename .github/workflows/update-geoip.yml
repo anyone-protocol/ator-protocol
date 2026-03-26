@@ -1,0 +1,61 @@
+name: Update GeoIP Database
+
+on:
+  # schedule:
+    # Weekly on Monday at 04:00 UTC
+    # - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-geoip:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm
+    steps:
+      - name: Install system dependencies
+        run: |
+          apt-get -y update
+          apt-get -y install \
+            curl \
+            xz-utils \
+            git \
+            location \
+            build-essential \
+            ca-certificates
+
+      - name: Install Rust toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update GeoIP files
+        run: |
+          mkdir -p /var/lib/location
+          cd src/config
+          ../../scripts/maint/geoip/update_geoip.sh
+
+      - name: Mark workspace as safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Create pull request if changed
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sign-commits: true
+          branch: auto/update-geoip
+          commit-message: "Update geoip files to match IPFire Location Database"
+          title: "Update geoip files to match IPFire Location Database"
+          body: |
+            Automated weekly update of GeoIP database files.
+
+            Updates src/config/geoip and src/config/geoip6 from the [IPFire Location Database](https://location.ipfire.org/).
+          add-paths: |
+            src/config/geoip
+            src/config/geoip6

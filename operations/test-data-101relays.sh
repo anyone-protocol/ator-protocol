@@ -3,7 +3,6 @@
 # consul env: CONSUL_HTTP_ADDR, CONSUL_HTTP_TOKEN, CONSUL_CACERT
 # installed: node
 
-source_wallet_prv=0xb7b5e3f3eb7acef7c388da48ee97aca6c2d4d750c2f3d6f73754cd532f72a139
 tokens_to_seed=0.001
 
 for i in {11..100}; do

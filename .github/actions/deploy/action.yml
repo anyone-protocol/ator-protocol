@@ -1,4 +1,5 @@
 name: 'Deploy Docker Images'
+description: 'Deploys the specified Docker image to the Nomad cluster using the provided job file.'
 inputs:
   image-tag:
     required: true
@@ -30,12 +31,6 @@ runs:
         CONSUL_HTTP_TOKEN: ${{ inputs.consul-http-token }}
         CONSUL_ADDR: ${{ inputs.consul-addr }}
       run: |
-        #curl -L https://releases.hashicorp.com/levant/0.3.2/levant_0.3.2_linux_amd64.zip -o levant.zip
-        #unzip levant.zip
-        #[[ -n $(grep "dev" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-dev.hcl
-        #[[ -n $(grep "stage" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-stage.hcl
-        #[[ -z $(grep "stage" deploy-vars.json) && -z $(grep "dev" deploy-vars.json) ]] && ./levant render -var-file="deploy-vars.json" -consul-address=$CONSUL_ADDR -out runtime-job.hcl operations/warp-dre-node-live.hcl
-
         sed -i 's/PLACEIMAGETAGHERE/${{ inputs.image-tag }}/g' operations/${{ inputs.nomad-job-file }}
         curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
         unzip nomad.zip
