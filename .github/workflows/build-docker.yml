@@ -1,0 +1,51 @@
+name: Build Docker Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - unstable-dev
+          - dev
+          - beta
+          - stage
+          - live
+
+jobs:
+  build-and-push:
+    runs-on: ${{ matrix.platform.runs-on }}
+    strategy:
+      matrix:
+        platform:
+          - name: linux/amd64
+            image-suffix: amd64
+            runs-on: ubuntu-latest
+          - name: linux/arm64
+            image-suffix: arm64
+            runs-on: arm64
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Set image name
+        id: image-name
+        run: |
+          case "${{ github.event.inputs.release-phase }}" in
+            live)  echo "name=ator-protocol" >> "$GITHUB_OUTPUT" ;;
+            stage) echo "name=ator-protocol-stage" >> "$GITHUB_OUTPUT" ;;
+            *)     echo "name=ator-protocol-dev" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
+        with:
+          docker-username: ${{ github.actor }}
+          docker-password: ${{ secrets.GITHUB_TOKEN }}
+          docker-base-repo: ghcr.io/anyone-protocol/${{ steps.image-name.outputs.name }}-${{ matrix.platform.image-suffix }}
+          docker-tag: latest-pr
+          docker-platform: ${{ matrix.platform.name }}
+          version: ${{ github.sha }}
+          environment: ${{ github.event.inputs.release-phase }}
+          push: false
