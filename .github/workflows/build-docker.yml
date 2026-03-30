@@ -48,4 +48,4 @@ jobs:
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}
           environment: ${{ github.event.inputs.release-phase }}
-          push: false
+          push: true
