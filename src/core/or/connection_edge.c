@@ -107,6 +107,7 @@
 #include "feature/rend/rendcommon.h"
 #include "feature/stats/predict_ports.h"
 #include "feature/stats/rephist.h"
+#include "feature/dirparse/anyone_hosts_parse.h"
 #include "lib/buf/buffers.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_util.h"
@@ -1799,19 +1800,64 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   file_status_t dns_file_status = file_status(dns_fname);
   if (dns_file_status != FN_FILE) {
     log_notice(LD_APP,"DNS mapping file 'anyone_hosts' is not found in data dir.");
+    tor_free(dns_fname);
     return false;
   }
 
   // Read the entire file content using `read_file_to_str`
   file_content = read_file_to_str(dns_fname,MAX_DNS_MAPPING_FILE_SIZE,NULL);
+  tor_free(dns_fname);
   if (!file_content) {
     log_notice(LD_APP,"No mapping found for %s.",anon_address);
     return false;
   }
 
-  // Process the file content line by line
-  char *line = strtok(file_content, "\n");
+  size_t file_len = strlen(file_content);
+
+  // Verify signature if the file is in signed format.
+  if (strcmpstart(file_content, "anyone-hosts-version") == 0) {
+    anyone_hosts_sig_status_t sig_status =
+      anyone_hosts_parse_and_verify(file_content, file_len);
+    switch (sig_status) {
+      case ANYONE_HOSTS_SIG_VALID:
+        log_info(LD_APP, "anyone_hosts signature verified successfully.");
+        break;
+      case ANYONE_HOSTS_SIG_INVALID:
+        log_warn(LD_APP, "anyone_hosts has an INVALID signature. "
+                 "Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_BAD_SIGNER:
+        log_warn(LD_APP, "anyone_hosts was signed by an untrusted signer. "
+                 "Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_PARSE_ERROR:
+        log_warn(LD_APP, "anyone_hosts has signature headers but could not "
+                 "be parsed. Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_UNSIGNED:
+        log_warn(LD_APP, "anyone_hosts has version header but no signature.");
+        break;
+    }
+  } else {
+    log_warn(LD_APP, "anyone_hosts is unsigned (legacy format).");
+  }
+
+  // Process the file content line by line, skipping keyword-prefixed lines.
+  char *content_copy = tor_strdup(file_content);
+  free(file_content);
+  char *line = strtok(content_copy, "\n");
   while (line != NULL) {
+    // Skip metadata/keyword lines from the signed format.
+    if (strcmpstart(line, "anyone-hosts-version") == 0 ||
+        strcmpstart(line, "anyone-hosts-status") == 0 ||
+        strcmpstart(line, "anyone-hosts-digest") == 0 ||
+        strcmpstart(line, "anyone-hosts-signature") == 0 ||
+        strcmpstart(line, "published ") == 0 ||
+        strcmpstart(line, "valid-until ") == 0 ||
+        strcmpstart(line, "-----") == 0) {
+      line = strtok(NULL, "\n");
+      continue;
+    }
     char anon[HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     char onion[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     // Parse each line into anon and onion components
@@ -1819,10 +1865,11 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
       if (strcmp(anon, anon_address) == 0) {
         if (strlen(onion) != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX) {
           log_warn(LD_APP, "Invalid onion address length");
+          tor_free(content_copy);
           return false;
         }
         strlcpy(onion_address_out,onion,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
-        free(file_content);
+        tor_free(content_copy);
         return true;
       }
     }
@@ -1830,7 +1877,7 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Clean up
-  free(file_content);
+  tor_free(content_copy);
   return false;
 }
 
