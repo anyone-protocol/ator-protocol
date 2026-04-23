@@ -45,6 +45,7 @@ endif
 
 EXTRA_DIST+= doc/asciidoc-helper.sh			\
 	     $(html_in) $(man_in) $(txt_in)			\
+	     doc/anyone_hosts_format.txt			\
 	     doc/state-contents.txt				\
 	     doc/anonrc_format.txt 				\
 	     doc/tor-doxygen.css 				\

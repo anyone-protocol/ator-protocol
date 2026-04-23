@@ -1,0 +1,369 @@
+This document specifies the anyone_hosts file format and signature
+verification rules as implemented in this repository as of April 2026.
+
+The goal of this document is interoperability: another runtime should be
+able to read, write, sign, and verify anyone_hosts files that are accepted by
+this implementation.
+
+This document describes both:
+
+  * the legacy unsigned format, and
+  * the signed format introduced for authenticated distribution.
+
+We do not guarantee long-term stability.  If you implement this format in a
+different runtime, track this document and the implementation for changes.
+
+
+1. Purpose
+
+The anyone_hosts file maps short-form .anyone names to full hidden-service
+addresses, also ending in .anyone.
+
+Examples:
+
+  dns-live-1.anyone.anyone
+      -> gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone
+
+The file is consulted when a client resolves a .anyone hostname.  If a
+mapping is found, the mapped hidden-service address is used for connection.
+
+
+2. File Location
+
+The file is named:
+
+  anyone_hosts
+
+and is stored in the runtime data directory.
+
+If the file does not exist, this implementation creates it with a default
+unsigned mapping set containing the bootstrap Anyone DNS services.
+
+
+3. Legacy Unsigned Format
+
+The legacy format is line-oriented.  Each non-empty line contains exactly two
+whitespace-separated fields:
+
+  <short-name> <hs-address>
+
+where:
+
+  * <short-name> is a .anyone hostname, typically of the form
+    "name.anyone.anyone"
+  * <hs-address> is a full v3 hidden-service address ending in ".anyone"
+
+Example:
+
+  anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone
+
+The current implementation treats any file that does not begin with the exact
+string "anyone-hosts-version" as a legacy unsigned file.
+
+
+4. Signed Format Overview
+
+The signed format follows the same general style as Tor consensus-like
+documents:
+
+  * keyword lines at the top,
+  * mapping lines in the body,
+  * a digest line,
+  * a signature line,
+  * and a PEM-style signature block.
+
+The signed format is:
+
+  anyone-hosts-version 1
+  anyone-hosts-status signed
+  published YYYY-MM-DD HH:MM:SS
+  valid-until YYYY-MM-DD HH:MM:SS
+
+  <mapping-line-1>
+  <mapping-line-2>
+  ...
+
+  anyone-hosts-digest sha256 <64-lower-or-upper-hex-chars>
+  anyone-hosts-signature <signer-hs-address>
+  -----BEGIN SIGNATURE-----
+  <base64 signature data>
+  -----END SIGNATURE-----
+
+The keywords "published", "valid-until", and "anyone-hosts-digest" are
+currently optional in this implementation.  "anyone-hosts-version" and
+"anyone-hosts-signature" are required for a document to verify as signed.
+
+
+5. Signed Format Grammar
+
+This grammar is descriptive rather than exhaustive.  It describes what other
+runtimes should emit for interoperable documents.
+
+  AnyoneHostsFile = LegacyFile / SignedFile
+
+  LegacyFile = 1*( MappingLine LF ) [ MappingLine ]
+
+  SignedFile =
+      VersionLine LF
+      [ StatusLine LF ]
+      [ PublishedLine LF ]
+      [ ValidUntilLine LF ]
+      *( LF )
+      1*( MappingLine LF )
+      [ LF ]
+      [ DigestLine LF ]
+      SignatureLine LF
+      SignatureObject
+
+  VersionLine = "anyone-hosts-version" SP "1"
+  StatusLine = "anyone-hosts-status" SP "signed"
+  PublishedLine = "published" SP Timestamp
+  ValidUntilLine = "valid-until" SP Timestamp
+  DigestLine = "anyone-hosts-digest" SP "sha256" SP 64HEXDIG
+  SignatureLine = "anyone-hosts-signature" SP HSAddress
+
+  MappingLine = ShortName SP HSAddress
+
+  SignatureObject =
+      "-----BEGIN SIGNATURE-----" LF
+      Base64Data LF
+      "-----END SIGNATURE-----" [ LF ]
+
+  Timestamp = 4DIGIT "-" 2DIGIT "-" 2DIGIT SP 2DIGIT ":" 2DIGIT ":" 2DIGIT
+  ShortName = 1*( NONSPACE )
+  HSAddress = 56BASE32 ".anyone"
+
+Notes:
+
+  * The current implementation accepts multiple lines of base64 inside the
+    signature object, as with other PEM-style objects.
+  * Mapping lines are parsed as generic unrecognized lines by the document
+    tokenizer, then interpreted by the anyone_hosts lookup code.
+  * A mapping line must still contain two whitespace-separated fields when the
+    mapping table is actually used.
+
+
+6. Encoding Requirements
+
+To ensure that hashes and signatures verify across runtimes, emit signed files
+using these rules:
+
+  * Character encoding: ASCII or UTF-8 using only ASCII characters.
+  * Line ending: LF only (0x0A).
+  * No leading BOM.
+  * Keyword spelling is case-sensitive.
+  * The file must begin with the exact bytes "anyone-hosts-version" to be
+    treated as signed by the current implementation.
+
+Signed-region hashing is byte-exact.  Different line endings or different
+whitespace produce a different signature.
+
+
+7. Address Rules
+
+7.1. Hidden-service address format
+
+Hidden-service addresses use the Anyone v3 format:
+
+  * 56 base32 characters
+  * followed by the literal suffix ".anyone"
+
+Total length with suffix: 63 characters.
+
+7.2. Signer address format
+
+The signer address on the anyone-hosts-signature line must be a full hidden
+service address including the ".anyone" suffix.
+
+For signature verification, the current implementation strips the suffix and
+parses the 56-character base32 portion as a v3 service address in order to
+recover the Ed25519 public key.
+
+
+8. Signature Algorithm
+
+The signed format uses:
+
+  * Hash algorithm: SHA-256
+  * Signature algorithm: Ed25519
+  * Domain-separation prefix: "anyone-hosts-signature"
+
+The signature is verified using Ed25519 over the 32-byte SHA-256 digest of the
+signed region, with the above domain-separation prefix.
+
+In pseudocode:
+
+  document_digest = SHA256(signed_region_bytes)
+  valid = Ed25519VerifyPrefixed(
+      public_key = signer_pubkey,
+      prefix = "anyone-hosts-signature",
+      message = document_digest,
+      signature = signature_bytes)
+
+
+9. Signed Region
+
+The signed region is byte-exact and matches the consensus-style boundary used
+by this implementation.
+
+It begins at the first byte of:
+
+  anyone-hosts-version
+
+and ends at the LF terminating the line that begins with:
+
+  anyone-hosts-signature
+
+The PEM signature object is not part of the signed region.
+
+In other words, sign and verify exactly these bytes:
+
+  anyone-hosts-version 1\n
+  ...
+  anyone-hosts-signature <signer-hs-address>\n
+
+10. anyone-hosts-digest Field
+
+The anyone-hosts-digest field is optional in the current implementation.
+
+When present, it contains a SHA-256 hash of the mapping lines only, not the
+whole signed region.
+
+Canonicalization for the digest field is:
+
+  1. Collect all mapping lines.
+  2. Sort them lexicographically as raw strings, ascending.
+  3. Join them using a single LF between entries.
+  4. Do not append a trailing LF.
+  5. Compute SHA-256 over the resulting bytes.
+  6. Hex-encode the 32-byte digest as 64 hexadecimal characters.
+
+In pseudocode:
+
+  mapping_lines = sorted(mapping_lines)
+  joined = join(mapping_lines, "\n")
+  mapping_digest = hex(SHA256(joined))
+
+If the anyone-hosts-digest field is present and the algorithm token is not
+"sha256", the current implementation logs a warning but does not reject the
+document if the signature is otherwise valid.
+
+If the digest does not match the mapping lines, the current implementation also
+logs a warning but still accepts the document if the main signature verifies.
+
+
+11. Trust Model
+
+This implementation does not trust arbitrary signers.
+
+The signer address on the anyone-hosts-signature line must match one of the
+bootstrap Anyone DNS hidden-service addresses embedded in the default mapping
+set.  At the time of writing, those are:
+
+  hnsywhyh3zvvqzkmum7b3fxueii3bueeqjbwkfpngcqktxmubedrf5yd.anyone
+  xxfuq2xfwq7vxgadwywmtmfzeyk5j2oxhjhbn3onaq5h7yp7e3tpmkqd.anyone
+  xvtw2foswsovdutimyjo66zy3k26uehfcwdgrakut43cw4fto2djo2qd.anyone
+  gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone
+  kjlkfrfxquevo64qv4gssl3t52tiuay2muj7u4rox4llxboj4c4ypcid.anyone
+  jntoblprbfgcpldwuzobmzsdjs6mtwtr3dtn3mtgdjnk6j7x2frcabad.anyone
+
+Other runtimes that want wire-compatibility with this implementation should use
+the same bootstrap trust set, or at minimum understand that this runtime will
+report a "bad signer" result for any other key.
+
+
+12. Verification Outcomes
+
+The current implementation distinguishes these outcomes:
+
+  * VALID
+      The document parsed successfully, the signer is trusted, and the main
+      signature verified.
+
+  * INVALID
+      The signer is trusted and the document parsed, but the main signature did
+      not verify.
+
+  * UNSIGNED
+      The file did not begin with "anyone-hosts-version", so it is treated as
+      a legacy unsigned file.
+
+  * BAD_SIGNER
+      The signer is not in the trusted bootstrap signer set.
+
+  * PARSE_ERROR
+      The file appeared to use the signed format but was malformed.
+
+
+13. Runtime Behavior on Verification Failure
+
+Current client behavior is intentionally soft-fail.
+
+If the file is signed and verification fails, the client logs a warning and
+continues using the mappings in the file.
+
+If the file is unsigned, the client logs that the legacy format is being used
+and continues using the mappings.
+
+This means that signature verification is currently advisory for local files.
+
+
+14. Mapping Lookup Rules
+
+When reading mappings from either legacy or signed files, the current
+implementation skips lines beginning with any of the following prefixes:
+
+  anyone-hosts-version
+  anyone-hosts-status
+  anyone-hosts-digest
+  anyone-hosts-signature
+  published 
+  valid-until 
+  -----
+
+All other lines are candidates for mapping lines.
+
+Each candidate line is parsed as:
+
+  <short-name> <hs-address>
+
+using whitespace splitting.
+
+Lookup is exact string comparison on the short-name field.
+
+
+15. Example Signed File
+
+The following example shows the layout only.  The digest and signature are not
+real.
+
+  anyone-hosts-version 1
+  anyone-hosts-status signed
+  published 2026-04-22 00:00:00
+  valid-until 2026-05-22 00:00:00
+
+  dns-live-1.anyone.anyone gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone
+  dns-live-2.anyone.anyone kjlkfrfxquevo64qv4gssl3t52tiuay2muj7u4rox4llxboj4c4ypcid.anyone
+
+  anyone-hosts-digest sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  anyone-hosts-signature gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone
+  -----BEGIN SIGNATURE-----
+  BASE64_SIGNATURE_DATA_GOES_HERE
+  -----END SIGNATURE-----
+
+
+16. Interoperability Recommendations
+
+For maximal compatibility with this implementation, other runtimes should:
+
+  * emit LF line endings,
+  * emit anyone-hosts-version 1 as the first line,
+  * emit anyone-hosts-signature as the final keyword line,
+  * use Ed25519 with the prefix "anyone-hosts-signature",
+  * include the signer as a full ".anyone" address,
+  * compute the main signature over the signed region defined above,
+  * and, if emitting anyone-hosts-digest, canonicalize mapping lines exactly as
+    described in section 10.
+
+If a runtime wants to be compatible with the trust decisions of this runtime,
+it should also use the same bootstrap signer allowlist.
