@@ -184,7 +184,7 @@ job "anon-da-node-live" {
         Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
         ContactInfo atorv4@example.org
 
-        V3BandwidthsFile /local/latest.v3bw
+        V3BandwidthsFile /alloc/sbws/latest.v3bw
         EOH
         destination = "local/anonrc"
       }
@@ -222,6 +222,10 @@ job "anon-da-node-live" {
 
       consul {}
 
+      env {
+        CADENCE = 300
+      }
+
       template {
         data = <<-EOF
         V3BW_URL="{{- range service "sbws-bandwidth-eu-central" }}http://{{ .Address }}:{{ .Port }}/latest.v3bw{{- end }}"
@@ -234,8 +238,16 @@ job "anon-da-node-live" {
         data = <<-EOF
         #!/bin/sh
 
-        LOCAL_FILE="/local/latest.v3bw"
-        TMP_FILE="/local/latest.v3bw.new"
+        # Ensure files we create are world-readable: the relay task runs as
+        # 'anond' (different UID than curl_user inside this container), and
+        # reads the file across the shared /alloc bind-mount.
+        umask 022
+
+        LOCAL_FILE="/alloc/sbws/latest.v3bw"
+        TMP_FILE="/alloc/sbws/latest.v3bw.new"
+
+        mkdir -p /alloc/sbws
+        chmod 0755 /alloc/sbws
 
         echo "Starting sbws v3bw bandwidth file puller with URL: $V3BW_URL"
 
@@ -256,6 +268,7 @@ job "anon-da-node-live" {
           case "$HTTP_CODE" in
             200)
               # File changed → atomic replace (-R already set the mtime on TMP_FILE)
+              chmod 0644 "$TMP_FILE"
               mv "$TMP_FILE" "$LOCAL_FILE"
               echo "$(date '+%Y-%m-%d %H:%M:%S') - latest.v3bw UPDATED (200)"
               ;;
@@ -269,7 +282,7 @@ job "anon-da-node-live" {
               ;;
           esac
 
-          sleep 30
+          sleep $CADENCE
         done
         EOF
         destination = "local/puller.sh"
@@ -434,7 +447,7 @@ job "anon-da-node-live" {
         Nickname {{ key (env "node.unique.id" | printf "ator-network/live/dir-auth-%s/nickname") }}
         ContactInfo atorv4@example.org
 
-        V3BandwidthsFile /local/latest.v3bw
+        V3BandwidthsFile /alloc/sbws/latest.v3bw
         EOH
         destination = "local/anonrc"
       }
@@ -484,8 +497,16 @@ job "anon-da-node-live" {
         data = <<-EOF
         #!/bin/sh
 
-        LOCAL_FILE="/local/latest.v3bw"
-        TMP_FILE="/local/latest.v3bw.new"
+        # Ensure files we create are world-readable: the relay task runs as
+        # 'anond' (different UID than curl_user inside this container), and
+        # reads the file across the shared /alloc bind-mount.
+        umask 022
+
+        LOCAL_FILE="/alloc/sbws/latest.v3bw"
+        TMP_FILE="/alloc/sbws/latest.v3bw.new"
+
+        mkdir -p /alloc/sbws
+        chmod 0755 /alloc/sbws
 
         echo "Starting sbws v3bw bandwidth file puller with URL: $V3BW_URL"
 
@@ -506,6 +527,7 @@ job "anon-da-node-live" {
           case "$HTTP_CODE" in
             200)
               # File changed → atomic replace (-R already set the mtime on TMP_FILE)
+              chmod 0644 "$TMP_FILE"
               mv "$TMP_FILE" "$LOCAL_FILE"
               echo "$(date '+%Y-%m-%d %H:%M:%S') - latest.v3bw UPDATED (200)"
               ;;
