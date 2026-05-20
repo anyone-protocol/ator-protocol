@@ -58,11 +58,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+
+#include "core/or/or.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include "core/or/or.h"
 
 #include "lib/err/backtrace.h"
 
