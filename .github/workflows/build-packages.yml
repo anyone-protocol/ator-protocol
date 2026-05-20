@@ -45,7 +45,6 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get -y update
-          apt-get -y dist-upgrade
           apt-get -y install sudo git build-essential devscripts gpg
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -131,7 +130,6 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get -y update
-          apt-get -y dist-upgrade
           apt-get -y install sudo git build-essential devscripts gpg
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -240,7 +238,6 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get -y update
-          apt-get -y dist-upgrade
           apt-get -y install devscripts zip gpg dput openssh-client
       - name: Download raw artifacts
         uses: actions/download-artifact@v4

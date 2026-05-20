@@ -31,7 +31,6 @@ runs:
       shell: bash
       run: |
         apt-get -y update
-        apt-get -y dist-upgrade
         apt-get -y install build-essential devscripts gpg reprepro fakeroot
     - name: Build Package
       shell: bash

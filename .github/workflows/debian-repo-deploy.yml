@@ -12,7 +12,6 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get -y update
-          apt-get -y dist-upgrade
           apt-get -y install curl unzip
 
       - name: Checkout Repository
