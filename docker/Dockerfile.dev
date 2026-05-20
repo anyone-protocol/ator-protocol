@@ -49,4 +49,14 @@ RUN ./autogen.sh && \
 RUN make -j$(nproc)
 
 # Default command to show help
-CMD [ "bash", "-c", "echo 'Anyone Protocol Client Development Container'; echo ''; echo 'Available commands:'; echo '  make check          - Run all tests'; echo '  make test           - Run unit tests'; echo '  make test-network   - Run network tests (requires Chutney)'; echo '  ./src/test/test     - Run unit tests directly'; echo '  bash                - Interactive shell'; echo ''; exec bash" ]
+CMD [ "bash", "-c", "\
+echo 'Anyone Protocol Client Development Container'; \
+echo ''; \
+echo 'Available commands:'; \
+echo '  make check          - Run all tests'; \
+echo '  make test           - Run unit tests'; \
+echo '  make test-network   - Run network tests (requires Chutney)'; \
+echo '  ./src/test/test     - Run unit tests directly'; \
+echo '  bash                - Interactive shell'; \
+echo ''; \
+exec bash" ]

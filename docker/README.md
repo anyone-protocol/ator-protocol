@@ -12,14 +12,14 @@ other than `stage` (default) or `dev`.
 
 Build an image:
 ```sh
-docker build -t anon .
+docker build -t anyone-protocol/ator-protocol:local -f docker/Dockerfile .
 ```
 
 ## Building Docker Image with a specific tag (version of the protocol)
 
 Build an image with a specific tag:
 ```sh
-docker build -t anon . --build-arg="ANON_VER=${TAG}"
+docker build -t anyone-protocol/ator-protocol:local -f docker/Dockerfile . --build-arg="ANON_VER=${TAG}"
 ```
 Both lightweight and annotated git tags are applicable.
 
