@@ -1805,16 +1805,19 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Open file and read content using read_file_to_str_until_eof to enforce
-  // the MAX_DNS_MAPPING_FILE_SIZE cap.
+  // the configured DNS mapping file size cap.
   int dns_fd = tor_open_cloexec(dns_fname, O_RDONLY, 0);
   tor_free(dns_fname);
   if (dns_fd < 0) {
     log_notice(LD_APP,"No mapping found for %s.",anon_address);
     return false;
   }
+  const or_options_t *options = get_options();
+  const uint64_t max_size_opt = options->DNSMappingFileMaxSize;
+  const size_t max_size = max_size_opt == 0 ? SIZE_T_CEILING :
+    (max_size_opt > SIZE_T_CEILING ? SIZE_T_CEILING : (size_t)max_size_opt);
   size_t file_sz = 0;
-  file_content = read_file_to_str_until_eof(dns_fd, MAX_DNS_MAPPING_FILE_SIZE,
-                                            &file_sz);
+  file_content = read_file_to_str_until_eof(dns_fd, max_size, &file_sz);
   close(dns_fd);
   if (!file_content) {
     log_notice(LD_APP,"No mapping found for %s.",anon_address);

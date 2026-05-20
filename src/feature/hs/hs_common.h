@@ -93,8 +93,6 @@ struct ed25519_keypair_t;
 #define HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR \
   (HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX + 1)
 
-#define MAX_DNS_MAPPING_FILE_SIZE (1 * 1024 * 1024) // 1 MB ~ 1000 dns records
-
 /** The default HS time period length */
 #define HS_TIME_PERIOD_LENGTH_DEFAULT 1440 /* 1440 minutes == one day */
 /** The minimum time period length as seen in prop224 section [TIME-PERIODS] */

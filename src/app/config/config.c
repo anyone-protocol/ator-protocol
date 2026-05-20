@@ -432,6 +432,7 @@ static const config_var_t option_vars_[] = {
   OBSOLETE("DisableV2DirectoryInfo_"),
   OBSOLETE("DynamicDHGroups"),
   VPORT(DNSPort),
+  V(DNSMappingFileMaxSize,       MEMUNIT,  "10 MB"),
   OBSOLETE("DNSListenAddress"),
   V(DormantClientTimeout,        INTERVAL, "24 hours"),
   V(DormantTimeoutEnabled,       BOOL,     "1"),
