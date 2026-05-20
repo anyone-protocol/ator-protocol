@@ -4601,6 +4601,7 @@ options_init_from_torrc(int argc, char **argv)
     log_info(LD_CONFIG, "Creating anyone_hosts file with default mapping");
     write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
   }
+  tor_free(anons_fname);
 
   char *terms_fname = get_datadir_fname("terms-agreement");
   if (config_line_find(cmdline_only_options, "--agree-to-terms")) {

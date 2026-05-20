@@ -1804,9 +1804,18 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
     return false;
   }
 
-  // Read the entire file content using `read_file_to_str`
-  file_content = read_file_to_str(dns_fname,MAX_DNS_MAPPING_FILE_SIZE,NULL);
+  // Open file and read content using read_file_to_str_until_eof to enforce
+  // the MAX_DNS_MAPPING_FILE_SIZE cap.
+  int dns_fd = tor_open_cloexec(dns_fname, O_RDONLY, 0);
   tor_free(dns_fname);
+  if (dns_fd < 0) {
+    log_notice(LD_APP,"No mapping found for %s.",anon_address);
+    return false;
+  }
+  size_t file_sz = 0;
+  file_content = read_file_to_str_until_eof(dns_fd, MAX_DNS_MAPPING_FILE_SIZE,
+                                            &file_sz);
+  close(dns_fd);
   if (!file_content) {
     log_notice(LD_APP,"No mapping found for %s.",anon_address);
     return false;
@@ -1843,9 +1852,7 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Process the file content line by line, skipping keyword-prefixed lines.
-  char *content_copy = tor_strdup(file_content);
-  free(file_content);
-  char *line = strtok(content_copy, "\n");
+  char *line = strtok(file_content, "\n");
   while (line != NULL) {
     // Skip metadata/keyword lines from the signed format.
     if (strcmpstart(line, "anyone-hosts-version") == 0 ||
@@ -1865,11 +1872,11 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
       if (strcmp(anon, anon_address) == 0) {
         if (strlen(onion) != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX) {
           log_warn(LD_APP, "Invalid onion address length");
-          tor_free(content_copy);
+          tor_free(file_content);
           return false;
         }
         strlcpy(onion_address_out,onion,HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR);
-        tor_free(content_copy);
+        tor_free(file_content);
         return true;
       }
     }
@@ -1877,7 +1884,7 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
 
   // Clean up
-  tor_free(content_copy);
+  tor_free(file_content);
   return false;
 }
 
