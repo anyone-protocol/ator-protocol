@@ -80,7 +80,7 @@ runs:
     - name: Build zlib
       shell: bash
       run: |
-        wget --quiet https://www.zlib.net/fossils/zlib-${{ inputs.zlib-version }}.tar.gz
+        wget --tries=5 --waitretry=2 --timeout=30 https://www.zlib.net/fossils/zlib-${{ inputs.zlib-version }}.tar.gz
         tar zxf zlib-${{ inputs.zlib-version }}.tar.gz
         rm zlib-${{ inputs.zlib-version }}.tar.gz
         cd zlib-${{ inputs.zlib-version }}
