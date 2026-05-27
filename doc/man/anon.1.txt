@@ -1222,6 +1222,11 @@ The following options are useful only for clients (that is, if
     addresses/ports. See <<SocksPort,SocksPort>> for an explanation of isolation
     flags. (Default: 0)
 
+[[DNSMappingFileMaxSize]] **DNSMappingFileMaxSize** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**::
+    The maximum size allowed for the `anyone_hosts` DNS mapping file in the
+    data directory. If the file exceeds this size, it is rejected. Set this
+    option to 0 to disable the size limit. (Default: 10 MB)
+
 [[DownloadExtraInfo]] **DownloadExtraInfo** **0**|**1**::
     If true, Tor downloads and caches "extra-info" documents. These documents
     contain information about servers other than the information in their

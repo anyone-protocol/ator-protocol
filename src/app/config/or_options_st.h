@@ -702,6 +702,9 @@ struct or_options_t {
    * to an internal address, or that an internal address has a PTR mapping.
    * Helps avoid some cross-site attacks. */
   int ClientDNSRejectInternalAddresses;
+  /** Maximum size in bytes allowed for the anyone_hosts DNS mapping file.
+   * A value of 0 disables the size limit. */
+  uint64_t DNSMappingFileMaxSize;
 
   /** If true, do not accept any requests to connect to internal addresses
    * over randomly chosen exits. */

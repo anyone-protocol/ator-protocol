@@ -20,7 +20,12 @@
 #include "core/or/connection_edge.h"
 #include "lib/crypt_ops/crypto_format.h"
 #include "lib/crypt_ops/crypto_rand.h"
+#include "lib/crypt_ops/crypto_ed25519.h"
+#include "lib/crypt_ops/crypto_digest.h"
+#include "lib/encoding/binascii.h"
 #include "feature/hs/hs_common.h"
+#include "feature/dirparse/anyone_hosts_parse.h"
+#include "feature/dirparse/sigcommon.h"
 #include "feature/hs/hs_client.h"
 #include "feature/hs/hs_service.h"
 #include "app/config/config.h"
@@ -88,7 +93,7 @@ test_validate_address(void *arg)
 
   /* Valid address. */
   ret = hs_address_is_valid(
-           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
+           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
   tt_int_op(ret, OP_EQ, 1);
 
  done:
@@ -101,7 +106,7 @@ mock_write_str_to_file(const char *path, const char *str, int bin)
   (void)bin;
   tt_str_op(path, OP_EQ, "/double/five"PATH_SEPARATOR"squared");
   tt_str_op(str, OP_EQ,
-           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon\n");
+           "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n");
 
  done:
   return 0;
@@ -127,7 +132,7 @@ test_build_address(void *arg)
   /* The following has been created with hs_build_address.py script that
    * follows proposal 224 specification to build an onion address. */
   static const char *test_addr =
-    "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd";
+    "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid";
 
   /* Let's try to build the same onion address as the script */
   base16_decode((char*)pubkey.pubkey, sizeof(pubkey.pubkey),
@@ -799,23 +804,23 @@ test_parse_extended_hostname(void *arg)
   (void) arg;
   hostname_type_t type;
 
-  char address1[] = "fooaddress.anon";
+  char address1[] = "fooaddress.anyone";
   char address3[] = "fooaddress.exit";
   char address4[] = "www.torproject.org";
-  char address5[] = "foo.abcdefghijklmnop.anon";
-  char address6[] = "foo.bar.abcdefghijklmnop.anon";
-  char address7[] = ".abcdefghijklmnop.anon";
+  char address5[] = "foo.abcdefghijklmnop.anyone";
+  char address6[] = "foo.bar.abcdefghijklmnop.anyone";
+  char address7[] = ".abcdefghijklmnop.anyone";
   char address8[] =
-    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon";
+    "www.25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone";
   char address9[] =
-    "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anon";
+    "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anyone";
   char address10[] =
-    "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.anon";
-  char address11[] = "anyone.anon";
-  char address12[] = ".anon";
+    "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.anyone";
+  char address11[] = "anyone.anyone";
+  char address12[] = ".anyone";
 
-  char *path = get_datadir_fname("anons");
-  write_str_to_file(path, "anyone.anon 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd.anon\n", 0);
+  char *path = get_datadir_fname("anyone_hosts");
+  write_str_to_file(path, "anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n", 0);
 
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
@@ -838,7 +843,7 @@ test_parse_extended_hostname(void *arg)
   tt_assert(parse_extended_hostname(address8, &type));
   tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
   tt_str_op(address8, OP_EQ,
-            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
+            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
 
   /* Invalid v3 address. */
   tt_assert(!parse_extended_hostname(address9, &type));
@@ -851,7 +856,7 @@ test_parse_extended_hostname(void *arg)
   tt_assert(parse_extended_hostname(address11, &type));
   tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
   tt_str_op(address11, OP_EQ,
-                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenc2hqd");
+                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
 
   tt_assert(!parse_extended_hostname(address12, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
@@ -1929,6 +1934,213 @@ test_client_service_hsdir_set_sync(void *arg)
   hs_free_all();
 }
 
+/** Test that unsigned (legacy) anyone_hosts files are detected as unsigned. */
+static void
+test_anyone_hosts_unsigned(void *arg)
+{
+  (void) arg;
+
+  const char *unsigned_content =
+    "anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n";
+
+  anyone_hosts_sig_status_t status =
+    anyone_hosts_parse_and_verify(unsigned_content, strlen(unsigned_content));
+  tt_int_op(status, OP_EQ, ANYONE_HOSTS_SIG_UNSIGNED);
+
+ done: ;
+}
+
+/** Test that a file with version header but no signature is detected. */
+static void
+test_anyone_hosts_version_no_sig(void *arg)
+{
+  (void) arg;
+
+  const char *content =
+    "anyone-hosts-version 1\n"
+    "anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n";
+
+  /* This will fail to tokenize because we require anyone-hosts-signature
+   * at AT_END, but it should not crash. */
+  anyone_hosts_sig_status_t status =
+    anyone_hosts_parse_and_verify(content, strlen(content));
+  /* Could be PARSE_ERROR or UNSIGNED depending on tokenizer behavior. */
+  tt_assert(status == ANYONE_HOSTS_SIG_PARSE_ERROR ||
+            status == ANYONE_HOSTS_SIG_UNSIGNED);
+
+ done: ;
+}
+
+/** Test that a properly signed anyone_hosts file verifies correctly.
+ * We generate a keypair, construct a valid .anyone address from it,
+ * build a signed document, and verify it.
+ *
+ * Note: This test uses a test keypair, NOT one of the hardcoded DNS service
+ * addresses. So the signer won't be in the trusted list, and we expect
+ * ANYONE_HOSTS_SIG_BAD_SIGNER (which still means the format parsed OK and
+ * the crypto would have worked — it's just not a trusted key).
+ */
+static void
+test_anyone_hosts_signed_bad_signer(void *arg)
+{
+  (void) arg;
+  ed25519_keypair_t kp;
+  char signer_addr_buf[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+
+  /* Generate a test keypair and build its .anyone address. */
+  tt_int_op(0, OP_EQ, ed25519_keypair_generate(&kp, 0));
+  hs_build_address(&kp.pubkey, HS_VERSION_THREE, signer_addr_buf);
+
+  /* Build a signed document. */
+  const char *mapping_line =
+    "test.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone";
+
+  /* Build the document body up to and including the signature line. */
+  char *doc_body = NULL;
+  tor_asprintf(&doc_body,
+    "anyone-hosts-version 1\n"
+    "anyone-hosts-status signed\n"
+    "%s\n"
+    "anyone-hosts-signature %s\n",
+    mapping_line, signer_addr_buf);
+
+  /* Hash the signed region. */
+  char digest[DIGEST256_LEN];
+  tt_int_op(0, OP_EQ,
+    router_get_hash_impl(doc_body, strlen(doc_body), digest,
+                         "anyone-hosts-version",
+                         "\nanyone-hosts-signature",
+                         '\n', DIGEST_SHA256));
+
+  /* Sign the hash with domain-separation prefix. */
+  ed25519_signature_t sig;
+  tt_int_op(0, OP_EQ,
+    ed25519_sign_prefixed(&sig, (const uint8_t *)digest, DIGEST256_LEN,
+                          ANYONE_HOSTS_SIGN_PREFIX, &kp));
+
+  /* Base64-encode the signature for the PEM block. */
+  char sig_b64[256];
+  base64_encode(sig_b64, sizeof(sig_b64),
+                (const char *)sig.sig, ED25519_SIG_LEN,
+                BASE64_ENCODE_MULTILINE);
+
+  /* Assemble the full document with PEM block. */
+  char *full_doc = NULL;
+  tor_asprintf(&full_doc,
+    "%s"
+    "-----BEGIN SIGNATURE-----\n"
+    "%s"
+    "-----END SIGNATURE-----\n",
+    doc_body, sig_b64);
+
+  /* Verify — should get BAD_SIGNER since we used a test key. */
+  anyone_hosts_sig_status_t status =
+    anyone_hosts_parse_and_verify(full_doc, strlen(full_doc));
+  tt_int_op(status, OP_EQ, ANYONE_HOSTS_SIG_BAD_SIGNER);
+
+ done:
+  tor_free(doc_body);
+  tor_free(full_doc);
+}
+
+/** Test that a document with a corrupted signature is detected as invalid.
+ * We use a hardcoded DNS service address as signer (so it passes the
+ * trusted-signer check) but sign with a wrong key. */
+static void
+test_anyone_hosts_invalid_sig(void *arg)
+{
+  (void) arg;
+  ed25519_keypair_t kp;
+
+  /* Generate a random keypair (won't match the hardcoded address). */
+  tt_int_op(0, OP_EQ, ed25519_keypair_generate(&kp, 0));
+
+  /* Use one of the hardcoded DNS service addresses as the signer. */
+  const char *signer_addr =
+    "gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone";
+
+  const char *mapping_line =
+    "test.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone";
+
+  char *doc_body = NULL;
+  tor_asprintf(&doc_body,
+    "anyone-hosts-version 1\n"
+    "anyone-hosts-status signed\n"
+    "%s\n"
+    "anyone-hosts-signature %s\n",
+    mapping_line, signer_addr);
+
+  /* Hash the signed region. */
+  char digest[DIGEST256_LEN];
+  tt_int_op(0, OP_EQ,
+    router_get_hash_impl(doc_body, strlen(doc_body), digest,
+                         "anyone-hosts-version",
+                         "\nanyone-hosts-signature",
+                         '\n', DIGEST_SHA256));
+
+  /* Sign with the WRONG key (random keypair, not the DNS service key). */
+  ed25519_signature_t sig;
+  tt_int_op(0, OP_EQ,
+    ed25519_sign_prefixed(&sig, (const uint8_t *)digest, DIGEST256_LEN,
+                          ANYONE_HOSTS_SIGN_PREFIX, &kp));
+
+  char sig_b64[256];
+  base64_encode(sig_b64, sizeof(sig_b64),
+                (const char *)sig.sig, ED25519_SIG_LEN,
+                BASE64_ENCODE_MULTILINE);
+
+  char *full_doc = NULL;
+  tor_asprintf(&full_doc,
+    "%s"
+    "-----BEGIN SIGNATURE-----\n"
+    "%s"
+    "-----END SIGNATURE-----\n",
+    doc_body, sig_b64);
+
+  anyone_hosts_sig_status_t status =
+    anyone_hosts_parse_and_verify(full_doc, strlen(full_doc));
+  tt_int_op(status, OP_EQ, ANYONE_HOSTS_SIG_INVALID);
+
+ done:
+  tor_free(doc_body);
+  tor_free(full_doc);
+}
+
+/** Test that a signed anyone_hosts file still resolves addresses correctly
+ * when used through the full lookup path. */
+static void
+test_anyone_hosts_signed_lookup(void *arg)
+{
+  (void) arg;
+  hostname_type_t type;
+
+  /* Write a signed-format file (but unsigned — missing PEM block).
+   * The lookup should still work: it logs a warning but proceeds. */
+  const char *signed_content =
+    "anyone-hosts-version 1\n"
+    "anyone-hosts-status signed\n"
+    "anyone.anyone 25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid.anyone\n"
+    "anyone-hosts-signature gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone\n"
+    "-----BEGIN SIGNATURE-----\n"
+    "AAAA\n"
+    "-----END SIGNATURE-----\n";
+
+  char *path = get_datadir_fname("anyone_hosts");
+  write_str_to_file(path, signed_content, 0);
+
+  /* The mapping should still resolve despite the signature being bogus.
+   * Buffer must be large enough to hold the resolved onion address. */
+  char address[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+  strlcpy(address, "anyone.anyone", sizeof(address));
+  tt_assert(parse_extended_hostname(address, &type));
+  tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
+  tt_str_op(address, OP_EQ,
+            "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
+
+ done:
+  tor_free(path);
+}
+
 struct testcase_t hs_common_tests[] = {
   { "blinding_basics", test_blinding_basics, TT_FORK, NULL, NULL },
   { "build_address", test_build_address, TT_FORK,
@@ -1957,6 +2169,16 @@ struct testcase_t hs_common_tests[] = {
     TT_FORK, NULL, NULL },
   { "hs_indexes", test_hs_indexes, TT_FORK,
     NULL, NULL },
+  { "anyone_hosts_unsigned", test_anyone_hosts_unsigned, TT_FORK,
+    NULL, NULL },
+  { "anyone_hosts_version_no_sig", test_anyone_hosts_version_no_sig, TT_FORK,
+    NULL, NULL },
+  { "anyone_hosts_signed_bad_signer", test_anyone_hosts_signed_bad_signer,
+    TT_FORK, NULL, NULL },
+  { "anyone_hosts_invalid_sig", test_anyone_hosts_invalid_sig,
+    TT_FORK, NULL, NULL },
+  { "anyone_hosts_signed_lookup", test_anyone_hosts_signed_lookup,
+    TT_FORK, NULL, NULL },
 
   END_OF_TESTCASES
 };

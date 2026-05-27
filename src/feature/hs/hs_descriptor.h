@@ -73,11 +73,11 @@ typedef enum {
 
 /** Error code when decoding a descriptor. */
 typedef enum {
-  /* The configured client authorization for the requested .anon address
+  /* The configured client authorization for the requested .anyone address
    * failed to decode the descriptor. */
   HS_DESC_DECODE_BAD_CLIENT_AUTH  = -6,
 
-  /* The requested .anon address requires a client authorization. */
+  /* The requested .anyone address requires a client authorization. */
   HS_DESC_DECODE_NEED_CLIENT_AUTH = -5,
 
   /* Error during decryption of the encrypted layer. */
