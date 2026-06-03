@@ -1,0 +1,242 @@
+/* Copyright (c) 2007-2021, The Tor Project, Inc. */
+/* See LICENSE for licensing information */
+
+/**
+ * \file anyone_hosts_update.c
+ * \brief Periodic and consensus-triggered fetching of the anyone_hosts DNS
+ * mapping file from the .anyone DNS service nodes.
+ *
+ * When the client receives a fresh consensus, or on a periodic schedule,
+ * this module selects a URL from the configured list (AnyoneHostsURL) plus
+ * the DNS service addresses found in the currently loaded anyone_hosts file
+ * and the hardcoded DEFAULT_ANON_DNS_MAPPING, then issues an anonymised
+ * HTTP GET for AnyoneHostsFetchPath.  The response is handled by
+ * handle_response_fetch_anyone_hosts() in dirclient.c, which verifies the
+ * signature and atomically writes the file if acceptable.
+ *
+ * The fetch is only launched when:
+ *   - AnyoneHostsUpdate is set to 1, AND
+ *   - no fetch is already in progress, AND
+ *   - at least AnyoneHostsUpdateInterval seconds have elapsed since the
+ *     last successful fetch or (half that) since the last attempt.
+ **/
+
+#include "core/or/or.h"
+#include "feature/anyone/anyone_hosts_update.h"
+#include "feature/dircommon/directory.h"
+#include "feature/dirclient/dirclient.h"
+#include "app/config/config.h"
+#include "lib/log/log.h"
+#include "lib/malloc/malloc.h"
+#include "lib/container/smartlist.h"
+#include "lib/string/util_string.h"
+#include "lib/fs/files.h"
+
+/** Minimum gap between consecutive fetch *attempts* (seconds). */
+#define ANYONE_HOSTS_MIN_RETRY_INTERVAL 3600
+
+/** True while a DIR_PURPOSE_FETCH_ANYONE_HOSTS connection is open. */
+static int fetch_in_progress = 0;
+
+/** Monotone wall-clock time of the last fetch attempt. */
+static time_t last_attempt_time = 0;
+
+/** Monotone wall-clock time of the last *successful* fetch. */
+static time_t last_success_time = 0;
+
+/** Round-robin index into the URL list. */
+static int current_url_index = 0;
+
+/** ---------- helpers ---------- */
+
+/**
+ * Build an ordered smartlist of onion-address strings to try for fetching
+ * the anyone_hosts file.  Caller must free each element and the list.
+ *
+ * Order: AnyoneHostsURL config entries (user overrides) first, then the
+ * right-hand-side addresses from the currently saved anyone_hosts file,
+ * then addresses from DEFAULT_ANON_DNS_MAPPING.  Duplicates are kept so
+ * that the round-robin stays predictable.
+ */
+static smartlist_t *
+anyone_hosts_get_url_list(void)
+{
+  smartlist_t *urls = smartlist_new();
+  const or_options_t *options = get_options();
+
+  /* 1. User-configured overrides. */
+  for (const config_line_t *cl = options->AnyoneHostsURL; cl; cl = cl->next) {
+    if (cl->value && strlen(cl->value))
+      smartlist_add(urls, tor_strdup(cl->value));
+  }
+
+  /* Helper: parse lines of the form "<hostname> <onion-address>" and
+   * add the onion address to <urls>. */
+#define ADD_MAPPING_LINES(text)                                         \
+  do {                                                                  \
+    smartlist_t *_lines = smartlist_new();                              \
+    char *_copy = tor_strdup(text);                                     \
+    smartlist_split_string(_lines, _copy, "\n", SPLIT_SKIP_SPACE, 0);  \
+    SMARTLIST_FOREACH_BEGIN(_lines, const char *, _line) {              \
+      const char *_sp = strchr(_line, ' ');                             \
+      if (_sp && *(_sp + 1)) {                                          \
+        smartlist_add(urls, tor_strdup(_sp + 1));                       \
+      }                                                                 \
+    } SMARTLIST_FOREACH_END(_line);                                     \
+    SMARTLIST_FOREACH(_lines, char *, _s, tor_free(_s));                \
+    smartlist_free(_lines);                                             \
+    tor_free(_copy);                                                    \
+  } while (0)
+
+  /* 2. Addresses from the currently saved anyone_hosts file. */
+  char *hosts_fname = get_datadir_fname("anyone_hosts");
+  char *hosts_content = read_file_to_str(hosts_fname, 0, NULL);
+  tor_free(hosts_fname);
+  if (hosts_content) {
+    ADD_MAPPING_LINES(hosts_content);
+    tor_free(hosts_content);
+  }
+
+  /* 3. Hardcoded defaults as a last resort. */
+  ADD_MAPPING_LINES(DEFAULT_ANON_DNS_MAPPING);
+
+#undef ADD_MAPPING_LINES
+
+  return urls;
+}
+
+/** ---------- public API ---------- */
+
+void
+anyone_hosts_update_init(void)
+{
+  fetch_in_progress = 0;
+  last_attempt_time = 0;
+  last_success_time = 0;
+  current_url_index = 0;
+}
+
+void
+anyone_hosts_update_free_all(void)
+{
+  fetch_in_progress = 0;
+}
+
+/** Called by dirclient when a DIR_PURPOSE_FETCH_ANYONE_HOSTS connection
+ * completes (successfully or not).  This clears the in-progress flag and,
+ * on success, records the current time so the interval timer resets. */
+void
+anyone_hosts_update_note_result(int success, time_t now)
+{
+  fetch_in_progress = 0;
+  if (success) {
+    last_success_time = now;
+    /* Advance the index so next time we try a different server. */
+    current_url_index++;
+  }
+}
+
+/**
+ * Launch one fetch if conditions are met.  Called both from the consensus
+ * hook (anyone_hosts_update_maybe_kick) and from the periodic callback.
+ */
+static void
+maybe_launch_fetch(time_t now)
+{
+  const or_options_t *options = get_options();
+
+  if (!options->AnyoneHostsUpdate)
+    return;
+  if (fetch_in_progress)
+    return;
+
+  /* Respect the configured update interval for successes. */
+  if (last_success_time &&
+      (now - last_success_time) < options->AnyoneHostsUpdateInterval)
+    return;
+
+  /* After a failed attempt wait at least ANYONE_HOSTS_MIN_RETRY_INTERVAL
+   * before trying again, regardless of the configured interval. */
+  if (last_attempt_time && !last_success_time &&
+      (now - last_attempt_time) < ANYONE_HOSTS_MIN_RETRY_INTERVAL)
+    return;
+
+  /* Pick the next URL from the list. */
+  smartlist_t *urls = anyone_hosts_get_url_list();
+  if (smartlist_len(urls) == 0) {
+    log_info(LD_DIR, "anyone_hosts update: no URLs available.");
+    SMARTLIST_FOREACH(urls, char *, u, tor_free(u));
+    smartlist_free(urls);
+    return;
+  }
+
+  int idx = current_url_index % smartlist_len(urls);
+  const char *onion_addr = smartlist_get(urls, idx);
+
+  log_info(LD_DIR, "Launching anyone_hosts fetch from %s", onion_addr);
+
+  /* Build and fire the directory request.  The connection is anonymised
+   * (purpose_needs_anonymity returns 1 for DIR_PURPOSE_FETCH_ANYONE_HOSTS)
+   * and tunnelled through a 3-hop circuit to a .anyone service. */
+  directory_request_t *req = directory_request_new(DIR_PURPOSE_FETCH_ANYONE_HOSTS);
+  directory_request_set_indirection(req, DIRIND_ANONYMOUS);
+
+  /* We address the request to the .anyone service directly by setting the
+   * OR-port address to the onion address with port 80. */
+  tor_addr_port_t orport;
+  memset(&orport, 0, sizeof(orport));
+  /* Use AF_UNSPEC address — the address will be resolved via the .anyone
+   * service address stored in the resource field, which dirclient handles
+   * when use_begindir is set and the address ends in .anyone. */
+  tor_addr_make_unspec(&orport.addr);
+  orport.port = 80;
+  directory_request_set_or_addr_port(req, &orport);
+
+  /* Store the onion address so connection_ap_make_link can route it. */
+  directory_request_set_resource(req, options->AnyoneHostsFetchPath);
+
+  /* We need to set the router purpose and a placeholder identity digest. */
+  static const char zero_digest[DIGEST_LEN] = {0};
+  directory_request_set_directory_id_digest(req, zero_digest);
+
+  /* Tag the connection with the onion address so dirclient.c can route it.
+   * We store it in additional_headers (key "X-Anyone-Onion") for now; the
+   * dirclient wiring will read it back before calling
+   * connection_ap_make_link(). */
+  directory_request_add_header(req, "X-Anyone-Onion: ", onion_addr);
+
+  fetch_in_progress = 1;
+  last_attempt_time = now;
+
+  directory_initiate_request(req);
+  directory_request_free(req);
+
+  SMARTLIST_FOREACH(urls, char *, u, tor_free(u));
+  smartlist_free(urls);
+}
+
+void
+anyone_hosts_update_maybe_kick(time_t now)
+{
+  const or_options_t *options = get_options();
+  if (!options->AnyoneHostsUpdateTrigger)
+    return;
+  const char *t = options->AnyoneHostsUpdateTrigger;
+  if (strcmp(t, "consensus") != 0 && strcmp(t, "both") != 0)
+    return;
+
+  maybe_launch_fetch(now);
+}
+
+int
+update_anyone_hosts_callback(time_t now, const or_options_t *options)
+{
+  if (!options->AnyoneHostsUpdateTrigger)
+    return options->AnyoneHostsUpdateInterval;
+  const char *t = options->AnyoneHostsUpdateTrigger;
+  if (strcmp(t, "periodic") != 0 && strcmp(t, "both") != 0)
+    return options->AnyoneHostsUpdateInterval;
+
+  maybe_launch_fetch(now);
+  return options->AnyoneHostsUpdateInterval;
+}

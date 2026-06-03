@@ -47,8 +47,11 @@
 #include "feature/relay/relay_find_addr.h"
 #include "feature/relay/routermode.h"
 #include "feature/relay/selftest.h"
+#include "feature/anyone/anyone_hosts_update.h"
+#include "feature/dirparse/anyone_hosts_parse.h"
 #include "feature/rend/rendcommon.h"
 #include "feature/stats/predict_ports.h"
+#include "lib/fs/files.h"
 
 #include "lib/cc/ctassert.h"
 #include "lib/compress/compress.h"
@@ -122,6 +125,8 @@ dir_conn_purpose_to_string(int purpose)
       return "hidden-service descriptor upload";
     case DIR_PURPOSE_FETCH_MICRODESC:
       return "microdescriptor fetch";
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      return "anyone-hosts fetch";
     }
 
   log_warn(LD_BUG, "Called with unknown purpose %d", purpose);
@@ -159,6 +164,9 @@ dir_fetch_type(int dir_purpose, int router_purpose, const char *resource)
       break;
     case DIR_PURPOSE_FETCH_MICRODESC:
       type = MICRODESC_DIRINFO;
+      break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      type = NO_DIRINFO;
       break;
     default:
       log_warn(LD_BUG, "Unexpected purpose %d", (int)dir_purpose);
@@ -1705,6 +1713,12 @@ directory_send_command(dir_connection_t *conn,
       httpcommand = "POST";
       tor_asprintf(&url, "/tor/hs/%s/publish", resource);
       break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      tor_assert(resource);
+      tor_assert(!payload);
+      httpcommand = "GET";
+      url = tor_strdup(resource);
+      break;
     default:
       tor_assert(0);
       return;
@@ -1844,6 +1858,8 @@ static int handle_response_upload_signatures(dir_connection_t *,
                                              const response_handler_args_t *);
 static int handle_response_upload_hsdesc(dir_connection_t *,
                                          const response_handler_args_t *);
+static int handle_response_fetch_anyone_hosts(dir_connection_t *,
+                                              const response_handler_args_t *);
 
 static int
 dir_client_decompress_response_body(char **bodyp, size_t *bodylenp,
@@ -2204,6 +2220,9 @@ connection_dir_client_reached_eof(dir_connection_t *conn)
     case DIR_PURPOSE_FETCH_HSDESC:
       rv = handle_response_fetch_hsdesc_v3(conn, &args);
       break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      rv = handle_response_fetch_anyone_hosts(conn, &args);
+      break;
     default:
       tor_assert_nonfatal_unreached();
       rv = -1;
@@ -2325,6 +2344,7 @@ handle_response_fetch_consensus(dir_connection_t *conn,
   routers_update_all_from_networkstatus(now, 3);
   update_microdescs_from_networkstatus(now);
   directory_info_has_arrived(now, 0, 0);
+  anyone_hosts_update_maybe_kick(now);
 
   if (authdir_mode_v3(get_options())) {
     sr_act_post_consensus(
@@ -2840,6 +2860,103 @@ handle_response_upload_hsdesc(dir_connection_t *conn,
   }
 
   return 0;
+}
+
+/**
+ * Handler function: processes a response to a request to fetch the
+ * anyone_hosts DNS mapping file from a .anyone DNS service node.
+ **/
+static int
+handle_response_fetch_anyone_hosts(dir_connection_t *conn,
+                                   const response_handler_args_t *args)
+{
+  tor_assert(conn->base_.purpose == DIR_PURPOSE_FETCH_ANYONE_HOSTS);
+  const int status_code = args->status_code;
+  const char *reason = args->reason;
+  const char *body = args->body;
+  const size_t body_len = args->body_len;
+  const or_options_t *options = get_options();
+  const time_t now = approx_time();
+  int success = 0;
+
+  if (status_code != 200) {
+    log_info(LD_DIR,
+             "Received http status code %d (%s) from server "
+             "%s while fetching anyone_hosts file.",
+             status_code, escaped(reason),
+             connection_describe_peer(TO_CONN(conn)));
+    anyone_hosts_update_note_result(0, now);
+    return -1;
+  }
+
+  /* Enforce the configured size limit. */
+  if (options->DNSMappingFileMaxSize > 0 &&
+      body_len > options->DNSMappingFileMaxSize) {
+    log_warn(LD_DIR, "anyone_hosts file from %s is too large (%"TOR_PRIuSZ
+             " bytes, limit %"PRIu64"); discarding.",
+             connection_describe_peer(TO_CONN(conn)),
+             body_len, options->DNSMappingFileMaxSize);
+    anyone_hosts_update_note_result(0, now);
+    return -1;
+  }
+
+  /* Verify signature according to the configured policy. */
+  anyone_hosts_sig_status_t sig = anyone_hosts_parse_and_verify(body, body_len);
+  const char *sig_req = options->AnyoneHostsSignatureRequirement;
+  if (!sig_req) sig_req = "strict";
+
+  if (strcmp(sig_req, "strict") == 0) {
+    if (sig != ANYONE_HOSTS_SIG_VALID) {
+      log_warn(LD_DIR, "anyone_hosts file from %s: signature check failed "
+               "(status %d); discarding (strict mode).",
+               connection_describe_peer(TO_CONN(conn)), (int)sig);
+      anyone_hosts_update_note_result(0, now);
+      return -1;
+    }
+  } else if (strcmp(sig_req, "verify") == 0) {
+    if (sig == ANYONE_HOSTS_SIG_INVALID ||
+        sig == ANYONE_HOSTS_SIG_BAD_SIGNER ||
+        sig == ANYONE_HOSTS_SIG_PARSE_ERROR) {
+      log_warn(LD_DIR, "anyone_hosts file from %s: signature invalid "
+               "(status %d); discarding (verify mode).",
+               connection_describe_peer(TO_CONN(conn)), (int)sig);
+      anyone_hosts_update_note_result(0, now);
+      return -1;
+    }
+  } else {
+    /* "any" — only reject outright parse errors */
+    if (sig == ANYONE_HOSTS_SIG_PARSE_ERROR) {
+      log_warn(LD_DIR, "anyone_hosts file from %s: parse error; discarding.",
+               connection_describe_peer(TO_CONN(conn)));
+      anyone_hosts_update_note_result(0, now);
+      return -1;
+    }
+  }
+
+  /* Atomically write the file using a temp file + rename. */
+  char *hosts_fname = get_datadir_fname("anyone_hosts");
+  char *hosts_fname_tmp = get_datadir_fname("anyone_hosts.tmp");
+  int write_ok = (write_str_to_file(hosts_fname_tmp, body, 0) == 0);
+  if (write_ok) {
+    if (replace_file(hosts_fname_tmp, hosts_fname) < 0) {
+      log_warn(LD_FS, "Error replacing anyone_hosts file: %s",
+               strerror(errno));
+      write_ok = 0;
+    }
+  } else {
+    log_warn(LD_FS, "Error writing anyone_hosts temp file.");
+  }
+  tor_free(hosts_fname);
+  tor_free(hosts_fname_tmp);
+
+  if (write_ok) {
+    log_info(LD_DIR, "Successfully updated anyone_hosts file (%"TOR_PRIuSZ
+             " bytes).", body_len);
+    success = 1;
+  }
+
+  anyone_hosts_update_note_result(success, now);
+  return success ? 0 : -1;
 }
 
 /** Called when a directory connection reaches EOF. */

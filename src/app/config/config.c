@@ -327,6 +327,12 @@ static const config_var_t option_vars_[] = {
   V(AlternateBridgeAuthority,    LINELIST, NULL),
   V(AlternateDirAuthority,       LINELIST, NULL),
   OBSOLETE("AlternateHSAuthority"),
+  V(AnyoneHostsFetchPath,        STRING,   "/tld/anyone"),
+  V(AnyoneHostsSignatureRequirement, STRING, "strict"),
+  V(AnyoneHostsUpdate,           BOOL,     "1"),
+  V(AnyoneHostsUpdateInterval,   INTERVAL, "12 hours"),
+  V(AnyoneHostsUpdateTrigger,    STRING,   "both"),
+  V(AnyoneHostsURL,              LINELIST, NULL),
   V(AssumeReachable,             BOOL,     "0"),
   V(AssumeReachableIPv6,         AUTOBOOL, "auto"),
   OBSOLETE("AuthDirBadDir"),
@@ -4060,6 +4066,21 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options_validate_scheduler(options, msg) < 0) {
     return -1;
+  }
+
+  if (options->AnyoneHostsUpdateTrigger) {
+    const char *t = options->AnyoneHostsUpdateTrigger;
+    if (strcmp(t, "consensus") && strcmp(t, "periodic") && strcmp(t, "both")) {
+      REJECT("AnyoneHostsUpdateTrigger must be \"consensus\", "
+             "\"periodic\", or \"both\".");
+    }
+  }
+  if (options->AnyoneHostsSignatureRequirement) {
+    const char *s = options->AnyoneHostsSignatureRequirement;
+    if (strcmp(s, "strict") && strcmp(s, "verify") && strcmp(s, "any")) {
+      REJECT("AnyoneHostsSignatureRequirement must be \"strict\", "
+             "\"verify\", or \"any\".");
+    }
   }
 
   return 0;

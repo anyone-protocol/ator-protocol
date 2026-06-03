@@ -1222,10 +1222,48 @@ The following options are useful only for clients (that is, if
     addresses/ports. See <<SocksPort,SocksPort>> for an explanation of isolation
     flags. (Default: 0)
 
-[[DNSMappingFileMaxSize]] **DNSMappingFileMaxSize** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**::
+[[DNSMappingFileMaxSize]] **DNSMappingFileMaxSize** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
     The maximum size allowed for the `anyone_hosts` DNS mapping file in the
     data directory. If the file exceeds this size, it is rejected. Set this
-    option to 0 to disable the size limit. (Default: 10 MB)
+    option to 0 to disable the size limit.  This limit applies only when
+    reading or accepting an existing file; if the file is absent, a new
+    default file is created regardless of this setting. (Default: 10 MB)
+
+[[AnyoneHostsUpdate]] **AnyoneHostsUpdate** **0**|**1**::
+    If 1, the client will automatically attempt to fetch a fresh copy of
+    the `anyone_hosts` DNS mapping file from the .anyone DNS service nodes
+    when new directory information arrives and/or on a periodic schedule
+    (see <<AnyoneHostsUpdateTrigger,AnyoneHostsUpdateTrigger>>).
+    (Default: 1)
+
+[[AnyoneHostsURL]] **AnyoneHostsURL** __address__::
+    A .anyone onion address of a DNS service node to try when fetching the
+    `anyone_hosts` file.  This option may be specified multiple times; the
+    addresses are tried in order before the built-in defaults extracted from
+    the current `anyone_hosts` file and `DEFAULT_ANON_DNS_MAPPING`.
+    (Default: none)
+
+[[AnyoneHostsUpdateInterval]] **AnyoneHostsUpdateInterval** __N__ **seconds**|**minutes**|**hours**|**days**|**weeks**::
+    How often to attempt fetching a fresh `anyone_hosts` file.
+    (Default: 12 hours)
+
+[[AnyoneHostsFetchPath]] **AnyoneHostsFetchPath** __path__::
+    The HTTP resource path to request from the DNS service node.
+    (Default: /tld/anyone)
+
+[[AnyoneHostsUpdateTrigger]] **AnyoneHostsUpdateTrigger** **consensus**|**periodic**|**both**::
+    Controls what events trigger an `anyone_hosts` fetch attempt.  **consensus**
+    triggers a fetch only when a new network consensus is successfully loaded.
+    **periodic** triggers only via the periodic scheduler.  **both** uses
+    either trigger. (Default: both)
+
+[[AnyoneHostsSignatureRequirement]] **AnyoneHostsSignatureRequirement** **strict**|**verify**|**any**::
+    Controls how strictly the signature on a fetched `anyone_hosts` file is
+    checked.  **strict** requires a valid signature from a trusted DNS signer;
+    unsigned or untrusted files are discarded.  **verify** accepts unsigned
+    files but rejects files whose signature fails verification.  **any** accepts
+    all files that parse without error, regardless of signature status.
+    (Default: strict)
 
 [[DownloadExtraInfo]] **DownloadExtraInfo** **0**|**1**::
     If true, Tor downloads and caches "extra-info" documents. These documents
