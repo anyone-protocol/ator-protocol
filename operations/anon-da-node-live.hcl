@@ -1,7 +1,7 @@
 variable "anyone_client_tag" {
   type        = string
   description = "The anyone client container image tag to deploy for the directory authority live relay task"
-  default     = "b0745662741bb2ab7cd6cbbcae6382e2fabf9e7b" // v0.4.9.13
+  default     = "4be828669dd2dacffdae8abe650f56ab0de85643" // v0.4.10.2
 }
 
 variable "curl_image_tag" {
@@ -67,7 +67,7 @@ job "anon-da-node-live" {
       }
 
       config {
-        image = "ghcr.io/anyone-protocol/ator-protocol:${var.anyone_client_tag}"
+        image = "ghcr.io/anyone-protocol/ator-protocol-amd64:${var.anyone_client_tag}"
         image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
@@ -330,7 +330,7 @@ job "anon-da-node-live" {
       }
 
       config {
-        image = "ghcr.io/anyone-protocol/ator-protocol:${var.anyone_client_tag}"
+        image = "ghcr.io/anyone-protocol/ator-protocol-amd64:${var.anyone_client_tag}"
         image_pull_timeout = "15m"
         ports = ["orport", "dirport"]
         volumes = [
