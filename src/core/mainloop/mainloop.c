@@ -1698,8 +1698,9 @@ manage_vglite_callback(time_t now, const or_options_t *options)
   return VANGUARDS_LITE_INTERVAL;
 }
 
-/** Perform regular maintenance tasks.  This function gets run once per
- * second.
+/** Periodic-event callback: attempt to update the anyone_hosts DNS mapping
+ * file, and return the number of seconds until the next run
+ * (AnyoneHostsUpdateInterval).
  */
 static int
 update_anyone_hosts_callback(time_t now, const or_options_t *options)

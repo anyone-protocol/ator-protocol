@@ -35,8 +35,20 @@
 #include "lib/encoding/confline.h"
 #include "lib/fs/files.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+
 /** Minimum gap between consecutive fetch *attempts* (seconds). */
 #define ANYONE_HOSTS_MIN_RETRY_INTERVAL 3600
+
+/** If a fetch has been "in progress" for at least this many seconds without
+ * reporting a result, assume it failed on a path that did not notify us and
+ * clear the flag so future updates are not blocked. */
+#define ANYONE_HOSTS_FETCH_TIMEOUT 600
 
 /** True while a DIR_PURPOSE_FETCH_ANYONE_HOSTS connection is open. */
 static int fetch_in_progress = 0;
@@ -75,9 +87,11 @@ anyone_hosts_get_url_list(void)
 
   /* Helper: parse lines of the form "<hostname> <onion-address>" and
    * add the onion address to <urls>.  Only accept right-hand-side tokens
-   * that look like .anyone addresses, so that metadata lines from the
+   * that look like .anyone addresses, and skip metadata lines from the
    * signed file format (e.g. "anyone-hosts-version 1",
-   * "anyone-hosts-digest sha256 ...") are ignored. */
+   * "anyone-hosts-digest sha256 ...", "anyone-hosts-signature <signer>")
+   * whose first token starts with "anyone-hosts-" -- even if their second
+   * token happens to end in ".anyone". */
 #define ADD_MAPPING_LINES(text)                                         \
   do {                                                                  \
     smartlist_t *_lines = smartlist_new();                              \
@@ -85,7 +99,8 @@ anyone_hosts_get_url_list(void)
     smartlist_split_string(_lines, _copy, "\n", SPLIT_SKIP_SPACE, 0);  \
     SMARTLIST_FOREACH_BEGIN(_lines, const char *, _line) {              \
       const char *_sp = strchr(_line, ' ');                             \
-      if (_sp && *(_sp + 1)) {                                          \
+      if (_sp && *(_sp + 1) &&                                          \
+          strcmpstart(_line, "anyone-hosts-") != 0) {                   \
         const char *_addr = _sp + 1;                                    \
         size_t _alen = strlen(_addr);                                   \
         if (_alen >= 7 && !strcmp(_addr + _alen - 7, ".anyone"))        \
@@ -97,13 +112,24 @@ anyone_hosts_get_url_list(void)
     tor_free(_copy);                                                    \
   } while (0)
 
-  /* 2. Addresses from the currently saved anyone_hosts file. */
+  /* 2. Addresses from the currently saved anyone_hosts file.  Cap the read
+   * at DNSMappingFileMaxSize so a large or hostile local file cannot cause
+   * excessive memory use here, matching the cap that lookups use. */
   char *hosts_fname = get_datadir_fname("anyone_hosts");
-  char *hosts_content = read_file_to_str(hosts_fname, 0, NULL);
+  int hosts_fd = tor_open_cloexec(hosts_fname, O_RDONLY, 0);
   tor_free(hosts_fname);
-  if (hosts_content) {
-    ADD_MAPPING_LINES(hosts_content);
-    tor_free(hosts_content);
+  if (hosts_fd >= 0) {
+    const uint64_t max_size_opt = options->DNSMappingFileMaxSize;
+    const size_t max_size = max_size_opt == 0 ? SIZE_T_CEILING :
+      (max_size_opt > SIZE_T_CEILING ? SIZE_T_CEILING : (size_t)max_size_opt);
+    size_t hosts_sz = 0;
+    char *hosts_content =
+      read_file_to_str_until_eof(hosts_fd, max_size, &hosts_sz);
+    close(hosts_fd);
+    if (hosts_content) {
+      ADD_MAPPING_LINES(hosts_content);
+      tor_free(hosts_content);
+    }
   }
 
   /* 3. Hardcoded defaults as a last resort. */
@@ -137,12 +163,18 @@ anyone_hosts_update_free_all(void)
 void
 anyone_hosts_update_note_result(int success, time_t now)
 {
+  /* Be idempotent within a single fetch: the response handler and the
+   * connection-failure path can both call this, so only the first call for a
+   * given fetch records a result (and advances the round-robin index). */
+  if (!fetch_in_progress)
+    return;
   fetch_in_progress = 0;
-  if (success) {
+  if (success)
     last_success_time = now;
-    /* Advance the index so next time we try a different server. */
-    current_url_index++;
-  }
+  /* Advance the index so the next attempt tries a different server, whether
+   * or not this one succeeded.  This keeps the ordered fallback / round-robin
+   * working even when the first entry is permanently unreachable. */
+  current_url_index++;
 }
 
 /**
@@ -156,8 +188,17 @@ maybe_launch_fetch(time_t now)
 
   if (!options->AnyoneHostsUpdate)
     return;
-  if (fetch_in_progress)
-    return;
+  if (fetch_in_progress) {
+    /* Safety net: a previous fetch may have failed on a path that never
+     * called anyone_hosts_update_note_result().  Don't stay stuck forever. */
+    if (last_attempt_time &&
+        (now - last_attempt_time) >= ANYONE_HOSTS_FETCH_TIMEOUT) {
+      log_info(LD_DIR, "anyone_hosts fetch appears stuck; resetting state.");
+      fetch_in_progress = 0;
+    } else {
+      return;
+    }
+  }
 
   /* Respect the configured update interval for successes. */
   if (last_success_time &&
@@ -165,8 +206,11 @@ maybe_launch_fetch(time_t now)
     return;
 
   /* After a failed attempt wait at least ANYONE_HOSTS_MIN_RETRY_INTERVAL
-   * before trying again, regardless of the configured interval. */
-  if (last_attempt_time && !last_success_time &&
+   * before trying again, regardless of the configured interval.  We treat
+   * the last attempt as a failure if it happened after the last success, so
+   * the backoff also applies to failures that occur after an earlier success
+   * (preventing a rapid retry storm). */
+  if (last_attempt_time && last_attempt_time > last_success_time &&
       (now - last_attempt_time) < ANYONE_HOSTS_MIN_RETRY_INTERVAL)
     return;
 

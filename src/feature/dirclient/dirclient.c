@@ -776,6 +776,13 @@ connection_dir_client_request_failed(dir_connection_t *conn)
     log_warn(LD_DIR, "Failed to post %s to %s.",
              dir_conn_purpose_to_string(conn->base_.purpose),
              connection_describe_peer(TO_CONN(conn)));
+  } else if (conn->base_.purpose == DIR_PURPOSE_FETCH_ANYONE_HOSTS) {
+    /* The fetch failed before we got a response (connect/circuit/timeout
+     * error, etc.).  Notify the updater so it clears its in-progress flag
+     * and can retry; the success path is handled in the response handler. */
+    log_info(LD_DIR, "anyone_hosts fetch from %s failed.",
+             connection_describe_peer(TO_CONN(conn)));
+    anyone_hosts_update_note_result(0, time(NULL));
   }
 }
 
@@ -1328,7 +1335,8 @@ directory_initiate_request,(directory_request_t *request))
 
   /* use encrypted begindir connections for everything except relays
    * this provides better protection for directory fetches */
-  if (!use_begindir && dirclient_must_use_begindir(options)) {
+  if (!use_begindir && !anon_onion_address &&
+      dirclient_must_use_begindir(options)) {
     log_warn(LD_BUG, "Client could not use begindir connection: %s",
              begindir_reason ? begindir_reason : "(NULL)");
     return;
