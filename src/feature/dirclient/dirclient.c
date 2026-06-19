@@ -2967,7 +2967,8 @@ handle_response_fetch_anyone_hosts(dir_connection_t *conn,
   /* Atomically write the file using a temp file + rename. */
   char *hosts_fname = get_datadir_fname("anyone_hosts");
   char *hosts_fname_tmp = get_datadir_fname("anyone_hosts.tmp");
-  int write_ok = (write_str_to_file(hosts_fname_tmp, body, 0) == 0);
+  int write_ok =
+    (write_bytes_to_file(hosts_fname_tmp, body, body_len, 0) == 0);
   if (write_ok) {
     if (replace_file(hosts_fname_tmp, hosts_fname) < 0) {
       log_warn(LD_FS, "Error replacing anyone_hosts file: %s",

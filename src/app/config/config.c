@@ -4082,6 +4082,15 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "\"verify\", or \"any\".");
     }
   }
+  if (options->AnyoneHostsUpdateInterval < 1) {
+    REJECT("AnyoneHostsUpdateInterval must be positive.");
+  }
+  if (!options->AnyoneHostsFetchPath ||
+      !strlen(options->AnyoneHostsFetchPath) ||
+      options->AnyoneHostsFetchPath[0] != '/') {
+    REJECT("AnyoneHostsFetchPath must be a non-empty absolute path "
+           "beginning with '/'.");
+  }
 
   return 0;
 }
