@@ -4075,6 +4075,13 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "\"periodic\", or \"both\".");
     }
   }
+  if (options->AnyoneHostsURL) {
+    for (const config_line_t *cl = options->AnyoneHostsURL; cl; cl = cl->next) {
+      if (!cl->value || !strlen(cl->value) || strcmpend(cl->value, ".anyone")) {
+        REJECT("AnyoneHostsURL entries must be non-empty .anyone addresses ending in \".anyone\".");
+      }
+    }
+  }
   if (options->AnyoneHostsSignatureRequirement) {
     const char *s = options->AnyoneHostsSignatureRequirement;
     if (strcmp(s, "strict") && strcmp(s, "verify") && strcmp(s, "any")) {
