@@ -705,6 +705,21 @@ struct or_options_t {
   /** Maximum size in bytes allowed for the anyone_hosts DNS mapping file.
    * A value of 0 disables the size limit. */
   uint64_t DNSMappingFileMaxSize;
+  /** If true, automatically update the anyone_hosts DNS mapping file when
+   * new directory information arrives or on a periodic schedule. */
+  int AnyoneHostsUpdate;
+  /** List of .anyone service addresses to try when fetching the
+   * anyone_hosts file.  Tried in order before built-in defaults. */
+  struct config_line_t *AnyoneHostsURL;
+  /** How often (in seconds) to check for a new anyone_hosts file. */
+  int AnyoneHostsUpdateInterval;
+  /** HTTP resource path on the DNS service to fetch. */
+  char *AnyoneHostsFetchPath;
+  /** When to trigger an update: "consensus", "periodic", or "both". */
+  char *AnyoneHostsUpdateTrigger;
+  /** Signature acceptance policy: "strict" (valid sig only), "verify"
+   * (valid sig or unsigned), or "any" (accept unless parse error). */
+  char *AnyoneHostsSignatureRequirement;
 
   /** If true, do not accept any requests to connect to internal addresses
    * over randomly chosen exits. */

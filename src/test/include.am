@@ -128,6 +128,7 @@ src_test_test_SOURCES += \
 	src/test/test_addr.c \
 	src/test/test_address.c \
 	src/test/test_address_set.c \
+	src/test/test_anyone_hosts_update.c \
 	src/test/test_bridges.c \
 	src/test/test_btrack.c \
 	src/test/test_buffers.c \

@@ -61,6 +61,7 @@ include src/core/mainloop/include.am
 include src/core/or/include.am
 include src/core/proto/include.am
 
+include src/feature/anyone/include.am
 include src/feature/api/include.am
 include src/feature/client/include.am
 include src/feature/control/include.am

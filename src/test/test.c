@@ -589,6 +589,7 @@ struct testgroup_t testgroups[] = {
   { "addr/", addr_tests },
   { "address/", address_tests },
   { "address_set/", address_set_tests },
+  { "anyone_hosts_update/", anyone_hosts_update_tests },
   { "bridges/", bridges_tests },
   { "buffer/", buffer_tests },
   { "bwmgt/", bwmgt_tests },

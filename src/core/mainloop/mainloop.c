@@ -67,6 +67,7 @@
 #include "core/or/connection_or.h"
 #include "core/or/dos.h"
 #include "core/or/status.h"
+#include "feature/anyone/anyone_hosts_update.h"
 #include "feature/client/addressmap.h"
 #include "feature/client/bridges.h"
 #include "feature/client/dnsserv.h"
@@ -1381,6 +1382,7 @@ CALLBACK(write_stats_file);
 CALLBACK(control_per_second_events);
 CALLBACK(second_elapsed);
 CALLBACK(manage_vglite);
+CALLBACK(update_anyone_hosts);
 
 #undef CALLBACK
 
@@ -1405,6 +1407,9 @@ STATIC periodic_event_item_t mainloop_periodic_events[] = {
 
   /* Update vanguards-lite once per hour, if we have networking */
   CALLBACK(manage_vglite, NET_PARTICIPANT, FL(NEED_NET)),
+
+  /* Periodically update the anyone_hosts DNS mapping file. */
+  CALLBACK(update_anyone_hosts, CLIENT, FL(NEED_NET)),
 
   /* XXXX Do we have a reason to do this on a callback? Does it do any good at
    * all?  For now, if we're dormant, we can let our listeners decay. */
@@ -1553,6 +1558,8 @@ initialize_periodic_events(void)
   NAMED_CALLBACK(launch_descriptor_fetches);
   NAMED_CALLBACK(check_dns_honesty);
   NAMED_CALLBACK(save_state);
+
+  anyone_hosts_update_init();
 }
 
 STATIC void
@@ -1689,6 +1696,21 @@ manage_vglite_callback(time_t now, const or_options_t *options)
   maintain_layer2_guards();
 
   return VANGUARDS_LITE_INTERVAL;
+}
+
+/** Periodic-event callback: attempt to update the anyone_hosts DNS mapping
+ * file, and return the number of seconds until the next run
+ * (AnyoneHostsUpdateInterval).
+ */
+static int
+update_anyone_hosts_callback(time_t now, const or_options_t *options)
+{
+  /* Relays can also have the CLIENT role (e.g. when ControlPort is set), but
+   * anyone_hosts auto-update is intended for clients only. */
+  if (server_mode(options))
+    return options->AnyoneHostsUpdateInterval;
+
+  return anyone_hosts_update_callback(now, options);
 }
 
 /** Perform regular maintenance tasks.  This function gets run once per

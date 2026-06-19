@@ -144,6 +144,7 @@ purpose_needs_anonymity(uint8_t dir_purpose, uint8_t router_purpose,
     case DIR_PURPOSE_HAS_FETCHED_HSDESC:
     case DIR_PURPOSE_FETCH_HSDESC:
     case DIR_PURPOSE_UPLOAD_HSDESC:
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
       return 1;
     case DIR_PURPOSE_SERVER:
     default:

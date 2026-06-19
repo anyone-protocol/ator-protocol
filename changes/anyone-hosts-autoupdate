@@ -1,0 +1,13 @@
+  o New features (anyone-hosts auto-update):
+    - The client now automatically fetches a fresh copy of the anyone_hosts
+      DNS mapping file from the .anyone DNS service nodes when new directory
+      information arrives and/or on a periodic schedule.  New configuration
+      options AnyoneHostsUpdate, AnyoneHostsURL, AnyoneHostsUpdateInterval,
+      AnyoneHostsFetchPath, AnyoneHostsUpdateTrigger, and
+      AnyoneHostsSignatureRequirement control the behaviour.
+
+  o Minor features (documentation):
+    - DNSMappingFileMaxSize now documents bit-based units (KBits, MBits,
+      GBits, TBits) in the man page, consistent with other MEMUNIT options.
+    - Clarified that DNSMappingFileMaxSize only limits loading an existing
+      file; a missing file is always recreated with the default mapping.

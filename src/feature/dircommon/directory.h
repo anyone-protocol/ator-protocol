@@ -70,7 +70,10 @@ const dir_connection_t *CONST_TO_DIR_CONN(const connection_t *c);
 /** A connection to a directory server: set after a hidden service descriptor
  * is downloaded. */
 #define DIR_PURPOSE_HAS_FETCHED_HSDESC 22
-#define DIR_PURPOSE_MAX_ 22
+/** A connection to a .anyone service: fetch the anyone_hosts DNS mapping
+ * file from one of the DNS service nodes. */
+#define DIR_PURPOSE_FETCH_ANYONE_HOSTS 23
+#define DIR_PURPOSE_MAX_ 23
 
 /** True iff <b>p</b> is a purpose corresponding to uploading
  * data to a directory server. */

@@ -327,6 +327,12 @@ static const config_var_t option_vars_[] = {
   V(AlternateBridgeAuthority,    LINELIST, NULL),
   V(AlternateDirAuthority,       LINELIST, NULL),
   OBSOLETE("AlternateHSAuthority"),
+  V(AnyoneHostsFetchPath,        STRING,   "/tld/anyone"),
+  V(AnyoneHostsSignatureRequirement, STRING, "strict"),
+  V(AnyoneHostsUpdate,           BOOL,     "1"),
+  V(AnyoneHostsUpdateInterval,   INTERVAL, "12 hours"),
+  V(AnyoneHostsUpdateTrigger,    STRING,   "both"),
+  V(AnyoneHostsURL,              LINELIST, NULL),
   V(AssumeReachable,             BOOL,     "0"),
   V(AssumeReachableIPv6,         AUTOBOOL, "auto"),
   OBSOLETE("AuthDirBadDir"),
@@ -4060,6 +4066,49 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options_validate_scheduler(options, msg) < 0) {
     return -1;
+  }
+
+  if (options->AnyoneHostsUpdateTrigger) {
+    const char *t = options->AnyoneHostsUpdateTrigger;
+    if (strcmp(t, "consensus") && strcmp(t, "periodic") && strcmp(t, "both")) {
+      REJECT("AnyoneHostsUpdateTrigger must be \"consensus\", "
+             "\"periodic\", or \"both\".");
+    }
+  }
+  if (options->AnyoneHostsURL) {
+    const config_line_t *cl;
+    for (cl = options->AnyoneHostsURL; cl; cl = cl->next) {
+      const char *v = cl->value;
+      if (!v || !strlen(v) || strcmpend(v, ".anyone") ||
+          strstr(v, "://") || strchr(v, '/') || strchr(v, ':') ||
+          strpbrk(v, " \t\r\n")) {
+        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames "
+               "(no scheme, port, path, or whitespace) ending in "
+               "\".anyone\".");
+      }
+    }
+  }
+  if (options->AnyoneHostsSignatureRequirement) {
+    const char *s = options->AnyoneHostsSignatureRequirement;
+    if (strcmp(s, "strict") && strcmp(s, "verify") && strcmp(s, "any")) {
+      REJECT("AnyoneHostsSignatureRequirement must be \"strict\", "
+             "\"verify\", or \"any\".");
+    }
+  }
+  if (options->AnyoneHostsUpdateInterval < 1) {
+    REJECT("AnyoneHostsUpdateInterval must be positive.");
+  }
+  if (!options->AnyoneHostsFetchPath ||
+      !strlen(options->AnyoneHostsFetchPath) ||
+      options->AnyoneHostsFetchPath[0] != '/') {
+    REJECT("AnyoneHostsFetchPath must be a non-empty absolute path "
+           "beginning with '/'.");
+  }
+  /* The path is inserted verbatim into the HTTP request line, so reject any
+   * whitespace or CR/LF that could break the request or smuggle headers. */
+  if (strpbrk(options->AnyoneHostsFetchPath, " \t\r\n")) {
+    REJECT("AnyoneHostsFetchPath must not contain whitespace or "
+           "newline characters.");
   }
 
   return 0;
