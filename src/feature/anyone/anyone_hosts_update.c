@@ -53,10 +53,10 @@
 /** True while a DIR_PURPOSE_FETCH_ANYONE_HOSTS connection is open. */
 static int fetch_in_progress = 0;
 
-/** Monotone wall-clock time of the last fetch attempt. */
+/** Wall-clock time of the last fetch attempt. */
 static time_t last_attempt_time = 0;
 
-/** Monotone wall-clock time of the last *successful* fetch. */
+/** Wall-clock time of the last *successful* fetch. */
 static time_t last_success_time = 0;
 
 /** Round-robin index into the URL list. */

@@ -2018,7 +2018,7 @@ dir_client_decompress_response_body(char **bodyp, size_t *bodylenp,
  * (For example, the number of bytes downloaded of purpose p while
  * not fully bootstrapped is total_dl[p][false].)
  **/
-static uint64_t total_dl[DIR_PURPOSE_MAX_][2];
+static uint64_t total_dl[DIR_PURPOSE_MAX_ + 1][2];
 
 /**
  * Heartbeat: dump a summary of how many bytes of which purpose we've
@@ -2030,7 +2030,7 @@ dirclient_dump_total_dls(void)
   const or_options_t *options = get_options();
   for (int bootstrapped = 0; bootstrapped < 2; ++bootstrapped) {
     smartlist_t *lines = smartlist_new();
-    for (int i=0; i < DIR_PURPOSE_MAX_; ++i) {
+    for (int i=0; i <= DIR_PURPOSE_MAX_; ++i) {
       uint64_t n = total_dl[i][bootstrapped];
       if (n == 0)
         continue;
@@ -2964,22 +2964,15 @@ handle_response_fetch_anyone_hosts(dir_connection_t *conn,
     }
   }
 
-  /* Atomically write the file using a temp file + rename. */
+  /* write_bytes_to_file() writes atomically via its own temp file + rename,
+   * so write the verified bytes straight to the final path. */
   char *hosts_fname = get_datadir_fname("anyone_hosts");
-  char *hosts_fname_tmp = get_datadir_fname("anyone_hosts.tmp");
   int write_ok =
-    (write_bytes_to_file(hosts_fname_tmp, body, body_len, 0) == 0);
-  if (write_ok) {
-    if (replace_file(hosts_fname_tmp, hosts_fname) < 0) {
-      log_warn(LD_FS, "Error replacing anyone_hosts file: %s",
-               strerror(errno));
-      write_ok = 0;
-    }
-  } else {
-    log_warn(LD_FS, "Error writing anyone_hosts temp file.");
+    (write_bytes_to_file(hosts_fname, body, body_len, 1) == 0);
+  if (!write_ok) {
+    log_warn(LD_FS, "Error writing anyone_hosts file.");
   }
   tor_free(hosts_fname);
-  tor_free(hosts_fname_tmp);
 
   if (write_ok) {
     log_info(LD_DIR, "Successfully updated anyone_hosts file (%"TOR_PRIuSZ
