@@ -1705,6 +1705,11 @@ manage_vglite_callback(time_t now, const or_options_t *options)
 static int
 update_anyone_hosts_callback(time_t now, const or_options_t *options)
 {
+  /* Relays can also have the CLIENT role (e.g. when ControlPort is set), but
+   * anyone_hosts auto-update is intended for clients only. */
+  if (server_mode(options))
+    return options->AnyoneHostsUpdateInterval;
+
   return anyone_hosts_update_callback(now, options);
 }
 
