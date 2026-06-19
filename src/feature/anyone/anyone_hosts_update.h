@@ -29,6 +29,7 @@ void anyone_hosts_update_maybe_kick(time_t now);
 void anyone_hosts_update_note_result(int success, time_t now);
 
 /** Periodic-event callback: try to fetch a fresh anyone_hosts file. */
-int update_anyone_hosts_callback(time_t now, const struct or_options_t *options);
+int anyone_hosts_update_callback(time_t now,
+                                 const struct or_options_t *options);
 
 #endif /* !defined(TOR_ANYONE_HOSTS_UPDATE_H) */

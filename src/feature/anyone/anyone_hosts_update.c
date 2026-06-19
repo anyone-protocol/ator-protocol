@@ -17,8 +17,10 @@
  * The fetch is only launched when:
  *   - AnyoneHostsUpdate is set to 1, AND
  *   - no fetch is already in progress, AND
- *   - at least AnyoneHostsUpdateInterval seconds have elapsed since the
- *     last successful fetch or (half that) since the last attempt.
+ *   - at least AnyoneHostsUpdateInterval seconds have elapsed since the last
+ *     successful fetch (and we additionally wait at least
+ *     ANYONE_HOSTS_MIN_RETRY_INTERVAL between attempts before the first
+ *     success).
  **/
 
 #include "core/or/or.h"
@@ -30,6 +32,7 @@
 #include "lib/malloc/malloc.h"
 #include "lib/container/smartlist.h"
 #include "lib/string/util_string.h"
+#include "lib/encoding/confline.h"
 #include "lib/fs/files.h"
 
 /** Minimum gap between consecutive fetch *attempts* (seconds). */
@@ -71,7 +74,10 @@ anyone_hosts_get_url_list(void)
   }
 
   /* Helper: parse lines of the form "<hostname> <onion-address>" and
-   * add the onion address to <urls>. */
+   * add the onion address to <urls>.  Only accept right-hand-side tokens
+   * that look like .anyone addresses, so that metadata lines from the
+   * signed file format (e.g. "anyone-hosts-version 1",
+   * "anyone-hosts-digest sha256 ...") are ignored. */
 #define ADD_MAPPING_LINES(text)                                         \
   do {                                                                  \
     smartlist_t *_lines = smartlist_new();                              \
@@ -80,7 +86,10 @@ anyone_hosts_get_url_list(void)
     SMARTLIST_FOREACH_BEGIN(_lines, const char *, _line) {              \
       const char *_sp = strchr(_line, ' ');                             \
       if (_sp && *(_sp + 1)) {                                          \
-        smartlist_add(urls, tor_strdup(_sp + 1));                       \
+        const char *_addr = _sp + 1;                                    \
+        size_t _alen = strlen(_addr);                                   \
+        if (_alen >= 7 && !strcmp(_addr + _alen - 7, ".anyone"))        \
+          smartlist_add(urls, tor_strdup(_addr));                       \
       }                                                                 \
     } SMARTLIST_FOREACH_END(_line);                                     \
     SMARTLIST_FOREACH(_lines, char *, _s, tor_free(_s));                \
@@ -177,33 +186,30 @@ maybe_launch_fetch(time_t now)
 
   /* Build and fire the directory request.  The connection is anonymised
    * (purpose_needs_anonymity returns 1 for DIR_PURPOSE_FETCH_ANYONE_HOSTS)
-   * and tunnelled through a 3-hop circuit to a .anyone service. */
-  directory_request_t *req = directory_request_new(DIR_PURPOSE_FETCH_ANYONE_HOSTS);
+   * and tunnelled through a 3-hop circuit to the .anyone DNS service, which
+   * serves the file over plain HTTP on port 80. */
+  directory_request_t *req =
+    directory_request_new(DIR_PURPOSE_FETCH_ANYONE_HOSTS);
   directory_request_set_indirection(req, DIRIND_ANONYMOUS);
 
-  /* We address the request to the .anyone service directly by setting the
-   * OR-port address to the onion address with port 80. */
-  tor_addr_port_t orport;
-  memset(&orport, 0, sizeof(orport));
-  /* Use AF_UNSPEC address — the address will be resolved via the .anyone
-   * service address stored in the resource field, which dirclient handles
-   * when use_begindir is set and the address ends in .anyone. */
-  tor_addr_make_unspec(&orport.addr);
-  orport.port = 80;
-  directory_request_set_or_addr_port(req, &orport);
+  /* Route to the onion address by name rather than by IP.  We set the
+   * dir-port to 80 (with no or-port) so the request is sent as a plain
+   * anonymised stream rather than a begindir tunnel, and supply the
+   * .anyone address explicitly. */
+  tor_addr_port_t dirport;
+  memset(&dirport, 0, sizeof(dirport));
+  tor_addr_make_null(&dirport.addr, AF_INET);
+  dirport.port = 80;
+  directory_request_set_dir_addr_port(req, &dirport);
+  directory_request_set_anon_onion_address(req, onion_addr);
 
-  /* Store the onion address so connection_ap_make_link can route it. */
+  /* The HTTP resource (path) to request from the DNS service. */
   directory_request_set_resource(req, options->AnyoneHostsFetchPath);
 
-  /* We need to set the router purpose and a placeholder identity digest. */
+  /* A directory request requires an identity digest; it is unused for an
+   * anonymised onion-address fetch, so pass a zero placeholder. */
   static const char zero_digest[DIGEST_LEN] = {0};
   directory_request_set_directory_id_digest(req, zero_digest);
-
-  /* Tag the connection with the onion address so dirclient.c can route it.
-   * We store it in additional_headers (key "X-Anyone-Onion") for now; the
-   * dirclient wiring will read it back before calling
-   * connection_ap_make_link(). */
-  directory_request_add_header(req, "X-Anyone-Onion: ", onion_addr);
 
   fetch_in_progress = 1;
   last_attempt_time = now;
@@ -229,7 +235,7 @@ anyone_hosts_update_maybe_kick(time_t now)
 }
 
 int
-update_anyone_hosts_callback(time_t now, const or_options_t *options)
+anyone_hosts_update_callback(time_t now, const or_options_t *options)
 {
   if (!options->AnyoneHostsUpdateTrigger)
     return options->AnyoneHostsUpdateInterval;

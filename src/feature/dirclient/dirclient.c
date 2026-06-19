@@ -1057,6 +1057,17 @@ directory_request_set_resource(directory_request_t *req,
   req->resource = resource;
 }
 /**
+ * Set an onion (.anyone) address to route this request to by name instead of
+ * by IP address.  Used for anyone_hosts auto-update fetches.  Note that only
+ * an alias to <b>address</b> is stored, so it must outlive the request.
+ */
+void
+directory_request_set_anon_onion_address(directory_request_t *req,
+                                         const char *address)
+{
+  req->anon_onion_address = address;
+}
+/**
  * Set a pointer to the payload to include with this directory request, along
  * with its length.  Note that only an alias to <b>payload</b> is stored, so
  * the <b>payload</b> must outlive the request.
@@ -1277,6 +1288,7 @@ directory_initiate_request,(directory_request_t *request))
   const dir_indirection_t indirection = request->indirection;
   const char *resource = request->resource;
   const hs_ident_dir_conn_t *hs_ident = request->hs_ident;
+  const char *anon_onion_address = request->anon_onion_address;
   circuit_guard_state_t *guard_state = request->guard_state;
 
   tor_assert(or_addr_port->port || dir_addr_port->port);
@@ -1332,7 +1344,17 @@ directory_initiate_request,(directory_request_t *request))
   }
 
   /* Make sure that the destination addr and port we picked is viable. */
-  if (!port || tor_addr_is_null(&addr)) {
+  if (anon_onion_address) {
+    /* We're routing to an onion service by name through an anonymised
+     * circuit; we don't have (or need) a numeric address, but we do need a
+     * port and an anonymised connection. */
+    tor_assert(anonymized_connection);
+    if (!port) {
+      log_warn(LD_DIR, "Cannot fetch from onion service %s without a port.",
+               safe_str(anon_onion_address));
+      return;
+    }
+  } else if (!port || tor_addr_is_null(&addr)) {
     static int logged_backtrace = 0;
     log_warn(LD_DIR,
              "Cannot make an outgoing %sconnection without a remote %sPort.",
@@ -1350,7 +1372,8 @@ directory_initiate_request,(directory_request_t *request))
   /* set up conn so it's got all the data we need to remember */
   tor_addr_copy(&conn->base_.addr, &addr);
   conn->base_.port = port;
-  conn->base_.address = tor_addr_to_str_dup(&addr);
+  conn->base_.address = anon_onion_address ? tor_strdup(anon_onion_address)
+                                           : tor_addr_to_str_dup(&addr);
   memcpy(conn->identity_digest, digest, DIGEST_LEN);
 
   conn->base_.purpose = dir_purpose;
