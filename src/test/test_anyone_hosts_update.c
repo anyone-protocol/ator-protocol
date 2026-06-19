@@ -27,6 +27,7 @@
 #include "app/config/config.h"
 #include "app/config/or_options_st.h"
 #include "lib/encoding/confline.h"
+#include "lib/fs/files.h"
 #include "lib/malloc/malloc.h"
 
 #include "test/test.h"
@@ -261,7 +262,8 @@ test_anyone_hosts_update_retry_backoff(void *arg)
   /* Well within the minimum retry interval: no retry. */
   anyone_hosts_update_callback(BASE_TIME + 60, get_options());
   tt_int_op(n_fetches_launched, OP_EQ, 1);
-  anyone_hosts_update_callback(BASE_TIME + (TEST_MIN_RETRY - 1), get_options());
+  anyone_hosts_update_callback(BASE_TIME + (TEST_MIN_RETRY - 1),
+                               get_options());
   tt_int_op(n_fetches_launched, OP_EQ, 1);
 
   /* Once the minimum retry interval elapses, a retry is allowed. */
@@ -347,6 +349,40 @@ test_anyone_hosts_update_stuck_timeout(void *arg)
   UNMOCK(directory_initiate_request);
 }
 
+/** Addresses are pulled out of the saved anyone_hosts mapping file even when
+ * the name and address are separated by a tab rather than a space. */
+static void
+test_anyone_hosts_update_file_tab_separator(void *arg)
+{
+  (void)arg;
+  char *fname = NULL;
+  MOCK(directory_initiate_request, mock_directory_initiate_request);
+  reset_fetch_capture();
+  anyone_hosts_update_init();
+
+  set_update_options(1, "periodic", 7200);
+
+  /* Write a saved mapping whose single entry uses a TAB separator.  With no
+   * AnyoneHostsURL override this address is first in the fallback list, so it
+   * is the target of the next fetch -- but only if tab separators are
+   * recognised. */
+  fname = get_datadir_fname("anyone_hosts");
+  static const char tab_mapping[] =
+    "myhost.anyone\tuniquetabaddr0123456789.anyone\n";
+  tt_int_op(0, OP_EQ, write_str_to_file(fname, tab_mapping, 0));
+
+  anyone_hosts_update_callback(BASE_TIME, get_options());
+  tt_int_op(n_fetches_launched, OP_EQ, 1);
+  tt_assert(last_onion_address);
+  tt_str_op(last_onion_address, OP_EQ, "uniquetabaddr0123456789.anyone");
+
+ done:
+  if (fname)
+    tor_unlink(fname);
+  tor_free(fname);
+  UNMOCK(directory_initiate_request);
+}
+
 struct testcase_t anyone_hosts_update_tests[] = {
   { "disabled", test_anyone_hosts_update_disabled, TT_FORK, NULL, NULL },
   { "periodic_launch", test_anyone_hosts_update_periodic_launch, TT_FORK,
@@ -362,5 +398,7 @@ struct testcase_t anyone_hosts_update_tests[] = {
     NULL, NULL },
   { "stuck_timeout", test_anyone_hosts_update_stuck_timeout, TT_FORK,
     NULL, NULL },
+  { "file_tab_separator", test_anyone_hosts_update_file_tab_separator,
+    TT_FORK, NULL, NULL },
   END_OF_TESTCASES
 };

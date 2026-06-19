@@ -1817,8 +1817,12 @@ bool lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out, 
   }
   const or_options_t *options = get_options();
   const uint64_t max_size_opt = options->DNSMappingFileMaxSize;
-  const size_t max_size = max_size_opt == 0 ? SIZE_T_CEILING :
-    (max_size_opt > SIZE_T_CEILING ? SIZE_T_CEILING : (size_t)max_size_opt);
+  /* read_file_to_str_until_eof() rejects a limit of SIZE_T_CEILING or more, so
+   * keep the effective "no cap" value just below that boundary; otherwise a
+   * cap of 0 (unlimited) would make the read fail and the mapping be ignored. */
+  const size_t max_read_cap = SIZE_T_CEILING - 2;
+  const size_t max_size = (max_size_opt == 0 || max_size_opt > max_read_cap)
+    ? max_read_cap : (size_t)max_size_opt;
   size_t file_sz = 0;
   file_content = read_file_to_str_until_eof(dns_fd, max_size, &file_sz);
   close(dns_fd);

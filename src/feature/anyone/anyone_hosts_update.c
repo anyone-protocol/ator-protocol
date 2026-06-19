@@ -98,10 +98,18 @@ anyone_hosts_get_url_list(void)
     char *_copy = tor_strdup(text);                                     \
     smartlist_split_string(_lines, _copy, "\n", SPLIT_SKIP_SPACE, 0);  \
     SMARTLIST_FOREACH_BEGIN(_lines, const char *, _line) {              \
-      const char *_sp = strchr(_line, ' ');                             \
-      if (_sp && *(_sp + 1) &&                                          \
-          strcmpstart(_line, "anyone-hosts-") != 0) {                   \
-        const char *_addr = _sp + 1;                                    \
+      if (strcmpstart(_line, "anyone-hosts-") == 0)                     \
+        continue;                                                       \
+      /* Find the whitespace separating the name from the onion        \
+       * address, accepting either spaces or tabs to match the         \
+       * sscanf("%s %s") tokenisation used by the lookup parser. */     \
+      const char *_sp = _line;                                          \
+      while (*_sp && *_sp != ' ' && *_sp != '\t')                       \
+        _sp++;                                                          \
+      while (*_sp == ' ' || *_sp == '\t')                               \
+        _sp++;                                                          \
+      if (*_sp) {                                                       \
+        const char *_addr = _sp;                                        \
         size_t _alen = strlen(_addr);                                   \
         if (_alen >= 7 && !strcmp(_addr + _alen - 7, ".anyone"))        \
           smartlist_add(urls, tor_strdup(_addr));                       \
@@ -120,8 +128,13 @@ anyone_hosts_get_url_list(void)
   tor_free(hosts_fname);
   if (hosts_fd >= 0) {
     const uint64_t max_size_opt = options->DNSMappingFileMaxSize;
-    const size_t max_size = max_size_opt == 0 ? SIZE_T_CEILING :
-      (max_size_opt > SIZE_T_CEILING ? SIZE_T_CEILING : (size_t)max_size_opt);
+    /* read_file_to_str_until_eof() rejects a limit of SIZE_T_CEILING or more,
+     * so keep the effective "no cap" value just below that boundary;
+     * otherwise a cap of 0 (unlimited) would make the read fail and the saved
+     * addresses be silently skipped. */
+    const size_t max_read_cap = SIZE_T_CEILING - 2;
+    const size_t max_size = (max_size_opt == 0 || max_size_opt > max_read_cap)
+      ? max_read_cap : (size_t)max_size_opt;
     size_t hosts_sz = 0;
     char *hosts_content =
       read_file_to_str_until_eof(hosts_fd, max_size, &hosts_sz);
@@ -154,7 +167,12 @@ anyone_hosts_update_init(void)
 void
 anyone_hosts_update_free_all(void)
 {
+  /* Reset all module state so a later re-init (e.g. in tests or a future
+   * reload path) starts from a clean slate, not just the in-progress flag. */
   fetch_in_progress = 0;
+  last_attempt_time = 0;
+  last_success_time = 0;
+  current_url_index = 0;
 }
 
 /** Called by dirclient when a DIR_PURPOSE_FETCH_ANYONE_HOSTS connection
@@ -229,7 +247,8 @@ maybe_launch_fetch(time_t now)
   int idx = current_url_index % smartlist_len(urls);
   const char *onion_addr = smartlist_get(urls, idx);
 
-  log_info(LD_DIR, "Launching anyone_hosts fetch from %s", onion_addr);
+  log_info(LD_DIR, "Launching anyone_hosts fetch from %s",
+           safe_str(onion_addr));
 
   /* Build and fire the directory request.  The connection is anonymised
    * (purpose_needs_anonymity returns 1 for DIR_PURPOSE_FETCH_ANYONE_HOSTS)

@@ -4076,12 +4076,15 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     }
   }
   if (options->AnyoneHostsURL) {
-    for (const config_line_t *cl = options->AnyoneHostsURL; cl; cl = cl->next) {
+    const config_line_t *cl;
+    for (cl = options->AnyoneHostsURL; cl; cl = cl->next) {
       const char *v = cl->value;
       if (!v || !strlen(v) || strcmpend(v, ".anyone") ||
           strstr(v, "://") || strchr(v, '/') || strchr(v, ':') ||
-          strchr(v, ' ') || strchr(v, '\t') || strchr(v, '\r') || strchr(v, '\n')) {
-        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames (no scheme, port, path, or whitespace) ending in \".anyone\".");
+          strpbrk(v, " \t\r\n")) {
+        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames "
+               "(no scheme, port, path, or whitespace) ending in "
+               "\".anyone\".");
       }
     }
   }
@@ -4100,6 +4103,12 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
       options->AnyoneHostsFetchPath[0] != '/') {
     REJECT("AnyoneHostsFetchPath must be a non-empty absolute path "
            "beginning with '/'.");
+  }
+  /* The path is inserted verbatim into the HTTP request line, so reject any
+   * whitespace or CR/LF that could break the request or smuggle headers. */
+  if (strpbrk(options->AnyoneHostsFetchPath, " \t\r\n")) {
+    REJECT("AnyoneHostsFetchPath must not contain whitespace or "
+           "newline characters.");
   }
 
   return 0;
