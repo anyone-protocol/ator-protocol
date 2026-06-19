@@ -4077,8 +4077,11 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   }
   if (options->AnyoneHostsURL) {
     for (const config_line_t *cl = options->AnyoneHostsURL; cl; cl = cl->next) {
-      if (!cl->value || !strlen(cl->value) || strcmpend(cl->value, ".anyone")) {
-        REJECT("AnyoneHostsURL entries must be non-empty .anyone addresses ending in \".anyone\".");
+      const char *v = cl->value;
+      if (!v || !strlen(v) || strcmpend(v, ".anyone") ||
+          strstr(v, "://") || strchr(v, '/') || strchr(v, ':') ||
+          strchr(v, ' ') || strchr(v, '\t') || strchr(v, '\r') || strchr(v, '\n')) {
+        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames (no scheme, port, path, or whitespace) ending in \".anyone\".");
       }
     }
   }
