@@ -2375,7 +2375,8 @@ handle_response_fetch_consensus(dir_connection_t *conn,
   routers_update_all_from_networkstatus(now, 3);
   update_microdescs_from_networkstatus(now);
   directory_info_has_arrived(now, 0, 0);
-  anyone_hosts_update_maybe_kick(now);
+  if (!server_mode(get_options()))
+    anyone_hosts_update_maybe_kick(now);
 
   if (authdir_mode_v3(get_options())) {
     sr_act_post_consensus(

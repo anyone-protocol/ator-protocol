@@ -1409,7 +1409,7 @@ STATIC periodic_event_item_t mainloop_periodic_events[] = {
   CALLBACK(manage_vglite, NET_PARTICIPANT, FL(NEED_NET)),
 
   /* Periodically update the anyone_hosts DNS mapping file. */
-  CALLBACK(update_anyone_hosts, NET_PARTICIPANT, FL(NEED_NET)),
+  CALLBACK(update_anyone_hosts, CLIENT, FL(NEED_NET)),
 
   /* XXXX Do we have a reason to do this on a callback? Does it do any good at
    * all?  For now, if we're dormant, we can let our listeners decay. */

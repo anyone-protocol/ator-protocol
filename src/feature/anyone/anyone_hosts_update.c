@@ -190,14 +190,17 @@ maybe_launch_fetch(time_t now)
     return;
   if (fetch_in_progress) {
     /* Safety net: a previous fetch may have failed on a path that never
-     * called anyone_hosts_update_note_result().  Don't stay stuck forever. */
+     * called anyone_hosts_update_note_result().  Don't stay stuck forever.
+     * Record it as a failed attempt and return; the next periodic/consensus
+     * trigger will start a fresh fetch.  (Don't fall through to launch a new
+     * fetch here: the original connection may still be live and could later
+     * call note_result(), clobbering the new fetch's state.) */
     if (last_attempt_time &&
         (now - last_attempt_time) >= ANYONE_HOSTS_FETCH_TIMEOUT) {
-      log_info(LD_DIR, "anyone_hosts fetch appears stuck; resetting state.");
-      fetch_in_progress = 0;
-    } else {
-      return;
+      log_info(LD_DIR, "anyone_hosts fetch appears stuck; treating as failed.");
+      anyone_hosts_update_note_result(0, now);
     }
+    return;
   }
 
   /* Respect the configured update interval for successes. */
