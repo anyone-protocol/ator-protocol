@@ -49,6 +49,7 @@ jobs:
           docker-username: ${{ github.actor }}
           docker-password: ${{ secrets.GITHUB_TOKEN }}
           docker-base-repo: ghcr.io/anyone-protocol/${{ steps.image-name.outputs.name }}-${{ matrix.platform.image-suffix }}
+          docker-additional-repo: ${{ matrix.platform.image-suffix == 'amd64' && format('ghcr.io/anyone-protocol/{0}', steps.image-name.outputs.name) || '' }}
           docker-tag: ${{ github.event.inputs.docker-tag }}
           docker-platform: ${{ matrix.platform.name }}
           version: ${{ github.sha }}

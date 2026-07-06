@@ -7,6 +7,10 @@ inputs:
     required: true
   docker-base-repo:
     required: true
+  docker-additional-repo:
+    description: 'Optional additional repo to tag with the same tags (e.g. the un-suffixed repo for amd64 builds).'
+    required: false
+    default: ''
   docker-tag:
     required: true
   docker-platform:
@@ -40,7 +44,13 @@ runs:
         context: ./docker/
         file: ./docker/Dockerfile
         push: ${{ inputs.push }}
-        tags: ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }},${{ inputs.docker-base-repo }}:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }},${{ inputs.docker-base-repo }}:${{ inputs.version }}
+        tags: |
+          ${{ inputs.docker-base-repo }}:${{ inputs.docker-tag }}
+          ${{ inputs.docker-base-repo }}:${{ inputs.event-name == 'push' && 'latest' || 'latest-manual' }}
+          ${{ inputs.docker-base-repo }}:${{ inputs.version }}
+          ${{ inputs.docker-additional-repo != '' && format('{0}:{1}', inputs.docker-additional-repo, inputs.docker-tag) || '' }}
+          ${{ inputs.docker-additional-repo != '' && format('{0}:{1}', inputs.docker-additional-repo, inputs.event-name == 'push' && 'latest' || 'latest-manual') || '' }}
+          ${{ inputs.docker-additional-repo != '' && format('{0}:{1}', inputs.docker-additional-repo, inputs.version) || '' }}
         platforms: ${{ inputs.docker-platform }}
         build-args: |
           ANON_VER=${{ inputs.version }}
