@@ -1,0 +1,8 @@
+  o Minor bugfixes (client, DNS mapping):
+    - Setting DNSMappingFileMaxSize to 0, documented as disabling the
+      size limit, made every anyone_hosts read fail: the "unlimited"
+      sentinel (SIZE_T_CEILING) is rejected as invalid by
+      read_file_to_str_until_eof(), so all .anyone lookups reported
+      "No mapping found" despite a valid mapping file.  Clamp the
+      effective read cap to SIZE_T_CEILING - 2 so 0 disables the limit
+      as documented.
