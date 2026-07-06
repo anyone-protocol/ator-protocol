@@ -3640,6 +3640,43 @@ connection_ap_make_link(connection_t *partner,
   return conn;
 }
 
+/** Like connection_ap_make_link(), but for a target that is an onion-routed
+ * hostname (a .anyone name) rather than a numeric address.
+ *
+ * connection_ap_make_link() queues the stream for direct circuit attachment,
+ * which treats the address as an exit-resolvable hostname; a .anyone name
+ * would reach the exit unresolved and fail.  Instead, send the linked stream
+ * through connection_ap_handshake_rewrite_and_attach(), the same path SOCKS
+ * client streams take, so the name is translated via the anyone_hosts
+ * mapping and attached to a hidden-service circuit.
+ *
+ * Return the new entry connection, or NULL on error.  On error the stream
+ * has already been marked for close, so the partner connection will see EOF.
+ */
+entry_connection_t *
+connection_ap_make_link_onion(connection_t *partner,
+                              char *address, uint16_t port,
+                              int session_group, int isolation_flags)
+{
+  entry_connection_t *conn =
+    connection_ap_make_link(partner, address, port, NULL /* digest */,
+                            session_group, isolation_flags,
+                            0 /* use_begindir */, 0 /* want_onehop */);
+  if (!conn)
+    return NULL;
+
+  /* Undo the direct-attach queueing and take the rewrite path instead. */
+  connection_ap_mark_as_non_pending_circuit(conn);
+  /* The rewrite path refuses onion targets unless the stream's entry
+   * configuration allows them; internal fetches always may. */
+  conn->entry_cfg.onion_traffic = 1;
+  if (connection_ap_handshake_rewrite_and_attach(conn, NULL, NULL) < 0) {
+    /* The connection has already been marked unattached and closed. */
+    return NULL;
+  }
+  return conn;
+}
+
 /** Notify any interested controller connections about a new hostname resolve
  * or resolve error.  Takes the same arguments as does
  * connection_ap_handshake_socks_resolved(). */

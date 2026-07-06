@@ -114,6 +114,11 @@ entry_connection_t  *connection_ap_make_link(connection_t *partner,
                                             int session_group,
                                             int isolation_flags,
                                             int use_begindir, int want_onehop);
+entry_connection_t *connection_ap_make_link_onion(connection_t *partner,
+                                                  char *address,
+                                                  uint16_t port,
+                                                  int session_group,
+                                                  int isolation_flags);
 void connection_ap_handshake_socks_reply(entry_connection_t *conn, char *reply,
                                          size_t replylen,
                                          int endreason);
