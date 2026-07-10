@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Install dependencies
       shell: bash
-      run: brew install gsed automake docbook docbook-xsl zlib # libevent openssl@3
+      run: brew install gsed automake docbook docbook-xsl zlib libevent openssl@3
     - name: Build anon
       shell: bash
       run: |
