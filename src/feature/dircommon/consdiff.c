@@ -873,7 +873,7 @@ apply_ed_diff(const smartlist_t *cons1, const smartlist_t *diff,
       goto error_cleanup;
     }
     /* Copy the line to make it nul-terminated. */
-    memcpy(diff_line, diff_cdline->s, diff_cdline->len);
+    memcpy(diff_line, diff_cdline->s, MIN(diff_cdline->len, sizeof(diff_line) - 1));
     diff_line[diff_cdline->len] = 0;
     const char *ptr = diff_line;
     int start = 0, end = 0;
