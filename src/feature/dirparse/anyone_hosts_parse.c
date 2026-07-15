@@ -92,6 +92,11 @@ is_trusted_dns_signer(const char *signer_address)
  *
  * <b>body</b> is the full file content, <b>body_len</b> is its length.
  *
+ * If <b>published_out</b> / <b>valid_until_out</b> are non-NULL, they are
+ * set to the document's "published" / "valid-until" times whenever those
+ * tokens parse, regardless of the final signature status; absent or
+ * unparseable times leave them at 0.
+ *
  * Returns:
  *   ANYONE_HOSTS_SIG_VALID       — signature verified successfully
  *   ANYONE_HOSTS_SIG_INVALID     — signature present but verification failed
@@ -99,8 +104,10 @@ is_trusted_dns_signer(const char *signer_address)
  *   ANYONE_HOSTS_SIG_BAD_SIGNER  — signer is not a trusted DNS service
  *   ANYONE_HOSTS_SIG_PARSE_ERROR — file has signature headers but is malformed
  */
-anyone_hosts_sig_status_t
-anyone_hosts_parse_and_verify(const char *body, size_t body_len)
+MOCK_IMPL(anyone_hosts_sig_status_t,
+anyone_hosts_parse_and_verify_ex,(const char *body, size_t body_len,
+                                  time_t *published_out,
+                                  time_t *valid_until_out))
 {
   smartlist_t *tokens = NULL;
   memarea_t *area = NULL;
@@ -109,6 +116,11 @@ anyone_hosts_parse_and_verify(const char *body, size_t body_len)
   anyone_hosts_sig_status_t result = ANYONE_HOSTS_SIG_PARSE_ERROR;
 
   tor_assert(body);
+
+  if (published_out)
+    *published_out = 0;
+  if (valid_until_out)
+    *valid_until_out = 0;
 
   /* Quick check: if the file doesn't start with our version keyword,
    * it's an unsigned plain-text file (backward compatible). */
@@ -133,6 +145,20 @@ anyone_hosts_parse_and_verify(const char *body, size_t body_len)
   if (!tok || strcmp(tok->args[0], "1") != 0) {
     log_warn(LD_DIR, "anyone_hosts: unrecognized or missing version.");
     goto done;
+  }
+
+  /* Extract the published / valid-until times when requested.  These are
+   * reported for any document that tokenizes, so callers can consult them
+   * even when the signature is absent or bad. */
+  if (published_out) {
+    tok = find_opt_by_keyword(tokens, K_PUBLISHED);
+    if (tok && tok->n_args >= 1)
+      (void) parse_iso_time(tok->args[0], published_out);
+  }
+  if (valid_until_out) {
+    tok = find_opt_by_keyword(tokens, K_VALID_UNTIL);
+    if (tok && tok->n_args >= 1)
+      (void) parse_iso_time(tok->args[0], valid_until_out);
   }
 
   /* Find the signature token. */
@@ -256,4 +282,12 @@ anyone_hosts_parse_and_verify(const char *body, size_t body_len)
   if (area)
     memarea_drop_all(area);
   return result;
+}
+
+/** Backward-compatible wrapper for anyone_hosts_parse_and_verify_ex()
+ * that discards the published / valid-until times. */
+anyone_hosts_sig_status_t
+anyone_hosts_parse_and_verify(const char *body, size_t body_len)
+{
+  return anyone_hosts_parse_and_verify_ex(body, body_len, NULL, NULL);
 }

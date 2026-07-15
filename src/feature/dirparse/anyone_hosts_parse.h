@@ -21,4 +21,11 @@ typedef enum {
 anyone_hosts_sig_status_t anyone_hosts_parse_and_verify(const char *body,
                                                         size_t body_len);
 
+#include "lib/testsupport/testsupport.h"
+#include <time.h>
+
+MOCK_DECL(anyone_hosts_sig_status_t, anyone_hosts_parse_and_verify_ex,
+          (const char *body, size_t body_len,
+           time_t *published_out, time_t *valid_until_out));
+
 #endif /* !defined(TOR_ANYONE_HOSTS_PARSE_H) */

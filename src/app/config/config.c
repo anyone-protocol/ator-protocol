@@ -327,6 +327,9 @@ static const config_var_t option_vars_[] = {
   V(AlternateBridgeAuthority,    LINELIST, NULL),
   V(AlternateDirAuthority,       LINELIST, NULL),
   OBSOLETE("AlternateHSAuthority"),
+  V(AnyoneHostsUpdate,           BOOL,     "1"),
+  V(AnyoneHostsUpdateInterval,   INTERVAL, "12 hours"),
+  V(AnyoneHostsURL,              LINELIST, NULL),
   V(AssumeReachable,             BOOL,     "0"),
   V(AssumeReachableIPv6,         AUTOBOOL, "auto"),
   OBSOLETE("AuthDirBadDir"),
@@ -4060,6 +4063,23 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options_validate_scheduler(options, msg) < 0) {
     return -1;
+  }
+
+  if (options->AnyoneHostsURL) {
+    const config_line_t *cl;
+    for (cl = options->AnyoneHostsURL; cl; cl = cl->next) {
+      const char *v = cl->value;
+      if (!v || !strlen(v) || strcmpend(v, ".anyone") ||
+          strstr(v, "://") || strchr(v, '/') || strchr(v, ':') ||
+          strpbrk(v, " \t\r\n")) {
+        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames "
+               "(no scheme, port, path, or whitespace) ending in "
+               "\".anyone\".");
+      }
+    }
+  }
+  if (options->AnyoneHostsUpdateInterval < 3600) {
+    REJECT("AnyoneHostsUpdateInterval must be at least 1 hour.");
   }
 
   return 0;

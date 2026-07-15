@@ -1222,10 +1222,32 @@ The following options are useful only for clients (that is, if
     addresses/ports. See <<SocksPort,SocksPort>> for an explanation of isolation
     flags. (Default: 0)
 
-[[DNSMappingFileMaxSize]] **DNSMappingFileMaxSize** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**::
+[[DNSMappingFileMaxSize]] **DNSMappingFileMaxSize** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
     The maximum size allowed for the `anyone_hosts` DNS mapping file in the
     data directory. If the file exceeds this size, it is rejected. Set this
-    option to 0 to disable the size limit. (Default: 10 MB)
+    option to 0 to disable the size limit.  This limit applies only when
+    reading or accepting an existing file; if the file is absent, a new
+    default file is created regardless of this setting. (Default: 10 MB)
+
+[[AnyoneHostsUpdate]] **AnyoneHostsUpdate** **0**|**1**::
+    If 1, the client will automatically attempt to fetch a fresh copy of
+    the `anyone_hosts` DNS mapping file from the .anyone DNS service nodes
+    when new directory information arrives and on a periodic schedule.
+    Fetched files are installed only if they carry a valid signature from
+    a trusted DNS signer, have not expired, and are not older than the
+    currently installed mapping. (Default: 1)
+
+[[AnyoneHostsUpdateInterval]] **AnyoneHostsUpdateInterval** __N__ **seconds**|**minutes**|**hours**|**days**|**weeks**::
+    How often to attempt fetching a fresh `anyone_hosts` file.  The actual
+    schedule is randomly jittered by up to +/-10% around this value.
+    The minimum is 1 hour. (Default: 12 hours)
+
+[[AnyoneHostsURL]] **AnyoneHostsURL** __address__::
+    A .anyone onion address of a DNS service node to try when fetching the
+    `anyone_hosts` file.  This option may be specified multiple times; the
+    addresses are tried in order before the built-in defaults.  A failing
+    address is skipped on the next attempt; a working address keeps being
+    used. (Default: none)
 
 [[DownloadExtraInfo]] **DownloadExtraInfo** **0**|**1**::
     If true, Tor downloads and caches "extra-info" documents. These documents
