@@ -47,9 +47,9 @@
 #include "feature/relay/relay_find_addr.h"
 #include "feature/relay/routermode.h"
 #include "feature/relay/selftest.h"
+#include "feature/anyone/anyone_hosts_update.h"
 #include "feature/rend/rendcommon.h"
 #include "feature/stats/predict_ports.h"
-
 #include "lib/cc/ctassert.h"
 #include "lib/compress/compress.h"
 #include "lib/crypt_ops/crypto_format.h"
@@ -122,6 +122,8 @@ dir_conn_purpose_to_string(int purpose)
       return "hidden-service descriptor upload";
     case DIR_PURPOSE_FETCH_MICRODESC:
       return "microdescriptor fetch";
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      return "anyone-hosts fetch";
     }
 
   log_warn(LD_BUG, "Called with unknown purpose %d", purpose);
@@ -159,6 +161,9 @@ dir_fetch_type(int dir_purpose, int router_purpose, const char *resource)
       break;
     case DIR_PURPOSE_FETCH_MICRODESC:
       type = MICRODESC_DIRINFO;
+      break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      type = NO_DIRINFO;
       break;
     default:
       log_warn(LD_BUG, "Unexpected purpose %d", (int)dir_purpose);
@@ -768,6 +773,13 @@ connection_dir_client_request_failed(dir_connection_t *conn)
     log_warn(LD_DIR, "Failed to post %s to %s.",
              dir_conn_purpose_to_string(conn->base_.purpose),
              connection_describe_peer(TO_CONN(conn)));
+  } else if (conn->base_.purpose == DIR_PURPOSE_FETCH_ANYONE_HOSTS) {
+    /* The fetch failed before we got a response (connect/circuit/timeout
+     * error, etc.).  Notify the updater so it clears its in-progress flag
+     * and can retry; the success path is handled in the response handler. */
+    log_info(LD_DIR, "anyone_hosts fetch from %s failed.",
+             connection_describe_peer(TO_CONN(conn)));
+    anyone_hosts_update_note_result(0, approx_time());
   }
 }
 
@@ -1049,6 +1061,17 @@ directory_request_set_resource(directory_request_t *req,
   req->resource = resource;
 }
 /**
+ * Set an onion (.anyone) address to route this request to by name instead of
+ * by IP address.  Used for anyone_hosts auto-update fetches.  Note that only
+ * an alias to <b>address</b> is stored, so it must outlive the request.
+ */
+void
+directory_request_set_anon_onion_address(directory_request_t *req,
+                                         const char *address)
+{
+  req->anon_onion_address = address;
+}
+/**
  * Set a pointer to the payload to include with this directory request, along
  * with its length.  Note that only an alias to <b>payload</b> is stored, so
  * the <b>payload</b> must outlive the request.
@@ -1269,6 +1292,7 @@ directory_initiate_request,(directory_request_t *request))
   const dir_indirection_t indirection = request->indirection;
   const char *resource = request->resource;
   const hs_ident_dir_conn_t *hs_ident = request->hs_ident;
+  const char *anon_onion_address = request->anon_onion_address;
   circuit_guard_state_t *guard_state = request->guard_state;
 
   tor_assert(or_addr_port->port || dir_addr_port->port);
@@ -1308,7 +1332,8 @@ directory_initiate_request,(directory_request_t *request))
 
   /* use encrypted begindir connections for everything except relays
    * this provides better protection for directory fetches */
-  if (!use_begindir && dirclient_must_use_begindir(options)) {
+  if (!use_begindir && !anon_onion_address &&
+      dirclient_must_use_begindir(options)) {
     log_warn(LD_BUG, "Client could not use begindir connection: %s",
              begindir_reason ? begindir_reason : "(NULL)");
     return;
@@ -1324,7 +1349,17 @@ directory_initiate_request,(directory_request_t *request))
   }
 
   /* Make sure that the destination addr and port we picked is viable. */
-  if (!port || tor_addr_is_null(&addr)) {
+  if (anon_onion_address) {
+    /* We're routing to an onion service by name through an anonymised
+     * circuit; we don't have (or need) a numeric address, but we do need a
+     * port and an anonymised connection. */
+    tor_assert(anonymized_connection);
+    if (!port) {
+      log_warn(LD_DIR, "Cannot fetch from onion service %s without a port.",
+               safe_str(anon_onion_address));
+      return;
+    }
+  } else if (!port || tor_addr_is_null(&addr)) {
     static int logged_backtrace = 0;
     log_warn(LD_DIR,
              "Cannot make an outgoing %sconnection without a remote %sPort.",
@@ -1342,7 +1377,8 @@ directory_initiate_request,(directory_request_t *request))
   /* set up conn so it's got all the data we need to remember */
   tor_addr_copy(&conn->base_.addr, &addr);
   conn->base_.port = port;
-  conn->base_.address = tor_addr_to_str_dup(&addr);
+  conn->base_.address = anon_onion_address ? tor_strdup(anon_onion_address)
+                                           : tor_addr_to_str_dup(&addr);
   memcpy(conn->identity_digest, digest, DIGEST_LEN);
 
   conn->base_.purpose = dir_purpose;
@@ -1420,12 +1456,22 @@ directory_initiate_request,(directory_request_t *request))
      * populate it and add it at the right state
      * hook up both sides
      */
-    linked_conn =
-      connection_ap_make_link(TO_CONN(conn),
-                              conn->base_.address, conn->base_.port,
-                              digest,
-                              SESSION_GROUP_DIRCONN, iso_flags,
-                              use_begindir, !anonymized_connection);
+    if (anon_onion_address) {
+      /* The target is a .anyone name, not a relay: send the linked stream
+       * through the rewrite path so the name is resolved via the
+       * anyone_hosts mapping and attached to a hidden-service circuit. */
+      linked_conn =
+        connection_ap_make_link_onion(TO_CONN(conn),
+                                      conn->base_.address, conn->base_.port,
+                                      SESSION_GROUP_DIRCONN, iso_flags);
+    } else {
+      linked_conn =
+        connection_ap_make_link(TO_CONN(conn),
+                                conn->base_.address, conn->base_.port,
+                                digest,
+                                SESSION_GROUP_DIRCONN, iso_flags,
+                                use_begindir, !anonymized_connection);
+    }
     if (!linked_conn) {
       log_warn(LD_NET,"Making tunnel to dirserver failed.");
       connection_mark_for_close(TO_CONN(conn));
@@ -1705,6 +1751,12 @@ directory_send_command(dir_connection_t *conn,
       httpcommand = "POST";
       tor_asprintf(&url, "/tor/hs/%s/publish", resource);
       break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      tor_assert(resource);
+      tor_assert(!payload);
+      httpcommand = "GET";
+      url = tor_strdup(resource);
+      break;
     default:
       tor_assert(0);
       return;
@@ -1844,6 +1896,8 @@ static int handle_response_upload_signatures(dir_connection_t *,
                                              const response_handler_args_t *);
 static int handle_response_upload_hsdesc(dir_connection_t *,
                                          const response_handler_args_t *);
+static int handle_response_fetch_anyone_hosts(dir_connection_t *,
+                                              const response_handler_args_t *);
 
 static int
 dir_client_decompress_response_body(char **bodyp, size_t *bodylenp,
@@ -1971,7 +2025,7 @@ dir_client_decompress_response_body(char **bodyp, size_t *bodylenp,
  * (For example, the number of bytes downloaded of purpose p while
  * not fully bootstrapped is total_dl[p][false].)
  **/
-static uint64_t total_dl[DIR_PURPOSE_MAX_][2];
+static uint64_t total_dl[DIR_PURPOSE_MAX_ + 1][2];
 
 /**
  * Heartbeat: dump a summary of how many bytes of which purpose we've
@@ -1983,7 +2037,7 @@ dirclient_dump_total_dls(void)
   const or_options_t *options = get_options();
   for (int bootstrapped = 0; bootstrapped < 2; ++bootstrapped) {
     smartlist_t *lines = smartlist_new();
-    for (int i=0; i < DIR_PURPOSE_MAX_; ++i) {
+    for (int i=0; i <= DIR_PURPOSE_MAX_; ++i) {
       uint64_t n = total_dl[i][bootstrapped];
       if (n == 0)
         continue;
@@ -2204,6 +2258,9 @@ connection_dir_client_reached_eof(dir_connection_t *conn)
     case DIR_PURPOSE_FETCH_HSDESC:
       rv = handle_response_fetch_hsdesc_v3(conn, &args);
       break;
+    case DIR_PURPOSE_FETCH_ANYONE_HOSTS:
+      rv = handle_response_fetch_anyone_hosts(conn, &args);
+      break;
     default:
       tor_assert_nonfatal_unreached();
       rv = -1;
@@ -2325,6 +2382,7 @@ handle_response_fetch_consensus(dir_connection_t *conn,
   routers_update_all_from_networkstatus(now, 3);
   update_microdescs_from_networkstatus(now);
   directory_info_has_arrived(now, 0, 0);
+  anyone_hosts_update_maybe_kick(now);
 
   if (authdir_mode_v3(get_options())) {
     sr_act_post_consensus(
@@ -2840,6 +2898,23 @@ handle_response_upload_hsdesc(dir_connection_t *conn,
   }
 
   return 0;
+}
+
+/**
+ * Handler function: processes a response to a request to fetch the
+ * anyone_hosts DNS mapping file from a .anyone DNS service node.
+ * Validation and installation policy live in the anyone module.
+ **/
+static int
+handle_response_fetch_anyone_hosts(dir_connection_t *conn,
+                                   const response_handler_args_t *args)
+{
+  tor_assert(conn->base_.purpose == DIR_PURPOSE_FETCH_ANYONE_HOSTS);
+  return anyone_hosts_handle_fetch_response(
+                                     connection_describe_peer(TO_CONN(conn)),
+                                     args->status_code, args->reason,
+                                     args->body, args->body_len,
+                                     approx_time());
 }
 
 /** Called when a directory connection reaches EOF. */
