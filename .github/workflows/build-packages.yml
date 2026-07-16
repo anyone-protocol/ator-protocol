@@ -90,25 +90,7 @@ jobs:
             suite: trixie
             arch: arm64
             runner: arm64
-          # Ubuntu Noble (Support until 2029-05-31, ESM until 2034-04-25)
-          - os: ubuntu
-            suite: noble
-            arch: amd64
-            runner: ubuntu-latest
-          - os: ubuntu
-            suite: noble
-            arch: arm64
-            runner: arm64
-          # Ubuntu Jammy (Support until 2027-06-01, ESM until 2032-04-21)
-          - os: ubuntu
-            suite: jammy
-            arch: amd64
-            runner: ubuntu-latest
-          - os: ubuntu
-            suite: jammy
-            arch: arm64
-            runner: arm64
-          # Ubuntu Focal (Support until 2025-05-29, ESM until 2030-04-23)
+          # Ubuntu Focal (v20, Support until 2025-05-29, ESM until 2030-04-23)
           - os: ubuntu
             suite: focal
             arch: amd64
@@ -117,13 +99,40 @@ jobs:
             suite: focal
             arch: arm64
             runner: arm64
-          # Ubuntu Questing
+          # Ubuntu Jammy (v22, Support until 2027-06-01, ESM until 2032-04-21)
+          - os: ubuntu
+            suite: jammy
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: jammy
+            arch: arm64
+            runner: arm64
+          # Ubuntu Noble (v24, Support until 2029-05-31, ESM until 2034-04-25)
+          - os: ubuntu
+            suite: noble
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: noble
+            arch: arm64
+            runner: arm64
+          # Ubuntu Questing (v25)
           - os: ubuntu
             suite: questing
             arch: amd64
             runner: ubuntu-latest
           - os: ubuntu
             suite: questing
+            arch: arm64
+            runner: arm64
+          # Ubuntu Questing (v26)
+          - os: ubuntu
+            suite: resolute
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu
+            suite: resolute
             arch: arm64
             runner: arm64
     steps:
