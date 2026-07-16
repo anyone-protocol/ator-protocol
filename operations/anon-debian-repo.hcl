@@ -1,8 +1,367 @@
+locals {
+  # reprepro config shared by the main reprepro task and the prestart
+  # clearvanished task, so both always see the same set of distributions.
+  reprepro_distributions = <<-EOH
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-bookworm
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bookworm Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-bullseye
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bullseye Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-trixie
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Trixie Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-noble
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Noble Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-jammy
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Jammy Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-focal
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Focal Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-questing
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Questing Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-live-resolute
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Resolute Live
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-bookworm
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bookworm Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-bullseye
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bullseye Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-trixie
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Trixie Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-noble
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Noble Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-jammy
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Jammy Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-focal
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Focal Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-questing
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Questing Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-beta-resolute
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Resolute Beta
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-bookworm
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bookworm Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-bullseye
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bullseye Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-trixie
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Trixie Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-noble
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Noble Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-jammy
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Jammy Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-focal
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Focal Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-questing
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Questing Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-stage-resolute
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Resolute Stage
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-bookworm
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bookworm Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-bullseye
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bullseye Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-trixie
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Trixie Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-noble
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Noble Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-jammy
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Jammy Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-focal
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Focal Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-questing
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Questing Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-dev-resolute
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Resolute Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-bookworm
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bookworm Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-bullseye
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Bullseye Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-trixie
+    Architectures: amd64 arm64 source
+    Components: main
+    Description: Anon Debian Trixie Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-noble
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Noble Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-jammy
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Jammy Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-focal
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Focal Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-questing
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Questing Unstable Dev
+    SignWith: YES
+
+    Origin: Anon
+    Label: Anon
+    Codename: anon-unstable-dev-resolute
+    Architectures: amd64 arm64 source
+    Components: main
+    DDebComponents: main
+    Description: Anon Ubuntu Resolute Unstable Dev
+    SignWith: YES
+  EOH
+
+  reprepro_incoming = <<-EOH
+    Name: incoming
+    IncomingDir: /data/debian/incoming
+    TempDir: /tmp
+    Allow: anon-live-bookworm anon-live-bullseye anon-live-trixie anon-live-noble anon-live-jammy anon-live-focal anon-live-questing anon-live-resolute anon-beta-bookworm anon-beta-bullseye anon-beta-trixie anon-beta-noble anon-beta-jammy anon-beta-focal anon-beta-questing anon-beta-resolute anon-stage-bookworm anon-stage-bullseye anon-stage-trixie anon-stage-noble anon-stage-jammy anon-stage-focal anon-stage-questing anon-stage-resolute anon-dev-bookworm anon-dev-bullseye anon-dev-trixie anon-dev-noble anon-dev-jammy anon-dev-focal anon-dev-questing anon-dev-resolute anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-trixie anon-unstable-dev-noble anon-unstable-dev-jammy anon-unstable-dev-focal anon-unstable-dev-questing anon-unstable-dev-resolute
+    Cleanup: on_deny on_error unused_files
+  EOH
+}
+
 job "anon-debian-repo" {
   datacenters = ["ator-fin"]
   type = "service"
   namespace = "live-services"
-  
+
   constraint {
     attribute = "${meta.pool}"
     value = "live-services"
@@ -180,53 +539,53 @@ job "anon-debian-repo" {
               repo: ator-protocol
               assets_regexp: ^anon.+-dev-.+\.deb
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_stage_github_releases
               owner: anyone-protocol
               repo: ator-protocol
               assets_regexp: ^anon.+-stage-.+\.deb
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_beta_github_releases
               owner: anyone-protocol
               repo: ator-protocol
               assets_regexp: ^anon.+-beta-.+\.deb
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_live_github_releases
               owner: anyone-protocol
               repo: ator-protocol
               assets_regexp: ^anon.+-live-.+\.deb
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
           nginx_access_log:
             - name: anon_dev_debian_repo
               access_log_path: "/alloc/data/access.log"
               access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-dev.+\.deb HTTP\/1\.1" 200'
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_stage_debian_repo
               access_log_path: "/alloc/data/access.log"
               access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-stage.+\.deb HTTP\/1\.1" 200'
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_beta_debian_repo
               access_log_path: "/alloc/data/access.log"
               access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-beta.+\.deb HTTP\/1\.1" 200'
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
             - name: anon_live_debian_repo
               access_log_path: "/alloc/data/access.log"
               access_log_regexp: '"GET /pool/.+anon_[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+-live.+\.deb HTTP\/1\.1" 200'
               labels:
-                os: 'anon.+(bookworm|bullseye|oracular|noble|jammy|focal).+\.deb'
+                os: 'anon.+(bookworm|bullseye|trixie|noble|jammy|focal|questing|resolute).+\.deb'
                 arch: '(amd64|arm64)\.deb'
         EOH
         destination = "local/exporter.yml"
@@ -251,6 +610,61 @@ job "anon-debian-repo" {
     service {
       name = "anon-debian-repo-reprepro"
       port = "reprepro-ssh"
+    }
+
+    # Runs to completion before the main reprepro task starts. Drops the
+    # package databases of distributions that were removed from
+    # conf/distributions, so reprepro does not refuse to run after a
+    # distribution is retired. clearvanished is a no-op when nothing vanished.
+    task "anon-debian-repo-clearvanished-task" {
+      driver = "docker"
+
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      volume_mount {
+        volume      = "deb-repo"
+        destination = "/data/debian"
+        read_only   = false
+      }
+
+      config {
+        image      = "ghcr.io/anyone-protocol/reprepro:48f2bd4aeb7d35f18569637272978217751d754b"
+        entrypoint = ["/bin/sh", "-c"]
+        command    = <<-EOC
+          set -ex
+          if [ -d /data/debian/db ]; then
+            owner="$(stat -c '%u:%g' /data/debian/db)"
+            reprepro -b /data/debian clearvanished
+            chown -R "$owner" /data/debian/db
+          else
+            echo "no reprepro db yet, nothing to clear"
+          fi
+        EOC
+        volumes = [
+          "local/distributions:/data/debian/conf/distributions:ro",
+          "local/incoming:/data/debian/conf/incoming:ro",
+        ]
+      }
+
+      resources {
+        cpu = 128
+        memory = 128
+      }
+
+      template {
+        change_mode = "noop"
+        data        = local.reprepro_distributions
+        destination = "local/distributions"
+      }
+
+      template {
+        change_mode = "noop"
+        data        = local.reprepro_incoming
+        destination = "local/incoming"
+      }
     }
 
     task "anon-debian-repo-reprepro-task" {
@@ -321,279 +735,13 @@ job "anon-debian-repo" {
 
       template {
         change_mode = "noop"
-        data = <<-EOH
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-bookworm
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Boookworm Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-bullseye
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Bullseye Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-oracular
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Oracular Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-noble
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Noble Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-jammy
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Jammy Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-live-focal
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Focal Live
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-bookworm
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Boookworm Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-bullseye
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Bullseye Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-oracular
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Oracular Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-noble
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Noble Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-jammy
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Jammy Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-beta-focal
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Focal Beta
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-bookworm
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Boookworm Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-bullseye
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Bullseye Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-oracular
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Oracular Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-noble
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Noble Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-jammy
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Jammy Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-stage-focal
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Focal Stage
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-bookworm
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Boookworm Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-bullseye
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Bullseye Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-oracular
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Oracular Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-noble
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Noble Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-jammy
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Jammy Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-dev-focal
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Focal Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-bookworm
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Boookworm Unstable Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-bullseye
-        Architectures: amd64 arm64 source
-        Components: main
-        Description: Anon Debian Bullseye Unstable Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-oracular
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Oracular Unstable Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-noble
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Noble Unstable Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-jammy
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Jammy Unstable Dev
-        SignWith: YES
-
-        Origin: Anon
-        Label: Anon
-        Codename: anon-unstable-dev-focal
-        Architectures: amd64 arm64 source
-        Components: main
-        DDebComponents: main
-        Description: Anon Ubuntu Focal Unstable Dev
-        SignWith: YES
-        EOH
+        data        = local.reprepro_distributions
         destination = "local/distributions"
       }
 
       template {
         change_mode = "noop"
-        data = <<-EOH
-        Name: incoming
-        IncomingDir: /data/debian/incoming
-        TempDir: /tmp
-        Allow: anon-live-bookworm anon-live-bullseye anon-live-oracular anon-live-noble anon-live-jammy anon-live-focal anon-beta-bookworm anon-beta-bullseye anon-beta-oracular anon-beta-noble anon-beta-jammy anon-beta-focal anon-stage-bookworm anon-stage-bullseye anon-stage-oracular anon-stage-noble anon-stage-jammy anon-stage-focal anon-dev-bookworm anon-dev-bullseye anon-dev-oracular anon-dev-noble anon-dev-jammy anon-dev-focal anon-unstable-dev-bookworm anon-unstable-dev-bullseye anon-unstable-dev-oracular anon-unstable-dev-noble anon-unstable-dev-jammy anon-unstable-dev-focal
-        Cleanup: on_deny on_error unused_files
-        EOH
+        data        = local.reprepro_incoming
         destination = "local/incoming"
       }
     }

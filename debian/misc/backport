@@ -88,6 +88,7 @@ kinetic		kinetic		1
 mantic		mantic		1
 noble		noble		1
 questing		questing		1
+resolute		resolute		1
 EOF
 )
 	if [ -z "$result" ] ; then

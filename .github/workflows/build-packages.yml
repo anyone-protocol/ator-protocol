@@ -126,7 +126,7 @@ jobs:
             suite: questing
             arch: arm64
             runner: arm64
-          # Ubuntu Questing (v26)
+          # Ubuntu Resolute (v26, Support until 2031-04, ESM until 2036-04)
           - os: ubuntu
             suite: resolute
             arch: amd64

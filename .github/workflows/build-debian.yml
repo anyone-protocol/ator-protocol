@@ -32,6 +32,7 @@ on:
           - jammy
           - focal
           - questing
+          - resolute
       release-phase:
         description: The release phase (beta, live, stage, dev, or unstable-dev).
         required: true
