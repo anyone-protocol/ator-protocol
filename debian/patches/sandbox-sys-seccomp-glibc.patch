@@ -1,0 +1,30 @@
+Description: fix FTBFS against glibc that defines SYS_SECCOMP as an enum
+ Newer glibc (Ubuntu 26.04 "resolute") declares SYS_SECCOMP as an enum
+ constant in <bits/siginfo-consts.h>, with a self-referential #define
+ following it. The fallback "#define SYS_SECCOMP 1" in sandbox.h poisons
+ that enum declaration when <signal.h> is included later in the same
+ translation unit:
+ .
+   sandbox.h:24:21: error: expected identifier before numeric constant
+   sandbox.c:2149:24: error: 'SYS_SECCOMP' undeclared
+ .
+ Include <signal.h> before the fallback so the system definition, when
+ present, wins. The fallback remains for platforms without SYS_SECCOMP.
+ Carried as a debian patch rather than a source change to keep the tree
+ clean for upstream tor merges; drop this patch once upstream fixes it.
+Author: Jim Toth <jim@memeticblock.com>
+Forwarded: no
+Last-Update: 2026-07-16
+--- a/src/lib/sandbox/sandbox.h
++++ b/src/lib/sandbox/sandbox.h
+@@ -15,6 +15,10 @@
+ #include "orconfig.h"
+ #include "lib/cc/torint.h"
+
++#ifdef __linux__
++#include <signal.h>
++#endif
++
+ #ifndef SYS_SECCOMP
+
+ /**
