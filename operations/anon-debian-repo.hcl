@@ -652,7 +652,7 @@ job "anon-debian-repo" {
           set -ex
           if [ -d /data/debian/db ]; then
             owner="$(stat -c '%u:%g' /data/debian/db)"
-            reprepro -b /data/debian clearvanished
+            reprepro -b /data/debian --delete clearvanished
             chown -R "$owner" /data/debian/db
           else
             echo "no reprepro db yet, nothing to clear"
