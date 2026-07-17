@@ -631,18 +631,9 @@ job "anon-debian-repo" {
       }
 
       config {
-        image      = "ghcr.io/anyone-protocol/reprepro:48f2bd4aeb7d35f18569637272978217751d754b"
-        entrypoint = ["/bin/sh", "-c"]
-        command    = <<-EOC
-          set -ex
-          if [ -d /data/debian/db ]; then
-            owner="$(stat -c '%u:%g' /data/debian/db)"
-            reprepro -b /data/debian clearvanished
-            chown -R "$owner" /data/debian/db
-          else
-            echo "no reprepro db yet, nothing to clear"
-          fi
-        EOC
+        image      = "ghcr.io/anyone-protocol/reprepro:3e95599fe68eda3f808841a5568a9980fc2bb254"
+        entrypoint = ["/bin/sh"]
+        args       = ["/local/clearvanished.sh"]
         volumes = [
           "local/distributions:/data/debian/conf/distributions:ro",
           "local/incoming:/data/debian/conf/incoming:ro",
@@ -652,6 +643,23 @@ job "anon-debian-repo" {
       resources {
         cpu = 128
         memory = 128
+      }
+
+      template {
+        change_mode = "noop"
+        data        = <<-EOH
+          #!/bin/sh
+          set -ex
+          if [ -d /data/debian/db ]; then
+            owner="$(stat -c '%u:%g' /data/debian/db)"
+            reprepro -b /data/debian clearvanished
+            chown -R "$owner" /data/debian/db
+          else
+            echo "no reprepro db yet, nothing to clear"
+          fi
+        EOH
+        destination = "local/clearvanished.sh"
+        perms       = "0755"
       }
 
       template {
@@ -677,7 +685,7 @@ job "anon-debian-repo" {
       }
 
       config {
-        image = "ghcr.io/anyone-protocol/reprepro:48f2bd4aeb7d35f18569637272978217751d754b"
+        image = "ghcr.io/anyone-protocol/reprepro:3e95599fe68eda3f808841a5568a9980fc2bb254"
         ports = ["reprepro-ssh"]
         volumes = [
           "local/distributions:/data/debian/conf/distributions:ro",
