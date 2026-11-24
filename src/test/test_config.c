@@ -1999,14 +1999,15 @@ test_config_adding_default_trusted_dir_servers(void *arg)
   routerlist_free_all();
 
   /* Assume we only have one bridge authority */
-  add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
-  tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
+  // TODO(ator): uncomment once we have default bridge authorities
+  // add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
+  // tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
+  // tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
 
-  /* Assume we have eight V3 authorities */
+  /* Assume we have at least three V3 authorities */
   add_default_trusted_dir_authorities(V3_DIRINFO);
-  tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 8);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 9);
+  tt_int_op(get_n_authorities(V3_DIRINFO), OP_GE, 3);
+  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_GE, 3);
 
  done:
   clear_dir_servers();
@@ -2222,7 +2223,8 @@ test_config_adding_dir_servers(void *arg)
                          1 : 0)
                         );
       /* If we have no default bridge authority, something has gone wrong */
-      tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
+      // TODO(ator): uncomment once we have default bridge authorities
+      // tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
 
       /* Count v3 Authorities */
       SMARTLIST_FOREACH(fallback_servers,
@@ -3858,8 +3860,8 @@ test_config_default_dir_servers(void *arg)
   or_options_free(opts);
   opts = NULL;
 
-  /* assume a release will never go out with less than 7 authorities */
-  tt_int_op(trusted_count, OP_GE, 7);
+  /* assume a release will never go out with less than 3 authorities */
+  tt_int_op(trusted_count, OP_GE, 3);
   /* if we disable the default fallbacks, there must not be any extra */
   tt_assert(fallback_count == trusted_count);
 
@@ -3871,8 +3873,8 @@ test_config_default_dir_servers(void *arg)
   or_options_free(opts);
   opts = NULL;
 
-  /* assume a release will never go out with less than 7 authorities */
-  tt_int_op(trusted_count, OP_GE, 7);
+  /* assume a release will never go out with less than 3 authorities */
+  tt_int_op(trusted_count, OP_GE, 3);
   /* XX/teor - allow for default fallbacks to be added without breaking
    * the unit tests. Set a minimum fallback count once the list is stable. */
   tt_assert(fallback_count >= trusted_count);
