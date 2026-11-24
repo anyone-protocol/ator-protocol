@@ -947,9 +947,6 @@ load_family_id_keys(const or_options_t *options,
   return 0;
 }
 
-#define FAMILY_INFO_URL \
-  "https://community.torproject.org/relay/setup/post-install/family-ids/"
-
 /** Generate warnings as appropriate about our family ID configuration.
  *
  * `options` is required; `ns` may be NULL.
@@ -978,8 +975,7 @@ warn_about_family_id_config(const or_options_t *options,
       log_notice(LD_OR,
                  "MyFamily was configured, but FamilyId was not. "
                  "It's a good time to start migrating your relays "
-                 "to use family keys. "
-                 "See "FAMILY_INFO_URL " for instructions.");
+                 "to use family keys.");
       have_warned_absent_familykeys = 1;
     }
   }

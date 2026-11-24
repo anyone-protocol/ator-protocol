@@ -178,8 +178,6 @@ The following options in this section are only recognized on the
     Also, store the corresponding family ID in __basename__`.public_family_id`.
     Then enable the corresponding FamilyID option on your relays.
     This command overwrites these files if they already exist.
-    See https://community.torproject.org/relay/setup/post-install/family-ids/
-    for more information.
 
 **`--passphrase-fd`** __FILEDES__::
     File descriptor to read the passphrase from.  Note that unlike with the
@@ -2555,8 +2553,6 @@ is non-zero):
     Family keys are generated with "--keygen-family";
     this also generates the value you should use in the __ident__ field
     in a file ending with ".public\_family\_id".
-    For information on generating and installing a family
-    key, see https://community.torproject.org/relay/setup/post-install/family-ids/
       +
     In the future, this will be the preferred way for relays
     to advertise family membership.
@@ -4202,8 +4198,6 @@ __KeyDirectory__/**`secret_onion_key_ntor`** and **`secret_onion_key_ntor.old`**
 __KeyDirectory__/__keyname__**`.secret_family_key`**::
     A relay family's family identity key.
     Used to prove membership in a relay family.
-    See https://community.torproject.org/relay/setup/post-install/family-ids/
-    for more information.
 
 __DataDirectory__/**`fingerprint`**::
     Only used by servers. Contains the fingerprint of the server's RSA

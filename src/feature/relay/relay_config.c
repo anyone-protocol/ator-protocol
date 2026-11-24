@@ -581,9 +581,7 @@ options_validate_relay_os(const or_options_t *old_options,
       !strcmpstart(uname, "Windows 98") ||
       !strcmpstart(uname, "Windows Me")) {
     log_warn(LD_CONFIG, "Tor is running as a server, but you are "
-        "running %s; this probably won't work. See "
-        "https://www.torproject.org/docs/faq.html#BestOSForRelay "
-        "for details.", uname);
+        "running %s; this probably won't work.", uname);
   }
 
   return 0;
@@ -1127,8 +1125,7 @@ options_validate_relay_mode(const or_options_t *old_options,
     log_warn(LD_CONFIG,
         "Tor is currently configured as a relay and a hidden service. "
         "That's not very secure: you should probably run your hidden service "
-        "in a separate Tor process, at least -- see "
-        "https://bugs.torproject.org/tpo/core/tor/8742.");
+        "in a separate Tor process.");
 
   if (options->BridgeRelay && options->DirPort_set) {
     log_warn(LD_CONFIG, "Can't set a DirPort on a bridge relay; disabling "
