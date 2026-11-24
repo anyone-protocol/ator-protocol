@@ -1,0 +1,7 @@
+  o Minor bugfixes (anyone_hosts, security):
+    - A signed anyone_hosts file that repeats a header keyword, or has
+      keyword or mapping lines after its signature, is now rejected, and
+      mappings are read only up to the signature line.  Lines added below
+      the signed region of an installed file are no longer used.  A
+      mapping whose name begins with "anyone-hosts-signature" no longer
+      makes a correctly signed file fail verification.

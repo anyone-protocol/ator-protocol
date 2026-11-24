@@ -110,6 +110,7 @@
 #include "feature/rend/rendcommon.h"
 #include "feature/stats/predict_ports.h"
 #include "feature/stats/rephist.h"
+#include "feature/dirparse/anyone_hosts_parse.h"
 #include "lib/buf/buffers.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_util.h"
@@ -1857,9 +1858,56 @@ lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out,
     return false;
   }
 
-  // Process the file content line by line
+  size_t file_len = strlen(file_content);
+
+  // Verify signature if the file is in signed format.
+  static ratelim_t anyone_hosts_warn_limit = RATELIM_INIT(3600);
+  if (strcmpstart(file_content, "anyone-hosts-version") == 0) {
+    anyone_hosts_sig_status_t sig_status =
+      anyone_hosts_parse_and_verify(file_content, file_len);
+    switch (sig_status) {
+      case ANYONE_HOSTS_SIG_VALID:
+        log_info(LD_APP, "anyone_hosts signature verified successfully.");
+        break;
+      case ANYONE_HOSTS_SIG_INVALID:
+        log_fn_ratelim(&anyone_hosts_warn_limit, LOG_WARN, LD_APP,
+                       "anyone_hosts has an INVALID signature. "
+                       "Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_BAD_SIGNER:
+        log_fn_ratelim(&anyone_hosts_warn_limit, LOG_WARN, LD_APP,
+                       "anyone_hosts was signed by an untrusted signer. "
+                       "Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_PARSE_ERROR:
+        log_fn_ratelim(&anyone_hosts_warn_limit, LOG_WARN, LD_APP,
+                       "anyone_hosts has signature headers but could not "
+                       "be parsed. Proceeding with caution.");
+        break;
+      case ANYONE_HOSTS_SIG_UNSIGNED:
+        log_fn_ratelim(&anyone_hosts_warn_limit, LOG_WARN, LD_APP,
+                       "anyone_hosts has version header but no signature.");
+        break;
+    }
+  } else {
+    log_info(LD_APP, "anyone_hosts is unsigned (legacy format).");
+  }
+
+  // Process the file content line by line, skipping keyword-prefixed lines.
   char *line = strtok(file_content, "\n");
   while (line != NULL) {
+    if (strcmpstart(line, "anyone-hosts-signature ") == 0)
+      break;
+    // Skip metadata/keyword lines from the signed format.
+    if (strcmpstart(line, "anyone-hosts-version") == 0 ||
+        strcmpstart(line, "anyone-hosts-status") == 0 ||
+        strcmpstart(line, "anyone-hosts-digest") == 0 ||
+        strcmpstart(line, "published ") == 0 ||
+        strcmpstart(line, "valid-until ") == 0 ||
+        strcmpstart(line, "-----") == 0) {
+      line = strtok(NULL, "\n");
+      continue;
+    }
     char anon[
       HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
     char onion[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
