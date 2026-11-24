@@ -956,6 +956,7 @@ sandbox_init_filter(void)
   OPEN_DATADIR_SUFFIX("v3-status-votes", ".tmp");
   OPEN_DATADIR("key-pinning-journal");
   OPEN_DATADIR("terms-agreement");
+  OPEN_DATADIR_SUFFIX("anyone_hosts", ".tmp");
   OPEN("/dev/srandom");
   OPEN("/dev/urandom");
   OPEN("/dev/random");
@@ -1061,6 +1062,7 @@ sandbox_init_filter(void)
   RENAME_SUFFIX("sr-state", ".tmp");
   RENAME_SUFFIX("unparseable-desc", ".tmp");
   RENAME_SUFFIX("v3-status-votes", ".tmp");
+  RENAME_SUFFIX("anyone_hosts", ".tmp");
 
   if (options->BridgeAuthoritativeDir)
     RENAME_SUFFIX("networkstatus-bridges", ".tmp");
@@ -1093,6 +1095,7 @@ sandbox_init_filter(void)
   STAT_DATADIR("lock");
   STAT_DATADIR("state");
   STAT_DATADIR("router-stability");
+  STAT_DATADIR("anyone_hosts");
 
   STAT_CACHEDIR("cached-extrainfo.new");
 

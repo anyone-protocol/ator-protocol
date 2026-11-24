@@ -433,6 +433,7 @@ static const config_var_t option_vars_[] = {
   OBSOLETE("DisableV2DirectoryInfo_"),
   OBSOLETE("DynamicDHGroups"),
   VPORT(DNSPort),
+  V(DNSMappingFileMaxSize,       MEMUNIT,  "10 MB"),
   OBSOLETE("DNSListenAddress"),
   V(DormantClientTimeout,        INTERVAL, "24 hours"),
   V(DormantTimeoutEnabled,       BOOL,     "1"),
@@ -4620,6 +4621,14 @@ options_init_from_torrc(int argc, char **argv)
       goto err;
     }
   }
+
+  char *anons_fname = get_datadir_fname("anyone_hosts");
+  file_status_t anons_status = file_status(anons_fname);
+  if (command == CMD_RUN_TOR && anons_status != FN_FILE) {
+    log_info(LD_CONFIG, "Creating anyone_hosts file with default mapping");
+    write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
+  }
+  tor_free(anons_fname);
 
   const config_line_t *format_line = config_line_find(cmdline_only_options,
                                                       "--format");

@@ -812,6 +812,14 @@ test_parse_extended_hostname(void *arg)
     "www.15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid.anyone";
   char address10[] =
     "15njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenl5sid7jdl.anyone";
+  char address11[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR] =
+    "anyone.anyone";
+  char address12[] = ".anyone";
+
+  char *path = get_datadir_fname("anyone_hosts");
+  write_str_to_file(path, "anyone.anyone "
+                    "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid"
+                    ".anyone\n", 0);
 
   tt_assert(!parse_extended_hostname(address1, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
@@ -844,7 +852,29 @@ test_parse_extended_hostname(void *arg)
   tt_assert(!parse_extended_hostname(address10, &type));
   tt_int_op(type, OP_EQ, BAD_HOSTNAME);
 
- done: ;
+  tt_assert(parse_extended_hostname(address11, &type));
+  tt_int_op(type, OP_EQ, ONION_V3_HOSTNAME);
+  tt_str_op(address11, OP_EQ,
+                "25njqamcweflpvkl73j4szahhihoc4xt3ktcgjnpaingr5yhkenctcid");
+
+  tt_assert(!parse_extended_hostname(address12, &type));
+  tt_int_op(type, OP_EQ, BAD_HOSTNAME);
+
+  /* A mapped value of the right length but without the suffix is refused. */
+  char dotless[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX + 1];
+  memset(dotless, 'a', HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX);
+  dotless[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX] = '\0';
+  char *dotless_line = NULL;
+  tor_asprintf(&dotless_line, "dotless.anyone %s\n", dotless);
+  write_str_to_file(path, dotless_line, 0);
+  tor_free(dotless_line);
+  char address13[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR] =
+    "dotless.anyone";
+  tt_assert(!parse_extended_hostname(address13, &type));
+  tt_int_op(type, OP_EQ, BAD_HOSTNAME);
+
+ done:
+  tor_free(path);
 }
 
 static void

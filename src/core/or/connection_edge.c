@@ -55,7 +55,14 @@
  **/
 #define CONNECTION_EDGE_PRIVATE
 
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+
 #include "core/or/or.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include "lib/err/backtrace.h"
 
@@ -1735,6 +1742,16 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
     goto success;
   }
 
+  log_info(LD_APP, "Anyone dns address lookup for: %s",
+           safe_str_client(address));
+  char onion_address[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+  if (lookup_anon_dns_mapping(address, onion_address, sizeof(onion_address))) {
+    log_info(LD_APP, "Anyone dns address mapping found: %s -> %s",
+             safe_str_client(address), safe_str_client(onion_address));
+    strlcpy(address, onion_address, sizeof(onion_address));
+    s = strrchr(address,'.');
+  }
+
   /* so it is .anyone */
   *s = 0; /* NUL-terminate it */
   /* locate a 'sub-domain' component, in order to remove it */
@@ -1778,6 +1795,93 @@ parse_extended_hostname(char *address, hostname_type_t *type_out)
   if (*type_out == ONION_V3_HOSTNAME) {
       *type_out = BAD_HOSTNAME;
   }
+  return false;
+}
+
+bool
+lookup_anon_dns_mapping(const char *anon_address, char *onion_address_out,
+                        size_t buffer_size)
+{
+  char *file_content = NULL;
+
+  if (buffer_size != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR) {
+    log_warn(LD_APP,"Wrong onion address buffer length");
+    return false;
+  }
+
+  if (!anon_address) {
+    log_warn(LD_APP,"Anon address can not be null");
+    return false;
+  }
+
+  size_t len = strlen(anon_address);
+  if (len == 0 || len > HS_SERVICE_DNS_MAX_ADDRESS_LENGTH) {
+    log_warn(LD_APP,"Anon address length should be > 0 and <= 255");
+    return false;
+  }
+
+  // Check if the file exists using `file_status`
+  char *dns_fname = get_datadir_fname("anyone_hosts");
+  file_status_t dns_file_status = file_status(dns_fname);
+  if (dns_file_status != FN_FILE) {
+    log_notice(LD_APP,
+               "DNS mapping file 'anyone_hosts' is not found in data dir.");
+    tor_free(dns_fname);
+    return false;
+  }
+
+  // Open file and read content using read_file_to_str_until_eof to enforce
+  // the configured DNS mapping file size cap.
+  int dns_fd = tor_open_cloexec(dns_fname, O_RDONLY, 0);
+  tor_free(dns_fname);
+  if (dns_fd < 0) {
+    log_info(LD_APP, "No mapping found for %s.",
+             safe_str_client(anon_address));
+    return false;
+  }
+  const or_options_t *options = get_options();
+  const uint64_t max_size_opt = options->DNSMappingFileMaxSize;
+  /* read_file_to_str_until_eof() rejects a limit of SIZE_T_CEILING or more,
+   * so keep the effective "no cap" value just below that boundary; otherwise
+   * a cap of 0 (unlimited) would make the read fail and the mapping be
+   * ignored. */
+  const size_t max_read_cap = SIZE_T_CEILING - 2;
+  const size_t max_size = (max_size_opt == 0 || max_size_opt > max_read_cap)
+    ? max_read_cap : (size_t)max_size_opt;
+  size_t file_sz = 0;
+  file_content = read_file_to_str_until_eof(dns_fd, max_size, &file_sz);
+  close(dns_fd);
+  if (!file_content) {
+    log_info(LD_APP, "No mapping found for %s.",
+             safe_str_client(anon_address));
+    return false;
+  }
+
+  // Process the file content line by line
+  char *line = strtok(file_content, "\n");
+  while (line != NULL) {
+    char anon[
+      HS_SERVICE_DNS_MAX_ADDRESS_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+    char onion[HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX_WITH_NULL_TERMINATOR];
+    // Parse each line into anon and onion components
+    if (sscanf(line, "%262s %63s", anon, onion) == 2) {
+      if (strcmp(anon, anon_address) == 0) {
+        if (strlen(onion) != HS_SERVICE_ADDR_LENGTH_WITH_SUFFIX ||
+            strcmpend(onion, HS_SERVICE_ADDR_SUFFIX) != 0) {
+          log_warn(LD_APP, "Invalid onion address in anyone_hosts");
+          tor_free(file_content);
+          return false;
+        }
+        strlcpy(onion_address_out, onion, buffer_size);
+        tor_free(file_content);
+        return true;
+      }
+    }
+    line = strtok(NULL, "\n");
+  }
+
+  // Clean up
+  tor_free(file_content);
   return false;
 }
 
