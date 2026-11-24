@@ -1,0 +1,13 @@
+usr/bin
+usr/share/doc
+usr/share/man
+etc/anon
+
+contrib/client-tools/anonify usr/bin
+debian/anon-instance-create usr/sbin
+debian/anon-service-defaults-anonrc usr/share/anon
+debian/anon-service-defaults-anonrc-instances usr/share/anon
+debian/systemd/anon.service lib/systemd/system
+debian/systemd/anon@.service lib/systemd/system
+debian/systemd/anon@default.service lib/systemd/system
+debian/systemd/anon-generator lib/systemd/system-generators

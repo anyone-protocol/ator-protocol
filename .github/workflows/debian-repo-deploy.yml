@@ -1,0 +1,33 @@
+name: Debian Repository Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt-get -y update
+          apt-get -y install curl unzip
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Deploy new version
+        env:
+          NOMAD_CACERT: operations/admin-ui-ca.crt
+          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+          NOMAD_ADDR: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          CONSUL_CACERT: operations/admin-ui-ca.crt
+          CONSUL_HTTP_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+          CONSUL_ADDR: ${{ secrets.CONSUL_DEPLOY_ADDR }}
+        run: |
+          curl -L https://releases.hashicorp.com/nomad/1.8.3/nomad_1.8.3_linux_amd64.zip -o nomad.zip
+          unzip nomad.zip
+          ./nomad job run operations/anon-debian-repo.hcl

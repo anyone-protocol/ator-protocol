@@ -1,0 +1,7 @@
+SocksPort 9050
+Log notice stdout
+AgreeToTerms 1
+DataDirectory /var/lib/anon
+Nickname anonlocaldev
+SafeLogging 0
+User anond

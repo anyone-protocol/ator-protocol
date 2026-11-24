@@ -1,0 +1,25 @@
+# vim:syntax=apparmor
+#include <tunables/global>
+
+profile system_anon flags=(attach_disconnected) {
+  #include <abstractions/anon>
+
+  owner /var/lib/anon/** rwk,
+  owner /var/lib/anon/ r,
+  owner /var/log/anon/* w,
+
+  # During startup, anon (as root) tries to open various things such as
+  # directories via check_private_dir().  Let it.
+  /var/lib/anon/** r,
+
+  /{,var/}run/anon/ r,
+  /{,var/}run/anon/control w,
+  /{,var/}run/anon/socks w,
+  /{,var/}run/anon/anon.pid w,
+  /{,var/}run/anon/control.authcookie w,
+  /{,var/}run/anon/control.authcookie.tmp rw,
+  /{,var/}run/systemd/notify w,
+
+  # Site-specific additions and overrides. See local/README for details.
+  #include <local/system_anon>
+}

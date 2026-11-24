@@ -1,0 +1,6 @@
+SocksPort 9050
+Log notice stdout
+AgreeToTerms 1
+Nickname anonlocaldev
+HiddenServiceDir /var/lib/anon/anyone-dns
+HiddenServicePort 8080 localhost:3000

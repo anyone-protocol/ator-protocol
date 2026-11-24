@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+
+db_input high anon/terms || true
+db_go

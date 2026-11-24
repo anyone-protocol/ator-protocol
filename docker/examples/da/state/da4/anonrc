@@ -1,0 +1,39 @@
+# Run Tor as a regular user (do not change this)
+User atord
+DataDirectory /var/lib/anon
+
+# Make node a Directory Authority
+AuthoritativeDirectory 1
+V3AuthoritativeDirectory 1
+
+# Port to advertise for incoming Tor connections.
+ORPort 9001                  # common ports are 9001, 443
+#ORPort [IPv6-address]:9001
+
+# Mirror directory information for others (optional, not used on bridge)
+DirPort 9030                 # common ports are 9030, 80
+
+# Run Tor only as a server (no local applications)
+SocksPort 0
+#ControlSocket 0
+
+# Run as a relay only (change policy to enable exit node)
+ExitPolicy reject *:*        # no exits allowed
+ExitPolicy reject6 *:*
+ExitRelay 0
+IPv6Exit 0
+
+# Local env only
+
+V3AuthVotingInterval 5 minutes
+V3AuthVoteDelay 20 seconds
+V3AuthDistDelay 20 seconds
+Log info
+
+# Instance specific
+
+Address 172.0.0.14
+
+Nickname da4
+
+ContactInfo da4@ator.io

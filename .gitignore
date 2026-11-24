@@ -216,3 +216,13 @@ scripts/maint/geoip/geoip6
 # /src/win32/
 /src/win32/Makefile
 /src/win32/Makefile.in
+
+# Operations
+/operations/da*
+/operations/stage-da*
+/operations/dev-da*
+# visual studio settings
+/.vs
+/.vscode
+.idea
+/ator-protocol.iml
