@@ -1078,7 +1078,7 @@ The following options are useful only for clients (that is, if
 
 [[AutomapHostsSuffixes]] **AutomapHostsSuffixes** __SUFFIX__,__SUFFIX__,__...__::
     A comma-separated list of suffixes to use with **AutomapHostsOnResolve**.
-    The "." suffix is equivalent to "all addresses." (Default: .exit,.onion).
+    The "." suffix is equivalent to "all addresses." (Default: .exit,.anyone).
 
 [[Bridge]] **Bridge** [__transport__] __IP__:__ORPort__ [__fingerprint__]::
     When set along with UseBridges, instructs Tor to use the relay at
