@@ -49,6 +49,7 @@ def run(tor, directory, adaptive, initial, reload=False, inspect_policy=True):
     with log.open("w") as output:
         proc = subprocess.Popen([
             tor, "--ignore-missing-torrc", "-f", str(directory / "torrc"),
+            "--AgreeToTerms", "1",
             "--DataDirectory", str(directory), "--DisableNetwork", "1",
             "--SocksPort", "0", "--ControlPort", "0",
             "--ControlSocket", str(control), "--CookieAuthentication", "0",

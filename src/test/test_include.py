@@ -112,6 +112,7 @@ open(empty_defaults_torrc_path, 'w').close()
 torrc = os.path.join(torrc_dir, 'torrc')
 
 tor_process = subprocess.Popen([tor_path,
+                               '-AgreeToTerms', '1',
                                '-DataDirectory', data_dir,
                                '-ControlPort', '127.0.0.1:{}'.format(control_port),
                                '-Log', 'info stdout',
