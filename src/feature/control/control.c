@@ -334,18 +334,18 @@ control_split_incoming_command(char *incoming_cmd,
 }
 
 static const char CONTROLPORT_IS_NOT_AN_HTTP_PROXY_MSG[] =
-  "HTTP/1.0 501 Tor ControlPort is not an HTTP proxy"
+  "HTTP/1.0 501 Anon ControlPort is not an HTTP proxy"
   "\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n"
   "<html>\n"
   "<head>\n"
-  "<title>Tor's ControlPort is not an HTTP proxy</title>\n"
+  "<title>Anon's ControlPort is not an HTTP proxy</title>\n"
   "</head>\n"
   "<body>\n"
-  "<h1>Tor's ControlPort is not an HTTP proxy</h1>\n"
+  "<h1>Anon's ControlPort is not an HTTP proxy</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use Tor's control port"
+  "It appears you have configured your web browser to use Anon's control port"
   " as an HTTP proxy.\n"
-  "This is not correct: Tor's default SOCKS proxy port is 9050.\n"
+  "This is not correct: Anon's default SOCKS proxy port is 9050.\n"
   "Please configure your client accordingly.\n"
   "</p>\n"
   "<p>\n"

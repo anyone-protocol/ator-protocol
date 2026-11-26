@@ -1,10 +1,10 @@
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_APP_A_SOURCES += 				\
+LIBANON_APP_A_SOURCES += 				\
 	src/feature/api/tor_api.c
 
 if USE_JNI
-LIBTOR_APP_A_SOURCES += src/feature/api/io_anyone_jni_AnonService.c
+LIBANON_APP_A_SOURCES += src/feature/api/io_anyone_jni_AnonService.c
 endif
 
 # ADD_C_FILE: INSERT HEADERS HERE.

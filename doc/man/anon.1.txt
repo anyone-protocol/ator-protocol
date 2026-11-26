@@ -2,58 +2,58 @@
 // See LICENSE for licensing information
 // This is an asciidoc file used to generate the manpage/html reference.
 // Learn asciidoc on https://www.methods.co.nz/asciidoc/userguide.html
-:man source:   Tor
-:man manual:   Tor Manual
+:man source:   Anon
+:man manual:   Anon Manual
 // compat-mode tells Asciidoctor tools to process this as legacy AsciiDoc
 :compat-mode:
 // attribute to make it easier to write names containing double underscores
 :dbl_: __
-= TOR(1)
+= ANON(1)
 :toc:
 
 == NAME
 
-tor - The second-generation onion router
+anon - The second-generation onion router
 
 == SYNOPSIS
 
-**tor** [__OPTION__ __value__]...
+**anon** [__OPTION__ __value__]...
 
 == DESCRIPTION
 
-Tor is a connection-oriented anonymizing communication service. Users
+Anon is a connection-oriented anonymizing communication service. Users
 choose a source-routed path through a set of nodes, and negotiate a
 "virtual circuit" through the network. Each node in a virtual circuit
 knows its predecessor and successor nodes, but no other nodes. Traffic
 flowing down the circuit is unwrapped by a symmetric key at each node,
 which reveals the downstream node. +
 
-Basically, Tor provides a distributed network of servers or relays
+Basically, Anon provides a distributed network of servers or relays
 ("onion routers").  Users bounce their TCP streams, including web
 traffic, ftp, ssh, etc., around the network, so that recipients,
 observers, and even the relays themselves have difficulty tracking the
 source of the stream.
 
 [NOTE]
-By default, **tor** acts as a client only.  To help the network by
+By default, **anon** acts as a client only.  To help the network by
 providing bandwidth as a relay, change the **ORPort** configuration
 option as mentioned below.  Please also consult the documentation on
 the Tor Project's website.
 
 == COMMAND-LINE OPTIONS
 
-Tor has a powerful command-line interface. This section lists optional
-arguments you can specify at the command line using the **`tor`**
+Anon has a powerful command-line interface. This section lists optional
+arguments you can specify at the command line using the **`anon`**
 command.
 
 Configuration options can be specified on the command line in the
 format **`--`**_OptionName_ _OptionValue_, on the command line in the
 format _OptionName_ _OptionValue_, or in a configuration file.  For
-instance, you can tell Tor to start listening for SOCKS connections on
+instance, you can tell Anon to start listening for SOCKS connections on
 port 9999 by passing either **`--SocksPort 9999`** or **`SocksPort
 9999`** on the command line, or by specifying **`SocksPort 9999`** in
 the configuration file.  On the command line, quote option values that
-contain spaces. For instance, if you want Tor to log all debugging
+contain spaces. For instance, if you want Anon to log all debugging
 messages to **`debug.log`**, you must specify **`--Log "debug file
 debug.log"`**.
 
@@ -62,7 +62,7 @@ configuration files.  See **<<conf-format,THE CONFIGURATION FILE
 FORMAT>>** for more information.
 
 The following options in this section are only recognized on the
-**`tor`** command line, not in a configuration file.
+**`anon`** command line, not in a configuration file.
 
 [[opt-h]] **`-h`**, **`--help`**::
     Display a short help message and exit.
@@ -70,25 +70,25 @@ The following options in this section are only recognized on the
 [[opt-agree-to-terms]] **`--agree-to-terms`**::
     Agree to Anyone terms and conditions (https://www.anyone.io/terms).
 
-[[opt-f]] **`-f`**, **`--torrc-file`** __FILE__::
-    Specify a new configuration file to contain further Tor configuration
-    options, or pass *-* to make Tor read its configuration from standard
-    input. (Default: **`@CONFDIR@/torrc`**, or **`$HOME/.torrc`** if
+[[opt-f]] **`-f`**, **`--anonrc-file`** __FILE__::
+    Specify a new configuration file to contain further Anon configuration
+    options, or pass *-* to make Anon read its configuration from standard
+    input. (Default: **`@CONFDIR@/anonrc`**, or **`$HOME/.anonrc`** if
     that file is not found.)
 
-[[opt-allow-missing-torrc]] **`--allow-missing-torrc`**::
+[[opt-allow-missing-anonrc]] **`--allow-missing-anonrc`**::
     Allow the configuration file specified by **`-f`** to be missing,
-    if the defaults-torrc file (see below) is accessible.
+    if the defaults-anonrc file (see below) is accessible.
 
-[[opt-defaults-torrc]] **`--defaults-torrc`** __FILE__::
-    Specify a file in which to find default values for Tor options.  The
+[[opt-defaults-anonrc]] **`--defaults-anonrc`** __FILE__::
+    Specify a file in which to find default values for Anon options.  The
     contents of this file are overridden by those in the regular
     configuration file, and by those on the command line. (Default:
-    **`@CONFDIR@/torrc-defaults`**.)
+    **`@CONFDIR@/anonrc-defaults`**.)
 
-[[opt-ignore-missing-torrc]] **`--ignore-missing-torrc`**::
-    Specify that Tor should treat a missing torrc file as though it
-    were empty. Ordinarily, Tor does this for missing default torrc files,
+[[opt-ignore-missing-anonrc]] **`--ignore-missing-anonrc`**::
+    Specify that Anon should treat a missing anonrc file as though it
+    were empty. Ordinarily, Anon does this for missing default anonrc files,
     but not for those specified on the command line.
 
 [[opt-hash-password]] **`--hash-password`** __PASSWORD__::
@@ -102,23 +102,23 @@ The following options in this section are only recognized on the
     Verify whether the configuration file is valid.
 
 [[opt-dump-config]] **`--dump-config`** **`short`**|**`full`**::
-    Write a list of Tor's configured options to standard output.
+    Write a list of Anon's configured options to standard output.
     When the `short` flag is selected, only write the options that
     are different from their default values.
     When `full` is selected, write every option.
 
 [[opt-serviceinstall]] **`--service install`** [**`--options`** __command-line options__]::
-    Install an instance of Tor as a Windows service, with the provided
+    Install an instance of Anon as a Windows service, with the provided
     command-line options. Current instructions can be found at
     https://www.torproject.org/docs/faq#NTService
 
 [[opt-service]] **`--service`** **`remove`**|**`start`**|**`stop`**::
-    Remove, start, or stop a configured Tor Windows service.
+    Remove, start, or stop a configured Anon Windows service.
 
 [[opt-nt-service]] **`--nt-service`**::
     Used internally to implement a Windows service.
 
-[[opt-list-torrc-options]] **`--list-torrc-options`**::
+[[opt-list-anonrc-options]] **`--list-anonrc-options`**::
     List all valid options.
 
 [[opt-list-deprecated-options]] **`--list-deprecated-options`**::
@@ -126,29 +126,29 @@ The following options in this section are only recognized on the
     future version. (This is a warning, not a promise.)
 
 [[opt-list-modules]] **`--list-modules`**::
-    List whether each optional module has been compiled into Tor.
-    (Any module not listed is not optional in this version of Tor.)
+    List whether each optional module has been compiled into Anon.
+    (Any module not listed is not optional in this version of Anon.)
 
 [[opt-version]] **`--version`**::
-    Display Tor version and exit. The output is a single line of the format
-    "Tor version [version number]."  (The version number format
+    Display Anon version and exit. The output is a single line of the format
+    "Anon version [version number]."  (The version number format
     is as specified in version-spec.txt.)
 
 [[opt-quiet]] **`--quiet`**|**`--hush`**::
-    Override the default console logging behavior.  By default, Tor
+    Override the default console logging behavior.  By default, Anon
     starts out logging messages at level "notice" and higher to the
     console.  It stops doing so after it parses its configuration, if
     the configuration tells it to log anywhere else.  These options
     override the default console logging behavior.  Use the
-    **`--hush`** option if you want Tor to log only warnings and
+    **`--hush`** option if you want Anon to log only warnings and
     errors to the console, or use the **`--quiet`** option if you want
-    Tor not to log to the console at all.
+    Anon not to log to the console at all.
 
 [[opt-keygen]] **`--keygen`** [**`--newpass`**]::
-    Running **`tor --keygen`** creates a new ed25519 master identity key
+    Running **`anon --keygen`** creates a new ed25519 master identity key
     for a relay, or only a fresh temporary signing key and
     certificate, if you already have a master key.  Optionally, you
-    can encrypt the master identity key with a passphrase.  When Tor
+    can encrypt the master identity key with a passphrase.  When Anon
     asks you for a passphrase and you don't want to encrypt the master
     key, just don't enter any passphrase when asked. +
      +
@@ -167,8 +167,8 @@ The following options in this section are only recognized on the
 +
 [normal]
     To use the generated files, you must copy them to the
-    __DataDirectory__/**`keys`** directory of your Tor daemon, and
-    make sure that they are owned by the user actually running the Tor
+    __DataDirectory__/**`keys`** directory of your Anon daemon, and
+    make sure that they are owned by the user actually running the Anon
     daemon on your system.
 
 [[opt-keygen-family]] **`--keygen-family`** __basename__::
@@ -181,7 +181,7 @@ The following options in this section are only recognized on the
 
 **`--passphrase-fd`** __FILEDES__::
     File descriptor to read the passphrase from.  Note that unlike with the
-    tor-gencert program, the entire file contents are read and used as
+    anon-gencert program, the entire file contents are read and used as
     the passphrase, including any trailing newlines.
     If the file descriptor is not specified, the passphrase is read
     from the terminal by default.
@@ -191,7 +191,7 @@ The following options in this section are only recognized on the
     the expiration of.  The only currently recognised __purpose__ is
     "sign". +
      +
-    Running **`tor --key-expiration sign`** will attempt to find your
+    Running **`anon --key-expiration sign`** will attempt to find your
     signing key certificate and will output, both in the logs as well
     as to stdout.  The optional **`--format`** argument lets you specify
     the time format.  Currently, **`iso8601`** and **`timestamp`** are
@@ -204,8 +204,8 @@ The following options in this section are only recognized on the
     "signing-cert-expiry: 1500971415".
 
 [[opt-dbg]] **--dbg-**...::
-    Tor may support other options beginning with the string "dbg". These
-    are intended for use by developers to debug and test Tor. They are
+    Anon may support other options beginning with the string "dbg". These
+    are intended for use by developers to debug and test Anon. They are
     not supported or guaranteed to be stable, and you should probably
     not use them.
 
@@ -230,7 +230,7 @@ the file will be parsed as if they were written where the %include option is. If
 the path is a folder, all files on that folder will be parsed following lexical
 order. Files starting with a dot are ignored. Files in subfolders are ignored.
 The %include option can be used recursively.
-New configuration files or directories cannot be added to already running Tor
+New configuration files or directories cannot be added to already running Anon
 instance if **Sandbox** is enabled.
 
 The supported wildcards are * meaning any number of characters including none
@@ -275,14 +275,14 @@ forward slash (/) in the configuration file and on the command line.
     Names can be verified with the openssl engine command. Can not be changed
     while tor is running. +
      +
-    If the engine name is prefixed with a "!", then Tor will exit if the
+    If the engine name is prefixed with a "!", then Anon will exit if the
     engine cannot be loaded.
 
 [[AlternateBridgeAuthority]] **AlternateBridgeAuthority** [__nickname__] [**flags**] __ipv4address__:__port__ __ fingerprint__::
 [[AlternateDirAuthority]] **AlternateDirAuthority** [__nickname__] [**flags**] __ipv4address__:__port__ __fingerprint__::
     These options behave as DirAuthority, but they replace fewer of the
     default directory authorities. Using
-    AlternateDirAuthority replaces the default Tor directory authorities, but
+    AlternateDirAuthority replaces the default Anon directory authorities, but
     leaves the default bridge authorities in
     place.  Similarly,
     AlternateBridgeAuthority replaces the default bridge authority,
@@ -309,7 +309,7 @@ forward slash (/) in the configuration file and on the command line.
     Note that this option, and other bandwidth-limiting options, apply to TCP
     data only: They do not count TCP headers or DNS traffic. +
      +
-    Tor uses powers of two, not powers of ten, so 1 GByte is
+    Anon uses powers of two, not powers of ten, so 1 GByte is
     1024*1024*1024 bytes as opposed to 1 billion bytes. +
      +
     With this option, and in other options that take arguments in bytes,
@@ -317,7 +317,7 @@ forward slash (/) in the configuration file and on the command line.
     also be written as "kilobytes" or "kb"; "MBytes" can be written as
     "megabytes" or "MB"; "kbits" can be written as "kilobits"; and so forth.
     Case doesn't matter.
-    Tor also accepts "byte" and "bit" in the singular.
+    Anon also accepts "byte" and "bit" in the singular.
     The prefixes "tera" and "T" are also recognized.
     If no units are given, we default to bytes.
     To avoid confusion, we recommend writing "bytes" or "bits" explicitly,
@@ -347,13 +347,13 @@ forward slash (/) in the configuration file and on the command line.
 
 [[ClientTransportPlugin]] **ClientTransportPlugin** __transport__ socks4|socks5 __IP__:__PORT__::
 [[ClientTransportPlugin-2]] **ClientTransportPlugin** __transport__ exec __path-to-binary__ [options]::
-    In its first form, when set along with a corresponding Bridge line, the Tor
+    In its first form, when set along with a corresponding Bridge line, the Anon
     client forwards its traffic to a SOCKS-speaking proxy on "IP:PORT".
     (IPv4 addresses should written as-is; IPv6 addresses should be wrapped in
     square brackets.) It's the
     duty of that proxy to properly forward the traffic to the bridge. +
      +
-    In its second form, when set along with a corresponding Bridge line, the Tor
+    In its second form, when set along with a corresponding Bridge line, the Anon
     client launches the pluggable transport proxy executable in
     __path-to-binary__ using __options__ as its command-line options, and
     forwards its traffic to it. It's the duty of that proxy to properly forward
@@ -373,14 +373,14 @@ forward slash (/) in the configuration file and on the command line.
     minimize queue usage memory at the client. (Default: "throughput")
 
 [[ConnLimit]] **ConnLimit** __NUM__::
-    The minimum number of file descriptors that must be available to the Tor
-    process before it will start. Tor will ask the OS for as many file
+    The minimum number of file descriptors that must be available to the Anon
+    process before it will start. Anon will ask the OS for as many file
     descriptors as the OS will allow (you can find this by "ulimit -H -n").
-    If this number is less than ConnLimit, then Tor will refuse to start. +
+    If this number is less than ConnLimit, then Anon will refuse to start. +
      +
-    Tor relays need thousands of sockets, to connect to every other relay.
+    Anon relays need thousands of sockets, to connect to every other relay.
     If you are running a private bridge, you can reduce the number of sockets
-    that Tor uses. For example, to limit Tor to 500 sockets, run
+    that Anon uses. For example, to limit Anon to 500 sockets, run
     "ulimit -n 500" in a shell. Then start tor in the same shell, with
     **ConnLimit 500**. You may also need to set **DisableOOSCheck 0**. +
      +
@@ -389,7 +389,7 @@ forward slash (/) in the configuration file and on the command line.
     platform lacks getrlimit(). (Default: 1000)
 
 [[ConstrainedSockets]] **ConstrainedSockets** **0**|**1**::
-    If set, Tor will tell the kernel to attempt to shrink the buffers for all
+    If set, Anon will tell the kernel to attempt to shrink the buffers for all
     sockets to the size specified in **ConstrainedSockSize**. This is useful for
     virtual servers and other environments where system level TCP buffers may
     be limited. If you're on a virtual server, and you encounter the "Error
@@ -415,19 +415,19 @@ forward slash (/) in the configuration file and on the command line.
     262144, in 1024 byte increments. Default of 8192 is recommended.
 
 [[ControlPort]] **ControlPort** ['address'**:**]{empty}__port__|**unix:**__path__|**auto** [__flags__]::
-    If set, Tor will accept connections on this port and allow those
-    connections to control the Tor process using the Tor Control Protocol
+    If set, Anon will accept connections on this port and allow those
+    connections to control the Anon process using the Anon Control Protocol
     (described in control-spec.txt in
     https://spec.torproject.org[torspec]). Note: unless you also
     specify one or more of **HashedControlPassword** or
-    **CookieAuthentication**, setting this option will cause Tor to allow
+    **CookieAuthentication**, setting this option will cause Anon to allow
     any process on the local host to control it. (Setting both authentication
-    methods means either method is sufficient to authenticate to Tor.) This
-    option is required for many Tor controllers; most use the value of 9051.
+    methods means either method is sufficient to authenticate to Anon.) This
+    option is required for many Anon controllers; most use the value of 9051.
     If a unix domain socket is used, you may quote the path using standard
     C escape sequences. You can specify this directive multiple times, to
     bind to multiple address/port pairs.
-    Set it to "auto" to have Tor pick a port for you. (Default: 0) +
+    Set it to "auto" to have Anon pick a port for you. (Default: 0) +
      +
     Recognized flags are:
     **GroupWritable**;;
@@ -446,7 +446,7 @@ forward slash (/) in the configuration file and on the command line.
     file readable by the default GID. (Default: 0)
 
 [[ControlPortWriteToFile]] **ControlPortWriteToFile** __Path__::
-    If set, Tor writes the address and port of any control port it opens to
+    If set, Anon writes the address and port of any control port it opens to
     this address.  Usable by controllers to learn the actual control port
     when ControlPort is set to "auto".
 
@@ -463,13 +463,13 @@ forward slash (/) in the configuration file and on the command line.
 [[CookieAuthentication]] **CookieAuthentication** **0**|**1**::
     If this option is set to 1, allow connections on the control port
     when the connecting process knows the contents of a file named
-    "control_auth_cookie", which Tor will create in its data directory. This
+    "control_auth_cookie", which Anon will create in its data directory. This
     authentication method should only be used on systems with good filesystem
     security. (Default: 0)
 
 [[CookieAuthFile]] **CookieAuthFile** __Path__::
     If set, this option overrides the default location and file name
-    for Tor's cookie file. (See <<CookieAuthentication,CookieAuthentication>>.)
+    for Anon's cookie file. (See <<CookieAuthentication,CookieAuthentication>>.)
 
 [[CookieAuthFileGroupReadable]] **CookieAuthFileGroupReadable** **0**|**1**::
     If this option is set to 0, don't allow the filesystem group to read the
@@ -478,15 +478,15 @@ forward slash (/) in the configuration file and on the command line.
     implemented; let us know if you need this for some reason.] (Default: 0)
 
 [[CountPrivateBandwidth]] **CountPrivateBandwidth** **0**|**1**::
-    If this option is set, then Tor's rate-limiting applies not only to
+    If this option is set, then Anon's rate-limiting applies not only to
     remote connections, but also to connections to private addresses like
     127.0.0.1 or 10.0.0.1.  This is mostly useful for debugging
     rate-limiting.  (Default: 0)
 
 [[DataDirectory]] **DataDirectory** __DIR__::
     Store working data in DIR. Can not be changed while tor is running.
-    (Default: ~/.tor if your home directory is not /; otherwise,
-    @LOCALSTATEDIR@/lib/tor.  On Windows, the default is
+    (Default: ~/.anon if your home directory is not /; otherwise,
+    @LOCALSTATEDIR@/lib/anon.  On Windows, the default is
     your ApplicationData folder.)
 
 [[DataDirectoryGroupReadable]] **DataDirectoryGroupReadable** **0**|**1**::
@@ -502,8 +502,8 @@ forward slash (/) in the configuration file and on the command line.
     is. By default, an authority is not authoritative for any directory style
     or version unless an appropriate flag is given. +
      +
-    Tor will use this authority as a bridge authoritative directory if the
-    "bridge" flag is set. If a flag "orport=**orport**" is given, Tor will
+    Anon will use this authority as a bridge authoritative directory if the
+    "bridge" flag is set. If a flag "orport=**orport**" is given, Anon will
     use the given port when opening encrypted tunnels to the dirserver. If a
     flag "weight=**num**" is given, then the directory server is chosen
     randomly with probability proportional to that weight (default 1.0). If a
@@ -513,14 +513,14 @@ forward slash (/) in the configuration file and on the command line.
     the directory authority is listening for IPv6 connections on the
     indicated IPv6 address and OR Port. +
      +
-    Tor will contact the authority at __ipv4address__ to
+    Anon will contact the authority at __ipv4address__ to
     download directory documents. Clients always use the ORPort. Relays
     usually use the DirPort, but will use the ORPort in some circumstances.
     If an IPv6 ORPort is supplied, clients will also download directory
     documents at the IPv6 ORPort, if they are configured to use IPv6. +
      +
-    If no **DirAuthority** line is given, Tor will use the default directory
-    authorities. NOTE: this option is intended for setting up a private Tor
+    If no **DirAuthority** line is given, Anon will use the default directory
+    authorities. NOTE: this option is intended for setting up a private Anon
     network with its own directory authorities. If you use it, you will be
     distinguishable from other users, because you won't believe the same
     authorities they do.
@@ -533,35 +533,35 @@ forward slash (/) in the configuration file and on the command line.
     authorities. (Default: 0.1)
 
 [[DisableAllSwap]] **DisableAllSwap** **0**|**1**::
-    If set to 1, Tor will attempt to lock all current and future memory pages,
+    If set to 1, Anon will attempt to lock all current and future memory pages,
     so that memory cannot be paged out. Windows, OS X and Solaris are currently
     not supported. We believe that this feature works on modern Gnu/Linux
     distributions, and that it should work on *BSD systems (untested). This
-    option requires that you start your Tor as root, and you should use the
-    **User** option to properly reduce Tor's privileges.
+    option requires that you start your Anon as root, and you should use the
+    **User** option to properly reduce Anon's privileges.
     Can not be changed while tor is running. (Default: 0)
 
 [[DisableDebuggerAttachment]] **DisableDebuggerAttachment** **0**|**1**::
-   If set to 1, Tor will attempt to prevent basic debugging attachment attempts
-   by other processes. This may also keep Tor from generating core files if
+   If set to 1, Anon will attempt to prevent basic debugging attachment attempts
+   by other processes. This may also keep Anon from generating core files if
    it crashes. It has no impact for users who wish to attach if they
    have CAP_SYS_PTRACE or if they are root.  We believe that this feature
    works on modern Gnu/Linux distributions, and that it may also work on *BSD
    systems (untested).  Some modern Gnu/Linux systems such as Ubuntu have the
    kernel.yama.ptrace_scope sysctl and by default enable it as an attempt to
    limit the PTRACE scope for all user processes by default. This feature will
-   attempt to limit the PTRACE scope for Tor specifically - it will not attempt
+   attempt to limit the PTRACE scope for Anon specifically - it will not attempt
    to alter the system wide ptrace scope as it may not even exist. If you wish
-   to attach to Tor with a debugger such as gdb or strace you will want to set
+   to attach to Anon with a debugger such as gdb or strace you will want to set
    this to 0 for the duration of your debugging. Normal users should leave it
-   on. Disabling this option while Tor is running is prohibited. (Default: 1)
+   on. Disabling this option while Anon is running is prohibited. (Default: 1)
 
 [[DisableNetwork]] **DisableNetwork** **0**|**1**::
     When this option is set, we don't listen for or accept any connections
     other than controller connections, and we close (and don't reattempt)
     any outbound
     connections.  Controllers sometimes use this option to avoid using
-    the network until Tor is fully configured.  Tor will make still certain
+    the network until Anon is fully configured.  Anon will make still certain
     network-related calls (like DNS lookups) as a part of its configuration
     process, even if DisableNetwork is set. (Default: 0)
 
@@ -602,39 +602,39 @@ forward slash (/) in the configuration file and on the command line.
     and identity keys. They must have a DirPort. +
      +
     By default, the directory authorities are also FallbackDirs. Specifying a
-    FallbackDir replaces Tor's default hard-coded FallbackDirs (if any).
+    FallbackDir replaces Anon's default hard-coded FallbackDirs (if any).
     (See <<DirAuthority,DirAuthority>> for an explanation of each flag.)
 
 [[FetchDirInfoEarly]] **FetchDirInfoEarly** **0**|**1**::
-    If set to 1, Tor will always fetch directory information like other
+    If set to 1, Anon will always fetch directory information like other
     directory caches, even if you don't meet the normal criteria for fetching
     early. Normal users should leave it off. (Default: 0)
 
 [[FetchDirInfoExtraEarly]] **FetchDirInfoExtraEarly** **0**|**1**::
-    If set to 1, Tor will fetch directory information before other directory
+    If set to 1, Anon will fetch directory information before other directory
     caches. It will attempt to download directory information closer to the
     start of the consensus period. Normal users should leave it off.
     (Default: 0)
 
 [[FetchHidServDescriptors]] **FetchHidServDescriptors** **0**|**1**::
-    If set to 0, Tor will never fetch any hidden service descriptors from the
-    rendezvous directories. This option is only useful if you're using a Tor
+    If set to 0, Anon will never fetch any hidden service descriptors from the
+    rendezvous directories. This option is only useful if you're using a Anon
     controller that handles hidden service fetches for you. (Default: 1)
 
 [[FetchServerDescriptors]] **FetchServerDescriptors** **0**|**1**::
-    If set to 0, Tor will never fetch any network status summaries or server
+    If set to 0, Anon will never fetch any network status summaries or server
     descriptors from the directory servers. This option is only useful if
-    you're using a Tor controller that handles directory fetches for you.
+    you're using a Anon controller that handles directory fetches for you.
     (Default: 1)
 
 [[FetchUselessDescriptors]] **FetchUselessDescriptors** **0**|**1**::
-    If set to 1, Tor will fetch every consensus flavor, and all server
+    If set to 1, Anon will fetch every consensus flavor, and all server
     descriptors and authority certificates referenced by those consensuses,
-    except for extra info descriptors. When this option is 1, Tor will also
+    except for extra info descriptors. When this option is 1, Anon will also
     keep fetching descriptors, even when idle.
-    If set to 0, Tor will avoid fetching useless descriptors: flavors that it
+    If set to 0, Anon will avoid fetching useless descriptors: flavors that it
     is not using to build circuits, and authority certificates it does not
-    trust. When Tor hasn't built any application circuits, it will go idle,
+    trust. When Anon hasn't built any application circuits, it will go idle,
     and stop fetching descriptors. This option is useful if you're using a
     tor client with an external parser that uses a full consensus.
     This option fetches all documents except extrainfo descriptors,
@@ -656,28 +656,28 @@ forward slash (/) in the configuration file and on the command line.
     than one HashedControlPassword line.
 
 [[HTTPProxy]] **HTTPProxy** __host__[:__port__]::
-    Tor will make all its directory requests through this host:port (or host:80
+    Anon will make all its directory requests through this host:port (or host:80
     if port is not specified), rather than connecting directly to any directory
     servers. (DEPRECATED: As of 0.3.1.0-alpha you should use HTTPSProxy.)
 
 [[HTTPProxyAuthenticator]] **HTTPProxyAuthenticator** __username:password__::
-    If defined, Tor will use this username:password for Basic HTTP proxy
+    If defined, Anon will use this username:password for Basic HTTP proxy
     authentication, as in RFC 2617. This is currently the only form of HTTP
-    proxy authentication that Tor supports; feel free to submit a patch if you
+    proxy authentication that Anon supports; feel free to submit a patch if you
     want it to support others. (DEPRECATED: As of 0.3.1.0-alpha you should use
     HTTPSProxyAuthenticator.)
 
 [[HTTPSProxy]] **HTTPSProxy** __host__[:__port__]::
-    Tor will make all its OR (SSL) connections through this host:port (or
+    Anon will make all its OR (SSL) connections through this host:port (or
     host:443 if port is not specified), via HTTP CONNECT rather than connecting
     directly to servers. You may want to set **FascistFirewall** to restrict
     the set of ports you might try to connect to, if your HTTPS proxy only
     allows connecting to certain ports.
 
 [[HTTPSProxyAuthenticator]] **HTTPSProxyAuthenticator** __username:password__::
-    If defined, Tor will use this username:password for Basic HTTPS proxy
+    If defined, Anon will use this username:password for Basic HTTPS proxy
     authentication, as in RFC 2617. This is currently the only form of HTTPS
-    proxy authentication that Tor supports; feel free to submit a patch if you
+    proxy authentication that Anon supports; feel free to submit a patch if you
     want it to support others.
 
 [[KeepalivePeriod]] **KeepalivePeriod** __NUM__::
@@ -722,14 +722,14 @@ forward slash (/) in the configuration file and on the command line.
 [[Log4]] **Log** **[**__domain__,...**]**__minSeverity__[-__maxSeverity__] ... **stderr**|**stdout**|**syslog**::
     As above, but select messages by range of log severity __and__ by a
     set of "logging domains".  Each logging domain corresponds to an area of
-    functionality inside Tor.  You can specify any number of severity ranges
+    functionality inside Anon.  You can specify any number of severity ranges
     for a single log statement, each of them prefixed by a comma-separated
     list of logging domains.  You can prefix a domain with $$~$$ to indicate
     negation, and use * to indicate "all domains".  If you specify a severity
     range without a list of domains, it matches all domains. +
      +
     This is an advanced feature which is most useful for debugging one or two
-    of Tor's subsystems at a time. +
+    of Anon's subsystems at a time. +
      +
     The currently recognized domains are: general, crypto, net, config, fs,
     protocol, mm, http, app, control, circ, rend, bug, dir, dirserv, or, edge,
@@ -743,15 +743,15 @@ forward slash (/) in the configuration file and on the command line.
     messages of severity notice or higher.
 
 [[LogMessageDomains]] **LogMessageDomains** **0**|**1**::
-    If 1, Tor includes message domains with each log message.  Every log
+    If 1, Anon includes message domains with each log message.  Every log
     message currently has at least one domain; most currently have exactly
     one.  This doesn't affect controller log messages. (Default: 0)
 
 [[LogTimeGranularity]] **LogTimeGranularity** __NUM__::
-    Set the resolution of timestamps in Tor's logs to NUM milliseconds.
+    Set the resolution of timestamps in Anon's logs to NUM milliseconds.
     NUM must be positive and either a divisor or a multiple of 1 second.
-    Note that this option only controls the granularity written by Tor to
-    a file or console log.  Tor does not (for example) "batch up" log
+    Note that this option only controls the granularity written by Anon to
+    a file or console log.  Anon does not (for example) "batch up" log
     messages to affect times logged by a controller, times attached to
     syslog messages, or the mtime fields on log files.  (Default: 1 second)
 
@@ -765,13 +765,13 @@ forward slash (/) in the configuration file and on the command line.
 [[MaxUnparseableDescSizeToLog]] **MaxUnparseableDescSizeToLog** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**::
     Unparseable descriptors (e.g. for votes, consensuses, routers) are logged
     in separate files by hash, up to the specified size in total.  Note that
-    only files logged during the lifetime of this Tor process count toward the
+    only files logged during the lifetime of this Anon process count toward the
     total; this is intended to be used to debug problems without opening live
     servers to resource exhaustion attacks. (Default: 10 MBytes)
 
 [[MetricsPort]] **MetricsPort** ['address'**:**]{empty}__port__ [__format__]::
     WARNING: Before enabling this, it is important to understand that exposing
-    tor metrics publicly is dangerous to the Tor network users. Please take
+    tor metrics publicly is dangerous to the Anon network users. Please take
     extra precaution and care when opening this port. Set a very strict access
     policy with MetricsPortPolicy and consider using your operating systems
     firewall features for defense in depth.
@@ -812,15 +812,15 @@ forward slash (/) in the configuration file and on the command line.
     stunnel to secure the link or to strengthen access control.
 
 [[NoExec]] **NoExec** **0**|**1**::
-    If this option is set to 1, then Tor will never launch another
+    If this option is set to 1, then Anon will never launch another
     executable, regardless of the settings of ClientTransportPlugin
     or ServerTransportPlugin.  Once this option has been set to 1,
-    it cannot be set back to 0 without restarting Tor. (Default: 0)
+    it cannot be set back to 0 without restarting Anon. (Default: 0)
 
 [[OutboundBindAddress]] **OutboundBindAddress** __IP__::
     Make all outbound connections originate from the IP address specified. This
     is only useful when you have multiple network interfaces, and you want all
-    of Tor's outgoing connections to use a single one. This option may
+    of Anon's outgoing connections to use a single one. This option may
     be used twice, once with an IPv4 address and once with an IPv6 address.
     IPv6 addresses should be wrapped in square brackets.
     This setting will be ignored for connections to the loopback addresses
@@ -845,25 +845,25 @@ forward slash (/) in the configuration file and on the command line.
     addresses (127.0.0.0/8 and ::1).
 
 [[OwningControllerProcess]] **{dbl_}OwningControllerProcess** __PID__::
-    Make Tor instance periodically check for presence of a controller process
+    Make Anon instance periodically check for presence of a controller process
     with given PID and terminate itself if this process is no longer alive.
     Polling interval is 15 seconds.
 
 [[PerConnBWBurst]] **PerConnBWBurst** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
     If this option is set manually, or via the "perconnbwburst" consensus
-    field, Tor will use it for separate rate limiting for each connection
+    field, Anon will use it for separate rate limiting for each connection
     from a non-relay. (Default: 0)
 
 [[PerConnBWRate]] **PerConnBWRate** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
     If this option is set manually, or via the "perconnbwrate" consensus
-    field, Tor will use it for separate rate limiting for each connection
+    field, Anon will use it for separate rate limiting for each connection
     from a non-relay. (Default: 0)
 
 [[OutboundBindAddressPT]] **OutboundBindAddressPT** __IP__::
     Request that pluggable transports makes all outbound connections
     originate from the IP address specified. Because outgoing connections
     are handled by the pluggable transport itself, it is not possible for
-    Tor to enforce whether the pluggable transport honors this option. This
+    Anon to enforce whether the pluggable transport honors this option. This
     option overrides **OutboundBindAddress** for the same IP version. This
     option may be used twice, once with an IPv4 address and once with an
     IPv6 address. IPv6 addresses should be wrapped in square brackets. This
@@ -875,8 +875,8 @@ forward slash (/) in the configuration file and on the command line.
     FILE. Can not be changed while tor is running.
 
 [[ProtocolWarnings]] **ProtocolWarnings** **0**|**1**::
-    If 1, Tor will log with severity \'warn' various cases of other parties not
-    following the Tor specification. Otherwise, they are logged with severity
+    If 1, Anon will log with severity \'warn' various cases of other parties not
+    following the Anon specification. Otherwise, they are logged with severity
     \'info'. (Default: 0)
 
 [[RelayBandwidthBurst]] **RelayBandwidthBurst** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
@@ -906,29 +906,29 @@ forward slash (/) in the configuration file and on the command line.
     (Default: 0)
 
 [[RunAsDaemon]] **RunAsDaemon** **0**|**1**::
-    If 1, Tor forks and daemonizes to the background. This option has no effect
+    If 1, Anon forks and daemonizes to the background. This option has no effect
     on Windows; instead you should use the --service command-line option.
     Can not be changed while tor is running.
     (Default: 0)
 
 [[SafeLogging]] **SafeLogging** **0**|**1**|**relay**::
-    Tor can scrub potentially sensitive strings from log messages (e.g.
+    Anon can scrub potentially sensitive strings from log messages (e.g.
     addresses) by replacing them with the string [scrubbed]. This way logs can
     still be useful, but they don't leave behind personally identifying
     information about what sites a user might have visited. +
      +
-    If this option is set to 0, Tor will not perform any scrubbing, if it is
+    If this option is set to 0, Anon will not perform any scrubbing, if it is
     set to 1, all potentially sensitive strings are replaced. If it is set to
     relay, all log messages generated when acting as a relay are sanitized, but
     all messages generated when acting as a client are not.
-    Note: Tor may not heed this option when logging at log levels more
+    Note: Anon may not heed this option when logging at log levels more
     verbose than Notice.
     (Default: 1)
 
 [[Sandbox]] **Sandbox** **0**|**1**::
-    If set to 1, Tor will run securely through the use of a syscall sandbox.
+    If set to 1, Anon will run securely through the use of a syscall sandbox.
     Otherwise the sandbox will be disabled. The option only works on
-    Linux-based operating systems, and only when Tor has been built with the
+    Linux-based operating systems, and only when Anon has been built with the
     libseccomp library.  Note that this option may be incompatible with some
     versions of libc, and some kernel versions.  This option can not be
     changed while tor is running. +
@@ -947,7 +947,7 @@ forward slash (/) in the configuration file and on the command line.
     Launching new Onion Services through the control port is not supported
     with current syscall sandboxing implementation. +
      +
-    Tor must remain in client or server mode (some changes to **ClientOnly**
+    Anon must remain in client or server mode (some changes to **ClientOnly**
     and **ORPort** are not allowed). Currently, if **Sandbox** is 1,
     **ControlPort** command "GETINFO address" will not work. +
      +
@@ -959,7 +959,7 @@ forward slash (/) in the configuration file and on the command line.
 
 [[Schedulers]] **Schedulers** **KIST**|**KISTLite**|**Vanilla**::
     Specify the scheduler type that tor should use. The scheduler is
-    responsible for moving data around within a Tor process. This is an ordered
+    responsible for moving data around within a Anon process. This is an ordered
     list by priority which means that the first value will be tried first and if
     unavailable, the second one is tried and so on. It is possible to change
     these values at runtime. This option mostly effects relays, and most
@@ -968,20 +968,20 @@ forward slash (/) in the configuration file and on the command line.
      +
     The possible scheduler types are:
      +
-    **KIST**: Kernel-Informed Socket Transport. Tor will use TCP information
+    **KIST**: Kernel-Informed Socket Transport. Anon will use TCP information
     from the kernel to make informed decisions regarding how much data to send
     and when to send it. KIST also handles traffic in batches (see
     <<KISTSchedRunInterval,KISTSchedRunInterval>>) in order to improve traffic prioritization decisions.
     As implemented, KIST will only work on Linux kernel version 2.6.39 or
     higher. +
      +
-    **KISTLite**: Same as KIST but without kernel support. Tor will use all
+    **KISTLite**: Same as KIST but without kernel support. Anon will use all
     the same mechanics as with KIST, including the batching, but its decisions
     regarding how much data to send will not be as good. KISTLite will work on
     all kernels and operating systems, and the majority of the benefits of KIST
     are still realized with KISTLite. +
      +
-    **Vanilla**: The scheduler that Tor used before KIST was implemented. It
+    **Vanilla**: The scheduler that Anon used before KIST was implemented. It
     sends as much data as possible, as soon as possible. Vanilla will work on
     all kernels and operating systems.
 
@@ -998,11 +998,11 @@ forward slash (/) in the configuration file and on the command line.
     limit calculation of the KIST algorithm. (Default: 1.0)
 
 [[Socks4Proxy]] **Socks4Proxy** __host__[:__port__]::
-    Tor will make all OR connections through the SOCKS 4 proxy at host:port
+    Anon will make all OR connections through the SOCKS 4 proxy at host:port
     (or host:1080 if port is not specified).
 
 [[Socks5Proxy]] **Socks5Proxy** __host__[:__port__]::
-    Tor will make all OR connections through the SOCKS 5 proxy at host:port
+    Anon will make all OR connections through the SOCKS 5 proxy at host:port
     (or host:1080 if port is not specified).
 
 // Out of order because Username logically precedes Password
@@ -1015,15 +1015,15 @@ forward slash (/) in the configuration file and on the command line.
 
 [[SyslogIdentityTag]] **SyslogIdentityTag** __tag__::
     When logging to syslog, adds a tag to the syslog identity such that
-    log entries are marked with "Tor-__tag__". Can not be changed while tor is
+    log entries are marked with "Anon-__tag__". Can not be changed while tor is
     running. (Default: none)
 
 [[TCPProxy]] **TCPProxy** __protocol__ __host__:__port__::
-    Tor will use the given protocol to make all its OR (SSL) connections through
+    Anon will use the given protocol to make all its OR (SSL) connections through
     a TCP proxy on host:port, rather than connecting directly to servers. You may
     want to set **FascistFirewall** to restrict the set of ports you might try to
     connect to, if your proxy only allows connecting to certain ports. There is no
-    equivalent option for directory connections, because all Tor client versions
+    equivalent option for directory connections, because all Anon client versions
     that support this option download directory documents via OR connections. +
 +
     The only protocol supported right now is 'haproxy'. This option is only for
@@ -1035,7 +1035,7 @@ forward slash (/) in the configuration file and on the command line.
     Both source IP address and source port will be set to zero.
 
 [[TruncateLogFile]] **TruncateLogFile** **0**|**1**::
-    If 1, Tor will overwrite logs at startup and in response to a HUP signal,
+    If 1, Anon will overwrite logs at startup and in response to a HUP signal,
     instead of appending to them. (Default: 0)
 
 [[UnixSocksGroupWritable]] **UnixSocksGroupWritable** **0**|**1**::
@@ -1044,7 +1044,7 @@ forward slash (/) in the configuration file and on the command line.
     the Unix socket readable and writable by the default GID. (Default: 0)
 
 [[UseDefaultFallbackDirs]] **UseDefaultFallbackDirs** **0**|**1**::
-    Use Tor's default hard-coded FallbackDirs (if any). (When a
+    Use Anon's default hard-coded FallbackDirs (if any). (When a
     FallbackDir line is present, it replaces the hard-coded FallbackDirs,
     regardless of the value of UseDefaultFallbackDirs.) (Default: 1)
 
@@ -1062,7 +1062,7 @@ The following options are useful only for clients (that is, if
 **NATDPort** is non-zero):
 
 [[AllowNonRFC953Hostnames]] **AllowNonRFC953Hostnames** **0**|**1**::
-    When this option is disabled, Tor blocks hostnames containing illegal
+    When this option is disabled, Anon blocks hostnames containing illegal
     characters (like @ and :) rather than sending them to an exit node to be
     resolved. This helps trap accidental attempts to resolve URLs and so on.
     (Default: 0)
@@ -1079,8 +1079,8 @@ The following options are useful only for clients (that is, if
     The "." suffix is equivalent to "all addresses." (Default: .exit,.anyone).
 
 [[Bridge]] **Bridge** [__transport__] __IP__:__ORPort__ [__fingerprint__]::
-    When set along with UseBridges, instructs Tor to use the relay at
-    "IP:ORPort" as a "bridge" relaying into the Tor network. If "fingerprint"
+    When set along with UseBridges, instructs Anon to use the relay at
+    "IP:ORPort" as a "bridge" relaying into the Anon network. If "fingerprint"
     is provided (using the same format as for DirAuthority), we will verify that
     the relay running at that location has the right fingerprint. We also use
     fingerprint to look up the bridge descriptor at the bridge authority, if
@@ -1093,13 +1093,13 @@ The following options are useful only for clients (that is, if
     These transports typically ignore the "IP:ORPort" specified in the bridge
     line.  +
      +
-    Tor passes any "key=val" settings to the pluggable transport proxy as
+    Anon passes any "key=val" settings to the pluggable transport proxy as
     per-connection arguments when connecting to the bridge.  Consult
     the documentation of the pluggable transport for details of what
     arguments it supports.
 
 [[CircuitPadding]] **CircuitPadding** **0**|**1**::
-    If set to 0, Tor will not pad client circuits with additional cover
+    If set to 0, Anon will not pad client circuits with additional cover
     traffic. Only clients may set this option. This option should be offered
     via the UI to mobile users for use where bandwidth may be expensive. If
     set to 1, padding will be negotiated as per the consensus and relay
@@ -1108,7 +1108,7 @@ The following options are useful only for clients (that is, if
 
 // Out of order because it logically belongs after CircuitPadding
 [[ReducedCircuitPadding]] **ReducedCircuitPadding** **0**|**1**::
-    If set to 1, Tor will only use circuit padding algorithms that have low
+    If set to 1, Anon will only use circuit padding algorithms that have low
     overhead. Only clients may set this option. This option should be offered
     via the UI to mobile users for use where bandwidth may be expensive.
     (Default: 0)
@@ -1142,7 +1142,7 @@ The following options are useful only for clients (that is, if
     waiting for one to complete, timeout, or error out. (Default: 3)
 
 [[ClientDNSRejectInternalAddresses]] **ClientDNSRejectInternalAddresses** **0**|**1**::
-    If true, Tor does not believe any anonymously retrieved DNS answer that
+    If true, Anon does not believe any anonymously retrieved DNS answer that
     tells it that an address resolves to an internal address (like 127.0.0.1 or
     192.168.0.1). This option prevents certain browser-based attacks; it
     is not allowed to be set on the default network. (Default: 1)
@@ -1160,56 +1160,56 @@ The following options are useful only for clients (that is, if
     https://spec.torproject.org/[torspec] for more information.
 
 [[ClientOnly]] **ClientOnly** **0**|**1**::
-    If set to 1, Tor will not run as a relay or serve
+    If set to 1, Anon will not run as a relay or serve
     directory requests, even if the ORPort, ExtORPort, or DirPort options are
     set. (This config option is
     mostly unnecessary: we added it back when we were considering having
-    Tor clients auto-promote themselves to being relays if they were stable
-    and fast enough. The current behavior is simply that Tor is a client
+    Anon clients auto-promote themselves to being relays if they were stable
+    and fast enough. The current behavior is simply that Anon is a client
     unless ORPort, ExtORPort, or DirPort are configured.) (Default: 0)
 
 [[ClientPreferIPv6DirPort]] **ClientPreferIPv6DirPort** **0**|**1**|**auto**::
-    If this option is set to 1, Tor prefers a directory port with an IPv6
+    If this option is set to 1, Anon prefers a directory port with an IPv6
     address over one with IPv4, for direct connections, if a given directory
-    server has both. (Tor also prefers an IPv6 DirPort if IPv4Client is set to
+    server has both. (Anon also prefers an IPv6 DirPort if IPv4Client is set to
     0.) If this option is set to auto, clients prefer IPv4. Other things may
     influence the choice. This option breaks a tie to the favor of IPv6.
     (Default: auto)  (DEPRECATED: This option has had no effect for some
     time.)
 
 [[ClientPreferIPv6ORPort]] **ClientPreferIPv6ORPort** **0**|**1**|**auto**::
-    If this option is set to 1, Tor prefers an OR port with an IPv6
-    address over one with IPv4 if a given entry node has both. (Tor also
+    If this option is set to 1, Anon prefers an OR port with an IPv6
+    address over one with IPv4 if a given entry node has both. (Anon also
     prefers an IPv6 ORPort if IPv4Client is set to 0.) If this option is set
-    to auto, Tor bridge clients prefer the configured bridge address, and
+    to auto, Anon bridge clients prefer the configured bridge address, and
     other clients prefer IPv4. Other things may influence the choice. This
     option breaks a tie to the favor of IPv6. (Default: auto)
 
 [[ClientRejectInternalAddresses]] **ClientRejectInternalAddresses** **0**|**1**::
-    If true, Tor does not try to fulfill requests to connect to an internal
+    If true, Anon does not try to fulfill requests to connect to an internal
     address (like 127.0.0.1 or 192.168.0.1) __unless an exit node is
     specifically requested__ (for example, via a .exit hostname, or a
     controller request).  If true, multicast DNS hostnames for machines on the
     local network (of the form *.local) are also rejected.  (Default: 1)
 
 [[ClientUseIPv4]] **ClientUseIPv4** **0**|**1**::
-    If this option is set to 0, Tor will avoid connecting to directory servers
+    If this option is set to 0, Anon will avoid connecting to directory servers
     and entry nodes over IPv4. Note that clients with an IPv4
     address in a **Bridge**, proxy, or pluggable transport line will try
     connecting over IPv4 even if **ClientUseIPv4** is set to 0. (Default: 1)
 
 [[ClientUseIPv6]] **ClientUseIPv6** **0**|**1**::
-    If this option is set to 1, Tor might connect to directory servers or
+    If this option is set to 1, Anon might connect to directory servers or
     entry nodes over IPv6. For IPv6 only hosts, you need to also set
     **ClientUseIPv4** to 0 to disable IPv4. Note that clients configured with
     an IPv6 address in a **Bridge**, proxy, or pluggable transportline will
     try connecting over IPv6 even if **ClientUseIPv6** is set to 0. (Default: 1)
 
 [[ConnectionPadding]] **ConnectionPadding** **0**|**1**|**auto**::
-    This option governs Tor's use of padding to defend against some forms of
-    traffic analysis. If it is set to 'auto', Tor will send padding only
-    if both the client and the relay support it. If it is set to 0, Tor will
-    not send any padding cells. If it is set to 1, Tor will still send padding
+    This option governs Anon's use of padding to defend against some forms of
+    traffic analysis. If it is set to 'auto', Anon will send padding only
+    if both the client and the relay support it. If it is set to 0, Anon will
+    not send any padding cells. If it is set to 1, Anon will still send padding
     for client connections regardless of relay support. Only clients may set
     this option. This option should be offered via the UI to mobile users
     for use where bandwidth may be expensive.
@@ -1217,7 +1217,7 @@ The following options are useful only for clients (that is, if
 
 // Out of order because it logically belongs after ConnectionPadding
 [[ReducedConnectionPadding]] **ReducedConnectionPadding** **0**|**1**::
-    If set to 1, Tor will not not hold OR connections open for very long,
+    If set to 1, Anon will not not hold OR connections open for very long,
     and will send less padding on these connections. Only clients may set
     this option. This option should be offered via the UI to mobile users
     for use where bandwidth may be expensive. (Default: 0)
@@ -1226,7 +1226,7 @@ The following options are useful only for clients (that is, if
     If non-zero, open this port to listen for UDP DNS requests, and resolve
     them anonymously.  This port only handles A, AAAA, and PTR requests---it
     doesn't handle arbitrary DNS request types. Set the port to "auto" to
-    have Tor pick a port for
+    have Anon pick a port for
     you. This directive can be specified multiple times to bind to multiple
     addresses/ports. See <<SocksPort,SocksPort>> for an explanation of isolation
     flags. (Default: 0)
@@ -1259,20 +1259,20 @@ The following options are useful only for clients (that is, if
     used. (Default: none)
 
 [[DownloadExtraInfo]] **DownloadExtraInfo** **0**|**1**::
-    If true, Tor downloads and caches "extra-info" documents. These documents
+    If true, Anon downloads and caches "extra-info" documents. These documents
     contain information about servers other than the information in their
-    regular server descriptors. Tor does not use this information for anything
+    regular server descriptors. Anon does not use this information for anything
     itself; to save bandwidth, leave this option turned off. (Default: 0)
 
 [[EnforceDistinctSubnets]] **EnforceDistinctSubnets** **0**|**1**::
-    If 1, Tor will not put two servers whose IP addresses are "too close" on
+    If 1, Anon will not put two servers whose IP addresses are "too close" on
     the same circuit. Currently, two addresses are "too close" if they lie in
     the same /16 range. (Default: 1)
 
 [[FascistFirewall]] **FascistFirewall** **0**|**1**::
-    If 1, Tor will only create outgoing connections to ORs running on ports
+    If 1, Anon will only create outgoing connections to ORs running on ports
     that your firewall allows (defaults to 80 and 443; see <<FirewallPorts,FirewallPorts>>).
-    This will allow you to run Tor as a client behind a firewall with
+    This will allow you to run Anon as a client behind a firewall with
     restrictive policies, but will not allow you to run as a server behind such
     a firewall. If you prefer more fine-grained control, use
     ReachableAddresses instead.
@@ -1286,9 +1286,9 @@ The following options are useful only for clients (that is, if
     Open this port to listen for proxy connections using the "HTTP CONNECT"
     protocol instead of SOCKS. Set this to
     0 if you don't want to allow "HTTP CONNECT" connections. Set the port
-    to "auto" to have Tor pick a port for you. This directive can be
+    to "auto" to have Anon pick a port for you. This directive can be
     specified multiple times to bind to multiple addresses/ports. If multiple
-    entries of this option are present in your configuration file, Tor will
+    entries of this option are present in your configuration file, Anon will
     perform stream isolation between listeners by default. See
     <<SocksPort,SocksPort>> for an explanation of isolation flags. (Default: 0)
 
@@ -1302,7 +1302,7 @@ The following options are useful only for clients (that is, if
     1863, 5050, 5190, 5222, 5223, 6523, 6667, 6697, 8300)
 
 [[MapAddress]] **MapAddress** __address__ __newaddress__::
-    When a request for address arrives to Tor, it will transform to newaddress
+    When a request for address arrives to Anon, it will transform to newaddress
     before processing it. For example, if you always want connections to
     www.example.com to exit via __torserver__ (where __torserver__ is the
     fingerprint of the server), use "MapAddress www.example.com
@@ -1315,21 +1315,21 @@ The following options are useful only for clients (that is, if
     leading "*." in each part of the directive.) You can also redirect all
     subdomains of a domain to a single address. For example, "MapAddress
     *.example.com www.example.com". If the specified exit is not available,
-    or the exit can not connect to the site, Tor will fail any connections
+    or the exit can not connect to the site, Anon will fail any connections
     to the mapped address.+
      +
     NOTES:
 
-    1. When evaluating MapAddress expressions Tor stops when it hits the most
+    1. When evaluating MapAddress expressions Anon stops when it hits the most
     recently added expression that matches the requested address. So if you
-    have the following in your torrc, www.torproject.org will map to
+    have the following in your anonrc, www.torproject.org will map to
     198.51.100.1:
 
      MapAddress www.torproject.org 192.0.2.1
      MapAddress www.torproject.org 198.51.100.1
 
-    2. Tor evaluates the MapAddress configuration until it finds no matches. So
-    if you have the following in your torrc, www.torproject.org will map to
+    2. Anon evaluates the MapAddress configuration until it finds no matches. So
+    if you have the following in your anonrc, www.torproject.org will map to
     203.0.113.1:
 
       MapAddress 198.51.100.1 203.0.113.1
@@ -1344,8 +1344,8 @@ The following options are useful only for clients (that is, if
     4. Using a wildcard to match only part of a string (as in *ample.com) is
     also invalid.
 
-    5. Tor maps hostnames and IP addresses separately. If you MapAddress
-       a DNS name, but use an IP address to connect, then Tor will ignore the
+    5. Anon maps hostnames and IP addresses separately. If you MapAddress
+       a DNS name, but use an IP address to connect, then Anon will ignore the
        DNS name mapping.
 
     6. MapAddress does not apply to redirects in the application protocol.
@@ -1371,9 +1371,9 @@ The following options are useful only for clients (that is, if
     Open this port to listen for connections from old versions of ipfw (as
     included in old versions of FreeBSD, etc) using the NATD protocol.
     Use 0 if you don't want to allow NATD connections.  Set the port
-    to "auto" to have Tor pick a port for you. This directive can be
+    to "auto" to have Anon pick a port for you. This directive can be
     specified multiple times to bind to multiple addresses/ports.  If multiple
-    entries of this option are present in your configuration file, Tor will
+    entries of this option are present in your configuration file, Anon will
     perform stream isolation between listeners by default. See
     <<SocksPort,SocksPort>> for an explanation of isolation flags. +
      +
@@ -1395,9 +1395,9 @@ The following options are useful only for clients (that is, if
 [[PathBiasWarnRate]] **PathBiasWarnRate** __NUM__ +
 
 [[PathBiasScaleThreshold]] **PathBiasScaleThreshold** __NUM__::
-    These options override the default behavior of Tor's (**currently
+    These options override the default behavior of Anon's (**currently
     experimental**) path bias detection algorithm. To try to find broken or
-    misbehaving guard nodes, Tor looks for nodes where more than a certain
+    misbehaving guard nodes, Anon looks for nodes where more than a certain
     fraction of circuits through that guard fail to get built. +
      +
     The PathBiasCircThreshold option controls how many circuits we need to build
@@ -1412,7 +1412,7 @@ The following options are useful only for clients (that is, if
     the consensus) so that new observations don't get swamped by old ones. +
      +
     By default, or if a negative value is provided for one of these options,
-    Tor uses reasonable defaults from the networkstatus consensus document.
+    Anon uses reasonable defaults from the networkstatus consensus document.
     If no defaults are available there, these options default to 150, .70,
     .50, .30, 0, and 300 respectively.
 
@@ -1425,7 +1425,7 @@ The following options are useful only for clients (that is, if
 
 [[PathBiasScaleUseThreshold]] **PathBiasScaleUseThreshold** __NUM__::
     Similar to the above options, these options override the default behavior
-    of Tor's (**currently experimental**) path use bias detection algorithm. +
+    of Anon's (**currently experimental**) path use bias detection algorithm. +
      +
     Where as the path bias parameters govern thresholds for successfully
     building circuits, these four path use bias parameters govern thresholds
@@ -1435,21 +1435,21 @@ The following options are useful only for clients (that is, if
     well-formed responses to RELAY cells. +
      +
     By default, or if a negative value is provided for one of these options,
-    Tor uses reasonable defaults from the networkstatus consensus document.
+    Anon uses reasonable defaults from the networkstatus consensus document.
     If no defaults are available there, these options default to 20, .80,
     .60, and 100, respectively.
 
 [[PathsNeededToBuildCircuits]] **PathsNeededToBuildCircuits** __NUM__::
-    Tor clients don't build circuits for user traffic until they know
+    Anon clients don't build circuits for user traffic until they know
     about enough of the network so that they could potentially construct
     enough of the possible paths through the network. If this option
-    is set to a fraction between 0.25 and 0.95, Tor won't build circuits
+    is set to a fraction between 0.25 and 0.95, Anon won't build circuits
     until it has enough descriptors or microdescriptors to construct
     that fraction of possible paths. Note that setting this option too low
-    can make your Tor client less anonymous, and setting it too high can
-    prevent your Tor client from bootstrapping.  If this option is negative,
-    Tor will use a default value chosen by the directory authorities. If the
-    directory authorities do not choose a value, Tor will default to 0.6.
+    can make your Anon client less anonymous, and setting it too high can
+    prevent your Anon client from bootstrapping.  If this option is negative,
+    Anon will use a default value chosen by the directory authorities. If the
+    directory authorities do not choose a value, Anon will default to 0.6.
     (Default: -1)
 
 [[ReachableAddresses]] **ReachableAddresses** __IP__[/__MASK__][:__PORT__]...::
@@ -1462,7 +1462,7 @@ The following options are useful only for clients (that is, if
     80 otherwise. (Default: \'accept \*:*'.)
 
 [[ReachableDirAddresses]] **ReachableDirAddresses** __IP__[/__MASK__][:__PORT__]...::
-    Like **ReachableAddresses**, a list of addresses and ports. Tor will obey
+    Like **ReachableAddresses**, a list of addresses and ports. Anon will obey
     these restrictions when fetching directory information, using standard HTTP
     GET requests. If not set explicitly then the value of
     **ReachableAddresses** is used. If **HTTPProxy** is set then these
@@ -1470,7 +1470,7 @@ The following options are useful only for clients (that is, if
     had no effect for some time.)
 
 [[ReachableORAddresses]] **ReachableORAddresses** __IP__[/__MASK__][:__PORT__]...::
-    Like **ReachableAddresses**, a list of addresses and ports. Tor will obey
+    Like **ReachableAddresses**, a list of addresses and ports. Anon will obey
     these restrictions when connecting to Onion Routers, using TLS/SSL. If not
     set explicitly then the value of **ReachableAddresses** is used. If
     **HTTPSProxy** is set then these connections will go through that proxy. +
@@ -1478,12 +1478,12 @@ The following options are useful only for clients (that is, if
     The separation between **ReachableORAddresses** and
     **ReachableDirAddresses** is only interesting when you are connecting
     through proxies (see <<HTTPProxy,HTTPProxy>> and <<HTTPSProxy,HTTPSProxy>>). Most proxies limit
-    TLS connections (which Tor uses to connect to Onion Routers) to port 443,
-    and some limit HTTP GET requests (which Tor uses for fetching directory
+    TLS connections (which Anon uses to connect to Onion Routers) to port 443,
+    and some limit HTTP GET requests (which Anon uses for fetching directory
     information) to port 80.
 
 [[SafeSocks]] **SafeSocks** **0**|**1**::
-    When this option is enabled, Tor will reject application connections that
+    When this option is enabled, Anon will reject application connections that
     use unsafe variants of the socks protocol -- ones that only provide an IP
     address, meaning the application is doing a DNS resolve first.
     Specifically, these are socks4 and socks5 when not doing remote DNS.
@@ -1491,22 +1491,22 @@ The following options are useful only for clients (that is, if
 
 // Out of order because it logically belongs after SafeSocks
 [[TestSocks]] **TestSocks** **0**|**1**::
-    When this option is enabled, Tor will make a notice-level log entry for
+    When this option is enabled, Anon will make a notice-level log entry for
     each connection to the Socks port indicating whether the request used a
     safe socks protocol or an unsafe one (see <<SafeSocks,SafeSocks>>). This
-    helps to determine whether an application using Tor is possibly leaking
+    helps to determine whether an application using Anon is possibly leaking
     DNS requests. (Default: 0)
 
 // Out of order because it logically belongs with SafeSocks
 [[WarnPlaintextPorts]] **WarnPlaintextPorts** __port__,__port__,__...__::
-    Tells Tor to issue a warnings whenever the user tries to make an anonymous
+    Tells Anon to issue a warnings whenever the user tries to make an anonymous
     connection to one of these ports. This option is designed to alert users
     to services that risk sending passwords in the clear. (Default:
     23,109,110,143)
 
 // Out of order because it logically belongs with SafeSocks
 [[RejectPlaintextPorts]] **RejectPlaintextPorts** __port__,__port__,__...__::
-    Like WarnPlaintextPorts, but instead of warning about risky port uses, Tor
+    Like WarnPlaintextPorts, but instead of warning about risky port uses, Anon
     will instead refuse to make the connection. (Default: None)
 
 [[SocksPolicy]] **SocksPolicy** __policy__,__policy__,__...__::
@@ -1518,7 +1518,7 @@ The following options are useful only for clients (that is, if
 [[SocksPort]] **SocksPort** ['address'**:**]{empty}__port__|**unix:**__path__|**auto** [_flags_] [_isolation flags_]::
     Open this port to listen for connections from SOCKS-speaking
     applications. Set this to 0 if you don't want to allow application
-    connections via SOCKS. Set it to "auto" to have Tor pick a port for
+    connections via SOCKS. Set it to "auto" to have Anon pick a port for
     you. This directive can be specified multiple times to bind
     to multiple addresses/ports. If a unix domain socket is used, you may
     quote the path using standard C escape sequences. Most flags are off by
@@ -1534,8 +1534,8 @@ The following options are useful only for clients (that is, if
         to use your computer as an open proxy. +
      +
     If multiple entries of this option are present in your configuration
-    file, Tor will perform stream isolation between listeners by default.
-    The _isolation flags_ arguments give Tor rules for which streams
+    file, Anon will perform stream isolation between listeners by default.
+    The _isolation flags_ arguments give Anon rules for which streams
     received on this SocksPort are allowed to share circuits with one
     another.  Recognized isolation flags are:
     **IsolateClientAddr**;;
@@ -1547,7 +1547,7 @@ The following options are useful only for clients (that is, if
         Don't share circuits with streams for which different
         SOCKS authentication was provided. (For HTTPTunnelPort
         connections, this option looks at the Proxy-Authorization and
-        X-Tor-Stream-Isolation headers. On by default;
+        X-Anon-Stream-Isolation headers. On by default;
         you can disable it with **NoIsolateSOCKSAuth**.)
     **IsolateClientProtocol**;;
         Don't share circuits with streams using a different protocol.
@@ -1586,7 +1586,7 @@ The following options are useful only for clients (that is, if
         Tells exits that, if a host has both an IPv4 and an IPv6 address,
         we would prefer to connect to it via IPv6. (IPv4 is the default.)
     **NoDNSRequest**;;
-        Do not ask exits to resolve DNS addresses in SOCKS5 requests. Tor will
+        Do not ask exits to resolve DNS addresses in SOCKS5 requests. Anon will
         connect to IPv4 addresses, IPv6 addresses (if IPv6Traffic is set) and
         .onion addresses.
     **NoOnionTraffic**;;
@@ -1626,14 +1626,14 @@ The following options are useful only for clients (that is, if
         When serving a hostname lookup request on this port that
         should get automapped (according to AutomapHostsOnResolve),
         if we could return either an IPv4 or an IPv6 answer, prefer
-        an IPv4 answer. (Tor prefers IPv6 by default.)
+        an IPv4 answer. (Anon prefers IPv6 by default.)
     **PreferSOCKSNoAuth**;;
         Ordinarily, when an application offers both "username/password
-        authentication" and "no authentication" to Tor via SOCKS5, Tor
+        authentication" and "no authentication" to Anon via SOCKS5, Anon
         selects username/password authentication so that IsolateSOCKSAuth can
         work.  This can confuse some applications, if they offer a
         username/password combination then get confused when asked for
-        one. You can disable this behavior, so that Tor will select "No
+        one. You can disable this behavior, so that Anon will select "No
         authentication" when IsolateSOCKSAuth is disabled, or when this
         option is set.
     **ExtendedErrors**;;
@@ -1691,17 +1691,17 @@ The following options are useful only for clients (that is, if
     conflicting flags.
 
 [[TokenBucketRefillInterval]] **TokenBucketRefillInterval** __NUM__ [**msec**|**second**]::
-    Set the refill delay interval of Tor's token bucket to NUM milliseconds.
-    NUM must be between 1 and 1000, inclusive.  When Tor is out of bandwidth,
+    Set the refill delay interval of Anon's token bucket to NUM milliseconds.
+    NUM must be between 1 and 1000, inclusive.  When Anon is out of bandwidth,
     on a connection or globally, it will wait up to this long before it tries
     to use that connection again.
     Note that bandwidth limits are still expressed in bytes per second: this
-    option only affects the frequency with which Tor checks to see whether
+    option only affects the frequency with which Anon checks to see whether
     previously exhausted connections may read again.
     Can not be changed while tor is running. (Default: 100 msec)
 
 [[TrackHostExits]] **TrackHostExits** __host__,__.domain__,__...__::
-    For each value in the comma separated list, Tor will track recent
+    For each value in the comma separated list, Anon will track recent
     connections to hosts that match this value and attempt to reuse the same
     exit node for each. If the value is prepended with a \'.\', it is treated as
     matching an entire domain. If one of the values is just a \'.', it means
@@ -1720,14 +1720,14 @@ The following options are useful only for clients (that is, if
 [[TransPort]] **TransPort** ['address'**:**]{empty}__port__|**auto** [_isolation flags_]::
     Open this port to listen for transparent proxy connections.  Set this to
     0 if you don't want to allow transparent proxy connections.  Set the port
-    to "auto" to have Tor pick a port for you. This directive can be
+    to "auto" to have Anon pick a port for you. This directive can be
     specified multiple times to bind to multiple addresses/ports. If multiple
-    entries of this option are present in your configuration file, Tor will
+    entries of this option are present in your configuration file, Anon will
     perform stream isolation between listeners by default.  See
     <<SocksPort,SocksPort>> for an explanation of isolation flags. +
      +
     TransPort requires OS support for transparent proxies, such as BSDs' pf or
-    Linux's IPTables. If you're planning to use Tor as a transparent proxy for
+    Linux's IPTables. If you're planning to use Anon as a transparent proxy for
     a network, you'll want to examine and change VirtualAddrNetwork from the
     default setting. (Default: 0)
 
@@ -1756,12 +1756,12 @@ The following options are useful only for clients (that is, if
     (Default: "default")
 
 [[UpdateBridgesFromAuthority]] **UpdateBridgesFromAuthority** **0**|**1**::
-    When set (along with UseBridges), Tor will try to fetch bridge descriptors
+    When set (along with UseBridges), Anon will try to fetch bridge descriptors
     from the configured bridge authorities when feasible. It will fall back to
     a direct request if the authority responds with a 404. (Default: 0)
 
 [[UseBridges]] **UseBridges** **0**|**1**::
-    When set, Tor will fetch descriptors for each bridge listed in the "Bridge"
+    When set, Anon will fetch descriptors for each bridge listed in the "Bridge"
     config lines, and use these relays as both entry guards and directory
     guards. (Default: 0)
 
@@ -1803,7 +1803,7 @@ The following options are useful only for clients (that is, if
 [[NumPrimaryGuards]] **NumPrimaryGuards** __NUM__::
     If UseEntryGuards is set to 1, we will try to pick NUM routers for our
     primary guard list, which is the set of routers we strongly prefer when
-    connecting to the Tor network. If NUM is 0, we try to learn the number from
+    connecting to the Anon network. If NUM is 0, we try to learn the number from
     the guard-n-primary-guards consensus parameter, and default to 3 if the
     consensus parameter isn't set. (Default: 0)
 
@@ -1815,8 +1815,8 @@ The following options are useful only for clients (that is, if
     parameter isn't set. (Default: auto)
 
 [[UseMicrodescriptors]] **UseMicrodescriptors** **0**|**1**|**auto**::
-    Microdescriptors are a smaller version of the information that Tor needs
-    in order to build its circuits.  Using microdescriptors makes Tor clients
+    Microdescriptors are a smaller version of the information that Anon needs
+    in order to build its circuits.  Using microdescriptors makes Anon clients
     download less directory information, thus saving bandwidth.  Directory
     caches need to fetch regular descriptors and microdescriptors, so this
     option doesn't save any bandwidth for them.  For legacy reasons, auto is
@@ -1825,8 +1825,8 @@ The following options are useful only for clients (that is, if
 [[VirtualAddrNetworkIPv4]] **VirtualAddrNetworkIPv4** __IPv4Address__/__bits__ +
 
 [[VirtualAddrNetworkIPv6]] **VirtualAddrNetworkIPv6** [__IPv6Address__]/__bits__::
-    When Tor needs to assign a virtual (unused) address because of a MAPADDRESS
-    command from the controller or the AutomapHostsOnResolve feature, Tor
+    When Anon needs to assign a virtual (unused) address because of a MAPADDRESS
+    command from the controller or the AutomapHostsOnResolve feature, Anon
     picks an unassigned address from this range. (Defaults:
     127.192.0.0/10 and [FE80::]/10 respectively.) +
      +
@@ -1848,13 +1848,13 @@ The following options are useful only for clients (that is, if
 // Please keep them that way!
 
 The following options are useful for configuring timeouts related
-to building Tor circuits and using them:
+to building Anon circuits and using them:
 
 [[CircuitsAvailableTimeout]] **CircuitsAvailableTimeout** __NUM__::
-    Tor will attempt to keep at least one open, unused circuit available for
+    Anon will attempt to keep at least one open, unused circuit available for
     this amount of time. This option governs how long idle circuits are kept
-    open, as well as the amount of time Tor will keep a circuit open to each
-    of the recently used ports. This way when the Tor client is entirely
+    open, as well as the amount of time Anon will keep a circuit open to each
+    of the recently used ports. This way when the Anon client is entirely
     idle, it can expire all of its circuits, and then expire its TLS
     connections. Note that the actual timeout value is uniformly randomized
     from the specified value to twice that amount. (Default: 30 minutes;
@@ -1864,10 +1864,10 @@ to building Tor circuits and using them:
 [[LearnCircuitBuildTimeout]] **LearnCircuitBuildTimeout** **0**|**1**::
     If 0, CircuitBuildTimeout adaptive learning is disabled. (Default: 1) +
  +
-    If adaptive history contains only abandoned measurements, Tor clears that
+    If adaptive history contains only abandoned measurements, Anon clears that
     history and restarts learning with conservative timeout values. This does
     not change guard selection or guarantee that a stalled path will recover.
-    During continuing circuit-build failures, Tor logs a process-wide expiry
+    During continuing circuit-build failures, Anon logs a process-wide expiry
     summary at most once every five minutes. Hop-stage and channel-state
     counts are separate totals, not correlated observations. Failed first-hop
     connections are counted separately as connection_failed; they have not
@@ -1906,39 +1906,39 @@ to building Tor circuits and using them:
 // These options are in alphabetical order, with exceptions as noted.
 // Please keep them that way!
 
-Tor can enter dormant mode to conserve power and network bandwidth.
-The following options control when Tor enters and leaves dormant mode:
+Anon can enter dormant mode to conserve power and network bandwidth.
+The following options control when Anon enters and leaves dormant mode:
 
 [[DormantCanceledByStartup]] **DormantCanceledByStartup** **0**|**1**::
-    By default, Tor starts in active mode if it was active the last time
+    By default, Anon starts in active mode if it was active the last time
     it was shut down, and in dormant mode if it was dormant.  But if
-    this option is true, Tor treats every startup event as user
-    activity, and Tor will never start in Dormant mode, even if it has
+    this option is true, Anon treats every startup event as user
+    activity, and Anon will never start in Dormant mode, even if it has
     been unused for a long time on previous runs. (Default: 0)
      +
     Note: Packagers and application developers should change the value of
     this option only with great caution: it has the potential to
     create spurious traffic on the network.  This option should only
-    be used if Tor is started by an affirmative user activity (like
-    clicking on an application or running a command), and not if Tor
+    be used if Anon is started by an affirmative user activity (like
+    clicking on an application or running a command), and not if Anon
     is launched for some other reason (for example, by a startup
     process, or by an application that launches itself on every login.)
 
 [[DormantClientTimeout]] **DormantClientTimeout**  __N__ **minutes**|**hours**|**days**|**weeks**::
-    If Tor spends this much time without any client activity,
+    If Anon spends this much time without any client activity,
     enter a dormant state where automatic circuits are not built, and
     directory information is not fetched.
     Does not affect servers or onion services. Must be at least 10 minutes.
     (Default: 24 hours)
 
 [[DormantOnFirstStartup]] **DormantOnFirstStartup** **0**|**1**::
-    If true, then the first time Tor starts up with a fresh DataDirectory,
+    If true, then the first time Anon starts up with a fresh DataDirectory,
     it starts in dormant mode, and takes no actions until the user has made
-    a request.  (This mode is recommended if installing a Tor client for a
-    user who might not actually use it.)  If false, Tor bootstraps the first
+    a request.  (This mode is recommended if installing a Anon client for a
+    user who might not actually use it.)  If false, Anon bootstraps the first
     time it is started, whether it sees a user request or not.
      +
-    After the first time Tor starts, it begins in dormant mode if it was
+    After the first time Anon starts, it begins in dormant mode if it was
     dormant before, and not otherwise. (Default: 0)
 
 [[DormantTimeoutDisabledByIdleStreams]] **DormantTimeoutDisabledByIdleStreams**  **0**|**1**::
@@ -1948,9 +1948,9 @@ The following options control when Tor enters and leaves dormant mode:
 
 [[DormantTimeoutEnabled]] **DormantTimeoutEnabled** **0**|**1**::
     If false, then no amount of time without activity is sufficient to
-    make Tor go dormant.  Setting this option to zero is only recommended for
-    special-purpose applications that need to use the Tor binary for
-    something other than sending or receiving Tor traffic. (Default: 1)
+    make Anon go dormant.  Setting this option to zero is only recommended for
+    special-purpose applications that need to use the Anon binary for
+    something other than sending or receiving Anon traffic. (Default: 1)
 
 == NODE SELECTION OPTIONS
 
@@ -1960,7 +1960,7 @@ The following options control when Tor enters and leaves dormant mode:
 The following options restrict the nodes that a tor client
 (or onion service) can use while building a circuit.
 These options can weaken your anonymity by making your client behavior
-different from other Tor clients:
+different from other Anon clients:
 
 [[EntryNodes]] **EntryNodes** __node__,__node__,__...__::
     A list of identity fingerprints and country codes of nodes
@@ -1988,17 +1988,17 @@ different from other Tor clients:
     This option can appear multiple times: the values from multiple lines are
     spliced together. +
      +
-    By default, this option is treated as a preference that Tor is allowed
+    By default, this option is treated as a preference that Anon is allowed
     to override in order to keep working.
     For example, if you try to connect to a hidden service,
     but you have excluded all of the hidden service's introduction points,
-    Tor will connect to one of them anyway.  If you do not want this
+    Anon will connect to one of them anyway.  If you do not want this
     behavior, set the StrictNodes option (documented below).  +
      +
     Note also that if you are a relay, this (and the other node selection
-    options below) only affects your own circuits that Tor builds for you.
+    options below) only affects your own circuits that Anon builds for you.
     Clients can still build circuits through you to any node.  Controllers
-    can tell Tor to build circuits through any node. +
+    can tell Anon to build circuits through any node. +
      +
     Country codes are case-insensitive. The code "\{??}" refers to nodes whose
     country can't be identified. No country code, including \{??}, works if
@@ -2008,7 +2008,7 @@ different from other Tor clients:
 [[ExcludeExitNodes]] **ExcludeExitNodes** __node__,__node__,__...__::
     A list of identity fingerprints, country codes, and address
     patterns of nodes to never use when picking an exit node---that is, a
-    node that delivers traffic for you *outside* the Tor network.   Note that any
+    node that delivers traffic for you *outside* the Anon network.   Note that any
     node listed in ExcludeNodes is automatically considered to be part of this
     list too.  See
     <<ExcludeNodes,ExcludeNodes>> for more information on how to specify
@@ -2020,7 +2020,7 @@ different from other Tor clients:
 [[ExitNodes]] **ExitNodes** __node__,__node__,__...__::
     A list of identity fingerprints, country codes, and address
     patterns of nodes to use as exit node---that is, a
-    node that delivers traffic for you *outside* the Tor network.  See
+    node that delivers traffic for you *outside* the Anon network.  See
     <<ExcludeNodes,ExcludeNodes>> for more information on how to specify nodes. +
      +
     This option can appear multiple times: the values from multiple lines are
@@ -2032,7 +2032,7 @@ different from other Tor clients:
     be able to browse the web. +
      +
     Note also that not every circuit is used to deliver traffic *outside* of
-    the Tor network.  It is normal to see non-exit circuits (such as those
+    the Anon network.  It is normal to see non-exit circuits (such as those
     used to connect to hidden services, those that do directory fetches,
     those used for relay reachability self-tests, and so on) that end
     at a non-exit node.  To
@@ -2104,11 +2104,11 @@ different from other Tor clients:
     about our guard, layer2, and layer3 node choices at later points
     in the path.
      +
-    This option is meant to be managed by a Tor controller such as
+    This option is meant to be managed by a Anon controller such as
     https://github.com/mikeperry-tor/vanguards that selects and
     updates this set of nodes for you. Hence it does not do load
     balancing if fewer than 20 nodes are selected, and if no nodes in
-    HSLayer2Nodes are currently available for use, Tor will not work.
+    HSLayer2Nodes are currently available for use, Anon will not work.
     Please use extreme care if you are setting this option manually.
 
 [[HSLayer3Nodes]] **HSLayer3Nodes** __node__,__node__,__...__::
@@ -2161,11 +2161,11 @@ different from other Tor clients:
     about our guard, layer2, and layer3 node choices at later points
     in the path.
   +
-    This option is meant to be managed by a Tor controller such as
+    This option is meant to be managed by a Anon controller such as
     https://github.com/mikeperry-tor/vanguards that selects and
     updates this set of nodes for you. Hence it does not do load
     balancing if fewer than 20 nodes are selected, and if no nodes in
-    HSLayer3Nodes are currently available for use, Tor will not work.
+    HSLayer3Nodes are currently available for use, Anon will not work.
     Please use extreme care if you are setting this option manually.
 
 [[MiddleNodes]] **MiddleNodes** __node__,__node__,__...__::
@@ -2178,7 +2178,7 @@ different from other Tor clients:
     spliced together. +
      +
     This is an **experimental** feature that is meant to be used by researchers
-    and developers to test new features in the Tor network safely. Using it
+    and developers to test new features in the Anon network safely. Using it
     without care will strongly influence your anonymity. Other tor features may
     not work with MiddleNodes. This feature might get removed in the future.
 +
@@ -2192,7 +2192,7 @@ different from other Tor clients:
     the <<ExcludeNodes,ExcludeNodes>> for more information on how to specify nodes.
 
 [[NodeFamily]] **NodeFamily** __node__,__node__,__...__::
-    The Tor servers, defined by their identity fingerprints,
+    The Anon servers, defined by their identity fingerprints,
     constitute a "family" of similar or co-administered servers, so never use
     any two of them in the same circuit. Defining a NodeFamily is only needed
     when a server doesn't list the family itself (with MyFamily). This option
@@ -2202,13 +2202,13 @@ different from other Tor clients:
     information on how to specify nodes.
 
 [[StrictNodes]] **StrictNodes** **0**|**1**::
-    If StrictNodes is set to 1, Tor will treat solely the ExcludeNodes option
+    If StrictNodes is set to 1, Anon will treat solely the ExcludeNodes option
     as a requirement to follow for all the circuits you generate, even if
     doing so will break functionality for you (StrictNodes does not apply to
     ExcludeExitNodes, ExitNodes, MiddleNodes, or MapAddress).  If StrictNodes
-    is set to 0, Tor will still try to avoid nodes in the ExcludeNodes list,
+    is set to 0, Anon will still try to avoid nodes in the ExcludeNodes list,
     but it will err on the side of avoiding unexpected errors.
-    Specifically, StrictNodes 0 tells Tor that it is okay to use an excluded
+    Specifically, StrictNodes 0 tells Anon that it is okay to use an excluded
     node when it is *necessary* to perform relay reachability self-tests,
     connect to a hidden service, provide a hidden service to a client,
     fulfill a .exit request, upload directory information, or download
@@ -2233,17 +2233,17 @@ is non-zero):
     It will only hibernate once one of the two reaches 1 TByte. This can
     be changed to use the sum of the both bytes received and sent by setting
     the AccountingRule option to "sum" (total bandwidth in/out). When the
-    number of bytes remaining gets low, Tor will stop accepting new connections
-    and circuits. When the number of bytes is exhausted, Tor will hibernate
+    number of bytes remaining gets low, Anon will stop accepting new connections
+    and circuits. When the number of bytes is exhausted, Anon will hibernate
     until some time in the next accounting period. To prevent all servers
-    from waking at the same time, Tor will also wait until a random point
+    from waking at the same time, Anon will also wait until a random point
     in each period before waking up. If you have bandwidth cost issues,
     enabling hibernation is preferable to setting a low bandwidth, since
     it provides users with a collection of fast servers that are up some
     of the time, which is more useful than a set of slow servers that are
     always "available". +
      +
-    Note that (as also described in the Bandwidth section) Tor uses
+    Note that (as also described in the Bandwidth section) Anon uses
     powers of two, not powers of ten: 1 GByte is 1024*1024*1024, not
     one billion. Be careful: some internet service providers might count
     GBytes differently.
@@ -2271,43 +2271,43 @@ is non-zero):
 
 [[Address]] **Address** __address__::
     The address of this server, or a fully qualified domain name of this server
-    that resolves to an address.  You can leave this unset, and Tor will try to
-    guess your address.  If a domain name is provided, Tor will attempt to
+    that resolves to an address.  You can leave this unset, and Anon will try to
+    guess your address.  If a domain name is provided, Anon will attempt to
     resolve it and use the underlying IPv4/IPv6 address as its publish address
     (taking precedence over the ORPort configuration). The publish address is
-    the one used to tell clients and other servers where to find your Tor
+    the one used to tell clients and other servers where to find your Anon
     server; it doesn't affect the address that your server binds to.  To bind
     to a different address, use the ORPort and OutboundBindAddress options.
 
 [[AddressDisableIPv6]] **AddressDisableIPv6** **0**|**1**::
-   By default, Tor will attempt to find the IPv6 of the relay if there is no
+   By default, Anon will attempt to find the IPv6 of the relay if there is no
    IPv4Only ORPort. If set, this option disables IPv6 auto discovery. This
    disables IPv6 address resolution, IPv6 ORPorts, and IPv6 reachability
    checks. Also, the relay won't publish an IPv6 ORPort in its
    descriptor. (Default: 0)
 
 [[AssumeReachable]] **AssumeReachable** **0**|**1**::
-    This option is used when bootstrapping a new Tor network. If set to 1,
+    This option is used when bootstrapping a new Anon network. If set to 1,
     don't do self-reachability testing; just upload your server descriptor
     immediately. (Default: 0)
 
 [[AssumeReachableIPv6]] **AssumeReachableIPv6** **0**|**1**|**auto**::
     Like **AssumeReachable**, but affects only the relay's own IPv6 ORPort.
-    If this value is set to "auto", then Tor will look at **AssumeReachable**
+    If this value is set to "auto", then Anon will look at **AssumeReachable**
     instead. (Default: auto)
 
 [[BridgeRelay]] **BridgeRelay** **0**|**1**::
     Sets the relay to act as a "bridge" with respect to relaying connections
-    from bridge users to the Tor network. It mainly causes Tor to publish a
+    from bridge users to the Anon network. It mainly causes Anon to publish a
     server descriptor to the bridge database, rather than
     to the public directory authorities. +
      +
-    Note: make sure that no MyFamily lines are present in your torrc when
+    Note: make sure that no MyFamily lines are present in your anonrc when
     relay is configured in bridge mode.
 
 //Out of order because it logically belongs after BridgeRelay.
 [[BridgeDistribution]] **BridgeDistribution** __string__::
-    If set along with BridgeRelay, Tor will include a new line in its
+    If set along with BridgeRelay, Anon will include a new line in its
     bridge descriptor which indicates to the BridgeDB service how it
     would like its bridge address to be given out. Set it to "none" if
     you want BridgeDB to avoid distributing your bridge address, or "any" to
@@ -2328,7 +2328,7 @@ is non-zero):
     it.)
 
 [[DisableOOSCheck]] **DisableOOSCheck** **0**|**1**::
-    This option disables the code that closes connections when Tor notices
+    This option disables the code that closes connections when Anon notices
     that it is running low on sockets. Right now, it is on by default,
     since the existing out-of-sockets mechanism tends to kill OR connections
     more than it should. (Default: 1)
@@ -2348,7 +2348,7 @@ is non-zero):
     reject any IPv4 traffic destined for MIT except for web.mit.edu, and accept
     any other IPv4 or IPv6 traffic. +
      +
-    Tor also allows IPv6 exit policy entries. For instance, "reject6 [FC00::]/7:\*"
+    Anon also allows IPv6 exit policy entries. For instance, "reject6 [FC00::]/7:\*"
     rejects all destinations that share 7 most significant bit prefix with
     address FC00::. Respectively, "accept6 [C000::]/3:\*" accepts all destinations
     that share 3 most significant bit prefix with address C000::. +
@@ -2433,18 +2433,18 @@ is non-zero):
     (Default: 1)
 
 [[ExitRelay]] **ExitRelay** **0**|**1**|**auto**::
-    Tells Tor whether to run as an exit relay.  If Tor is running as a
-    non-bridge server, and ExitRelay is set to 1, then Tor allows traffic to
+    Tells Anon whether to run as an exit relay.  If Anon is running as a
+    non-bridge server, and ExitRelay is set to 1, then Anon allows traffic to
     exit according to the ExitPolicy option, the ReducedExitPolicy option,
     or the default ExitPolicy (if no other exit policy option is specified). +
      +
     If ExitRelay is set to 0, no traffic is allowed to exit, and the
     ExitPolicy, ReducedExitPolicy, and IPv6Exit options are ignored. +
      +
-    If ExitRelay is set to "auto", then Tor checks the ExitPolicy,
+    If ExitRelay is set to "auto", then Anon checks the ExitPolicy,
     ReducedExitPolicy, and IPv6Exit options. If at least one of these options
-    is set, Tor behaves as if ExitRelay were set to 1. If none of these exit
-    policy options are set, Tor behaves as if ExitRelay were set to 0.
+    is set, Anon behaves as if ExitRelay were set to 1. If none of these exit
+    policy options are set, Anon behaves as if ExitRelay were set to 0.
     (Default: auto)
 
 [[ReevaluateExitPolicy]] **ReevaluateExitPolicy** **0**|**1**::
@@ -2453,15 +2453,15 @@ is non-zero):
      +
     When the exit policy of an exit node change while reloading configuration,
     connections made prior to this change could violate the new policy. By
-    setting this to 1, Tor will check if such connections exist, and mark them
+    setting this to 1, Anon will check if such connections exist, and mark them
     for termination.
     (Default: 0)
 
 [[ExtendAllowPrivateAddresses]] **ExtendAllowPrivateAddresses** **0**|**1**::
-    When this option is enabled, Tor will connect to relays on localhost,
-    RFC1918 addresses, and so on. In particular, Tor will make direct OR
-    connections, and Tor routers allow EXTEND requests, to these private
-    addresses. (Tor will always allow connections to bridges, proxies, and
+    When this option is enabled, Anon will connect to relays on localhost,
+    RFC1918 addresses, and so on. In particular, Anon will make direct OR
+    connections, and Anon routers allow EXTEND requests, to these private
+    addresses. (Anon will always allow connections to bridges, proxies, and
     pluggable transports configured on private addresses.) Enabling this
     option can create security issues; you should probably leave it off.
     (Default: 0)
@@ -2474,7 +2474,7 @@ is non-zero):
 
 [[HeartbeatPeriod]] **HeartbeatPeriod**  __N__ **minutes**|**hours**|**days**|**weeks**::
     Log a heartbeat message every **HeartbeatPeriod** seconds. This is
-    a log level __notice__ message, designed to let you know your Tor
+    a log level __notice__ message, designed to let you know your Anon
     server is still alive and doing useful things. Settings this
     to 0 will disable the heartbeat. Otherwise, it must be at least 30
     minutes. (Default: 6 hours)
@@ -2498,12 +2498,12 @@ is non-zero):
 
 [[MainloopStats]] **MainloopStats** **0**|**1**::
     Log main loop statistics every **HeartbeatPeriod** seconds. This is a log
-    level __notice__ message designed to help developers instrumenting Tor's
+    level __notice__ message designed to help developers instrumenting Anon's
     main event loop. (Default: 0)
 
 [[MaxHSDirCacheBytes]] **MaxHSDirCacheBytes** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**::
     This option configures a threshold of Hidden Service Directory memory
-    consumption above which your Tor relay will begin to prune the least-frequently
+    consumption above which your Anon relay will begin to prune the least-frequently
     accessed hidden service descriptors from the relay's HSDir cache.
     If set to 0, this will default to 20% of MaxMemInQueues. (Default: 0) +
      +
@@ -2512,13 +2512,13 @@ is non-zero):
     DDoS conditions.
 
 [[MaxMemInQueues]] **MaxMemInQueues**  __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**::
-    This option configures a threshold above which Tor will assume that it
+    This option configures a threshold above which Anon will assume that it
     needs to stop queueing or buffering data because it's about to run out of
     memory.  If it hits this threshold, it will begin killing circuits until
     it has recovered at least 10% of this memory.  Do not set this option too
     low, or your relay may be unreliable under load.  This option only
     affects some queues, so the actual process size will be larger than
-    this.  If this option is set to 0, Tor will try to pick a reasonable
+    this.  If this option is set to 0, Anon will try to pick a reasonable
     default based on your system's physical memory.  (Default: 0)
 
 [[MaxOnionQueueDelay]] **MaxOnionQueueDelay** __NUM__ [**msec**|**second**]::
@@ -2526,14 +2526,14 @@ is non-zero):
     this amount of time, reject new ones. (Default: 1750 msec)
 
 [[MyFamily]] **MyFamily** __fingerprint__,__fingerprint__,...::
-    Declare that this Tor relay is controlled or administered by a group or
+    Declare that this Anon relay is controlled or administered by a group or
     organization identical or similar to that of the other relays, defined by
     their (possibly $-prefixed) identity fingerprints.
     This option can be repeated many times, for
     convenience in defining large families: all fingerprints in all MyFamily
     lines are merged into one list.
     When two relays both declare that they are in the
-    same \'family', Tor clients will not use them in the same circuit. (Each
+    same \'family', Anon clients will not use them in the same circuit. (Each
     relay only needs to list the other servers in its family; it doesn't need to
     list itself, but it won't hurt if it does.) Do not list any bridge relay as it would
     compromise its concealment. +
@@ -2541,7 +2541,7 @@ is non-zero):
     If you run more than one relay, the MyFamily option on each relay
     **must** list all other relays, as described above. +
      +
-    Note: do not use MyFamily when configuring your Tor instance as a
+    Note: do not use MyFamily when configuring your Anon instance as a
     bridge.
 
 [[FamilyId]] **FamilyId** __ident__::
@@ -2561,7 +2561,7 @@ is non-zero):
     will still recognize the relays' family membership.
       +
     (Note that if the seccomp2 Sandbox feature is enabled,
-    it is not possible to change the key filenames while Tor is running.)
+    it is not possible to change the key filenames while Anon is running.)
 
 [[FamilyIdStar]] **FamilyId** ** * **::
     Configure this relay to be part of _every_ family
@@ -2584,22 +2584,22 @@ is non-zero):
 
 [[NumCPUs]] **NumCPUs** __num__::
     How many processes to use at once for decrypting onionskins and other
-    parallelizable operations.  If this is set to 0, Tor will try to detect
+    parallelizable operations.  If this is set to 0, Anon will try to detect
     how many CPUs you have, defaulting to 1 if it can't tell.  (Default: 0)
 
 [[OfflineMasterKey]] **OfflineMasterKey** **0**|**1**::
-    If non-zero, the Tor relay will never generate or load its master secret
+    If non-zero, the Anon relay will never generate or load its master secret
     key.  Instead, you'll have to use "tor --keygen" to manage the permanent
     ed25519 master identity key, as well as the corresponding temporary
     signing keys and certificates. (Default: 0)
 
 [[ORPort]] **ORPort** ['address'**:**]{empty}__PORT__|**auto** [_flags_]::
-    Advertise this port to listen for connections from Tor clients and
-    servers.  This option is required to be a Tor server.
-    Set it to "auto" to have Tor pick a port for you. Set it to 0 to not
+    Advertise this port to listen for connections from Anon clients and
+    servers.  This option is required to be a Anon server.
+    Set it to "auto" to have Anon pick a port for you. Set it to 0 to not
     run an ORPort at all. This option can occur more than once. (Default: 0) +
      +
-    Tor recognizes these flags on each ORPort:
+    Anon recognizes these flags on each ORPort:
     **NoAdvertise**;;
         By default, we bind to a port and tell our users about it. If
         NoAdvertise is specified, we don't advertise, but listen anyway.  This
@@ -2623,14 +2623,14 @@ is non-zero):
     IPv4Only and IPv6Only are mutually exclusive.
 
 [[PublishServerDescriptor]] **PublishServerDescriptor** **0**|**1**|**v3**|**bridge**,**...**::
-    This option specifies which descriptors Tor will publish when acting as
+    This option specifies which descriptors Anon will publish when acting as
     a relay. You can
     choose multiple arguments, separated by commas. +
      +
-    If this option is set to 0, Tor will not publish its
+    If this option is set to 0, Anon will not publish its
     descriptors to any directories. (This is useful if you're testing
-    out your server, or if you're using a Tor controller that handles
-    directory publishing for you.) Otherwise, Tor will publish its
+    out your server, or if you're using a Anon controller that handles
+    directory publishing for you.) Otherwise, Anon will publish its
     descriptors of all type(s) specified. The default is "1", which
     means "if running as a relay or bridge, publish descriptors to the
     appropriate authorities". Other possibilities are "v3", meaning
@@ -2738,13 +2738,13 @@ is non-zero):
     is quiet on the issue). (Default: auto)
 
 [[ServerDNSAllowBrokenConfig]] **ServerDNSAllowBrokenConfig** **0**|**1**::
-    If this option is false, Tor exits immediately if there are problems
+    If this option is false, Anon exits immediately if there are problems
     parsing the system DNS configuration or connecting to nameservers.
-    Otherwise, Tor continues to periodically retry the system nameservers until
+    Otherwise, Anon continues to periodically retry the system nameservers until
     it eventually succeeds. (Default: 1)
 
 [[ServerDNSAllowNonRFC953Hostnames]] **ServerDNSAllowNonRFC953Hostnames** **0**|**1**::
-    When this option is disabled, Tor does not try to resolve hostnames
+    When this option is disabled, Anon does not try to resolve hostnames
     containing illegal characters (like @ and :) rather than sending them to an
     exit node to be resolved. This helps trap accidental attempts to resolve
     URLs and so on. This option only affects name lookups that your server does
@@ -2758,7 +2758,7 @@ is non-zero):
     on behalf of clients. (Default: 1)
 
 [[ServerDNSRandomizeCase]] **ServerDNSRandomizeCase** **0**|**1**::
-    When this option is set, Tor sets the case of each character randomly in
+    When this option is set, Anon sets the case of each character randomly in
     outgoing DNS requests, and makes sure that the case matches in DNS replies.
     This so-called "0x20 hack" helps resist some types of DNS poisoning attack.
     For more information, see "Increased DNS Forgery Resistance through
@@ -2788,18 +2788,18 @@ is non-zero):
     "www.google.com, www.mit.edu, www.yahoo.com, www.slashdot.org")
 
 [[ServerTransportListenAddr]] **ServerTransportListenAddr** __transport__ __IP__:__PORT__::
-    When this option is set, Tor will suggest __IP__:__PORT__ as the
+    When this option is set, Anon will suggest __IP__:__PORT__ as the
     listening address of any pluggable transport proxy that tries to
     launch __transport__. (IPv4 addresses should written as-is; IPv6
     addresses should be wrapped in square brackets.) (Default: none)
 
 [[ServerTransportOptions]] **ServerTransportOptions** __transport__ __k=v__ __k=v__ ...::
-    When this option is set, Tor will pass the __k=v__ parameters to
+    When this option is set, Anon will pass the __k=v__ parameters to
     any pluggable transport proxy that tries to launch __transport__. +
-    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/tor/cache) (Default: none)
+    (Example: ServerTransportOptions obfs45 shared-secret=bridgepasswd cache=/var/lib/anon/cache) (Default: none)
 
 [[ServerTransportPlugin]] **ServerTransportPlugin** __transport__ exec __path-to-binary__ [options]::
-    The Tor relay launches the pluggable transport proxy in __path-to-binary__
+    The Anon relay launches the pluggable transport proxy in __path-to-binary__
     using __options__ as its command-line options, and expects to receive
     proxied client traffic from it. (Default: none)
 
@@ -2810,7 +2810,7 @@ is non-zero):
     (Default: 30 seconds)
 
 [[SigningKeyLifetime]] **SigningKeyLifetime** __N__ **days**|**weeks**|**months**::
-    For how long should each Ed25519 signing key be valid?  Tor uses a
+    For how long should each Ed25519 signing key be valid?  Anon uses a
     permanent master identity key that can be kept offline, and periodically
     generates new "signing" keys that it uses online.  This option
     configures their lifetime.
@@ -2818,7 +2818,7 @@ is non-zero):
 
 [[SSLKeyLifetime]] **SSLKeyLifetime** __N__ **minutes**|**hours**|**days**|**weeks**::
     When creating a link certificate for our outermost SSL handshake,
-    set its lifetime to this amount of time. If set to 0, Tor will choose
+    set its lifetime to this amount of time. If set to 0, Anon will choose
     some reasonable random defaults. (Default: 0)
 
 == STATISTICS OPTIONS
@@ -2828,11 +2828,11 @@ is non-zero):
 
 Relays publish most statistics in a document called the
 extra-info document. The following options affect the different
-types of statistics that Tor relays collect and publish:
+types of statistics that Anon relays collect and publish:
 
 [[BridgeRecordUsageByCountry]] **BridgeRecordUsageByCountry** **0**|**1**::
     When this option is enabled and BridgeRelay is also enabled, and we have
-    GeoIP data, Tor keeps a per-country count of how many client
+    GeoIP data, Anon keeps a per-country count of how many client
     addresses have contacted it so that it can help the bridge authority guess
     which countries have blocked access to it. If ExtraInfoStatistics is
     enabled, it will be published as part of the extra-info document.
@@ -2840,7 +2840,7 @@ types of statistics that Tor relays collect and publish:
 
 [[CellStatistics]] **CellStatistics** **0**|**1**::
     Relays only.
-    When this option is enabled, Tor collects statistics about cell
+    When this option is enabled, Anon collects statistics about cell
     processing (i.e. mean time a cell is spending in a queue, mean
     number of cells in a queue and mean number of processed cells per
     circuit) and writes them into disk every 24 hours. Onion router
@@ -2850,7 +2850,7 @@ types of statistics that Tor relays collect and publish:
 
 [[ConnDirectionStatistics]] **ConnDirectionStatistics** **0**|**1**::
     Relays only.
-    When this option is enabled, Tor writes statistics on the amounts of
+    When this option is enabled, Anon writes statistics on the amounts of
     traffic it passes between itself and other relays to disk every 24
     hours. Enables relay operators to monitor how much their relay is
     being used as middle node in the circuit. If ExtraInfoStatistics is
@@ -2859,33 +2859,33 @@ types of statistics that Tor relays collect and publish:
 
 [[DirReqStatistics]] **DirReqStatistics** **0**|**1**::
     Relays and bridges only.
-    When this option is enabled, a Tor directory writes statistics on the
+    When this option is enabled, a Anon directory writes statistics on the
     number and response time of network status requests to disk every 24
     hours. Enables relay and bridge operators to monitor how much their
-    server is being used by clients to learn about Tor network.
+    server is being used by clients to learn about Anon network.
     If ExtraInfoStatistics is enabled, it will published as part of
     the extra-info document. (Default: 1)
 
 [[EntryStatistics]] **EntryStatistics** **0**|**1**::
     Relays only.
-    When this option is enabled, Tor writes statistics on the number of
+    When this option is enabled, Anon writes statistics on the number of
     directly connecting clients to disk every 24 hours. Enables relay
     operators to monitor how much inbound traffic that originates from
-    Tor clients passes through their server to go further down the
-    Tor network. If ExtraInfoStatistics is enabled, it will be published
+    Anon clients passes through their server to go further down the
+    Anon network. If ExtraInfoStatistics is enabled, it will be published
     as part of the extra-info document. (Default: 0)
 
 [[ExitPortStatistics]] **ExitPortStatistics** **0**|**1**::
     Exit relays only.
-    When this option is enabled, Tor writes statistics on the number of
+    When this option is enabled, Anon writes statistics on the number of
     relayed bytes and opened stream per exit port to disk every 24 hours.
     Enables exit relay operators to measure and monitor amounts of traffic
-    that leaves Tor network through their exit node. If ExtraInfoStatistics
+    that leaves Anon network through their exit node. If ExtraInfoStatistics
     is enabled, it will be published as part of the extra-info document.
     (Default: 0)
 
 [[ExtraInfoStatistics]] **ExtraInfoStatistics** **0**|**1**::
-    When this option is enabled, Tor includes previously gathered statistics in
+    When this option is enabled, Anon includes previously gathered statistics in
     its extra-info documents that it uploads to the directory authorities.
     Disabling this option also removes bandwidth usage statistics, and
     GeoIPFile and GeoIPv6File hashes from the extra-info file. Bridge
@@ -2895,7 +2895,7 @@ types of statistics that Tor relays collect and publish:
 
 [[HiddenServiceStatistics]] **HiddenServiceStatistics** **0**|**1**::
     Relays and bridges only.
-    When this option is enabled, a Tor relay writes obfuscated
+    When this option is enabled, a Anon relay writes obfuscated
     statistics on its role as hidden-service directory, introduction
     point, or rendezvous point to disk every 24 hours.  If ExtraInfoStatistics
     is enabled, it will be published as part of the extra-info document.
@@ -2903,7 +2903,7 @@ types of statistics that Tor relays collect and publish:
 
 [[OverloadStatistics]] **OverloadStatistics** *0**|**1**::
     Relays and bridges only.
-    When this option is enabled, a Tor relay will write an overload general
+    When this option is enabled, a Anon relay will write an overload general
     line in the server descriptor if the relay is considered overloaded.
     (Default: 1)
      +
@@ -2922,7 +2922,7 @@ types of statistics that Tor relays collect and publish:
 
 [[PaddingStatistics]] **PaddingStatistics** **0**|**1**::
     Relays and bridges only.
-    When this option is enabled, Tor collects statistics for padding cells
+    When this option is enabled, Anon collects statistics for padding cells
     sent and received by this relay, in addition to total cell counts.
     These statistics are rounded, and omitted if traffic is low. This
     information is important for load balancing decisions related to padding.
@@ -2936,7 +2936,7 @@ enough bandwidth automatically become directory servers; see <<DirCache,DirCache
 details.)
 
 [[DirCache]] **DirCache** **0**|**1**::
-    When this option is set, Tor caches all current directory documents except
+    When this option is set, Anon caches all current directory documents except
     extra info documents, and accepts client requests for them. If
     **DownloadExtraInfo** is set, cached extra info documents are also cached.
     Setting **DirPort** is not required for **DirCache**, because clients
@@ -2951,17 +2951,17 @@ details.)
 
 [[DirPort]] **DirPort** ['address'**:**]{empty}__PORT__|**auto** [_flags_]::
     If this option is nonzero, advertise the directory service on this port.
-    Set it to "auto" to have Tor pick a port for you.  This option can occur
+    Set it to "auto" to have Anon pick a port for you.  This option can occur
     more than once, but only one advertised DirPort is supported: all
     but one DirPort must have the **NoAdvertise** flag set. (Default: 0) +
      +
     The same flags are supported here as are supported by ORPort. This port can
     only be IPv4.
      +
-    As of Tor 0.4.6.1-alpha, non-authoritative relays (see
+    As of Anon 0.4.6.1-alpha, non-authoritative relays (see
     AuthoritativeDirectory) will not publish the DirPort but will still listen
     on it. Clients don't use the DirPorts on relays, so it is safe for you
-    to remove the DirPort from your torrc configuration.
+    to remove the DirPort from your anonrc configuration.
 
 [[DirPortFrontPage]] **DirPortFrontPage** __FILENAME__::
     When this option is set, it takes an HTML file and publishes it as "/" on
@@ -2970,9 +2970,9 @@ details.)
     contrib/operator-tools/tor-exit-notice.html.
 
 [[MaxConsensusAgeForDiffs]] **MaxConsensusAgeForDiffs**  __N__ **minutes**|**hours**|**days**|**weeks**::
-    When this option is nonzero, Tor caches will not try to generate
+    When this option is nonzero, Anon caches will not try to generate
     consensus diffs for any consensus older than this amount of time.
-    If this option is set to zero, Tor will pick a reasonable default from
+    If this option is set to zero, Anon will pick a reasonable default from
     the current networkstatus document.  You should not set this
     option unless your cache is severely low on disk space or CPU.
     If you need to set it, keeping it above 3 or 4 hours will help clients
@@ -2982,8 +2982,8 @@ details.)
 
 == DENIAL OF SERVICE MITIGATION OPTIONS
 
-Tor has a series of built-in denial of service mitigation options that can be
-individually enabled/disabled and fine-tuned, but by default Tor directory
+Anon has a series of built-in denial of service mitigation options that can be
+individually enabled/disabled and fine-tuned, but by default Anon directory
 authorities will define reasonable values for the network and no explicit
 configuration is required to make use of these protections.
 
@@ -3008,7 +3008,7 @@ The mitigations take place at relays, and are as follows:
   3. If a client asks to establish a rendezvous point to you directly (ex:
      Tor2Web client), ignore the request.
 
-These defenses can be manually controlled by torrc options, but relays will
+These defenses can be manually controlled by anonrc options, but relays will
 also take guidance from consensus parameters using these same names, so there's
 no need to configure anything manually. In doubt, do not change those values.
 
@@ -3327,13 +3327,13 @@ have no effect unless the "`pow`" module is enabled at compile time.
 == DIRECTORY AUTHORITY SERVER OPTIONS
 
 The following options enable operation as a directory authority, and
-control how Tor behaves as a directory authority.  You should not need
+control how Anon behaves as a directory authority.  You should not need
 to adjust any of them if you're running a regular relay or exit server
-on the public Tor network.
+on the public Anon network.
 
 // Out of order because it logically belongs first in this section
 [[AuthoritativeDirectory]] **AuthoritativeDirectory** **0**|**1**::
-    When this option is set to 1, Tor operates as an authoritative directory
+    When this option is set to 1, Anon operates as an authoritative directory
     server. Instead of caching the directory, it generates its own list of
     good servers, signs it, and sends that to the clients. Unless the clients
     already have you listed as a trusted directory, you probably do not want
@@ -3341,16 +3341,16 @@ on the public Tor network.
 
 //Out of order because it belongs with the AuthoritativeDirectory option.
 [[BridgeAuthoritativeDir]] **BridgeAuthoritativeDir** **0**|**1**::
-    When this option is set in addition to **AuthoritativeDirectory**, Tor
+    When this option is set in addition to **AuthoritativeDirectory**, Anon
     accepts and serves server descriptors, but it caches and serves the main
     networkstatus documents rather than generating its own. (Default: 0)
 
 //Out of order because it belongs with the AuthoritativeDirectory option.
 [[V3AuthoritativeDirectory]] **V3AuthoritativeDirectory** **0**|**1**::
-    When this option is set in addition to **AuthoritativeDirectory**, Tor
+    When this option is set in addition to **AuthoritativeDirectory**, Anon
     generates version 3 network statuses and serves descriptors, etc as
     described in dir-spec.txt file of https://spec.torproject.org/[torspec]
-    (for Tor clients and servers running at least 0.2.0.x).
+    (for Anon clients and servers running at least 0.2.0.x).
 
 [[AuthDirBadExit]] **AuthDirBadExit** __AddressPattern...__::
     Authoritative directories only. A set of address patterns for servers that
@@ -3432,7 +3432,7 @@ on the public Tor network.
 [[AuthDirPinKeys]] **AuthDirPinKeys** **0**|**1**::
     Authoritative directories only. If non-zero, do not allow any relay to
     publish a descriptor if any other relay has reserved its <Ed25519,RSA>
-    identity keypair. In all cases, Tor records every keypair it accepts
+    identity keypair. In all cases, Anon records every keypair it accepts
     in a journal if it is new, or if it differs from the most recently
     accepted pinning for one of the keys it contains. (Default: 1)
 
@@ -3525,14 +3525,14 @@ on the public Tor network.
     available community bridges to stay up-to-date. (Default: not set)
 
 [[ConsensusParams]] **ConsensusParams** __STRING__::
-    STRING is a space-separated list of key=value pairs that Tor will include
+    STRING is a space-separated list of key=value pairs that Anon will include
     in the "params" line of its networkstatus vote. This directive can be
     specified multiple times so you don't have to put it all on one line.
 
 [[DirAllowPrivateAddresses]] **DirAllowPrivateAddresses** **0**|**1**::
-    If set to 1, Tor will accept server descriptors with arbitrary "Address"
+    If set to 1, Anon will accept server descriptors with arbitrary "Address"
     elements. Otherwise, if the address is not an IP address or is a private IP
-    address, it will reject the server descriptor. Additionally, Tor
+    address, it will reject the server descriptor. Additionally, Anon
     will allow exit policies for private networks to fulfill Exit flag
     requirements. (Default: 0)
 
@@ -3553,28 +3553,28 @@ on the public Tor network.
     consensus doesn't need to meet it. (Default: 96 hours)
 
 [[RecommendedClientVersions]] **RecommendedClientVersions** __STRING__::
-    STRING is a comma-separated list of Tor versions currently believed to be
+    STRING is a comma-separated list of Anon versions currently believed to be
     safe for clients to use. This information is included in version 2
     directories. If this is not set then the value of **RecommendedVersions**
     is used. When this is set then **VersioningAuthoritativeDirectory** should
     be set too.
 
 [[RecommendedServerVersions]] **RecommendedServerVersions** __STRING__::
-    STRING is a comma-separated list of Tor versions currently believed to be
+    STRING is a comma-separated list of Anon versions currently believed to be
     safe for servers to use. This information is included in version 2
     directories. If this is not set then the value of **RecommendedVersions**
     is used. When this is set then **VersioningAuthoritativeDirectory** should
     be set too.
 
 [[RecommendedVersions]] **RecommendedVersions** __STRING__::
-    STRING is a comma-separated list of Tor versions currently believed to be
+    STRING is a comma-separated list of Anon versions currently believed to be
     safe. The list is included in each directory, and nodes which pull down the
     directory learn whether they need to upgrade. This option can appear
     multiple times: the values from multiple lines are spliced together. When
     this is set then **VersioningAuthoritativeDirectory** should be set too.
 
 [[MinimalAcceptedServerVersion]] **MinimalAcceptedServerVersion** __STRING__::
-   STRING is the oldest Tor version accepted by the directory authority for
+   STRING is the oldest Anon version accepted by the directory authority for
    relays and bridge. Any older version will be rejected.
    (Default: 0.4.9.1-alpha)
 
@@ -3620,8 +3620,8 @@ on the public Tor network.
     (Default: unset)
 
 [[VersioningAuthoritativeDirectory]] **VersioningAuthoritativeDirectory** **0**|**1**::
-    When this option is set to 1, Tor adds information on which versions of
-    Tor are still believed safe for use to the published directory. Each
+    When this option is set to 1, Anon adds information on which versions of
+    Anon are still believed safe for use to the published directory. Each
     version 1 authority is automatically a versioning authority; version 2
     authorities provide this service optionally. See <<RecommendedVersions,RecommendedVersions>>,
     <<RecommendedClientVersions,RecommendedClientVersions>>, and <<RecommendedServerVersions,RecommendedServerVersions>>.
@@ -3645,12 +3645,12 @@ The next section describes the per service options that can only be set
 [[HiddenServiceDir]] **HiddenServiceDir** __DIRECTORY__::
     Store data files for a hidden service in DIRECTORY. Every hidden service
     must have a separate directory. You may use this option  multiple times to
-    specify multiple services. If DIRECTORY does not exist, Tor will create it.
-    Please note that you cannot add new Onion Service to already running Tor
+    specify multiple services. If DIRECTORY does not exist, Anon will create it.
+    Please note that you cannot add new Onion Service to already running Anon
     instance if **Sandbox** is enabled.
-    (Note: in current versions of Tor, if DIRECTORY is a relative path,
+    (Note: in current versions of Anon, if DIRECTORY is a relative path,
     it will be relative to the current
-    working directory of Tor instance, not to its DataDirectory.  Do not
+    working directory of Anon instance, not to its DataDirectory.  Do not
     rely on this behavior; it is not guaranteed to remain the same in future
     versions.)
 
@@ -3667,7 +3667,7 @@ The next section describes the per service options that can only be set
    services. (Default: none) +
      +
    The haproxy option works in the following way: when the feature is
-   enabled, the Tor process will write a header line when a client is connecting
+   enabled, the Anon process will write a header line when a client is connecting
    to the onion service. The header will look like this: +
      +
    "PROXY TCP6 fc00:dead:beef:4dad::ffff:ffff ::1 65535 42\r\n" +
@@ -3680,7 +3680,7 @@ The next section describes the per service options that can only be set
       global_circuit_id = (0xAA << 24) + (0xBB << 16) + (0xCC << 8) + 0xDD; +
      +
    In the case above, where the last 32-bits are 0xffffffff, the global circuit
-   identifier would be 4294967295. You can use this value together with Tor's
+   identifier would be 4294967295. You can use this value together with Anon's
    control port to terminate particular circuits using their global
    circuit identifiers. For more information about this see control-spec.txt. +
      +
@@ -3691,7 +3691,7 @@ The next section describes the per service options that can only be set
 
    If set to 1, this onion service becomes an OnionBalance instance and will
    accept client connections destined to an OnionBalance frontend. In this
-   case, Tor expects to find a file named "ob_config" inside the
+   case, Anon expects to find a file named "ob_config" inside the
    **HiddenServiceDir** directory with content:
      +
       MasterOnionAddress <frontend_onion_address>
@@ -3764,14 +3764,14 @@ The next section describes the per service options that can only be set
     Makes hidden services non-anonymous on this tor instance. Allows the
     non-anonymous HiddenServiceSingleHopMode. Enables direct connections in the
     server-side hidden service protocol.  If you are using this option,
-    you need to disable all client-side services on your Tor instance,
+    you need to disable all client-side services on your Anon instance,
     including setting SOCKSPort to "0". Can not be changed while tor is
     running. (Default: 0)
 
 [[PublishHidServDescriptors]] **PublishHidServDescriptors** **0**|**1**::
-    If set to 0, Tor will run any hidden services you configure, but it won't
+    If set to 0, Anon will run any hidden services you configure, but it won't
     advertise them to the rendezvous directory. This option is only useful if
-    you're using a Tor controller that handles hidserv publishing for you.
+    you're using a Anon controller that handles hidserv publishing for you.
     (Default: 1)
 
 [[client-authorization]]
@@ -3805,7 +3805,7 @@ Service side:
 Client side:
 
   To access a v3 onion service with client authorization as a client, make sure
-  you have ClientOnionAuthDir set in your torrc. Then, in the
+  you have ClientOnionAuthDir set in your anonrc. Then, in the
   <ClientOnionAuthDir> directory, create an .auth_private file for the onion
   service corresponding to this key (i.e. 'bob_onion.auth_private').  The
   contents of the <ClientOnionAuthDir>/<user>.auth_private file should look like:
@@ -3816,13 +3816,13 @@ For more information, please see https://2019.www.torproject.org/docs/tor-onion-
 
 == TESTING NETWORK OPTIONS
 
-The following options are used for running a testing Tor network.
+The following options are used for running a testing Anon network.
 
 //Out of order because it logically belongs first in this section.
 [[TestingTorNetwork]] **TestingTorNetwork** **0**|**1**::
-    If set to 1, Tor adjusts default values of the configuration options below,
-    so that it is easier to set up a testing Tor network. May only be set if
-    non-default set of DirAuthorities is set. Cannot be unset while Tor is
+    If set to 1, Anon adjusts default values of the configuration options below,
+    so that it is easier to set up a testing Anon network. May only be set if
+    non-default set of DirAuthorities is set. Cannot be unset while Anon is
     running.
     (Default: 0) +
 
@@ -3949,12 +3949,12 @@ The following options are used for running a testing Tor network.
     5 minutes)
 
 [[TestingEnableCellStatsEvent]] **TestingEnableCellStatsEvent** **0**|**1**::
-    If this option is set, then Tor controllers may register for CELL_STATS
+    If this option is set, then Anon controllers may register for CELL_STATS
     events.  Changing this requires that **TestingTorNetwork** is set.
     (Default: 0)
 
 [[TestingEnableConnBwEvent]] **TestingEnableConnBwEvent** **0**|**1**::
-    If this option is set, then Tor controllers may register for CONN_BW
+    If this option is set, then Anon controllers may register for CONN_BW
     events.  Changing this requires that **TestingTorNetwork** is set.
     (Default: 0)
 
@@ -4014,30 +4014,30 @@ The following options are used for running a testing Tor network.
 
 == NON-PERSISTENT OPTIONS
 
-These options are not saved to the torrc file by the "SAVECONF" controller
+These options are not saved to the anonrc file by the "SAVECONF" controller
 command.  Other options of this type are documented in control-spec.txt,
 section 5.4. End-users should mostly ignore them.
 
 [[UnderscorePorts]] **{dbl_}ControlPort**, **{dbl_}DirPort**, **{dbl_}DNSPort**, **{dbl_}ExtORPort**, **{dbl_}NATDPort**, **{dbl_}ORPort**, **{dbl_}SocksPort**, **{dbl_}TransPort**::
     These underscore-prefixed options are variants of the regular Port
     options.  They behave the same, except they are not saved to the
-    torrc file by the controller's SAVECONF command.
+    anonrc file by the controller's SAVECONF command.
 
 
 == SIGNALS
 
-Tor catches the following signals:
+Anon catches the following signals:
 
 [[SIGTERM]] **SIGTERM**::
-    Tor will catch this, clean up and sync to disk if necessary, and exit.
+    Anon will catch this, clean up and sync to disk if necessary, and exit.
 
 [[SIGINT]] **SIGINT**::
-    Tor clients behave as with SIGTERM; but Tor servers will do a controlled
+    Anon clients behave as with SIGTERM; but Anon servers will do a controlled
     slow shutdown, closing listeners and waiting 30 seconds before exiting.
     (The delay can be configured with the ShutdownWaitLength config option.)
 
 [[SIGHUP]] **SIGHUP**::
-    The signal instructs Tor to reload its configuration (including closing and
+    The signal instructs Anon to reload its configuration (including closing and
     reopening logs), and kill and restart its helper processes if applicable.
 
 [[SIGUSR1]] **SIGUSR1**::
@@ -4048,29 +4048,29 @@ Tor catches the following signals:
     sending a SIGHUP.
 
 [[SIGCHLD]] **SIGCHLD**::
-    Tor receives this signal when one of its helper processes has exited, so it
+    Anon receives this signal when one of its helper processes has exited, so it
     can clean up.
 
 [[SIGPIPE]] **SIGPIPE**::
-    Tor catches this signal and ignores it.
+    Anon catches this signal and ignores it.
 
 [[SIGXFSZ]] **SIGXFSZ**::
-    If this signal exists on your platform, Tor catches and ignores it.
+    If this signal exists on your platform, Anon catches and ignores it.
 
 == FILES
 
-**`@CONFDIR@/torrc`**::
+**`@CONFDIR@/anonrc`**::
     Default location of the configuration file.
 
-**`$HOME/.torrc`**::
-    Fallback location for torrc, if @CONFDIR@/torrc is not found.
+**`$HOME/.anonrc`**::
+    Fallback location for anonrc, if @CONFDIR@/anonrc is not found.
 
-**`@LOCALSTATEDIR@/lib/tor/`**::
+**`@LOCALSTATEDIR@/lib/anon/`**::
     The tor process stores keys and other data here.
 
 __CacheDirectory__/**`cached-certs`**::
     Contains downloaded directory key certificates that are used to verify
-    authenticity of documents generated by the Tor directory authorities.
+    authenticity of documents generated by the Anon directory authorities.
 
 __CacheDirectory__/**`cached-consensus`** and/or **`cached-microdesc-consensus`**::
     The most recent consensus network status document we've downloaded.
@@ -4101,7 +4101,7 @@ __DataDirectory__/**`state`**::
         - the current entry guards and their status.
         - the current bandwidth accounting values.
         - when the file was last written
-        - what version of Tor generated the state file
+        - what version of Anon generated the state file
         - a short history of bandwidth usage, as produced in the server
           descriptors.
 
@@ -4127,9 +4127,9 @@ __DataDirectory__/**`control_auth_cookie`**::
     control-spec.txt in https://spec.torproject.org/[torspec] for details.
 
 __DataDirectory__/**`lock`**::
-    This file is used to prevent two Tor instances from using the same data
+    This file is used to prevent two Anon instances from using the same data
     directory. If access to this file is locked, data directory is already in
-    use by Tor.
+    use by Anon.
 
 __DataDirectory__/**`key-pinning-journal`**::
     Used by authorities. A line-based file that records mappings between
@@ -4139,7 +4139,7 @@ __DataDirectory__/**`key-pinning-journal`**::
 
 __KeyDirectory__/**`authority_identity_key`**::
     A v3 directory authority's master identity key, used to authenticate its
-    signing key. Tor doesn't use this while it's running. The tor-gencert
+    signing key. Anon doesn't use this while it's running. The anon-gencert
     program uses this. If you're running an authority, you should keep this key
     offline, and not put it in this file.
 
@@ -4171,8 +4171,8 @@ __KeyDirectory__/**`ed25519_master_id_public_key`**::
 __KeyDirectory__/**`ed25519_master_id_secret_key`**::
     The private part of a relay's Ed25519 permanent identity key.  This key is
     used to sign the medium-term ed25519 signing key.  This file can be kept
-    offline or encrypted. If so, Tor will not be able to generate new signing
-    keys automatically; you'll need to use `tor --keygen` to do so.
+    offline or encrypted. If so, Anon will not be able to generate new signing
+    keys automatically; you'll need to use `anon --keygen` to do so.
 
 __KeyDirectory__/**`ed25519_signing_secret_key`**::
     The private and public components of a relay's medium-term Ed25519 signing
@@ -4225,7 +4225,7 @@ __DataDirectory__/**`approved-routers`**::
     descriptors are accepted, but marked in the vote as not valid.
     If it is **!badexit**, then the authority will vote for it to receive a
     BadExit flag, indicating that it shouldn't be used for traffic leaving
-    the Tor network.  If it is **!middleonly**, then the authority will
+    the Anon network.  If it is **!middleonly**, then the authority will
     vote for it to only be used in the middle of circuits.
     (Neither rejected nor invalid relays are included in the consensus.)
 
@@ -4243,7 +4243,7 @@ __CacheDirectory__/**`unverified-microdesc-consensus`**::
     yet.
 
 __DataDirectory__/**`unparseable-desc`**::
-    Onion server descriptors that Tor was unable to parse are dumped to this
+    Onion server descriptors that Anon was unable to parse are dumped to this
     file. Only used for debugging.
 
 __DataDirectory__/**`router-stability`**::
@@ -4257,15 +4257,15 @@ __DataDirectory__/**`stats/dirreq-stats`**::
 
 __DataDirectory__/**`stats/entry-stats`**::
     Only used by servers. This file is used to collect incoming connection
-    statistics by Tor entry nodes.
+    statistics by Anon entry nodes.
 
 __DataDirectory__/**`stats/bridge-stats`**::
     Only used by servers. This file is used to collect incoming connection
-    statistics by Tor bridges.
+    statistics by Anon bridges.
 
 __DataDirectory__/**`stats/exit-stats`**::
     Only used by servers. This file is used to collect outgoing connection
-    statistics by Tor exit routers.
+    statistics by Anon exit routers.
 
 __DataDirectory__/**`stats/buffer-stats`**::
     Only used by servers. This file is used to collect buffer usage
@@ -4310,10 +4310,10 @@ __HiddenServiceDirectory__/**`onion_service_non_anonymous`**::
 == SEE ALSO
 
 For more information, refer to the Tor Project website at
-https://www.torproject.org/ and the Tor specifications at
-https://spec.torproject.org. See also **torsocks**(1) and **torify**(1).
+https://www.torproject.org/ and the Anon specifications at
+https://spec.torproject.org. See also **torsocks**(1) and **anonify**(1).
 
 == BUGS
 
-Because Tor is still under development, there may be plenty of bugs. Please
+Because Anon is still under development, there may be plenty of bugs. Please
 report them at https://bugs.torproject.org/.

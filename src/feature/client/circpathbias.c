@@ -1363,7 +1363,7 @@ pathbias_measure_use_rate(entry_guard_t *guard)
           log_warn(LD_CIRC,
                  "Guard %s is failing to carry an extremely large "
                  "amount of stream on its circuits. "
-                 "To avoid potential route manipulation attacks, Tor has "
+                 "To avoid potential route manipulation attacks, Anon has "
                  "disabled use of this guard. "
                  "Use counts are %ld/%ld. Success counts are %ld/%ld. "
                  "%ld circuits completed, %ld were unusable, %ld collapsed, "
@@ -1411,7 +1411,7 @@ pathbias_measure_use_rate(entry_guard_t *guard)
         log_notice(LD_CIRC,
                  "Guard %s is failing to carry more streams on its "
                  "circuits than usual. "
-                 "Most likely this means the Tor network is overloaded "
+                 "Most likely this means the Anyone network is overloaded "
                  "or your network connection is poor. "
                  "Use counts are %ld/%ld. Success counts are %ld/%ld. "
                  "%ld circuits completed, %ld were unusable, %ld collapsed, "
@@ -1468,7 +1468,7 @@ pathbias_measure_close_rate(entry_guard_t *guard)
           log_warn(LD_CIRC,
                  "Guard %s is failing an extremely large "
                  "amount of circuits. "
-                 "To avoid potential route manipulation attacks, Tor has "
+                 "To avoid potential route manipulation attacks, Anon has "
                  "disabled use of this guard. "
                  "Success counts are %ld/%ld. Use counts are %ld/%ld. "
                  "%ld circuits completed, %ld were unusable, %ld collapsed, "
@@ -1516,7 +1516,7 @@ pathbias_measure_close_rate(entry_guard_t *guard)
         log_warn(LD_CIRC,
                  "Guard %s is failing a very large "
                  "amount of circuits. "
-                 "Most likely this means the Tor network is "
+                 "Most likely this means the Anyone network is "
                  "overloaded, but it could also mean an attack against "
                  "you or potentially the guard itself. "
                  "Success counts are %ld/%ld. Use counts are %ld/%ld. "
@@ -1541,7 +1541,7 @@ pathbias_measure_close_rate(entry_guard_t *guard)
         log_notice(LD_CIRC,
                  "Guard %s is failing more circuits than "
                  "usual. "
-                 "Most likely this means the Tor network is overloaded. "
+                 "Most likely this means the Anyone network is overloaded. "
                  "Success counts are %ld/%ld. Use counts are %ld/%ld. "
                  "%ld circuits completed, %ld were unusable, %ld collapsed, "
                  "and %ld timed out. "

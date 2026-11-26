@@ -32,7 +32,7 @@ def find_version(infile):
     configure.ac file, find the current version line.
     """
     for line in infile:
-        m = re.search(r'AC_INIT\(\[tor\],\s*\[([^\]]*)\]\)', line)
+        m = re.search(r'AC_INIT\(\[anon\],\s*\[([^\]]*)\]\)', line)
         if m:
             return m.group(1)
 
@@ -125,7 +125,7 @@ update_file(P("configure.ac"),
             replace_fn)
 
 # In tor-mingw.nsi.in, we replace the definition of VERSION.
-update_file(P("contrib/win32build/tor-mingw.nsi.in"),
+update_file(P("contrib/win32build/anon-mingw.nsi.in"),
             re.compile(r'!define VERSION .*'),
             u'!define VERSION "{}"'.format(version),
             encoding="iso-8859-1")

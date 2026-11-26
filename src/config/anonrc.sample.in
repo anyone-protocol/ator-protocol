@@ -10,7 +10,7 @@
 ## for more options you can use in this file.
 ##
 ## Tor will look for this file in various places based on your platform:
-## https://support.torproject.org/tbb/tbb-editing-torrc/
+## https://support.torproject.org/tbb/tbb-editing-anonrc/
 
 ## Tor opens a SOCKS proxy on port 9050 by default -- even if you don't
 ## configure one below. Set "SOCKSPort 0" if you plan to run Tor only
@@ -34,10 +34,10 @@
 ## We advise using "notice" in most cases, since anything more verbose
 ## may provide sensitive information to an attacker who obtains the logs.
 ##
-## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/tor/notices.log
-#Log notice file @LOCALSTATEDIR@/log/tor/notices.log
-## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
-#Log debug file @LOCALSTATEDIR@/log/tor/debug.log
+## Send all messages of level 'notice' or higher to @LOCALSTATEDIR@/log/anon/notices.log
+#Log notice file @LOCALSTATEDIR@/log/anon/notices.log
+## Send every possible message to @LOCALSTATEDIR@/log/anon/debug.log
+#Log debug file @LOCALSTATEDIR@/log/anon/debug.log
 ## Use the system log instead of Tor's logfiles
 #Log notice syslog
 ## To send all messages to stderr:
@@ -49,8 +49,8 @@
 #RunAsDaemon 1
 
 ## The directory for keeping all the keys/etc. By default, we store
-## things in $HOME/.tor on Unix, and in Application Data\tor on Windows.
-#DataDirectory @LOCALSTATEDIR@/lib/tor
+## things in $HOME/.anon on Unix, and in Application Data\tor on Windows.
+#DataDirectory @LOCALSTATEDIR@/lib/anon
 
 ## The port on which Tor will listen for local connections from Tor
 ## controller applications, as documented in control-spec.txt.
@@ -69,10 +69,10 @@
 ## HiddenServicePort x y:z says to redirect requests on port x to the
 ## address y:z.
 
-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/hidden_service/
+#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/hidden_service/
 #HiddenServicePort 80 127.0.0.1:80
 
-#HiddenServiceDir @LOCALSTATEDIR@/lib/tor/other_hidden_service/
+#HiddenServiceDir @LOCALSTATEDIR@/lib/anon/other_hidden_service/
 #HiddenServicePort 80 127.0.0.1:80
 #HiddenServicePort 22 127.0.0.1:22
 
@@ -253,5 +253,5 @@
 ## folder will be parsed following lexical order. Files starting with a dot are ignored. Files
 ## on subfolders are ignored.
 ## The %include option can be used recursively.
-#%include /etc/torrc.d/*.conf
+#%include /etc/anonrc.d/*.conf
 

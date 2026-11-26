@@ -37,15 +37,15 @@ def wait_for_log(s):
         l = tor_process.stdout.readline()
         l = l.decode('utf8', 'backslashreplace')
         if s in l:
-            logging.info('Tor logged: "{}"'.format(l.strip()))
+            logging.info('Anon logged: "{}"'.format(l.strip()))
             return
         # readline() returns a blank string when there is no output
         # avoid busy-waiting
         if len(l) == 0:
-            logging.debug('Tor has not logged anything, waiting for "{}"'.format(s))
+            logging.debug('Anon has not logged anything, waiting for "{}"'.format(s))
             time.sleep(LOG_WAIT)
         else:
-            logging.info('Tor logged: "{}", waiting for "{}"'.format(l.strip(), s))
+            logging.info('Anon logged: "{}", waiting for "{}"'.format(l.strip(), s))
     fail('Could not find "{}" in logs after {} seconds'.format(s, LOG_TIMEOUT))
 
 def pick_random_port():
@@ -95,10 +95,10 @@ if not os.path.exists(sys.argv[2]):
 tor_path = sys.argv[1]
 data_dir = sys.argv[2]
 
-empty_torrc_path = os.path.join(data_dir, 'empty_torrc')
-open(empty_torrc_path, 'w').close()
-empty_defaults_torrc_path = os.path.join(data_dir, 'empty_defaults_torrc')
-open(empty_defaults_torrc_path, 'w').close()
+empty_anonrc_path = os.path.join(data_dir, 'empty_anonrc')
+open(empty_anonrc_path, 'w').close()
+empty_defaults_anonrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
+open(empty_defaults_anonrc_path, 'w').close()
 
 tor_process = subprocess.Popen([tor_path,
                                '-AgreeToTerms', '1',
@@ -108,8 +108,8 @@ tor_process = subprocess.Popen([tor_path,
                                '-Log', 'debug stdout',
                                '-LogTimeGranularity', '1',
                                '-FetchServerDescriptors', '0',
-                               '-f', empty_torrc_path,
-                               '--defaults-torrc', empty_defaults_torrc_path,
+                               '-f', empty_anonrc_path,
+                               '--defaults-anonrc', empty_defaults_anonrc_path,
                                ],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
@@ -147,6 +147,6 @@ try:
 except OSError as e:
     if e.errno == errno.ESRCH: # errno 3: No such process
         # assume tor has already exited due to SIGNAL HALT
-        logging.warn("Tor has already exited")
+        logging.warn("Anon has already exited")
     else:
         raise

@@ -126,11 +126,11 @@ typedef int32_t ssize_t;
 #define SIZE_T_CEILING  ((size_t)(SSIZE_MAX-16))
 
 #if SIZEOF_INT > SIZEOF_VOID_P
-#error "sizeof(int) > sizeof(void *) - Can't build Tor here."
+#error "sizeof(int) > sizeof(void *) - Can't build Anon here."
 #endif
 
 #if SIZEOF_UNSIGNED_INT > SIZEOF_VOID_P
-#error "sizeof(unsigned int) > sizeof(void *) - Can't build Tor here."
+#error "sizeof(unsigned int) > sizeof(void *) - Can't build Anon here."
 #endif
 
 #endif /* !defined(TOR_TORINT_H) */

@@ -1522,7 +1522,7 @@ test_config_find_my_address(void *arg)
   retval = find_my_address(options, p->family, LOG_NOTICE, &resolved_addr,
                            &method_used, &hostname_out);
 
-  expect_log_msg_containing("is a private IP address. Tor relays that "
+  expect_log_msg_containing("is a private IP address. Anon relays that "
                             "use the default DirAuthorities must have "
                             "public IP addresses.");
   teardown_capture_of_logs();
@@ -5317,7 +5317,7 @@ test_config_include_limit(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
   char torrc_contents[1000];
   tor_snprintf(torrc_contents, sizeof(torrc_contents), "%%include %s",
                torrc_path);
@@ -5495,7 +5495,7 @@ test_config_include_recursion_before_after(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5560,7 +5560,7 @@ test_config_include_recursion_after_only(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5627,7 +5627,7 @@ test_config_include_folder_order(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -5717,7 +5717,7 @@ test_config_include_blank_file_last(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -5897,7 +5897,7 @@ test_config_include_flag_torrc_only(void *data)
 
   char *errmsg = NULL;
   char *path = NULL;
-  char *dir = tor_strdup(get_fname("test_include_flag_torrc_only"));
+  char *dir = tor_strdup(get_fname("test_include_flag_anonrc_only"));
   tt_ptr_op(dir, OP_NE, NULL);
 
 #ifdef _WIN32
@@ -6394,7 +6394,7 @@ test_config_include_opened_file_list(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);

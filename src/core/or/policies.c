@@ -305,7 +305,7 @@ parse_reachable_addresses(void)
   if (!server_mode(options)) {
     if (policy_is_reject_star(reachable_or_addr_policy, AF_UNSPEC, 0)
         || policy_is_reject_star(reachable_dir_addr_policy, AF_UNSPEC,0)) {
-      log_warn(LD_CONFIG, "Tor cannot connect to the Internet if "
+      log_warn(LD_CONFIG, "Anon cannot connect to the Internet if "
                "ReachableAddresses, ReachableORAddresses, or "
                "ReachableDirAddresses reject all addresses. Please accept "
                "some addresses in these options.");
@@ -315,7 +315,7 @@ parse_reachable_addresses(void)
           log_warn(LD_CONFIG, "You have set ClientUseIPv4 1, but "
                    "ReachableAddresses, ReachableORAddresses, or "
                    "ReachableDirAddresses reject all IPv4 addresses. "
-                   "Tor will not connect using IPv4.");
+                   "Anon will not connect using IPv4.");
     } else if (reachable_addr_use_ipv6(options)
        && (policy_is_reject_star(reachable_or_addr_policy, AF_INET6, 0)
          || policy_is_reject_star(reachable_dir_addr_policy, AF_INET6, 0))) {
@@ -323,7 +323,7 @@ parse_reachable_addresses(void)
                    "(or UseBridges 1), but "
                    "ReachableAddresses, ReachableORAddresses, or "
                    "ReachableDirAddresses reject all IPv6 addresses. "
-                   "Tor will not connect using IPv6.");
+                   "Anon will not connect using IPv6.");
     }
   }
 
@@ -1166,7 +1166,7 @@ validate_addr_policies(const or_options_t *options, char **msg)
   if (public_server_mode(options) && !warned_about_nonexit &&
       policy_using_default_exit_options(options)) {
     warned_about_nonexit = 1;
-    log_notice(LD_CONFIG, "By default, Tor does not run as an exit relay. "
+    log_notice(LD_CONFIG, "By default, Anon does not run as an exit relay. "
                "If you want to be an exit relay, "
                "set ExitRelay to 1. To suppress this message in the future, "
                "set ExitRelay to 0.");

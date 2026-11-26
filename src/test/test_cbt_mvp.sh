@@ -15,4 +15,4 @@ sys.exit(0 if sys.version_info >= (3, 7) and hasattr(socket, "AF_UNIX") else 1)
 fi
 
 exec "${PYTHON:-python3}" "${abs_top_srcdir:-.}/src/test/test_cbt_mvp.py" \
-  "${TESTING_TOR_BINARY:-./src/app/tor}"
+  "${TESTING_TOR_BINARY:-./src/app/anon}"

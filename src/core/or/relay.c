@@ -2066,7 +2066,7 @@ handle_relay_msg(const relay_msg_t *msg, circuit_t *circ,
   }
   log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
          "Received unknown relay command %d. Perhaps the other side is using "
-         "a newer version of Tor? Dropping.",
+         "a newer version of Anon? Dropping.",
          msg->command);
   return 0; /* for forward compatibility, don't kill the circuit */
 }

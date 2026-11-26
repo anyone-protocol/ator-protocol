@@ -1,14 +1,14 @@
-confdir = $(sysconfdir)/tor
+confdir = $(sysconfdir)/anon
 
-tordatadir = $(datadir)/tor
+tordatadir = $(datadir)/anon
 
 EXTRA_DIST+= \
 	src/config/geoip \
 	src/config/geoip6 \
-	src/config/torrc.minimal.in \
-	src/config/torrc.sample.in \
+	src/config/anonrc.minimal.in \
+	src/config/anonrc.sample.in \
 	src/config/README
 
-conf_DATA = src/config/torrc.sample
+conf_DATA = src/config/anonrc.sample
 
 tordata_DATA = src/config/geoip src/config/geoip6

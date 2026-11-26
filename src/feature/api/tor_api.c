@@ -74,7 +74,7 @@ cfg_add_owned_arg(tor_main_configuration_t *cfg, const char *arg)
 tor_main_configuration_t *
 tor_main_configuration_new(void)
 {
-  static const char *fake_argv[] = { "tor" };
+  static const char *fake_argv[] = { "anon" };
   tor_main_configuration_t *cfg = raw_malloc(sizeof(*cfg));
   if (cfg == NULL)
     return NULL;

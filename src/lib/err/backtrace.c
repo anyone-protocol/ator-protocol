@@ -329,13 +329,13 @@ get_tor_backtrace_version(void)
 int
 configure_backtrace_handler(const char *tor_version)
 {
-  char version[128] = "Tor\0";
+  char version[128] = "Anon\0";
 
   if (tor_version) {
     int snp_rv = 0;
     /* We can't use strlcat() here, because it is defined in
      * string/compat_string.h on some platforms, and string uses torerr. */
-    snp_rv = snprintf(version, sizeof(version), "Tor %s", tor_version);
+    snp_rv = snprintf(version, sizeof(version), "Anon %s", tor_version);
     /* It's safe to call raw_assert() here, because raw_assert() does not
      * call configure_backtrace_handler(). */
     raw_assert(snp_rv < (int)sizeof(version));

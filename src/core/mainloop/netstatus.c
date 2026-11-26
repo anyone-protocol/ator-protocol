@@ -65,7 +65,7 @@ note_user_activity(time_t now)
   last_user_activity_seen = MAX(now, last_user_activity_seen);
 
   if (! participating_on_network) {
-    log_notice(LD_GENERAL, "Tor is no longer dormant.");
+    log_notice(LD_GENERAL, "Anon is no longer dormant.");
     set_network_participation(true);
     schedule_rescan_periodic_events();
   }

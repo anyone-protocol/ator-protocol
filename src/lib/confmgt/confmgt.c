@@ -661,7 +661,7 @@ config_assign_value(const config_mgr_t *mgr, void *options,
     log_warn(LD_GENERAL, "Skipping obsolete configuration option \"%s\".",
              var->cvar->member.name);
   } else if (config_var_has_flag(var->cvar, CFLG_WARN_DISABLED)) {
-    log_warn(LD_GENERAL, "This copy of Tor was built without support for "
+    log_warn(LD_GENERAL, "This copy of Anon was built without support for "
              "the option \"%s\". Skipping.", var->cvar->member.name);
   }
 
@@ -693,7 +693,7 @@ warn_deprecated_option(const char *what, const char *why)
 {
   const char *space = (why && strlen(why)) ? " " : "";
   log_warn(LD_CONFIG, "The %s option is deprecated, and will most likely "
-           "be removed in a future version of Tor.%s%s (If you think this is "
+           "be removed in a future version of Anon.%s%s (If you think this is "
            "a mistake, please let us know!)",
            what, space, why);
 }
@@ -1192,7 +1192,7 @@ config_check_immutable_flags(const config_format_t *fmt,
 
     if (! struct_var_eq(old_options, new_options, &v->member)) {
       tor_asprintf(msg_out,
-                   "While Tor is running, changing %s is not allowed",
+                   "While Anon is running, changing %s is not allowed",
                    v->member.name);
       return -1;
     }

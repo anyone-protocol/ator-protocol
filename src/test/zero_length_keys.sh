@@ -1,6 +1,6 @@
 #!/bin/sh
 # Check that tor regenerates keys when key files are zero-length
-# Test for bug #13111 - Tor fails to start if onion keys are zero length
+# Test for bug #13111 - Anon fails to start if onion keys are zero length
 #
 # Usage:
 #  ./zero_length_keys.sh PATH_TO_TOR
@@ -42,12 +42,12 @@ if [ ! -d "$DATA_DIR" ]; then
 fi
 trap 'rm -rf "$DATA_DIR"' 0
 
-touch "$DATA_DIR"/empty_torrc
-touch "$DATA_DIR"/empty_defaults_torrc
+touch "$DATA_DIR"/empty_anonrc
+touch "$DATA_DIR"/empty_defaults_anonrc
 
 # DisableNetwork means that the ORPort won't actually be opened.
 # 'ExitRelay 0' suppresses a warning.
-TOR="${TOR_BINARY} --hush --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f $DATA_DIR/empty_torrc --defaults-torrc $DATA_DIR/empty_defaults_torrc"
+TOR="${TOR_BINARY} --hush --DisableNetwork 1 --ShutdownWaitLength 0 --ORPort 12345 --ExitRelay 0 -f $DATA_DIR/empty_anonrc --defaults-anonrc $DATA_DIR/empty_defaults_anonrc"
 
 if [ -s "$DATA_DIR"/keys/secret_id_key ] && [ -s "$DATA_DIR"/keys/secret_onion_key ] &&
    [ -s "$DATA_DIR"/keys/secret_onion_key_ntor ]; then

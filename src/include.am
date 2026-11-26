@@ -45,16 +45,16 @@ include src/lib/version/include.am
 include src/lib/wallclock/include.am
 include src/trunnel/include.am
 
-noinst_LIBRARIES += src/core/libtor-app.a
+noinst_LIBRARIES += src/core/libanon-app.a
 if UNITTESTS_ENABLED
-noinst_LIBRARIES += src/core/libtor-app-testing.a
+noinst_LIBRARIES += src/core/libanon-app-testing.a
 endif
 
-LIBTOR_APP_A_SOURCES =
+LIBANON_APP_A_SOURCES =
 #
-# Sources that we only add for the real libtor_a, and not for testing.
+# Sources that we only add for the real libanon_a, and not for testing.
 #
-LIBTOR_APP_A_STUB_SOURCES =
+LIBANON_APP_A_STUB_SOURCES =
 
 include src/core/crypto/include.am
 include src/core/mainloop/include.am

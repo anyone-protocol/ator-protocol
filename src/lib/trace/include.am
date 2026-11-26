@@ -1,9 +1,9 @@
 
 noinst_LIBRARIES += \
-	src/lib/libtor-trace.a
+	src/lib/libanon-trace.a
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_TRACE_A_SOURCES = \
+LIBANON_TRACE_A_SOURCES = \
 	src/lib/trace/trace.c	\
 	src/lib/trace/trace_sys.c
 
@@ -27,9 +27,9 @@ include src/lib/trace/lttng/include.am
 endif
 
 if USE_TRACING
-src_lib_libtor_trace_a_SOURCES = $(LIBTOR_TRACE_A_SOURCES)
+src_lib_libanon_trace_a_SOURCES = $(LIBANON_TRACE_A_SOURCES)
 else
-src_lib_libtor_trace_a_SOURCES = src/lib/trace/trace_stub.c
+src_lib_libanon_trace_a_SOURCES = src/lib/trace/trace_stub.c
 endif
 
 noinst_HEADERS+= $(TRACEHEADERS)
