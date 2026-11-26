@@ -1,6 +1,6 @@
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-LIBTOR_APP_A_SOURCES += 			\
+LIBANON_APP_A_SOURCES += 			\
 	src/app/config/config.c			\
 	src/app/config/quiet_level.c		\
 	src/app/config/resolve_addr.c		\

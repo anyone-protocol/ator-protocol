@@ -31,15 +31,15 @@ def wait_for_log(s):
         l = tor_process.stdout.readline()
         l = l.decode('utf8', 'backslashreplace')
         if s in l:
-            logging.info('Tor logged: "{}"'.format(l.strip()))
+            logging.info('Anon logged: "{}"'.format(l.strip()))
             return
         # readline() returns a blank string when there is no output
         # avoid busy-waiting
         if len(l) == 0:
-            logging.debug('Tor has not logged anything, waiting for "{}"'.format(s))
+            logging.debug('Anon has not logged anything, waiting for "{}"'.format(s))
             time.sleep(LOG_WAIT)
         else:
-            logging.info('Tor logged: "{}", waiting for "{}"'.format(l.strip(), s))
+            logging.info('Anon logged: "{}", waiting for "{}"'.format(l.strip(), s))
     fail('Could not find "{}" in logs after {} seconds'.format(s, LOG_TIMEOUT))
 
 def pick_random_port():
@@ -92,34 +92,35 @@ control_port = pick_random_port()
 assert control_port != 0
 
 if len(sys.argv) < 4:
-     fail('Usage: %s <path-to-tor> <data-dir> <torrc>' % sys.argv[0])
+     fail('Usage: %s <path-to-tor> <data-dir> <anonrc>' % sys.argv[0])
 
 if not os.path.exists(sys.argv[1]):
     fail('ERROR: cannot find tor at %s' % sys.argv[1])
 if not os.path.exists(sys.argv[2]):
     fail('ERROR: cannot find datadir at %s' % sys.argv[2])
 if not os.path.exists(sys.argv[3]):
-    fail('ERROR: cannot find torrcdir at %s' % sys.argv[3])
+    fail('ERROR: cannot find anonrcdir at %s' % sys.argv[3])
 
 tor_path = sys.argv[1]
 data_dir = sys.argv[2]
-torrc_dir = sys.argv[3]
+anonrc_dir = sys.argv[3]
 
-empty_torrc_path = os.path.join(data_dir, 'empty_torrc')
-open(empty_torrc_path, 'w').close()
-empty_defaults_torrc_path = os.path.join(data_dir, 'empty_defaults_torrc')
-open(empty_defaults_torrc_path, 'w').close()
-torrc = os.path.join(torrc_dir, 'torrc')
+empty_anonrc_path = os.path.join(data_dir, 'empty_anonrc')
+open(empty_anonrc_path, 'w').close()
+empty_defaults_anonrc_path = os.path.join(data_dir, 'empty_defaults_anonrc')
+open(empty_defaults_anonrc_path, 'w').close()
+anonrc = os.path.join(anonrc_dir, 'anonrc')
 
 tor_process = subprocess.Popen([tor_path,
+                               '-AgreeToTerms', '1',
                                '-DataDirectory', data_dir,
                                '-ControlPort', '127.0.0.1:{}'.format(control_port),
                                '-Log', 'info stdout',
                                '-LogTimeGranularity', '1',
                                '-FetchServerDescriptors', '0',
                                '-DisableNetwork', '1',
-                               '-f', torrc,
-                               '--defaults-torrc', empty_defaults_torrc_path,
+                               '-f', anonrc,
+                               '--defaults-anonrc', empty_defaults_anonrc_path,
                                ],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
@@ -147,7 +148,7 @@ control_socket.sendall('GETCONF NodeFamily\r\n'.encode('ascii'))
 check_control_list(control_out_file, ['1', '2', '3', '4', '5', '6', '4' , '5'], 'NodeFamily')
 
 # test reloading the configuration file with seccomp sandbox enabled
-foo_path = os.path.join(torrc_dir, 'torrc.d', 'foo')
+foo_path = os.path.join(anonrc_dir, 'anonrc.d', 'foo')
 with open(foo_path, 'a') as foo:
     foo.write('NodeFamily 7')
 
@@ -191,6 +192,6 @@ try:
 except OSError as e:
     if e.errno == errno.ESRCH: # errno 3: No such process
         # assume tor has already exited due to SIGNAL HALT
-        logging.warn("Tor has already exited")
+        logging.warn("Anon has already exited")
     else:
         raise

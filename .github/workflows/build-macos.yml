@@ -1,0 +1,41 @@
+name: Build Anon Package for MacOS
+description: Builds the Anon client for MacOS and uploads the executables as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: The runner to use for the build.
+        required: true
+        default: 'macos-15-intel'
+        type: choice
+        options:
+          - macos-15-intel
+          - macos-26-intel
+          - macos-14
+          - macos-15
+          - macos-26
+          - macos-latest
+      release-phase:
+        description: The release phase (beta, live, stage, dev, or unstable-dev).
+        required: true
+        default: 'unstable-dev'
+        type: choice
+        options:
+          - beta
+          - live
+          - stage
+          - dev
+          - unstable-dev
+jobs:
+  build-macos:
+    runs-on: ${{ inputs.runner }}
+    env:
+      BUILD_ARCH: ${{ endsWith(inputs.runner, 'intel') && 'amd64' || 'arm64' }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Anon for MacOS ${{ inputs.release-phase }} ${{ env.BUILD_ARCH }}
+        uses: ./.github/actions/build-macos
+        with:
+          build-arch: ${{ env.BUILD_ARCH }}
+          release-phase: ${{ inputs.release-phase }}

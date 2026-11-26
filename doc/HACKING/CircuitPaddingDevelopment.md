@@ -101,7 +101,7 @@ one of the client's circuits. Both parties need to support the same padding
 mechanisms for the system to work, and the client must enable it.
 
 We added a padding negotiation relay cell to the Tor protocol that clients use
-to ask a relay to start padding, as well as a torrc directive for researchers
+to ask a relay to start padding, as well as a anonrc directive for researchers
 to pin their clients' relay selection to the subset of Tor nodes that
 implement their custom defenses, to support ethical live network testing and
 evaluation.
@@ -738,7 +738,7 @@ and possible to run small scale experiments that target only your own
 clients, who will only use your own Tor relays that support your new padding
 machines.
 
-We provide the `MiddleNodes` torrc directive to enable this, which will allow
+We provide the `MiddleNodes` anonrc directive to enable this, which will allow
 you to specify the fingerprints and/or IP netmasks of relays to be used in
 the second hop position. Options to restrict other hops also exist, if your
 padding system is padding to a different hop. The `HSLayer2Nodes` option

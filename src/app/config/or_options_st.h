@@ -364,6 +364,7 @@ struct or_options_t {
                               *   have this many. */
   int ConnLimit_low_thresh; /**< try to get down to here after socket
                              *   exhaustion. */
+  int AgreeToTerms; /**< If true, agree to the terms and conditions */
   int RunAsDaemon; /**< If true, run in the background. (Unix only) */
   int FascistFirewall; /**< Whether to prefer ORs reachable on open ports. */
   struct smartlist_t *FirewallPorts; /**< Which ports our firewall allows
@@ -720,6 +721,17 @@ struct or_options_t {
    * to an internal address, or that an internal address has a PTR mapping.
    * Helps avoid some cross-site attacks. */
   int ClientDNSRejectInternalAddresses;
+  /** Maximum size in bytes allowed for the anyone_hosts DNS mapping file.
+   * A value of 0 disables the size limit. */
+  uint64_t DNSMappingFileMaxSize;
+  /** If true, automatically update the anyone_hosts DNS mapping file when
+   * new directory information arrives or on a periodic schedule. */
+  int AnyoneHostsUpdate;
+  /** How often (in seconds) to check for a new anyone_hosts file. */
+  int AnyoneHostsUpdateInterval;
+  /** List of .anyone service addresses to try when fetching the
+   * anyone_hosts file.  Tried in order before the built-in defaults. */
+  struct config_line_t *AnyoneHostsURL;
 
   /** If true, do not accept any requests to connect to internal addresses
    * over randomly chosen exits. */

@@ -67,11 +67,9 @@ log_unsafe_socks_warning(int socks_protocol, const char *address,
   if (warn_every_time || (m = rate_limit_log(&socks_ratelim, approx_time()))) {
     log_warn(LD_APP,
              "Your application (using socks%d to port %d) is giving "
-             "Tor only an IP address. Applications that do DNS resolves "
+             "Anon only an IP address. Applications that do DNS resolves "
              "themselves may leak information. Consider using Socks4A "
-             "(e.g. via privoxy or socat) instead. For more information, "
-             "please see https://2019.www.torproject.org/docs/faq.html.en"
-             "#WarningsAboutSOCKSandDNSInformationLeaks.%s%s",
+             "(e.g. via privoxy or socat) instead.%s%s",
              socks_protocol,
              (int)port,
              safe_socks ? " Rejecting." : "",
@@ -256,13 +254,13 @@ process_socks4_request(const socks_request_t *req, int is_socks4a,
     if (log_sockstype)
       log_notice(LD_APP,
                  "Your application (using socks4a to port %d) instructed "
-                 "Tor to take care of the DNS resolution itself if "
+                 "Anon to take care of the DNS resolution itself if "
                  "necessary. This is good.", req->port);
   }
 
   if (!string_is_valid_dest(req->address)) {
     log_warn(LD_PROTOCOL,
-             "Your application (using socks4 to port %d) gave Tor "
+             "Your application (using socks4 to port %d) gave Anon "
              "a malformed hostname: %s. Rejecting the connection.",
              req->port, escaped_safe_str_client(req->address));
      return SOCKS_RESULT_INVALID;
@@ -662,7 +660,7 @@ process_socks5_client_request(socks_request_t *req,
     socks_request_set_socks5_error(req, SOCKS5_GENERAL_ERROR);
 
     log_warn(LD_PROTOCOL,
-             "Your application (using socks5 to port %d) gave Tor "
+             "Your application (using socks5 to port %d) gave Anon "
              "a malformed hostname: %s. Rejecting the connection.",
              req->port, escaped_safe_str_client(req->address));
 
@@ -686,7 +684,7 @@ process_socks5_client_request(socks_request_t *req,
   if (log_sockstype)
     log_notice(LD_APP,
               "Your application (using socks5 to port %d) instructed "
-              "Tor to take care of the DNS resolution itself if "
+              "Anon to take care of the DNS resolution itself if "
               "necessary. This is good.", req->port);
 
   end:
@@ -929,7 +927,7 @@ socks_request_set_socks5_error(socks_request_t *req,
 }
 
 static const char SOCKS_PROXY_IS_NOT_AN_HTTP_PROXY_MSG[] =
-  "HTTP/1.0 501 Tor is not an HTTP Proxy\r\n"
+  "HTTP/1.0 501 Anon is not an HTTP Proxy\r\n"
   "Content-Type: text/html; charset=iso-8859-1\r\n\r\n"
   "<html>\n"
   "<head>\n"
@@ -938,7 +936,7 @@ static const char SOCKS_PROXY_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "<body>\n"
   "<h1>This is a SOCKS proxy, not an HTTP proxy.</h1>\n"
   "<p>\n"
-  "It appears you have configured your web browser to use this Tor port as\n"
+  "It appears you have configured your web browser to use this Anon port as\n"
   "an HTTP proxy.\n"
   "</p>\n"
   "<p>\n"
@@ -946,11 +944,6 @@ static const char SOCKS_PROXY_IS_NOT_AN_HTTP_PROXY_MSG[] =
   "an HTTP proxy. If you need an HTTP proxy tunnel, use the HTTPTunnelPort\n"
   "configuration option in place of, or in addition to, SOCKSPort.\n"
   "Please configure your client accordingly.\n"
-  "</p>\n"
-  "<p>\n"
-  "See <a href=\"https://www.torproject.org/documentation.html\">"
-  "https://www.torproject.org/documentation.html</a> for more "
-  "information.\n"
   "</p>\n"
   "</body>\n"
   "</html>\n";

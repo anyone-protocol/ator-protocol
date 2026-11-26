@@ -1,6 +1,6 @@
 
 # Legacy shared relay code: migrate to the relay module over time
-LIBTOR_APP_A_SOURCES += 			\
+LIBANON_APP_A_SOURCES += 			\
 	src/feature/relay/onion_queue.c		\
 	src/feature/relay/relay_find_addr.c	\
 	src/feature/relay/router.c
@@ -42,7 +42,7 @@ noinst_HEADERS +=					\
 	src/feature/relay/transport_config.h
 
 if BUILD_MODULE_RELAY
-LIBTOR_APP_A_SOURCES += $(MODULE_RELAY_SOURCES)
+LIBANON_APP_A_SOURCES += $(MODULE_RELAY_SOURCES)
 else
-LIBTOR_APP_A_STUB_SOURCES += src/feature/relay/relay_stub.c
+LIBANON_APP_A_STUB_SOURCES += src/feature/relay/relay_stub.c
 endif

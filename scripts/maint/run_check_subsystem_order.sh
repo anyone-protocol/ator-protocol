@@ -2,7 +2,7 @@
 
 set -e
 
-TOR="${abs_top_builddir:-.}/src/app/tor"
+TOR="${abs_top_builddir:-.}/src/app/anon"
 
 INCLUDES_PY="${abs_top_srcdir:-.}/scripts/maint/practracker/includes.py"
 

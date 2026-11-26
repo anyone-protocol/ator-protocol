@@ -1,12 +1,12 @@
 
-noinst_LIBRARIES += src/lib/libtor-fs.a
+noinst_LIBRARIES += src/lib/libanon-fs.a
 
 if UNITTESTS_ENABLED
-noinst_LIBRARIES += src/lib/libtor-fs-testing.a
+noinst_LIBRARIES += src/lib/libanon-fs-testing.a
 endif
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-src_lib_libtor_fs_a_SOURCES =			\
+src_lib_libanon_fs_a_SOURCES =			\
 	src/lib/fs/conffile.c			\
 	src/lib/fs/dir.c			\
 	src/lib/fs/files.c			\
@@ -18,13 +18,13 @@ src_lib_libtor_fs_a_SOURCES =			\
 	src/lib/fs/userdb.c
 
 if WIN32
-src_lib_libtor_fs_a_SOURCES += src/lib/fs/winlib.c
+src_lib_libanon_fs_a_SOURCES += src/lib/fs/winlib.c
 endif
 
-src_lib_libtor_fs_testing_a_SOURCES = \
-	$(src_lib_libtor_fs_a_SOURCES)
-src_lib_libtor_fs_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
-src_lib_libtor_fs_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
+src_lib_libanon_fs_testing_a_SOURCES = \
+	$(src_lib_libanon_fs_a_SOURCES)
+src_lib_libanon_fs_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
+src_lib_libanon_fs_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
 
 # ADD_C_FILE: INSERT HEADERS HERE.
 noinst_HEADERS +=					\

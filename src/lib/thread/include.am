@@ -1,8 +1,8 @@
 
-noinst_LIBRARIES += src/lib/libtor-thread.a
+noinst_LIBRARIES += src/lib/libanon-thread.a
 
 if UNITTESTS_ENABLED
-noinst_LIBRARIES += src/lib/libtor-thread-testing.a
+noinst_LIBRARIES += src/lib/libanon-thread-testing.a
 endif
 
 if THREADS_PTHREADS
@@ -13,15 +13,15 @@ threads_impl_source=src/lib/thread/compat_winthreads.c
 endif
 
 # ADD_C_FILE: INSERT SOURCES HERE.
-src_lib_libtor_thread_a_SOURCES =			\
+src_lib_libanon_thread_a_SOURCES =			\
 	src/lib/thread/compat_threads.c			\
 	src/lib/thread/numcpus.c			\
 	$(threads_impl_source)
 
-src_lib_libtor_thread_testing_a_SOURCES = \
-	$(src_lib_libtor_thread_a_SOURCES)
-src_lib_libtor_thread_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
-src_lib_libtor_thread_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
+src_lib_libanon_thread_testing_a_SOURCES = \
+	$(src_lib_libanon_thread_a_SOURCES)
+src_lib_libanon_thread_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
+src_lib_libanon_thread_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
 
 # ADD_C_FILE: INSERT HEADERS HERE.
 noinst_HEADERS +=					\

@@ -4,8 +4,8 @@ dnl Copyright (c) 2007-2019, The Tor Project, Inc.
 dnl See LICENSE for licensing information
 
 AC_PREREQ([2.63])
-AC_INIT([tor],[0.4.9.17])
-AC_CONFIG_SRCDIR([src/app/main/tor_main.c])
+AC_INIT([anon],[0.4.11.0-git])
+AC_CONFIG_SRCDIR([src/app/main/anon_main.c])
 AC_CONFIG_MACRO_DIR([m4])
 
 configure_flags="$*"
@@ -18,7 +18,7 @@ AC_DEFINE_UNQUOTED([CONFIG_FLAGS], ["$configure_flags"], [Flags passed to config
 # version number changes.  Tor uses it to make sure that it
 # only shuts down for missing "required protocols" when those protocols
 # are listed as required by a consensus after this date.
-AC_DEFINE(APPROX_RELEASE_DATE, ["2026-11-13"], # for 0.4.9.17
+AC_DEFINE(APPROX_RELEASE_DATE, ["2026-11-24"], # for 0.4.11.0-git
           [Approximate date when this software was released. (Updated when the version changes.)])
 
 # "foreign" means we don't follow GNU package layout standards
@@ -54,7 +54,7 @@ fi
 # License options
 
 AC_ARG_ENABLE(gpl,
-  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of tor and libtor covered by the GPL rather than its usual 3-clause BSD license]))
+  AS_HELP_STRING(--enable-gpl, [allow the inclusion of GPL-licensed code, building a version of anon and libanon covered by the GPL rather than its usual 3-clause BSD license]))
 license_option=BSD
 AS_IF([test "x$enable_gpl" = xyes],
   [
@@ -73,15 +73,15 @@ AC_ARG_ENABLE(static-libevent,
 AC_ARG_ENABLE(static-zlib,
    AS_HELP_STRING(--enable-static-zlib, [link against a static zlib library. Requires --with-zlib-dir]))
 AC_ARG_ENABLE(static-tor,
-   AS_HELP_STRING(--enable-static-tor, [create an entirely static Tor binary. Requires --with-openssl-dir and --with-libevent-dir and --with-zlib-dir]))
+   AS_HELP_STRING(--enable-static-tor, [create an entirely static Anon binary. Requires --with-openssl-dir and --with-libevent-dir and --with-zlib-dir]))
 AC_ARG_ENABLE(unittests,
-   AS_HELP_STRING(--disable-unittests, [don't build unit tests for Tor. Risky!]))
+   AS_HELP_STRING(--disable-unittests, [don't build unit tests for Anon. Risky!]))
 AC_ARG_ENABLE(coverage,
    AS_HELP_STRING(--enable-coverage, [enable coverage support in the unit-test build]))
 AC_ARG_ENABLE(asserts-in-tests,
    AS_HELP_STRING(--disable-asserts-in-tests, [disable tor_assert() calls in the unit tests, for branch coverage]))
-AC_ARG_ENABLE(system-torrc,
-   AS_HELP_STRING(--disable-system-torrc, [don't look for a system-wide torrc file]))
+AC_ARG_ENABLE(system-anonrc,
+   AS_HELP_STRING(--disable-system-anonrc, [don't look for a system-wide anonrc file]))
 AC_ARG_ENABLE(libfuzzer,
    AS_HELP_STRING(--enable-libfuzzer, [build extra fuzzers based on 'libfuzzer']))
 AC_ARG_ENABLE(oss-fuzz,
@@ -89,13 +89,15 @@ AC_ARG_ENABLE(oss-fuzz,
 AC_ARG_ENABLE(memory-sentinels,
    AS_HELP_STRING(--disable-memory-sentinels, [disable code that tries to prevent some kinds of memory access bugs. For fuzzing only.]))
 AC_ARG_ENABLE(restart-debugging,
-   AS_HELP_STRING(--enable-restart-debugging, [Build Tor with support for debugging in-process restart. Developers only.]))
+   AS_HELP_STRING(--enable-restart-debugging, [Build Anon with support for debugging in-process restart. Developers only.]))
 AC_ARG_ENABLE(zstd-advanced-apis,
    AS_HELP_STRING(--disable-zstd-advanced-apis, [Build without support for zstd's "static-only" APIs.]))
 AC_ARG_ENABLE(nss,
    AS_HELP_STRING(--enable-nss, [Use Mozilla's NSS TLS library. (EXPERIMENTAL)]))
 AC_ARG_ENABLE(pic,
-   AS_HELP_STRING(--enable-pic, [Build Tor's binaries as position-independent code, suitable to link as a library.]))
+   AS_HELP_STRING(--enable-pic, [Build Anon's binaries as position-independent code, suitable to link as a library.]))
+AC_ARG_ENABLE(jni,
+   AS_HELP_STRING(--enable-jni, [enable Java JNI API feature]))
 
 AC_ARG_ENABLE(missing-doc-warnings,
    AS_HELP_STRING(--enable-missing-doc-warnings, [Tell doxygen to warn about missing documentation. Makes doxygen warnings nonfatal.]))
@@ -148,9 +150,9 @@ if test "$enable_static_tor" = "yes"; then
 fi
 AC_SUBST(TOR_STATIC_LDFLAGS)
 
-if test "$enable_system_torrc" = "no"; then
+if test "$enable_system_anonrc" = "no"; then
   AC_DEFINE(DISABLE_SYSTEM_TORRC, 1,
-            [Defined if we're not going to look for a torrc in SYSCONF])
+            [Defined if we're not going to look for a anonrc in SYSCONF])
 fi
 
 if test "$enable_memory_sentinels" = "no"; then
@@ -241,9 +243,9 @@ AC_ARG_ENABLE(gcc-hardening,
 
 dnl Deprecated --enable-expensive-hardening but keep it for now for backward compat.
 AC_ARG_ENABLE(expensive-hardening,
-    AS_HELP_STRING(--enable-expensive-hardening, [enable more fragile and expensive compiler hardening; makes Tor slower]))
+    AS_HELP_STRING(--enable-expensive-hardening, [enable more fragile and expensive compiler hardening; makes Anon slower]))
 AC_ARG_ENABLE(fragile-hardening,
-    AS_HELP_STRING(--enable-fragile-hardening, [enable more fragile and expensive compiler hardening; makes Tor slower]))
+    AS_HELP_STRING(--enable-fragile-hardening, [enable more fragile and expensive compiler hardening; makes Anon slower]))
 if test "x$enable_expensive_hardening" = "xyes" || test "x$enable_fragile_hardening" = "xyes"; then
   fragile_hardening="yes"
   AC_DEFINE(ENABLE_FRAGILE_HARDENING, 1, [Defined if we're building with additional, fragile and expensive compiler hardening])
@@ -251,7 +253,7 @@ if test "x$enable_expensive_hardening" = "xyes" || test "x$enable_fragile_harden
 fi
 
 AC_ARG_ENABLE(all-bugs-are-fatal,
-   AS_HELP_STRING(--enable-all-bugs-are-fatal, [force all soft asserts in Tor codebase (tor_assert_nonfatal(), BUG(), etc.) to act as hard asserts (tor_assert() and equivalents); makes Tor fragile; only recommended for dev builds]))
+   AS_HELP_STRING(--enable-all-bugs-are-fatal, [force all soft asserts in Anon codebase (tor_assert_nonfatal(), BUG(), etc.) to act as hard asserts (tor_assert() and equivalents); makes Anon fragile; only recommended for dev builds]))
 
 if test "x$enable_all_bugs_are_fatal" = "xyes"; then
   AC_DEFINE(ALL_BUGS_ARE_FATAL, 1, [All assert failures are fatal])
@@ -539,7 +541,7 @@ AC_CACHE_CHECK([for working C99 mid-block declaration syntax],
 	 [tor_cv_c_c99_decl=yes],
 	 [tor_cv_c_c99_decl=no] )])
 if test "$tor_cv_c_c99_decl" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 mid-block declarations. This is required as of Anon 0.2.6.x])
 fi
 
 AC_CACHE_CHECK([for working C99 designated initializers],
@@ -551,7 +553,7 @@ AC_CACHE_CHECK([for working C99 designated initializers],
 	 [tor_cv_c_c99_designated_init=no] )])
 
 if test "$tor_cv_c_c99_designated_init" != "yes"; then
-  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Tor 0.2.6.x])
+  AC_MSG_ERROR([Your compiler doesn't support c99 designated initializers. This is required as of Anon 0.2.6.x])
 fi
 
 saved_CFLAGS="$CFLAGS"
@@ -658,7 +660,7 @@ AH_BOTTOM([
 
 AM_CONDITIONAL(WIN32, test "x$bwin32" = "xtrue")
 AM_CONDITIONAL(BUILD_NT_SERVICES, test "x$bwin32" = "xtrue")
-AM_CONDITIONAL(BUILD_LIBTORRUNNER, test "x$bwin32" != "xtrue")
+AM_CONDITIONAL(BUILD_LIBANONRUNNER, test "x$bwin32" != "xtrue")
 
 dnl Enable C99 when compiling with MIPSpro
 AC_MSG_CHECKING([for MIPSpro compiler])
@@ -1868,6 +1870,23 @@ AC_CHECK_TYPES([rlim_t], , ,
 #endif
 ])
 
+if test "x$enable_jni" = "xyes"; then
+  AX_JNI_INCLUDE_DIR
+  if test -n "$JNI_INCLUDE_DIRS"; then
+    AC_DEFINE(HAVE_JNI_H,1,[Have jni.h])
+    for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS; do
+      CPPFLAGS="$CPPFLAGS -I$JNI_INCLUDE_DIR"
+    done
+  fi
+  dnl Enable Android only standard libs
+  case "$host" in
+    *android*)
+      AC_CHECK_LIB([log], [__android_log_write], [LIBS="-llog $LIBS"])
+      ;;
+  esac
+fi
+AM_CONDITIONAL(USE_JNI, test -n "$JNI_INCLUDE_DIRS")
+
 AX_CHECK_SIGN([time_t],
        [ : ],
        [ : ], [
@@ -1883,7 +1902,7 @@ AX_CHECK_SIGN([time_t],
 ])
 
 if test "$ax_cv_decl_time_t_signed" = "no"; then
-  AC_MSG_ERROR([You have an unsigned time_t; Tor does not support that. Please tell the Tor developers about your interesting platform.])
+  AC_MSG_ERROR([You have an unsigned time_t; Anon does not support that. Please tell the Anon developers about your interesting platform.])
 fi
 
 AX_CHECK_SIGN([size_t],
@@ -2116,7 +2135,7 @@ AS_CASE([$malloc],
 
   [openbsd], [
     tor_incr_n_warnings
-    AC_MSG_WARN([The openbsd malloc port is deprecated in Tor 0.3.5 and will be removed in a future version.])
+    AC_MSG_WARN([The openbsd malloc port is deprecated in Anon 0.3.5 and will be removed in a future version.])
     enable_openbsd_malloc=yes
   ],
 
@@ -2292,10 +2311,10 @@ AH_TEMPLATE([SRCDIR],[tor's sourcedir directory])
 AC_DEFINE_UNQUOTED(SRCDIR,"$SRCDIR")
 
 if test "x$CONFDIR" = "x"; then
-  CONFDIR=`eval echo $sysconfdir/tor`
+  CONFDIR=`eval echo $sysconfdir/anon`
 fi
 AC_SUBST(CONFDIR)
-AH_TEMPLATE([CONFDIR],[tor's configuration directory])
+AH_TEMPLATE([CONFDIR],[anon's configuration directory])
 AC_DEFINE_UNQUOTED(CONFDIR,"$CONFDIR")
 
 BINDIR=`eval echo $bindir`
@@ -2666,19 +2685,19 @@ AC_CONFIG_FILES([
 	Doxyfile
 	Makefile
 	contrib/operator-tools/tor.logrotate
-	src/config/torrc.sample
-	src/config/torrc.minimal
+	src/config/anonrc.sample
+	src/config/anonrc.minimal
 	scripts/maint/checkOptionDocs.pl
         warning_flags
 ])
 
 if test "x$asciidoc" = "xtrue" && test "$ASCIIDOC" = "none"; then
-  regular_mans="doc/man/tor doc/man/tor-gencert doc/man/tor-resolve doc/man/torify"
+  regular_mans="doc/man/anon doc/man/anon-gencert doc/man/anon-resolve doc/man/anonify"
   for file in $regular_mans ; do
     if ! [[ -f "$srcdir/$file.1.in" ]] || ! [[ -f "$srcdir/$file.html.in" ]] ; then
       echo "==================================";
       echo;
-      echo "Building Tor has failed since manpages cannot be built.";
+      echo "Building Anon has failed since manpages cannot be built.";
       echo;
       echo "You need asciidoc installed to be able to build the manpages.";
       echo "To build without manpages, use the --disable-asciidoc argument";
@@ -2695,9 +2714,9 @@ if test "$fragile_hardening" = "yes"; then
   AC_MSG_WARN([
 
 ============
-Warning!  Building Tor with --enable-fragile-hardening (also known as
+Warning!  Building Anon with --enable-fragile-hardening (also known as
 --enable-expensive-hardening) makes some kinds of attacks harder, but makes
-other kinds of attacks easier. A Tor instance build with this option will be
+other kinds of attacks easier. A Anon instance build with this option will be
 somewhat less vulnerable to remote code execution, arithmetic overflow, or
 out-of-bounds read/writes... but at the cost of becoming more vulnerable to
 denial of service attacks. For more information, see
@@ -2731,7 +2750,7 @@ PPRINT_SET_INDENT(1)
 PPRINT_SET_TS(65)
 
 AS_ECHO
-AS_ECHO("Tor Version: ${PPRINT_COLOR_BLDBLU}Tor $PACKAGE_VERSION $PPRINT_COLOR_RST")
+AS_ECHO("Anon Version: ${PPRINT_COLOR_BLDBLU}Anon $PACKAGE_VERSION $PPRINT_COLOR_RST")
 AS_ECHO
 
 PPRINT_SUBTITLE([Build Features])

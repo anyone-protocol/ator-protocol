@@ -1522,7 +1522,7 @@ test_config_find_my_address(void *arg)
   retval = find_my_address(options, p->family, LOG_NOTICE, &resolved_addr,
                            &method_used, &hostname_out);
 
-  expect_log_msg_containing("is a private IP address. Tor relays that "
+  expect_log_msg_containing("is a private IP address. Anon relays that "
                             "use the default DirAuthorities must have "
                             "public IP addresses.");
   teardown_capture_of_logs();
@@ -1999,14 +1999,15 @@ test_config_adding_default_trusted_dir_servers(void *arg)
   routerlist_free_all();
 
   /* Assume we only have one bridge authority */
-  add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
-  tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
+  // TODO(ator): uncomment once we have default bridge authorities
+  // add_default_trusted_dir_authorities(BRIDGE_DIRINFO);
+  // tt_int_op(get_n_authorities(BRIDGE_DIRINFO), OP_EQ, 1);
+  // tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 1);
 
-  /* Assume we have eight V3 authorities */
+  /* Assume we have at least three V3 authorities */
   add_default_trusted_dir_authorities(V3_DIRINFO);
-  tt_int_op(get_n_authorities(V3_DIRINFO), OP_EQ, 8);
-  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_EQ, 9);
+  tt_int_op(get_n_authorities(V3_DIRINFO), OP_GE, 3);
+  tt_int_op(smartlist_len(router_get_fallback_dir_servers()), OP_GE, 3);
 
  done:
   clear_dir_servers();
@@ -2222,7 +2223,8 @@ test_config_adding_dir_servers(void *arg)
                          1 : 0)
                         );
       /* If we have no default bridge authority, something has gone wrong */
-      tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
+      // TODO(ator): uncomment once we have default bridge authorities
+      // tt_int_op(n_default_alt_bridge_authority, OP_GE, 1);
 
       /* Count v3 Authorities */
       SMARTLIST_FOREACH(fallback_servers,
@@ -3858,8 +3860,8 @@ test_config_default_dir_servers(void *arg)
   or_options_free(opts);
   opts = NULL;
 
-  /* assume a release will never go out with less than 7 authorities */
-  tt_int_op(trusted_count, OP_GE, 7);
+  /* assume a release will never go out with less than 3 authorities */
+  tt_int_op(trusted_count, OP_GE, 3);
   /* if we disable the default fallbacks, there must not be any extra */
   tt_assert(fallback_count == trusted_count);
 
@@ -3871,8 +3873,8 @@ test_config_default_dir_servers(void *arg)
   or_options_free(opts);
   opts = NULL;
 
-  /* assume a release will never go out with less than 7 authorities */
-  tt_int_op(trusted_count, OP_GE, 7);
+  /* assume a release will never go out with less than 3 authorities */
+  tt_int_op(trusted_count, OP_GE, 3);
   /* XX/teor - allow for default fallbacks to be added without breaking
    * the unit tests. Set a minimum fallback count once the list is stable. */
   tt_assert(fallback_count >= trusted_count);
@@ -5315,7 +5317,7 @@ test_config_include_limit(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
   char torrc_contents[1000];
   tor_snprintf(torrc_contents, sizeof(torrc_contents), "%%include %s",
                torrc_path);
@@ -5493,7 +5495,7 @@ test_config_include_recursion_before_after(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5558,7 +5560,7 @@ test_config_include_recursion_after_only(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"torrc", dir);
+  tor_asprintf(&torrc_path, "%s"PATH_SEPARATOR"anonrc", dir);
 
   char file_contents[1000];
   const int limit = MAX_INCLUDE_RECURSION_LEVEL;
@@ -5625,7 +5627,7 @@ test_config_include_folder_order(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -5715,7 +5717,7 @@ test_config_include_blank_file_last(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);
@@ -5895,7 +5897,7 @@ test_config_include_flag_torrc_only(void *data)
 
   char *errmsg = NULL;
   char *path = NULL;
-  char *dir = tor_strdup(get_fname("test_include_flag_torrc_only"));
+  char *dir = tor_strdup(get_fname("test_include_flag_anonrc_only"));
   tt_ptr_op(dir, OP_NE, NULL);
 
 #ifdef _WIN32
@@ -6392,7 +6394,7 @@ test_config_include_opened_file_list(void *data)
   tt_int_op(mkdir(dir, 0700), OP_EQ, 0);
 #endif
 
-  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "torrc.d");
+  tor_asprintf(&torrcd, "%s"PATH_SEPARATOR"%s", dir, "anonrc.d");
 
 #ifdef _WIN32
   tt_int_op(mkdir(torrcd), OP_EQ, 0);

@@ -1,0 +1,37 @@
+[Unit]
+Description=Anonymizing overlay network for TCP (instance %i)
+After=network-online.target nss-lookup.target
+PartOf=anon.service
+ReloadPropagatedFrom=anon.service
+
+[Service]
+Type=notify
+NotifyAccess=all
+PIDFile=/run/anon-instances/%i/anon.pid
+PermissionsStartOnly=yes
+ExecStartPre=/usr/bin/install -Z -m 02755 -o _anon-%i -g _anon-%i -d /run/anon-instances/%i
+ExecStartPre=/bin/sed -e 's/@@NAME@@/%i/g; w /run/anon-instances/%i.defaults' /usr/share/anon/anon-service-defaults-anonrc-instances
+ExecStartPre=/usr/bin/anon --defaults-anonrc /run/anon-instances/%i.defaults -f /etc/anon/instances/%i/anonrc --verify-config
+ExecStart=/usr/bin/anon --defaults-anonrc /run/anon-instances/%i.defaults -f /etc/anon/instances/%i/anonrc
+ExecReload=/bin/kill -HUP ${MAINPID}
+KillSignal=SIGINT
+TimeoutStartSec=300
+TimeoutStopSec=60
+Restart=on-failure
+LimitNOFILE=65536
+
+# Hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=full
+ReadOnlyDirectories=/
+# We would really like to restrict the next item to [..]/%i but we can't,
+# as systemd does not support that yet.  See also #781730.
+ReadWriteDirectories=-/var/lib/anon-instances
+ReadWriteDirectories=-/run
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH
+
+[Install]
+WantedBy=multi-user.target

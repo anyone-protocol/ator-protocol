@@ -722,7 +722,7 @@ disk_state_save_to_disk(void)
   state = config_dump(get_srs_mgr(), NULL, sr_disk_state, 0, 0);
   format_local_iso_time(tbuf, now);
   tor_asprintf(&content,
-               "# Tor shared random state file last generated on %s "
+               "# Anon shared random state file last generated on %s "
                "local time\n"
                "# Other times below are in UTC\n"
                "# Please *do not* edit this file.\n\n%s",

@@ -214,7 +214,7 @@ test_callbacks(void *arg)
   process_set_exit_callback(process, process_exit_callback);
 
   /* Set environment variable. */
-  process_set_environment(process, "TOR_TEST_ENV", "Hello, from Tor!");
+  process_set_environment(process, "TOR_TEST_ENV", "Hello, from Anon!");
 
   /* Add some arguments. */
   process_append_argument(process, "This is the first one");
@@ -256,7 +256,7 @@ test_callbacks(void *arg)
   tt_str_op(smartlist_get(process_data->stdout_data, 3), OP_EQ,
             "argv[3] = 'Third: Foo bar baz'");
   tt_str_op(smartlist_get(process_data->stdout_data, 4), OP_EQ,
-            "Environment variable TOR_TEST_ENV = 'Hello, from Tor!'");
+            "Environment variable TOR_TEST_ENV = 'Hello, from Anon!'");
   tt_str_op(smartlist_get(process_data->stdout_data, 5), OP_EQ,
             "Output on stdout");
   tt_str_op(smartlist_get(process_data->stdout_data, 6), OP_EQ,

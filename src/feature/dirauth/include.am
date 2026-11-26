@@ -48,7 +48,7 @@ noinst_HEADERS +=					\
 	src/feature/dirauth/voting_schedule.h
 
 if BUILD_MODULE_DIRAUTH
-LIBTOR_APP_A_SOURCES += $(MODULE_DIRAUTH_SOURCES)
+LIBANON_APP_A_SOURCES += $(MODULE_DIRAUTH_SOURCES)
 else
-LIBTOR_APP_A_STUB_SOURCES += src/feature/dirauth/dirauth_stub.c
+LIBANON_APP_A_STUB_SOURCES += src/feature/dirauth/dirauth_stub.c
 endif

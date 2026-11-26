@@ -54,7 +54,7 @@ compute_num_cpus_impl(void)
   } else if (cpus_onln > 0 && cpus_conf > 0) {
     if (cpus_onln < cpus_conf) {
       log_info(LD_GENERAL, "I think we have %ld CPUS, but only %ld of them "
-               "are available. Telling Tor to only use %ld. You can over"
+               "are available. Telling Anon to only use %ld. You can over"
                "ride this with the NumCPUs option",
                cpus_conf, cpus_onln, cpus_onln);
     }
@@ -92,7 +92,7 @@ compute_num_cpus(void)
       /* LCOV_EXCL_START */
       log_notice(LD_GENERAL, "Wow!  I detected that you have %d CPUs. I "
                  "will not autodetect any more than %d, though.  If you "
-                 "want to configure more, set NumCPUs in your torrc",
+                 "want to configure more, set NumCPUs in your anonrc",
                  num_cpus, MAX_DETECTABLE_CPUS);
       num_cpus = MAX_DETECTABLE_CPUS;
       /* LCOV_EXCL_STOP */

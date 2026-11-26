@@ -4,8 +4,8 @@
 
 """Offline process integration for CBT state recovery and option transitions.
 
-Usage: python3 src/test/test_cbt_mvp.py src/app/tor
-Uses only a temporary directory and a local Unix control socket. No Tor network
+Usage: python3 src/test/test_cbt_mvp.py src/app/anon
+Uses only a temporary directory and a local Unix control socket. No Anon network
 is contacted. DROPTIMEOUTS is used only in these disposable test processes to
 observe the effective cached policy through its existing controller event.
 """
@@ -48,7 +48,8 @@ def run(tor, directory, adaptive, initial, reload=False, inspect_policy=True):
     log = directory / "process.log"
     with log.open("w") as output:
         proc = subprocess.Popen([
-            tor, "--ignore-missing-torrc", "-f", str(directory / "torrc"),
+            tor, "--ignore-missing-anonrc", "-f", str(directory / "anonrc"),
+            "--AgreeToTerms", "1",
             "--DataDirectory", str(directory), "--DisableNetwork", "1",
             "--SocksPort", "0", "--ControlPort", "0",
             "--ControlSocket", str(control), "--CookieAuthentication", "0",
@@ -76,9 +77,9 @@ def run(tor, directory, adaptive, initial, reload=False, inspect_policy=True):
                     assert policy(sock) == initial * 1000
                 command(sock, "SIGNAL SHUTDOWN")
             status = proc.wait(timeout=15)
-            assert status == 0, "Tor exited with status {}".format(status)
+            assert status == 0, "Anon exited with status {}".format(status)
         except Exception:
-            print("Tor log for {}:".format(directory.name), file=sys.stderr)
+            print("Anon log for {}:".format(directory.name), file=sys.stderr)
             print(log.read_text(), file=sys.stderr)
             raise
         finally:

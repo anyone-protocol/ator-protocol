@@ -1,0 +1,14 @@
+version: '2.2'
+services:
+  relay:
+    image: anon
+    init: true
+    restart: always
+    ports:
+      - "9001:9001"
+      - "9030:9030"
+    volumes:
+      # mount and DataDirectory and custom `anonrc` here
+      # please make sure that `anonrc` is present in the working directory: `cp config/anonrc-example anonrc`
+      - ./anon-data/:/var/lib/anon/
+      - ./anonrc:/etc/anon/anonrc

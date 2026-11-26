@@ -39,8 +39,8 @@ import optparse
 
 NO_HYPHENATE=set("""
 pf-divert
-tor-resolve
-tor-gencert
+anon-resolve
+anon-gencert
 """.split())
 
 LASTLINE_UNDERFLOW_EXPONENT = 1

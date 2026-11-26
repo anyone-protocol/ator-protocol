@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+# checking terms and conditions
+
+. /usr/share/debconf/confmodule
+
+db_get anon/terms
+if [ "$RET" != "true" ]; then
+    echo "You must accept the terms and conditions to install this package."
+    db_unregister anon/terms
+    exit 1
+fi

@@ -66,7 +66,7 @@ init_key_from_file(const char *fname, int generate, int severity,
           if (try_locking(get_options(), 0)<0) {
             /* Make sure that --list-fingerprint only creates new keys
              * if there is no possibility for a deadlock. */
-            tor_log(severity, LD_FS, "Another Tor process has locked \"%s\". "
+            tor_log(severity, LD_FS, "Another Anon process has locked \"%s\". "
                     "Not writing any new keys.", fname);
             /*XXXX The 'other process' might make a key in a second or two;
              * maybe we should wait for it. */
@@ -534,7 +534,7 @@ ed_key_init_from_file(const char *fname, uint32_t flags,
       !(flags & INIT_ED_KEY_MISSING_SECRET_OK)) {
     if (have_encrypted_secret_file) {
       tor_log(severity, LD_OR, "We needed to load a secret key from %s, "
-              "but it was encrypted. Try 'tor --keygen' instead, so you "
+              "but it was encrypted. Try 'anon --keygen' instead, so you "
               "can enter the passphrase.",
               secret_fname);
     } else if (offline_secret) {
@@ -546,7 +546,7 @@ ed_key_init_from_file(const char *fname, uint32_t flags,
               "but couldn't find it. %s", secret_fname,
               (flags & INIT_ED_KEY_SUGGEST_KEYGEN) ?
               "If you're keeping your master secret key offline, you will "
-              "need to run 'tor --keygen' to generate new signing keys." :
+              "need to run 'anon --keygen' to generate new signing keys." :
               "Did you forget to copy it over when you copied the rest of the "
               "signing key material?");
     }

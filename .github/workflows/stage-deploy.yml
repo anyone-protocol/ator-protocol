@@ -1,0 +1,31 @@
+name: Stage Deploy
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  image-name: ghcr.io/anyone-protocol/ator-protocol-stage
+  image-tag: ${{ github.event_name == 'workflow_call' && 'latest' || github.sha }}
+
+jobs:
+  push:
+    if: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy new version 
+        uses: ./.github/actions/deploy
+        with:
+          image-tag: ${{ env.image-tag }}
+          nomad-job-file: anon-da-node-stage.hcl
+          nomad-cacert: operations/admin-ui-ca.crt
+          nomad-token: ${{ secrets.NOMAD_TOKEN_ATOR_NETWORK_DEPLOY }}
+          nomad-addr: ${{ secrets.NOMAD_DEPLOY_ADDR }}
+          consul-cacert: operations/admin-ui-ca.crt
+          consul-http-token: ${{ secrets.CONSUL_HTTP_TOKEN_ATOR_NETWORK_DEPLOY }}
+          consul-addr: ${{ secrets.CONSUL_DEPLOY_ADDR }}

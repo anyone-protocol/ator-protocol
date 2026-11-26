@@ -47,6 +47,14 @@ int get_protocol_warning_severity_level(void);
 /** Pattern for backing up configuration files */
 #define CONFIG_BACKUP_PATTERN "%s.orig.1"
 
+#define DEFAULT_ANON_DNS_MAPPING \
+  "dns-live-1.anyone.anyone " \
+  "gadmrvl67444hgzrhsnhzknxaimfnzp6az3wq4d2j7hrf7th34elrrad.anyone\n" \
+  "dns-live-2.anyone.anyone " \
+  "kjlkfrfxquevo64qv4gssl3t52tiuay2muj7u4rox4llxboj4c4ypcid.anyone\n" \
+  "dns-live-3.anyone.anyone " \
+  "jntoblprbfgcpldwuzobmzsdjs6mtwtr3dtn3mtgdjnk6j7x2frcabad.anyone"
+
 /** An error from options_trial_assign() or options_init_from_string(). */
 typedef enum setopt_err_t {
   SETOPT_OK = 0,

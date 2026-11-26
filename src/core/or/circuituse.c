@@ -2027,7 +2027,7 @@ circuit_build_failed(origin_circuit_t *circ)
     static ratelim_t pathfail_limit = RATELIM_INIT(3600);
     log_fn_ratelim(&pathfail_limit, LOG_NOTICE, LD_CIRC,
              "Our circuit %u (id: %" PRIu32 ") died due to an invalid "
-             "selected path, purpose %s. This may be a torrc "
+             "selected path, purpose %s. This may be a anonrc "
              "configuration issue, or a bug.",
               TO_CIRCUIT(circ)->n_circ_id, circ->global_identifier,
               circuit_purpose_to_string(TO_CIRCUIT(circ)->purpose));
@@ -2582,7 +2582,7 @@ circuit_get_open_circ_or_launch(entry_connection_t *conn,
                                               conn->socks_request->port,
                                               need_uptime)) {
         log_notice(LD_APP,
-                   "No Tor server allows exit to %s:%d. Rejecting.",
+                   "No Anon server allows exit to %s:%d. Rejecting.",
                    safe_str_client(conn->socks_request->address),
                    conn->socks_request->port);
         return -1;

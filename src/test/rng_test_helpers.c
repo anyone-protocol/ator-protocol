@@ -22,7 +22,7 @@
 #include "test/rng_test_helpers.h"
 
 #ifndef TOR_UNIT_TESTS
-#error "No. Never link this code into Tor proper."
+#error "No. Never link this code into Anon proper."
 #endif
 
 /**

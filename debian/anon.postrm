@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+if [ "$1" = "purge" ]; then
+    # logs have to be removed according to policy.
+    rm -rf /var/log/anon/
+    rm -rf /var/lib/anon/
+    rm -rf /run/anon/
+fi
+
+#DEBHELPER#
+
+exit 0

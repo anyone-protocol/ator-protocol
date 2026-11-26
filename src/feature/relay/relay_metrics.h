@@ -57,6 +57,8 @@ typedef enum {
   RELAY_METRICS_NUM_INTRO1_CELLS,
   /** Number of times we received a REND1 cell */
   RELAY_METRICS_NUM_REND1_CELLS,
+  /** Reachability self-test gauges. */
+  RELAY_METRICS_REACHABILITY_GAUGES,
   /** Number of circuit closed by receiving a DESTROY cell. */
   RELAY_METRICS_CIRC_DESTROY_CELL,
   /** Number of circuits closed due to protocol violation. */

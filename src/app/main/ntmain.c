@@ -31,8 +31,8 @@
 #include "lib/log/win32err.h"
 
 #include <windows.h>
-#define GENSRV_SERVICENAME  "tor"
-#define GENSRV_DISPLAYNAME  "Tor Win32 Service"
+#define GENSRV_SERVICENAME  "anon"
+#define GENSRV_DISPLAYNAME  "Anon Win32 Service"
 #define GENSRV_DESCRIPTION  \
   "Provides an anonymous Internet communication system"
 #define GENSRV_USERACCT "NT AUTHORITY\\LocalService"
@@ -504,7 +504,7 @@ nt_service_command_line(int *using_default_torrc)
         !strcmp(backup_argv[i], "-options")) {
       while (++i < backup_argc) {
         if (!strcmp(backup_argv[i], "-f") ||
-            !strcmp(backup_argv[i], "--torrc-file"))
+            !strcmp(backup_argv[i], "--anonrc-file"))
           *using_default_torrc = 0;
         smartlist_add(sl, backup_argv[i]);
       }
@@ -629,8 +629,8 @@ nt_service_install(int argc, char **argv)
    * situation. */
   if (using_default_torrc)
     printf("IMPORTANT NOTE:\n"
-        "    The Tor service will run under the account \"%s\".  This means\n"
-        "    that Tor will look for its configuration file under that\n"
+        "    The Anon service will run under the account \"%s\".  This means\n"
+        "    that Anon will look for its configuration file under that\n"
         "    account's Application Data directory, which is probably not\n"
         "    the same as yours.\n", user_acct?user_acct:"<local system>");
 

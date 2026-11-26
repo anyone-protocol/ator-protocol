@@ -67,6 +67,7 @@
 #include "core/or/connection_or.h"
 #include "core/or/dos.h"
 #include "core/or/status.h"
+#include "feature/anyone/anyone_hosts_update.h"
 #include "feature/client/addressmap.h"
 #include "feature/client/bridges.h"
 #include "feature/client/dnsserv.h"
@@ -1300,7 +1301,7 @@ run_connection_housekeeping(int i, time_t now)
     if (conn->state == OR_CONN_STATE_CONNECTING)
       connection_or_connect_failed(TO_OR_CONN(conn),
                                    END_OR_CONN_REASON_TIMEOUT,
-                                   "Tor gave up on the connection");
+                                   "Anon gave up on the connection");
     connection_or_close_normally(TO_OR_CONN(conn), 1);
   } else if (!connection_state_is_open(conn)) {
     if (past_keepalive) {
@@ -1446,6 +1447,7 @@ CALLBACK(write_stats_file);
 CALLBACK(control_per_second_events);
 CALLBACK(second_elapsed);
 CALLBACK(manage_vglite);
+CALLBACK(update_anyone_hosts);
 
 #undef CALLBACK
 
@@ -1470,6 +1472,9 @@ STATIC periodic_event_item_t mainloop_periodic_events[] = {
 
   /* Update vanguards-lite once per hour, if we have networking */
   CALLBACK(manage_vglite, NET_PARTICIPANT, FL(NEED_NET)),
+
+  /* Periodically update the anyone_hosts DNS mapping file. */
+  CALLBACK(update_anyone_hosts, CLIENT, FL(NEED_NET)),
 
   /* XXXX Do we have a reason to do this on a callback? Does it do any good at
    * all?  For now, if we're dormant, we can let our listeners decay. */
@@ -1618,6 +1623,8 @@ initialize_periodic_events(void)
   NAMED_CALLBACK(launch_descriptor_fetches);
   NAMED_CALLBACK(check_dns_honesty);
   NAMED_CALLBACK(save_state);
+
+  anyone_hosts_update_init();
 }
 
 STATIC void
@@ -1754,6 +1761,17 @@ manage_vglite_callback(time_t now, const or_options_t *options)
   maintain_layer2_guards();
 
   return VANGUARDS_LITE_INTERVAL;
+}
+
+/** Periodic-event callback: attempt to update the anyone_hosts DNS mapping
+ * file, and return the number of seconds until the next run
+ * (AnyoneHostsUpdateInterval, jittered).  Whether an update may actually
+ * run (enabled, client-only, timing) is decided inside the anyone module.
+ */
+static int
+update_anyone_hosts_callback(time_t now, const or_options_t *options)
+{
+  return anyone_hosts_update_callback(now, options);
 }
 
 /** Perform regular maintenance tasks.  This function gets run once per

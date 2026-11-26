@@ -42,7 +42,7 @@ const entry_connection_t *CONST_EDGE_TO_ENTRY_CONN(const edge_connection_t *);
 #define AP_CONN_STATE_MIN_ 5
 /** State for a SOCKS connection: waiting for SOCKS request. */
 #define AP_CONN_STATE_SOCKS_WAIT 5
-/** State for a SOCKS connection: got a y.onion URL; waiting to receive
+/** State for a SOCKS connection: got a y.anyone URL; waiting to receive
  * rendezvous descriptor. */
 #define AP_CONN_STATE_RENDDESC_WAIT 6
 /** The controller will attach this connection to a circuit; it isn't our
@@ -116,6 +116,11 @@ entry_connection_t  *connection_ap_make_link(connection_t *partner,
                                             int session_group,
                                             int isolation_flags,
                                             int use_begindir, int want_onehop);
+entry_connection_t *connection_ap_make_link_onion(connection_t *partner,
+                                                  char *address,
+                                                  uint16_t port,
+                                                  int session_group,
+                                                  int isolation_flags);
 void connection_ap_handshake_socks_reply(entry_connection_t *conn, char *reply,
                                          size_t replylen,
                                          int endreason);
@@ -254,6 +259,9 @@ void half_edge_free_(struct half_edge_t *he);
 #ifdef CONNECTION_EDGE_PRIVATE
 
 STATIC bool parse_extended_hostname(char *address, hostname_type_t *type_out);
+
+bool lookup_anon_dns_mapping(const char *anon_address,
+                             char *onion_address_out, size_t buffer_size);
 
 /** A parsed BEGIN or BEGIN_DIR cell */
 typedef struct begin_cell_t {

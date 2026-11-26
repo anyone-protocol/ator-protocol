@@ -29,7 +29,7 @@ const char tor_git_revision[] =
  * It has the form "(on Tor 0.4.3.1-alpha)" or
  * "(on Tor 0.4.3.1-alpha git-b994397f1af193f8)"
  **/
-const char tor_bug_suffix[] = " (on Tor " VERSION
+const char tor_bug_suffix[] = " (on Anon " VERSION
 #ifndef COCCI
 #ifndef _MSC_VER
   " "

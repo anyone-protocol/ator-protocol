@@ -74,7 +74,7 @@ cfg_add_owned_arg(tor_main_configuration_t *cfg, const char *arg)
 tor_main_configuration_t *
 tor_main_configuration_new(void)
 {
-  static const char *fake_argv[] = { "tor" };
+  static const char *fake_argv[] = { "anon" };
   tor_main_configuration_t *cfg = raw_malloc(sizeof(*cfg));
   if (cfg == NULL)
     return NULL;
@@ -98,6 +98,17 @@ tor_main_configuration_set_command_line(tor_main_configuration_t *cfg,
   cfg->argc = argc;
   cfg->argv = argv;
   return 0;
+}
+
+/*
+ * Temporary workaround for a double close crash with fdsan.
+ * See: https://github.com/guardianproject/tor-android/issues/57
+ * Should be removed once fixed in Tor upstream.
+ */
+void
+unset_owning_controller_socket(tor_main_configuration_t* t)
+{
+    t->owning_controller_socket = -1;
 }
 
 tor_control_socket_t
@@ -167,3 +178,7 @@ tor_main(int argc, char *argv[])
   tor_main_configuration_free(cfg);
   return rv;
 }
+
+#ifdef HAVE_JNI_H
+#include "io_anyone_jni_AnonService.c"
+#endif

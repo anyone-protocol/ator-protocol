@@ -327,6 +327,9 @@ static const config_var_t option_vars_[] = {
   V(AlternateBridgeAuthority,    LINELIST, NULL),
   V(AlternateDirAuthority,       LINELIST, NULL),
   OBSOLETE("AlternateHSAuthority"),
+  V(AnyoneHostsUpdate,           BOOL,     "1"),
+  V(AnyoneHostsUpdateInterval,   INTERVAL, "12 hours"),
+  V(AnyoneHostsURL,              LINELIST, NULL),
   V(AssumeReachable,             BOOL,     "0"),
   V(AssumeReachableIPv6,         AUTOBOOL, "auto"),
   OBSOLETE("AuthDirBadDir"),
@@ -345,7 +348,7 @@ static const config_var_t option_vars_[] = {
   V(AuthDirSupport048Clients,    BOOL,     "0"),
   VAR("AuthoritativeDirectory",  BOOL, AuthoritativeDir,    "0"),
   V(AutomapHostsOnResolve,       BOOL,     "0"),
-  V(AutomapHostsSuffixes,        CSV,      ".onion,.exit"),
+  V(AutomapHostsSuffixes,        CSV,      ".anyone,.exit"),
   V(AvoidDiskWrites,             BOOL,     "0"),
   V(BandwidthBurst,              MEMUNIT,  "1 GB"),
   V(BandwidthRate,               MEMUNIT,  "1 GB"),
@@ -433,6 +436,7 @@ static const config_var_t option_vars_[] = {
   OBSOLETE("DisableV2DirectoryInfo_"),
   OBSOLETE("DynamicDHGroups"),
   VPORT(DNSPort),
+  V(DNSMappingFileMaxSize,       MEMUNIT,  "10 MB"),
   OBSOLETE("DNSListenAddress"),
   V(DormantClientTimeout,        INTERVAL, "24 hours"),
   V(DormantTimeoutEnabled,       BOOL,     "1"),
@@ -496,9 +500,9 @@ static const config_var_t option_vars_[] = {
   V(GeoIPv6File,                 FILENAME, "/data/local/tmp/geoip6"),
 #else
   V(GeoIPFile,                   FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip"),
   V(GeoIPv6File,                 FILENAME,
-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip6"),
+    SHARE_DATADIR PATH_SEPARATOR "anon" PATH_SEPARATOR "geoip6"),
 #endif /* defined(_WIN32) */
   OBSOLETE("Group"),
   V(GuardLifetime,               INTERVAL, "0 minutes"),
@@ -647,6 +651,7 @@ static const config_var_t option_vars_[] = {
   V(RelayBandwidthBurst,         MEMUNIT,  "0"),
   V(RelayBandwidthRate,          MEMUNIT,  "0"),
   V(RephistTrackTime,            INTERVAL, "24 hours"),
+  V_IMMUTABLE(AgreeToTerms,      BOOL,     "0"),
   V_IMMUTABLE(RunAsDaemon,       BOOL,     "0"),
   V(ReducedExitPolicy,           BOOL,     "0"),
   V(ReevaluateExitPolicy,        BOOL,     "0"),
@@ -822,7 +827,7 @@ static const struct {
 static const config_deprecation_t option_deprecation_notes_[] = {
   /* Deprecated since 0.3.2.0-alpha. */
   { "HTTPProxy", "It only applies to direct unencrypted HTTP connections "
-    "to your directory server, which your Tor probably wasn't using." },
+    "to your directory server, which your Anon probably wasn't using." },
   { "HTTPProxyAuthenticator", "HTTPProxy is deprecated in favor of HTTPSProxy "
     "which should be used with HTTPSProxyAuthenticator." },
   /* End of options deprecated since 0.3.2.1-alpha */
@@ -1276,9 +1281,9 @@ validate_dir_servers(const or_options_t *options,
              "You have used DirAuthority or AlternateDirAuthority to "
              "specify alternate directory authorities in "
              "your configuration. This is potentially dangerous: it can "
-             "make you look different from all other Tor users, and hurt "
+             "make you look different from all other Anon users, and hurt "
              "your anonymity. Even if you've specified the same "
-             "authorities as Tor uses by default, the defaults could "
+             "authorities as Anon uses by default, the defaults could "
              "change in the future. Be sure you know what you're doing.");
   }
 
@@ -1684,7 +1689,7 @@ options_start_listener_transaction(const or_options_t *old_options,
   }
   if (options->DisableNetwork) {
     /* Aggressively close non-controller stuff, NOW */
-    log_notice(LD_NET, "DisableNetwork is set. Tor will not make or accept "
+    log_notice(LD_NET, "DisableNetwork is set. Anon will not make or accept "
                "non-control network connections. Shutting down all existing "
                "connections.");
     connection_mark_all_noncontrol_connections();
@@ -2130,7 +2135,7 @@ options_act,(const or_options_t *old_options))
   }
 
   if (hs_service_non_anonymous_mode_enabled(options)) {
-    log_warn(LD_GENERAL, "This copy of Tor was compiled or configured to run "
+    log_warn(LD_GENERAL, "This copy of Anon was compiled or configured to run "
              "in a non-anonymous mode. It will provide NO ANONYMITY.");
   }
 
@@ -2482,11 +2487,12 @@ static const struct {
   /** If nonzero, set the quiet level to this. 1 is "hush", 2 is "quiet" */
   int quiet;
 } CMDLINE_ONLY_OPTIONS[] = {
-  { .name="--torrc-file",
+  { .name="--agree-to-terms" },
+  { .name="--anonrc-file",
     .short_name="-f",
     .takes_argument=ARGUMENT_NECESSARY },
-  { .name="--allow-missing-torrc" },
-  { .name="--defaults-torrc",
+  { .name="--allow-missing-anonrc" },
+  { .name="--defaults-anonrc",
     .takes_argument=ARGUMENT_NECESSARY },
   { .name="--hash-password",
     .takes_argument=ARGUMENT_NECESSARY,
@@ -2515,7 +2521,7 @@ static const struct {
     .takes_argument=ARGUMENT_NECESSARY },
   { .name="--verify-config",
     .command=CMD_VERIFY_CONFIG },
-  { .name="--ignore-missing-torrc" },
+  { .name="--ignore-missing-anonrc" },
   { .name="--quiet",
     .quiet=QUIET_SILENT },
   { .name="--hush",
@@ -2533,7 +2539,7 @@ static const struct {
     .short_name="-h",
     .command=CMD_IMMEDIATE,
     .quiet=QUIET_HUSH  },
-  { .name="--list-torrc-options",
+  { .name="--list-anonrc-options",
     .command=CMD_IMMEDIATE,
     .quiet=QUIET_HUSH },
   { .name="--list-deprecated-options",
@@ -2723,9 +2729,8 @@ print_usage(void)
 "Copyright (c) 2001-2004, Roger Dingledine\n"
 "Copyright (c) 2004-2006, Roger Dingledine, Nick Mathewson\n"
 "Copyright (c) 2007-2021, The Tor Project, Inc.\n\n"
-"tor -f <torrc> [args]\n"
-"See man page for options, or https://www.torproject.org/ for "
-"documentation.\n");
+"anon -f <anonrc> [args]\n"
+"See the man page for options.\n");
 }
 
 /** Print all non-obsolete torrc options. */
@@ -2781,7 +2786,7 @@ list_enabled_modules(void)
 static void
 print_library_versions(void)
 {
-  printf("Tor version %s. \n", get_version());
+  printf("Anon version %s. \n", get_version());
   printf("Library versions\tCompiled\t\tRuntime\n");
   printf("Libevent\t\t%-15s\t\t%s\n",
                     tor_libevent_get_header_version_str(),
@@ -3257,7 +3262,7 @@ options_validate_single_onion(or_options_t *options, char **msg)
                                options->DNSPort_set ||
                                options->HTTPTunnelPort_set);
   if (hs_service_non_anonymous_mode_enabled(options) && client_port_set) {
-    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Tor as "
+    REJECT("HiddenServiceNonAnonymousMode is incompatible with using Anon as "
            "an anonymous client. Please set Socks/Trans/NATD/DNSPort to 0, or "
            "revert HiddenServiceNonAnonymousMode to 0.");
   }
@@ -3358,7 +3363,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     log_warn(LD_CONFIG,
         "SocksPort, TransPort, NATDPort, DNSPort, and ORPort are all "
         "undefined, and there aren't any hidden services configured.  "
-        "Tor will still run, but probably won't do anything.");
+        "Anon will still run, but probably won't do anything.");
 
   options->TransProxyType_parsed = TPT_DEFAULT;
 #ifdef USE_TRANSPARENT
@@ -3430,7 +3435,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
 
   if (options->ExcludeNodes && options->StrictNodes) {
     COMPLAIN("You have asked to exclude certain relays from all positions "
-             "in your circuits. Expect hidden services and other Tor "
+             "in your circuits. Expect hidden services and other Anon "
              "features to be broken in unpredictable ways.");
   }
 
@@ -3615,7 +3620,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
       !hs_service_allow_non_anonymous_connection(options)) {
     log_warn(LD_CONFIG,
              "UseEntryGuards is disabled, but you have configured one or more "
-             "hidden services on this Tor instance.  Your hidden services "
+             "hidden services on this Anon instance.  Your hidden services "
              "will be very easy to locate using a well-known attack -- see "
              "https://freehaven.net/anonbib/#hs-attack06 for details.");
   }
@@ -3633,8 +3638,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "You have one single EntryNodes and at least one hidden service "
              "configured. This is bad because it's very easy to locate your "
              "entry guard which can then lead to the deanonymization of your "
-             "hidden service -- for more details, see "
-             "https://bugs.torproject.org/tpo/core/tor/14917. "
+             "hidden service. "
              "For this reason, the use of one EntryNodes with an hidden "
              "service is prohibited until a better solution is found.");
     return -1;
@@ -3650,8 +3654,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
              "hidden service is configured. Pinning entry nodes can possibly "
              "be harmful to the service anonymity. Because of this, we "
              "recommend you either don't do that or make sure you know what "
-             "you are doing. For more details, please look at "
-             "https://bugs.torproject.org/tpo/core/tor/21155.");
+             "you are doing.");
   }
 
   /* Single Onion Services: non-anonymous hidden services */
@@ -3659,7 +3662,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     log_warn(LD_CONFIG,
              "HiddenServiceNonAnonymousMode is set. Every hidden service on "
              "this tor instance is NON-ANONYMOUS. If "
-             "the HiddenServiceNonAnonymousMode option is changed, Tor will "
+             "the HiddenServiceNonAnonymousMode option is changed, Anon will "
              "refuse to launch hidden services from the same directories, to "
              "protect your anonymity against config errors. This setting is "
              "for experimental use only.");
@@ -3896,8 +3899,8 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
       !options->CookieAuthentication) {
     log_warn(LD_CONFIG, "Control%s is %s, but no authentication method "
              "has been configured.  This means that any program on your "
-             "computer can reconfigure your Tor.  That's bad!  You should "
-             "upgrade your Tor controller as soon as possible.",
+             "computer can reconfigure your Anon.  That's bad!  You should "
+             "upgrade your Anon controller as soon as possible.",
              options->ControlPort_set ? "Port" : "Socket",
              options->ControlPort_set ? "open" : "world writable");
   }
@@ -3995,7 +3998,7 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
     if (!config_is_same(get_options_mgr(),options,                      \
                         dflt_options,#arg)) {                           \
       or_options_free(dflt_options);                                    \
-      REJECT(#arg " may only be changed in testing Tor "                \
+      REJECT(#arg " may only be changed in testing Anyone "             \
              "networks!");                                              \
     }                                                                   \
   STMT_END
@@ -4063,24 +4066,42 @@ options_validate_cb(const void *old_options_, void *options_, char **msg)
   if (options->TestingEnableConnBwEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableConnBwEvent may only be changed in testing "
-           "Tor networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingEnableCellStatsEvent &&
       !options->TestingTorNetwork && !options->UsingTestNetworkDefaults_) {
     REJECT("TestingEnableCellStatsEvent may only be changed in testing "
-           "Tor networks!");
+           "Anyone networks!");
   }
 
   if (options->TestingTorNetwork) {
     log_warn(LD_CONFIG, "TestingTorNetwork is set. This will make your node "
-                        "almost unusable in the public Tor network, and is "
+                        "almost unusable in the public Anyone network, and is "
                         "therefore only advised if you are building a "
-                        "testing Tor network!");
+                        "testing Anyone network!");
   }
 
   if (options_validate_scheduler(options, msg) < 0) {
     return -1;
+  }
+
+  if (options->AnyoneHostsURL) {
+    const config_line_t *url_line;
+    for (url_line = options->AnyoneHostsURL; url_line;
+         url_line = url_line->next) {
+      const char *v = url_line->value;
+      if (!v || !strlen(v) || strcmpend(v, ".anyone") ||
+          strstr(v, "://") || strchr(v, '/') || strchr(v, ':') ||
+          strpbrk(v, " \t\r\n")) {
+        REJECT("AnyoneHostsURL entries must be bare .anyone hostnames "
+               "(no scheme, port, path, or whitespace) ending in "
+               "\".anyone\".");
+      }
+    }
+  }
+  if (options->AnyoneHostsUpdateInterval < 3600) {
+    REJECT("AnyoneHostsUpdateInterval must be at least 1 hour.");
   }
 
   return 0;
@@ -4211,7 +4232,7 @@ options_check_transition_cb(const void *old_,
     return 0;
 
 #define BAD_CHANGE_TO(opt, how) do {                                    \
-    *msg = tor_strdup("While Tor is running"how", changing " #opt       \
+    *msg = tor_strdup("While Anon is running"how", changing " #opt       \
                       " is not allowed");                               \
     return -1;                                                          \
   } while (0)
@@ -4305,7 +4326,7 @@ get_windows_conf_root(void)
   if (!SUCCEEDED(result)) {
     return NULL;
   }
-  strlcat(path,"\\tor",MAX_PATH);
+  strlcat(path,"\\anon",MAX_PATH);
   is_set = 1;
   return path;
 }
@@ -4322,17 +4343,17 @@ get_default_conf_file(int defaults_file)
 #elif defined(_WIN32)
   if (defaults_file) {
     static char defaults_path[MAX_PATH+1];
-    tor_snprintf(defaults_path, MAX_PATH, "%s\\torrc-defaults",
+    tor_snprintf(defaults_path, MAX_PATH, "%s\\anonrc-defaults",
                  get_windows_conf_root());
     return defaults_path;
   } else {
     static char path[MAX_PATH+1];
-    tor_snprintf(path, MAX_PATH, "%s\\torrc",
+    tor_snprintf(path, MAX_PATH, "%s\\anonrc",
                  get_windows_conf_root());
     return path;
   }
 #else
-  return defaults_file ? CONFDIR "/torrc-defaults" : CONFDIR "/torrc";
+  return defaults_file ? CONFDIR "/anonrc-defaults" : CONFDIR "/anonrc";
 #endif /* defined(DISABLE_SYSTEM_TORRC) || ... */
 }
 
@@ -4354,10 +4375,10 @@ find_torrc_filename(const config_line_t *cmd_arg,
 {
   char *fname=NULL;
   const config_line_t *p_index;
-  const char *fname_opt = defaults_file ? "--defaults-torrc" : "-f";
-  const char *fname_long_opt = defaults_file ? "--defaults-torrc" :
-                                               "--torrc-file";
-  const char *ignore_opt = defaults_file ? NULL : "--ignore-missing-torrc";
+  const char *fname_opt = defaults_file ? "--defaults-anonrc" : "-f";
+  const char *fname_long_opt = defaults_file ? "--defaults-anonrc" :
+                                               "--anonrc-file";
+  const char *ignore_opt = defaults_file ? NULL : "--ignore-missing-anonrc";
   const char *keygen_opt = "--keygen";
 
   if (defaults_file)
@@ -4398,7 +4419,7 @@ find_torrc_filename(const config_line_t *cmd_arg,
 #ifndef _WIN32
       char *fn = NULL;
       if (!defaults_file) {
-        fn = expand_filename("~/.torrc");
+        fn = expand_filename("~/.anonrc");
       }
       if (fn) {
         file_status_t hmst = file_status(fn);
@@ -4495,6 +4516,8 @@ options_init_from_torrc(int argc, char **argv)
   char *cf=NULL, *cf_defaults=NULL;
   int retval = -1;
   char *errmsg=NULL;
+  char *terms_fname = NULL;
+  char *agreement = NULL;
   const config_line_t *cmdline_only_options;
 
   /* Go through command-line variables */
@@ -4513,7 +4536,7 @@ options_init_from_torrc(int argc, char **argv)
     print_usage();
     return 1;
   }
-  if (config_line_find(cmdline_only_options, "--list-torrc-options")) {
+  if (config_line_find(cmdline_only_options, "--list-anonrc-options")) {
     /* For validating whether we've documented everything. */
     list_torrc_options();
     return 1;
@@ -4529,12 +4552,12 @@ options_init_from_torrc(int argc, char **argv)
   }
 
   if (config_line_find(cmdline_only_options, "--version")) {
-    printf("Tor version %s.\n",get_version());
+    printf("Anon version %s.\n",get_version());
 #ifdef ENABLE_GPL
-    printf("This build of Tor is covered by the GNU General Public License "
+    printf("This build of Anon is covered by the GNU General Public License "
             "(https://www.gnu.org/licenses/gpl-3.0.en.html)\n");
 #endif
-    printf("Tor is running on %s with Libevent %s, "
+    printf("Anon is running on %s with Libevent %s, "
             "%s %s, Zlib %s, Liblzma %s, Libzstd %s and %s %s as libc.\n",
             get_uname(),
             tor_libevent_get_version_str(),
@@ -4549,7 +4572,7 @@ options_init_from_torrc(int argc, char **argv)
             tor_libc_get_name() ?
             tor_libc_get_name() : "Unknown",
             tor_libc_get_version_str());
-    printf("Tor compiled with %s version %s\n",
+    printf("Anon compiled with %s version %s\n",
             strcmp(COMPILER_VENDOR, "gnu") == 0?
             COMPILER:COMPILER_VENDOR, COMPILER_VERSION);
 
@@ -4578,9 +4601,9 @@ options_init_from_torrc(int argc, char **argv)
     cf_defaults = load_torrc_from_disk(cmdline_only_options, 1);
     const config_line_t *f_line = config_line_find(cmdline_only_options, "-f");
     const config_line_t *f_line_long = config_line_find(cmdline_only_options,
-                                                        "--torrc-file");
+                                                        "--anonrc-file");
     if (f_line && f_line_long) {
-      log_err(LD_CONFIG, "-f and --torrc-file cannot be used together.");
+      log_err(LD_CONFIG, "-f and --anonrc-file cannot be used together.");
       retval = -1;
       goto err;
     } else if (f_line_long) {
@@ -4597,7 +4620,7 @@ options_init_from_torrc(int argc, char **argv)
     }
 
     if (!cf) {
-      if (config_line_find(cmdline_only_options, "--allow-missing-torrc")) {
+      if (config_line_find(cmdline_only_options, "--allow-missing-anonrc")) {
         cf = tor_strdup("");
       } else {
         goto err;
@@ -4616,6 +4639,14 @@ options_init_from_torrc(int argc, char **argv)
       goto err;
     }
   }
+
+  char *anons_fname = get_datadir_fname("anyone_hosts");
+  file_status_t anons_status = file_status(anons_fname);
+  if (command == CMD_RUN_TOR && anons_status != FN_FILE) {
+    log_info(LD_CONFIG, "Creating anyone_hosts file with default mapping");
+    write_str_to_file(anons_fname, DEFAULT_ANON_DNS_MAPPING, 0);
+  }
+  tor_free(anons_fname);
 
   const config_line_t *format_line = config_line_find(cmdline_only_options,
                                                       "--format");
@@ -4654,9 +4685,60 @@ options_init_from_torrc(int argc, char **argv)
     }
   }
 
+  terms_fname = get_datadir_fname("terms-agreement");
+  if (config_line_find(cmdline_only_options, "--agree-to-terms")) {
+    write_str_to_file_if_not_equal(terms_fname, "agreed");
+    log_notice(LD_CONFIG, "Marked agreement as set");
+  }
+
+  file_status_t terms_status = file_status(terms_fname);
+  if (terms_status == FN_FILE) {
+    agreement = read_file_to_str(terms_fname, 0, NULL);
+  }
+
+  if (command == CMD_RUN_TOR && !get_options_mutable()->AgreeToTerms &&
+      (agreement == NULL || strcmp(agreement, "agreed") != 0)) {
+    if (get_options_mutable()->RunAsDaemon || !isatty(STDIN_FILENO)) {
+      log_err(LD_CONFIG, "User has not agreed to the terms and conditions. "
+              "Exiting.");
+      tor_asprintf(&errmsg, "Not agreed to terms");
+      retval = -1;
+      goto err;
+    }
+
+    int response, c;
+    while (1) {
+      printf("\nPlease read terms and conditions at: "
+             "https://www.anyone.io/terms\n");
+      printf("Do you agree to the terms and conditions? (y/n): ");
+
+      response = getchar();
+      if (response == EOF) {
+        tor_asprintf(&errmsg, "Not agreed to terms");
+        retval = -1;
+        goto err;
+      }
+      while ((c = getchar()) != '\n' && c != EOF)
+        ;
+      if (response == 'y' || response == 'Y') {
+        write_str_to_file_if_not_equal(terms_fname, "agreed");
+        log_notice(LD_CONFIG, "Marked agreement as set\n");
+        break;
+      } else if (response == 'n' || response == 'N') {
+        tor_asprintf(&errmsg, "Not agreed to terms");
+        retval = -1;
+        goto err;
+      } else {
+        printf("Invalid response. Please enter 'y' or 'n'.\n");
+      }
+    }
+  }
+
  err:
   tor_free(cf);
   tor_free(cf_defaults);
+  tor_free(agreement);
+  tor_free(terms_fname);
   if (errmsg) {
     log_warn(LD_CONFIG,"%s", errmsg);
     tor_free(errmsg);
@@ -5957,9 +6039,9 @@ warn_nonlocal_controller_ports(smartlist_t *ports, unsigned forbid_nonlocal)
                  "You have a ControlPort set to accept "
                  "unauthenticated connections from a non-local address.  "
                  "This means that programs not running on your computer "
-                 "can reconfigure your Tor, without even having to guess a "
+                 "can reconfigure your Anon, without even having to guess a "
                  "password.  That's so bad that I'm closing your ControlPort "
-                 "for you.  If you need to control your Tor remotely, try "
+                 "for you.  If you need to control your Anon remotely, try "
                  "enabling authentication and using a tool like stunnel or "
                  "ssh to encrypt remote access.");
         warned = 1;
@@ -5969,7 +6051,7 @@ warn_nonlocal_controller_ports(smartlist_t *ports, unsigned forbid_nonlocal)
         log_warn(LD_CONFIG, "You have a ControlPort set to accept "
                  "connections from a non-local address.  This means that "
                  "programs not running on your computer can reconfigure your "
-                 "Tor.  That's pretty bad, since the controller "
+                 "Anon.  That's pretty bad, since the controller "
                  "protocol isn't encrypted!  Maybe you should just listen on "
                  "127.0.0.1 and use a tool like stunnel or ssh to encrypt "
                  "remote connections to your control port.");
@@ -6350,7 +6432,7 @@ port_parse_config(smartlist_t *out,
             cfg->entry_cfg.onion_traffic = ! no;
             continue;
           } else if (!strcasecmp(elt, "OnionTrafficOnly")) {
-            /* Only connect to .onion addresses.  Equivalent to
+            /* Only connect to .anyone addresses.  Equivalent to
              * NoDNSRequest, NoIPv4Traffic, NoIPv6Traffic. The option
              * NoOnionTrafficOnly is not supported, it's too confusing. */
             if (no) {
@@ -6447,7 +6529,7 @@ port_parse_config(smartlist_t *out,
         cfg->entry_cfg.onion_traffic == 0 &&
         listener_type != CONN_TYPE_AP_DNS_LISTENER) {
       log_warn(LD_CONFIG, "You have a %sPort entry with all of IPv4 and "
-               "IPv6 and .onion disabled; that won't work.", portname);
+               "IPv6 and .anyone disabled; that won't work.", portname);
       goto err;
     }
     if (cfg->entry_cfg.dns_request == 1 &&
@@ -6935,7 +7017,7 @@ get_data_directory(const char *val)
 #else /* !defined(_WIN32) */
   const char *d = val;
   if (!d)
-    d = "~/.tor";
+    d = "~/.anon";
 
   if (!strcmpstart(d, "~/")) {
     char *fn = expand_filename(d);
@@ -6943,16 +7025,16 @@ get_data_directory(const char *val)
       log_warn(LD_CONFIG,"Failed to expand filename \"%s\".", d);
       return NULL;
     }
-    if (!val && !strcmp(fn,"/.tor")) {
+    if (!val && !strcmp(fn,"/.anon")) {
       /* If our homedir is /, we probably don't want to use it. */
       /* Default to LOCALSTATEDIR/tor which is probably closer to what we
        * want. */
       log_warn(LD_CONFIG,
-               "Default DataDirectory is \"~/.tor\".  This expands to "
+               "Default DataDirectory is \"~/.anon\".  This expands to "
                "\"%s\", which is probably not what you want.  Using "
                "\"%s"PATH_SEPARATOR"tor\" instead", fn, LOCALSTATEDIR);
       tor_free(fn);
-      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "tor");
+      fn = tor_strdup(LOCALSTATEDIR PATH_SEPARATOR "anon");
     }
     return fn;
   }
@@ -7016,8 +7098,8 @@ validate_data_directories(or_options_t *options)
   "if you edit it, comments will not be preserved"
 /** This string can change; it tries to give the reader an idea
  * that editing this file by hand is not a good plan. */
-#define GENERATED_FILE_COMMENT "# The old torrc file was renamed " \
-  "to torrc.orig.1, and Tor will ignore it"
+#define GENERATED_FILE_COMMENT "# The old anonrc file was renamed " \
+  "to anonrc.orig.1, and Anon will ignore it"
 
 /** Save a configuration file for the configuration in <b>options</b>
  * into the file <b>fname</b>.  If the file already exists, and

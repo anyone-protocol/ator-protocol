@@ -347,7 +347,7 @@ test_status_hb_not_in_consensus(void *arg)
 
   expect_log_msg("Heartbeat: It seems like we are "
                  "not in the cached consensus.\n");
-  expect_log_msg("Heartbeat: Tor's uptime is 0:00 hours, "
+  expect_log_msg("Heartbeat: Anon's uptime is 0:00 hours, "
                  "with 0 circuits open. "
                  "I've sent 0 kB and received 0 kB. "
                  "I've received 0 connections on IPv4 and 0 on IPv6. "
@@ -470,7 +470,7 @@ test_status_hb_simple(void *arg)
 
   tt_int_op(actual, OP_EQ, expected);
 
-  expect_log_msg("Heartbeat: Tor's uptime is 0:00 hours, "
+  expect_log_msg("Heartbeat: Anon's uptime is 0:00 hours, "
                  "with 0 circuits open. "
                  "I've sent 0 kB and received 0 kB. "
                  "I've received 0 connections on IPv4 and 0 on IPv6. "
@@ -592,7 +592,7 @@ test_status_hb_calls_log_accounting(void *arg)
 
   tt_int_op(actual, OP_EQ, expected);
 
-  expect_log_msg("Heartbeat: Tor's uptime is 0:00 hours, "
+  expect_log_msg("Heartbeat: Anon's uptime is 0:00 hours, "
                  "with 0 circuits open. "
                  "I've sent 0 kB and received 0 kB. "
                  "I've received 0 connections on IPv4 and 0 on IPv6. "
@@ -742,7 +742,7 @@ test_status_hb_packaged_cell_fullness(void *arg)
   actual = log_heartbeat(0);
 
   tt_int_op(actual, OP_EQ, expected);
-  expect_log_msg("Heartbeat: Tor's uptime is 0:00 hours, "
+  expect_log_msg("Heartbeat: Anon's uptime is 0:00 hours, "
                  "with 0 circuits open. "
                  "I've sent 0 kB and received 0 kB. "
                  "I've received 0 connections on IPv4 and 0 on IPv6. "
@@ -867,7 +867,7 @@ test_status_hb_tls_write_overhead(void *arg)
   actual = log_heartbeat(0);
 
   tt_int_op(actual, OP_EQ, expected);
-  expect_log_msg("Heartbeat: Tor's uptime is 0:00 hours, "
+  expect_log_msg("Heartbeat: Anon's uptime is 0:00 hours, "
                  "with 0 circuits open. "
                  "I've sent 0 kB and received 0 kB. "
                  "I've received 0 connections on IPv4 and 0 on IPv6. "

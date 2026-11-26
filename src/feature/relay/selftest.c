@@ -130,6 +130,24 @@ router_orport_seems_reachable(const or_options_t *options,
   return true;
 }
 
+/**
+ * Return true if performed reachability self-test annotated orport reachable.
+ * Works only for AF_INET and AF_INET6 families.
+*/
+int
+router_orport_reachable(int family)
+{
+  if (family == AF_INET && can_reach_or_port_ipv4) {
+    return true;
+  }
+
+  if (family == AF_INET6 && can_reach_or_port_ipv6) {
+    return true;
+  }
+
+  return false;
+}
+
 /** See if we currently believe our ORPort to be unreachable. If so, return 1
  * else return 0. */
 static int

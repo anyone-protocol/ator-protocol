@@ -70,7 +70,7 @@ Repeatedly shutting down a relay is detrimental to the network and should be
 avoided. Sorry about that.
 
 We have one more step left before we move on the machine: configure TB to always
-use our middle relay. Edit `Browser/TorBrowser/Data/Tor/torrc` and set
+use our middle relay. Edit `Browser/TorBrowser/Data/Tor/anonrc` and set
 `MiddleNodes <fingerprint>`, where `<fingerprint>` is the fingerprint of the
 relay. Start TB, visit a website, and manually confirm that the middle is used
 by looking at the circuit display.
@@ -197,7 +197,7 @@ We run `make` to get a new `tor` binary and copy it to our local TB.
 
 To be able
 to view circuit info events in the console as we launch TB, we add `Log
-[circ]info notice stdout` to `torrc` of TB.
+[circ]info notice stdout` to `anonrc` of TB.
 
 Running TB to visit example.com we first find in the log:
 

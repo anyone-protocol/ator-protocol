@@ -1,0 +1,58 @@
+Source: anon
+Section: net
+Priority: optional
+Maintainer: Anyone Protocol <ops@anyone.io>
+Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>= 1.1), asciidoc (>= 8.2), docbook-xml, docbook-xsl, xmlto, dh-apparmor, libseccomp-dev [amd64 i386], libsystemd-dev [linux-any], pkg-config [linux-any], libcap-dev [linux-any], dh-autoreconf, liblzma-dev, libzstd-dev, dh-runit (>= 2.8.8)
+Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
+Standards-Version: 4.4.0
+Homepage: https://ator.io/
+Vcs-Git: https://github.com/anyone-protocol/ator-protocol.git
+Vcs-Browser: https://github.com/anyone-protocol/ator-protocol
+
+Package: anon
+Architecture: any
+Depends: ${shlibs:Depends}, adduser, ${misc:Depends}, lsb-base
+Pre-Depends: ${misc:Pre-Depends}
+Conflicts: libssl0.9.8 (<< 0.9.8g-9)
+Breaks: ${runit:Breaks}
+Recommends: logrotate, anon-geoipdb
+Suggests: mixmaster, socat, apparmor-utils, nyx, obfs4proxy
+Description: anonymizing overlay network for TCP
+ Anon is a connection-based low-latency anonymous communication system.
+ .
+ Clients choose a source-routed path through a set of relays, and
+ negotiate a "virtual circuit" through the network, in which each relay
+ knows its predecessor and successor, but no others. Traffic flowing
+ down the circuit is decrypted at each relay, which reveals the
+ downstream relay.
+ .
+ Basically, Anon provides a distributed network of relays. Users bounce
+ their TCP streams (web traffic, ftp, ssh, etc) around the relays, and
+ recipients, observers, and even the relays themselves have difficulty
+ learning which users connected to which destinations.
+ .
+ This package enables only a Anyone client by default, but it can also be
+ configured as a relay and/or a hidden service easily.
+ .
+ Client applications can use the Anyone network by connecting to the local
+ socks proxy interface provided by your Anon instance.
+ .
+ Note that Anon does no protocol cleaning on application traffic. There
+ is a danger that application protocols and associated programs can be
+ induced to reveal information about the user.
+
+Package: anon-geoipdb
+Architecture: all
+Priority: optional
+Depends: anon (>= ${source:Version}), ${misc:Depends}
+Replaces: anon (<< 0.2.4.8)
+Breaks: anon (<< 0.2.4.8)
+Description: GeoIP database for Anon
+ This package provides a GeoIP database for Anon, i.e. it maps IPv4 addresses
+ to countries.
+ .
+ Bridge relays (special Anon relays that aren't listed in the main Anon
+ directory) use this information to report which countries they see
+ connections from.  These statistics enable the Anyone network operators to
+ learn when certain countries start blocking access to bridges.
+ .

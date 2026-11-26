@@ -408,7 +408,7 @@ dirserv_rejects_tor_version(const char *platform,
     return false;
 
   static const char please_upgrade_string[] =
-    "Tor version is insecure or unsupported. Please upgrade!";
+    "Anon version is insecure or unsupported. Please upgrade!";
 
   if (!tor_version_as_new_as(platform,
         dirauth_get_options()->MinimalAcceptedServerVersion)) {
@@ -504,7 +504,7 @@ dirserv_get_status_impl(const char *id_digest,
     if (msg)
       *msg = "Suspicious relay address range -- if you think this is a "
              "mistake please set a valid email address in ContactInfo and "
-             "send an email to bad-relays@lists.torproject.org mentioning "
+             "send an email mentioning "
              "your address(es) and fingerprint(s)?";
     return RTR_REJECT;
   }
@@ -832,7 +832,7 @@ dirserv_add_descriptor(routerinfo_t *ri, const char **msg, const char *source)
       "recorded a different RSA identity for this Ed25519 identity (or vice "
       "versa.) Did you replace or copy some of your key files, but not "
       "the others? You should either restore the expected keypair, or "
-      "delete your keys and restart Tor to start your relay with a new "
+      "delete your keys and restart Anon to start your relay with a new "
       "identity.";
     r = ROUTER_AUTHDIR_REJECTS;
     goto fail;

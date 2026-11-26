@@ -69,6 +69,8 @@ void directory_request_set_indirection(directory_request_t *req,
                                        dir_indirection_t indirection);
 void directory_request_set_resource(directory_request_t *req,
                                     const char *resource);
+void directory_request_set_anon_onion_address(directory_request_t *req,
+                                              const char *address);
 void directory_request_set_payload(directory_request_t *req,
                                    const char *payload,
                                    size_t payload_len);
@@ -117,6 +119,10 @@ struct directory_request_t {
   dir_indirection_t indirection;
   /** Alias to the variable part of the URL for this request */
   const char *resource;
+  /** If set, an onion (.anyone) address to route this request to by name
+   * instead of by IP.  Used for anyone_hosts auto-update fetches; only an
+   * alias is stored, so the string must outlive the request. */
+  const char *anon_onion_address;
   /** Alias to the payload to upload (if any) */
   const char *payload;
   /** Number of bytes to upload from payload</b> */
