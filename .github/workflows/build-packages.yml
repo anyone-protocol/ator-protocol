@@ -138,6 +138,9 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
+          if [ "${{ matrix.build.suite }}" = bullseye ]; then
+            sed -i 's#deb.debian.org/debian-security#archive.debian.org/debian-security#' /etc/apt/sources.list
+          fi
           apt-get -y update
           apt-get -y install sudo git build-essential devscripts gpg
       - name: Checkout Repository
